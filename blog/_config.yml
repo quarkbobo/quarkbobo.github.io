@@ -6,7 +6,7 @@
 title: 'Blog'
 subtitle: 'created time:2025-11-05'
 description: 'Walking fish is not allowed'
-keywords:
+keywords: "学习笔记,技术分享,个人博客"
 author: Quark
 language: zh-CN
 timezone: ''
@@ -96,7 +96,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: next theme
+theme: "next theme"
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
