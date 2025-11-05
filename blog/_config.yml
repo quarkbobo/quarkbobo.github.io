@@ -3,12 +3,12 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 'my first blog'
-subtitle: ''
+title: 'My First Blog'
+subtitle: 'created time:2025-11-05'
 description: ''
 keywords:
-author: John Doe
-language: en
+author: Quark
+language: zh-CN
 timezone: ''
 
 # URL
