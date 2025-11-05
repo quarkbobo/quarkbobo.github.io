@@ -3,12 +3,12 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle: ''
-description: ''
-keywords:
-author: John Doe
-language: en
+title: Quark的博客
+subtitle: 'created in 2025.11.05'
+description: 'blog for void'
+keywords: blog, tech, programming
+author: Quark
+language: zh-CN
 timezone: ''
 
 # URL
@@ -96,7 +96,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: hexo-theme-next-master
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
