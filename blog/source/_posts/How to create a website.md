@@ -2,7 +2,7 @@
 title: Github免费服务器搭建
 ---
 
-# 1. 前记
+# 前记
 
 **quark先是看到sq搭建了服务器，还去问他为啥没有钱（玫幽倩）也能有服务器，看到github开头的傻眼了**
 
@@ -12,7 +12,7 @@ title: Github免费服务器搭建
 2. **ctf比赛：用于上传木马，反射请求**
 3. **写网页小游戏玩#可以上网去搜别人现成的代码**
 
-# 2. 相关文章
+# 相关文章
 
 https://zhuanlan.zhihu.com/p/91652100
 
@@ -46,7 +46,7 @@ https://zhuanlan.zhihu.com/p/618864711
 
 
 
-# 3. github服务器搭建
+# github服务器搭建
 
 ## 设置该账号的默认username 和 email
 
@@ -155,7 +155,7 @@ git push
 
 ![img](https://cdn.nlark.com/yuque/0/2025/png/54207903/1762304948963-03e04cdf-110e-4f78-94e8-dc4a5d274654.png)
 
-# 4. 本地安装hexo框架（如果你想写blog，请继续看下去）
+# 本地安装hexo框架（如果你想写blog，请继续看下去）
 
 其实可以去找免费的企业级别的blog框架，但是我个人还是喜欢浅显易懂方便管理的一个框架hexo
 
@@ -194,7 +194,7 @@ hexo d
 
 ![img](https://cdn.nlark.com/yuque/0/2025/png/54207903/1762339931610-196000a2-c7a3-4dd5-8bdd-4acb14062781.png)
 
-# 5. 用Cloudfare启动系统服务并映射自己的域名
+# 用Cloudfare启动系统服务并映射自己的域名
 
 极力推荐cloudflare！非常好用
 
