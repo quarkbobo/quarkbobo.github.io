@@ -3,12 +3,12 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle: ''
-description: ''
-keywords:
-author: John Doe
-language: en
+title: Quark's Blog
+subtitle: 'created time: 2025-11-06'
+description: 'created for void'
+keywords: '学习笔记,技术分享,个人博客'
+author: Quark
+language: 'zh-CN'
 timezone: ''
 
 # URL
