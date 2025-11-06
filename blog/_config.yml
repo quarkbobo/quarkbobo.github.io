@@ -3,17 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 'Blog'
-subtitle: 'created time:2025-11-05'
-description: 'Walking fish is not allowed'
-keywords: "学习笔记,技术分享,个人博客"
-author: Quark
+title: Hexo
+subtitle: ''
+description: ''
+keywords:
+author: John Doe
 language: en
 timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://github.com/quark-cpu
+url: http://example.com
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -96,7 +96,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: "landscape"
+theme: next theme
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
