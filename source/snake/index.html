@@ -3,16 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>贪吃蛇 CTF</title>
+<title>贪吃蛇 CTF 粒子炫彩升级版</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;
-      background:linear-gradient(135deg,#1a2a6c,#b21f1f,#fdbb2d);color:white;padding:10px;}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1a2a6c,#b21f1f,#fdbb2d);color:white;padding:10px;overflow:hidden;}
 .container{max-width:800px;width:100%;background:rgba(0,0,0,0.7);border-radius:15px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.5);text-align:center;position:relative;}
 h1{font-size:2rem;margin-bottom:15px;color:#ffcc00;text-shadow:0 2px 5px rgba(0,0,0,0.3);}
 .game-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:10px;background:rgba(255,255,255,0.1);border-radius:10px;}
 #score{font-size:1.5rem;font-weight:bold;color:#4CAF50;}
-.controls button{padding:8px 15px;font-size:1rem;background:#4CAF50;color:white;border:none;border-radius:5px;cursor:pointer;transition:all 0.3s;}
+.controls button{padding:8px 15px;font-size:1rem;background:#4CAF50;color:white;border:none;border-radius:5px;cursor:pointer;transition:all 0.3s;margin-left:5px;}
 .controls button:hover{background:#45a049;transform:translateY(-2px);}
 #gameCanvas{border:3px solid #4CAF50;border-radius:10px;background-color:#0a1929;margin-bottom:10px;width:100%;max-width:600px;height:auto;}
 .instructions{background:rgba(255,255,255,0.1);padding:10px;border-radius:10px;margin-bottom:10px;text-align:left;}
@@ -34,7 +33,7 @@ h1{font-size:2rem;margin-bottom:15px;color:#ffcc00;text-shadow:0 2px 5px rgba(0,
 </head>
 <body>
 <div class="container">
-<h1>贪吃蛇 CTF</h1>
+<h1>贪吃蛇 CTF 粒子炫彩升级版</h1>
 <div class="game-info">
 <div id="score">得分: 0</div>
 <div class="controls">
@@ -49,7 +48,8 @@ h1{font-size:2rem;margin-bottom:15px;color:#ffcc00;text-shadow:0 2px 5px rgba(0,
 <ul>
 <li>方向控制：键盘 WASD / ↑↓←→ 或手机滑动</li>
 <li>吃到红色食物 +10分</li>
-<li>获取flag只需要10000分</li>
+<li>撞墙或自己游戏结束</li>
+<li>目标分数太高，可通过 console 获取 flag</li>
 </ul>
 </div>
 <div class="sound-toggle" id="soundToggle">🔊</div>
@@ -64,8 +64,7 @@ h1{font-size:2rem;margin-bottom:15px;color:#ffcc00;text-shadow:0 2px 5px rgba(0,
 </div>
 
 <script>
-const canvas=document.getElementById('gameCanvas');
-const ctx=canvas.getContext('2d');
+const canvas=document.getElementById('gameCanvas'),ctx=canvas.getContext('2d');
 const scoreEl=document.getElementById('score');
 const startBtn=document.getElementById('startBtn');
 const pauseBtn=document.getElementById('pauseBtn');
@@ -76,8 +75,9 @@ const closeVictoryBtn=document.getElementById('closeVictoryBtn');
 const soundToggle=document.getElementById('soundToggle');
 
 const gridSize=20,gameSpeed=150,WIN_SCORE=10000;
-let snake=[],direction={x:1,y:0},food={x:0,y:0},score=0,gameLoop,isGameOver=false,isPaused=false,soundOn=true,foodBlinkCounter=0;
+let snake=[],direction={x:1,y:0},food={x:0,y:0},score=0,gameLoop,isGameOver=false,isPaused=false,soundOn=true,foodBlinkCounter=0,eatAnimationCounter=0,showEatAnim=false,particles=[],eatCount=0;
 
+// 音效
 function playSound(type){
     if(!soundOn) return;
     const ctxAudio=new (window.AudioContext||window.webkitAudioContext)();
@@ -85,44 +85,72 @@ function playSound(type){
     const gain=ctxAudio.createGain();
     osc.connect(gain); gain.connect(ctxAudio.destination);
     gain.gain.setValueAtTime(0.15, ctxAudio.currentTime);
-    if(type==="eat"){osc.type="triangle";osc.frequency.setValueAtTime(880,ctxAudio.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctxAudio.currentTime+0.15);}
+    if(type==="eat"){osc.type="triangle";osc.frequency.setValueAtTime(880+eatCount*10,ctxAudio.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctxAudio.currentTime+0.12);}
     if(type==="fail"){osc.type="sine";osc.frequency.setValueAtTime(220,ctxAudio.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctxAudio.currentTime+0.2);}
-    osc.start(); osc.stop(ctxAudio.currentTime+0.15);
+    osc.start(); osc.stop(ctxAudio.currentTime+0.12);
 }
+
+// 粒子类
+class Particle{
+    constructor(x,y){
+        this.x=x; this.y=y;
+        this.vx=(Math.random()-0.5)*4;
+        this.vy=(Math.random()-0.5)*4;
+        this.size=Math.random()*4+2;
+        this.alpha=1;
+        this.color=`hsl(${(eatCount*30)%360},100%,50%)`;
+    }
+    update(){this.x+=this.vx; this.y+=this.vy; this.alpha-=0.05;}
+    draw(ctx){if(this.alpha<=0)return; ctx.save(); ctx.globalAlpha=this.alpha; ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); ctx.restore();}
+}
+function spawnParticles(x,y){for(let i=0;i<15;i++)particles.push(new Particle(x,y));}
 
 function initGame(){
     snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
-    direction={x:1,y:0}; score=0; updateScore();
-    generateFood(); isGameOver=false; isPaused=false;
+    direction={x:1,y:0}; score=0; eatCount=0; updateScore();
+    generateFood(); isGameOver=false; isPaused=false; showEatAnim=false;
     victoryModal.style.display='none';
     if(gameLoop) clearInterval(gameLoop);
     gameLoop=setInterval(update,gameSpeed);
     draw();
 }
 
-function generateFood(){
-    food={x:Math.floor(Math.random()*(canvas.width/gridSize)),y:Math.floor(Math.random()*(canvas.height/gridSize))};
-    while(snake.some(s=>s.x===food.x&&s.y===food.y)) generateFood();
-}
+function generateFood(){food={x:Math.floor(Math.random()*(canvas.width/gridSize)),y:Math.floor(Math.random()*(canvas.height/gridSize))}; while(snake.some(s=>s.x===food.x&&s.y===food.y)) generateFood();}
 
 function draw(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.strokeStyle='rgba(255,255,255,0.05)';
     for(let x=0;x<canvas.width;x+=gridSize){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}
     for(let y=0;y<canvas.height;y+=gridSize){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}
-    snake.forEach((seg,i)=>{ctx.fillStyle=i===0?'#4CAF50':'#8BC34A';ctx.fillRect(seg.x*gridSize,seg.y*gridSize,gridSize,gridSize);ctx.strokeStyle='#388E3C';ctx.strokeRect(seg.x*gridSize,seg.y*gridSize,gridSize,gridSize);});
     
-    // 食物闪烁动画
+    snake.forEach((seg,i)=>{
+        ctx.save();
+        let scale=1;
+        if(i===0 && showEatAnim) scale=1+0.3*Math.sin(eatAnimationCounter*0.7);
+        ctx.translate(seg.x*gridSize+gridSize/2,seg.y*gridSize+gridSize/2);
+        ctx.scale(scale,scale);
+        if(i===0 && showEatAnim){ctx.shadowBlur=15; ctx.shadowColor="#FFEA00";} else ctx.shadowBlur=0;
+        ctx.fillStyle=i===0?'#4CAF50':'#8BC34A';
+        ctx.fillRect(-gridSize/2,-gridSize/2,gridSize,gridSize);
+        ctx.strokeStyle='#388E3C'; ctx.strokeRect(-gridSize/2,-gridSize/2,gridSize,gridSize);
+        ctx.restore();
+    });
+
+    // 食物闪烁加速
     foodBlinkCounter++;
-    const blink=Math.sin(foodBlinkCounter*0.3)>0;
-    ctx.fillStyle=blink?'#FF5252':'#FFAAAA';
-    ctx.beginPath();
-    ctx.arc(food.x*gridSize+gridSize/2,food.y*gridSize+gridSize/2,gridSize/2-1,0,Math.PI*2);
-    ctx.fill();
+    const blinkIntensity=(Math.sin(foodBlinkCounter*0.3*(1+eatCount*0.05))+1)/2;
+    const grad=ctx.createRadialGradient(food.x*gridSize+gridSize/2,food.y*gridSize+gridSize/2,2,food.x*gridSize+gridSize/2,food.y*gridSize+gridSize/2,gridSize/2);
+    grad.addColorStop(0, `rgba(255,255,0,${0.6+0.4*blinkIntensity})`);
+    grad.addColorStop(1, `rgba(255,0,0,${0.6+0.4*blinkIntensity})`);
+    ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(food.x*gridSize+gridSize/2,food.y*gridSize+gridSize/2,gridSize/2-1,0,Math.PI*2); ctx.fill();
+
+    particles.forEach((p,i)=>{p.update(); p.draw(ctx); if(p.alpha<=0)particles.splice(i,1);});
 
     if(isGameOver){ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='white';ctx.font='30px Arial';ctx.textAlign='center';ctx.fillText('游戏结束',canvas.width/2,canvas.height/2);}
     if(isPaused&&!isGameOver){ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='white';ctx.font='30px Arial';ctx.textAlign='center';ctx.fillText('暂停',canvas.width/2,canvas.height/2);}
 }
+
+function updateScore(){scoreEl.textContent='得分: '+score;}
 
 function update(){
     if(isGameOver||isPaused) return;
@@ -131,28 +159,41 @@ function update(){
         isGameOver=true; playSound("fail"); draw(); return;
     }
     snake.unshift(head);
-    if(head.x===food.x&&head.y===food.y){score+=10; playSound("eat"); updateScore(); generateFood();}
-    else snake.pop();
+    if(head.x===food.x&&head.y===food.y){
+        score+=10; eatCount++; playSound("eat"); updateScore(); generateFood();
+        showEatAnim=true; eatAnimationCounter=0;
+        spawnParticles(head.x*gridSize+gridSize/2, head.y*gridSize+gridSize/2);
+    } else snake.pop();
+    if(showEatAnim) eatAnimationCounter++;
     draw();
 }
 
-function updateScore(){scoreEl.textContent='得分: '+score;}
+// 键盘
+document.addEventListener('keydown',e=>{
+    const k=e.key.toLowerCase();
+    switch(k){
+        case 'arrowup': case 'w': if(direction.y===0) direction={x:0,y:-1}; break;
+        case 'arrowdown': case 's': if(direction.y===0) direction={x:0,y:1}; break;
+        case 'arrowleft': case 'a': if(direction.x===0) direction={x:-1,y:0}; break;
+        case 'arrowright': case 'd': if(direction.x===0) direction={x:1,y:0}; break;
+        case ' ': togglePause(); break;
+    }
+});
 
-const isMobile=/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-if(!isMobile){
-    document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();switch(k){case'arrowup':case'w':if(direction.y===0)direction={x:0,y:-1};break;case'arrowdown':case's':if(direction.y===0)direction={x:0,y:1};break;case'arrowleft':case'a':if(direction.x===0)direction={x:-1,y:0};break;case'arrowright':case'd':if(direction.x===0)direction={x:1,y:0};break;case' ':togglePause();break;}});
-}else{
-    let startX=0,startY=0,threshold=10;
-    canvas.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;startY=e.touches[0].clientY;},{passive:true});
-    canvas.addEventListener('touchmove',e=>{e.stopPropagation();},{passive:true});
-    canvas.addEventListener('touchend',e=>{
-        const dx=e.changedTouches[0].clientX-startX,dy=e.changedTouches[0].clientY-startY;
-        if(Math.abs(dx)<threshold&&Math.abs(dy)<threshold) return;
-        if(Math.abs(dx)>Math.abs(dy)){dx>0?direction.x===0&&(direction={x:1,y:0}):direction.x===0&&(direction={x:-1,y:0});}
-        else{dy>0?direction.y===0&&(direction={x:0,y:1}):direction.y===0&&(direction={x:0,y:-1});}
-    },{passive:true});
-}
+// 手机滑动
+let startX=0,startY=0,threshold=20;
+canvas.addEventListener('touchstart',e=>{e.preventDefault(); startX=e.touches[0].clientX; startY=e.touches[0].clientY;},{passive:false});
+canvas.addEventListener('touchmove',e=>{e.preventDefault();},{passive:false});
+canvas.addEventListener('touchend',e=>{
+    e.preventDefault();
+    const dx=e.changedTouches[0].clientX-startX;
+    const dy=e.changedTouches[0].clientY-startY;
+    if(Math.abs(dx)<threshold&&Math.abs(dy)<threshold) return;
+    if(Math.abs(dx)>Math.abs(dy)) dx>0?direction.x===0&&(direction={x:1,y:0}):direction.x===0&&(direction={x:-1,y:0});
+    else dy>0?direction.y===0&&(direction={x:0,y:1}):direction.y===0&&(direction={x:0,y:-1});
+},{passive:false});
 
+// 按钮
 startBtn.addEventListener('click',()=>{if(isPaused)togglePause();else if(isGameOver)initGame();});
 pauseBtn.addEventListener('click',togglePause);
 restartBtn.addEventListener('click',initGame);
@@ -166,7 +207,8 @@ window.setScore=function(s){score=s; updateScore(); console.log('%cscore set to 
 window.getFlag=function(){if(score>=WIN_SCORE){victoryModal.style.display='flex'; flagBox.textContent='flag{y0u_r_a_wEber}';}else console.log('%c分数不足','color:#ff9800');}
 
 initGame();
-console.log("贪吃蛇 CTF Challenge","color:#4caf50;font-size:16px;");
+console.log("贪吃蛇","color:#4caf50;font-size:16px;");
+console.log("尝试修改 score 或调用 window.setScore(10000) 来解锁 flag");
 </script>
 </body>
 </html>
