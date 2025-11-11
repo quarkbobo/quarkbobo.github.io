@@ -4,7 +4,7 @@
 
 # Site
 title: Quark's Blog
-subtitle: 'created time: 2025-11-06'
+subtitle: ''
 description: 'created for void'
 keywords: '学习笔记,技术分享,个人博客'
 author: Quark
@@ -13,7 +13,7 @@ timezone: 'Asia/Shanghai'
 
 # URL
 url: http://example.com
-permalink: :year/:month/:day/:title/
+permalink: :title/
 permalink_defaults:
 pretty_urls:
   trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
