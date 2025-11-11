@@ -27,18 +27,14 @@ hexo.extend.generator.register('blog-directory', function(locals) {
         if (file.endsWith('.md')) {
           const filePath = path.join(categoryDir, file);
           try {
-            // 明确指定UTF-8编码读取
-            const content = fs.readFileSync(filePath, { encoding: 'utf8' });
+            const content = fs.readFileSync(filePath, 'utf8');
             const frontMatter = parseFrontMatter(content);
             
             if (frontMatter && frontMatter.title) {
-              const postInfo = {
+              categories[category].posts.push({
                 title: frontMatter.title,
-                permalink: frontMatter.permalink || generatePermalink(file, frontMatter),
-                date: frontMatter.date || getFileDate(filePath)
-              };
-              
-              categories[category].posts.push(postInfo);
+                permalink: frontMatter.permalink || `/${path.basename(file, '.md')}/`
+              });
               console.log(`   📄 添加文章: ${frontMatter.title}`);
             }
           } catch (error) {
@@ -46,24 +42,21 @@ hexo.extend.generator.register('blog-directory', function(locals) {
           }
         }
       });
-      
-      // 按日期排序
-      categories[category].posts.sort((a, b) => new Date(b.date) - new Date(a.date));
     }
   });
 
-  // 生成目录内容
+  // 生成目录内容 - 使用正确的布局
   let markdownContent = `---
 title: 博客目录
 permalink: /
 layout: page
+comments: false
 ---
 
 ## 📚 文章分类
 
 `;
 
-  // 按指定顺序生成分类
   const categoryOrder = ['技术教程', '个人博客', '游戏相关', '关于我'];
   
   categoryOrder.forEach(category => {
@@ -81,7 +74,6 @@ layout: page
     markdownContent += '\n';
   });
 
-  // 添加页脚
   markdownContent += `---
 
 **说明：**
@@ -93,14 +85,13 @@ layout: page
 
   console.log('✅ 博客目录生成完成！');
 
-  // 明确返回UTF-8编码的数据
   return {
     path: 'index.html',
-    data: markdownContent
+    data: markdownContent,
+    layout: ['page', 'post']  // 明确指定布局
   };
 });
 
-// 解析front matter
 function parseFrontMatter(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
   if (!match) return null;
@@ -110,23 +101,5 @@ function parseFrontMatter(content) {
   } catch (e) {
     console.error('解析YAML出错:', e);
     return null;
-  }
-}
-
-// 生成permalink
-function generatePermalink(filename, frontMatter) {
-  if (frontMatter && frontMatter.permalink) {
-    return frontMatter.permalink;
-  }
-  return `/${path.basename(filename, '.md')}/`;
-}
-
-// 获取文件日期
-function getFileDate(filePath) {
-  try {
-    const stats = fs.statSync(filePath);
-    return stats.mtime;
-  } catch (e) {
-    return new Date();
   }
 }
