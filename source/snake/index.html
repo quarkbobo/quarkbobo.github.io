@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>贪吃蛇 CTF 粒子炫彩升级版</title>
+<title>贪吃蛇CTF</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;background:linear-gradient(135deg,#1a2a6c,#b21f1f,#fdbb2d);color:white;padding:10px;}
@@ -48,8 +48,7 @@ h1{font-size:2rem;margin-bottom:15px;color:#ffcc00;text-shadow:0 2px 5px rgba(0,
 <ul>
 <li>方向控制：键盘 WASD / ↑↓←→ 或手机滑动</li>
 <li>吃到红色食物 +10分</li>
-<li>撞墙或自己游戏结束</li>
-<li>目标分数太高，可通过 console 获取 flag</li>
+<li>分数只需10000即可获取flag</li>
 </ul>
 </div>
 <div class="sound-toggle" id="soundToggle">🔊</div>
@@ -175,7 +174,7 @@ window.setScore=function(s){score=s; updateScore(); console.log('%cscore set to 
 window.getFlag=function(){if(score>=WIN_SCORE){victoryModal.style.display='flex'; flagBox.textContent='flag{y0u_r_a_wEber}';}else console.log('%c分数不足','color:#ff9800');}
 
 initGame();
-console.log("%c🧩 贪吃蛇 CTF 粒子炫彩升级版","color:#4caf50;font-size:16px;");
+console.log("贪吃蛇CTF","color:#4caf50;font-size:16px;");
 console.log("尝试修改 score 或调用 window.setScore(10000) 来解锁 flag");
 </script>
 </body>
