@@ -1,7 +1,5 @@
 ---
 title: Hello World
-date: 2025-11-06 21:03
-permalink: /  # 这会将文章设为首页
 ---
 Welcome to [Hexo](https://hexo.io/)! This is your very first post. Check [documentation](https://hexo.io/docs/) for more info. If you get any problems when using Hexo, you can find the answer in [troubleshooting](https://hexo.io/docs/troubleshooting.html) or you can ask me on [GitHub](https://github.com/hexojs/hexo/issues).
 
