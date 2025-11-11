@@ -1,5 +1,0 @@
----
-title:About author
----
-
-pass
