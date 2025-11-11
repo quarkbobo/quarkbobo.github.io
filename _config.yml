@@ -102,3 +102,14 @@ theme: next theme
 deploy:
   type: ''
 
+# Table of Contents in your Sidebar
+toc:
+  maxdepth: 3
+  class: toc
+  slugify: transliteration
+  decodeEntities: false
+  anchor:
+    position: after
+    symbol: '#'
+    style: header-anchor
+
