@@ -9,12 +9,11 @@ description: 'created for void'
 keywords: '学习笔记,技术分享,个人博客'
 author: Quark
 language: 'zh-CN'
-timezone: ''
+timezone: 'Asia/Shanghai'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: https://quarkbobo.github.io/blog
-root: /blog/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -102,6 +101,4 @@ theme: next theme
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: 'git'
-  repository: https://github.com/quarkbobo/blog.git
-  branch: master
+  type: ''
