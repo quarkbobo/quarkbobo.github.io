@@ -1,7 +1,7 @@
 ---
-title: 博客目录
+title: game concat
 ---
 
-# 贪吃蛇
+# 贪吃蛇CTF
 
 https://quark567.patrickliucloud.top/snake
