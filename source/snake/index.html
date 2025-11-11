@@ -33,7 +33,7 @@ h1{font-size:2rem;margin-bottom:15px;color:#ffcc00;text-shadow:0 2px 5px rgba(0,
 </head>
 <body>
 <div class="container">
-<h1>贪吃蛇 CTF 粒子炫彩升级版</h1>
+<h1>贪吃蛇CTF</h1>
 <div class="game-info">
 <div id="score">得分: 0</div>
 <div class="controls">
@@ -48,7 +48,7 @@ h1{font-size:2rem;margin-bottom:15px;color:#ffcc00;text-shadow:0 2px 5px rgba(0,
 <ul>
 <li>方向控制：键盘 WASD / ↑↓←→ 或手机滑动</li>
 <li>吃到红色食物 +10分</li>
-<li>分数只需10000即可获取flag</li>
+<li>分数只需1000即可获取flag</li>
 </ul>
 </div>
 <div class="sound-toggle" id="soundToggle">🔊</div>
@@ -73,7 +73,7 @@ const flagBox=document.getElementById('flagBox');
 const closeVictoryBtn=document.getElementById('closeVictoryBtn');
 const soundToggle=document.getElementById('soundToggle');
 
-const gridSize=20,gameSpeed=150,WIN_SCORE=10000;
+const gridSize=20,gameSpeed=150,WIN_SCORE=1000;
 let snake=[],direction={x:1,y:0},food={x:0,y:0},score=0,gameLoop,isGameOver=false,isPaused=false,soundOn=true,foodBlinkCounter=0,eatAnimationCounter=0,showEatAnim=false,particles=[],eatCount=0;
 let startX=0,startY=0,threshold=20;
 
@@ -175,7 +175,7 @@ window.getFlag=function(){if(score>=WIN_SCORE){victoryModal.style.display='flex'
 
 initGame();
 console.log("贪吃蛇CTF","color:#4caf50;font-size:16px;");
-console.log("尝试修改 score 或调用 window.setScore(10000) 来解锁 flag");
+console.log("尝试修改 score 或调用 window.setScore(1000) 来解锁 flag");
 </script>
 </body>
 </html>
