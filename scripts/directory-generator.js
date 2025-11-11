@@ -1,22 +1,18 @@
 // scripts/directory-generator.js
-const fs = require('fs');
-const path = require('path');
-
-// 配置
-const CONFIG = {
-  categoryOrder: ['个人博客', '技术教程', '游戏相关', '关于我'],
-  categoryIcons: {
-    '技术教程': '🎯',
-    '个人博客': '📝', 
-    '游戏相关': '🎮',
-    '关于我': '👤',
-  },
-  categoryNames: {
-    'games': '游戏集合'
-  }
-};
-
 hexo.extend.generator.register('blog-directory', function(locals) {
+  // 配置 - 只保留前四个分类
+  const CONFIG = {
+    categoryOrder: ['个人博客', '技术教程', '游戏相关', '关于我'],
+    categoryIcons: {
+      '技术教程': '🎯',
+      '个人博客': '📝', 
+      '游戏相关': '🎮',
+      '关于我': '👤'
+    }
+  };
+
+  console.log('🔧 开始生成目录...');
+
   // 按分类组织文章
   const categories = {};
   
@@ -26,14 +22,29 @@ hexo.extend.generator.register('blog-directory', function(locals) {
   });
 
   // 处理所有文章
-  locals.posts.forEach(post => {
-    // 获取文章的分类（第一个分类）
-    const category = post.categories && post.categories.length > 0 
-      ? post.categories.data[0].name 
-      : '未分类';
+  locals.posts.data.forEach(post => {
+    let categoryName = '未分类';
     
-    if (categories[category]) {
-      categories[category].push({
+    // 多种方式获取分类
+    if (post.categories && post.categories.length > 0) {
+      // 方式1: 通过分类对象获取
+      categoryName = post.categories.data[0].name;
+    } else if (post.category) {
+      // 方式2: 直接通过category字段获取
+      categoryName = post.category;
+    } else {
+      // 方式3: 从路径推断
+      const pathParts = post.source.split('/');
+      if (pathParts.length > 2) {
+        categoryName = pathParts[pathParts.length - 2];
+      }
+    }
+    
+    console.log(`📄 文章 "${post.title}" 分类: ${categoryName}`);
+    
+    // 只处理配置中的分类
+    if (categories[categoryName]) {
+      categories[categoryName].push({
         title: post.title,
         permalink: post.permalink,
         date: post.date
@@ -56,9 +67,8 @@ layout: page
   CONFIG.categoryOrder.forEach(category => {
     if (categories[category] && categories[category].length > 0) {
       const icon = CONFIG.categoryIcons[category] || '📁';
-      const displayName = CONFIG.categoryNames[category] || category;
       
-      markdownContent += `### ${icon} ${displayName}\n\n`;
+      markdownContent += `### ${icon} ${category}\n\n`;
       
       // 按日期排序（最新的在前）
       categories[category]
@@ -68,6 +78,8 @@ layout: page
         });
       
       markdownContent += '\n';
+    } else {
+      console.log(`⚠️  分类 "${category}" 中没有文章`);
     }
   });
 
@@ -79,6 +91,8 @@ layout: page
 - 分类按照指定顺序排列
 - 文章按发布时间排序（最新的在前）
 - 本目录自动生成，最后更新：${new Date().toLocaleDateString('zh-CN')}`;
+
+  console.log('✅ 目录生成完成！');
 
   return {
     path: 'index.html',
