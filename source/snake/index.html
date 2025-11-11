@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>贪吃蛇 CTF Challenge</title>
+<link rel="stylesheet" href="/snake/snake.css">
+</head>
+<body>
+<div class="snake-container">
+  <h1>贪吃蛇 CTF Challenge</h1>
+  <div class="game-info">
+    <div id="score">得分: 0 / 10000</div>
+    <div class="controls">
+      <button id="startBtn">开始</button>
+      <button id="pauseBtn">暂停</button>
+      <button id="restartBtn">重新开始</button>
+    </div>
+  </div>
+  <canvas id="gameCanvas" width="600" height="400"></canvas>
+  <div class="instructions">
+    <h2>游戏说明</h2>
+    <ul>
+      <li>WASD 或 ↑↓←→ 控制方向</li>
+      <li>吃到食物 +10 分</li>
+      <li>撞墙或自己游戏结束</li>
+      <li>通过 console 修改 score 并执行 checkFlag() 获取 flag</li>
+    </ul>
+  </div>
+  <div class="victory-modal" id="victoryModal">
+    <div class="victory-content">
+      <h2>恭喜你!</h2>
+      <p>触发 flag 成功</p>
+      <div id="flagBox" class="flag"></div>
+      <button id="closeVictoryBtn">关闭</button>
+    </div>
+  </div>
+</div>
+<script src="/snake/snake.js" defer></script>
+</body>
+</html>
