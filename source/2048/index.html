@@ -1,141 +1,149 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2048 游戏</title>
-<style>
-body {font-family: Arial, sans-serif; background: #faf8ef; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; height:100vh; margin:0; padding:20px;}
-#game-container {position: relative; width: 320px; height: 320px; background: #bbada0; border-radius: 6px; display:grid; grid-template-columns: repeat(4, 1fr); grid-gap: 10px; padding: 10px;}
-.cell {width: 70px; height: 70px; background: rgba(238, 228, 218, 0.35); border-radius: 6px; display:flex; justify-content:center; align-items:center; font-size:24px; font-weight:bold; color: #776e65;}
-#message {position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); background: rgba(255,255,255,0.9); padding:20px; border-radius:10px; font-size:24px; color: #ff5722; display:none; text-align:center;}
-button {margin-top:20px; padding:10px 20px; font-size:16px;}
-</style>
-</head>
-<body>
+<div class="game-2048-container">
+  <canvas id="game2048"></canvas>
+  <div id="scoreDisplay" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);color:#fff;font-size:24px;font-weight:bold;text-shadow:0 0 5px #000;">分数: 0</div>
+  <div id="highScoreDisplay" style="position:absolute;top:40px;left:50%;transform:translateX(-50%);color:#ff0;font-size:18px;font-weight:bold;text-shadow:0 0 5px #000;">最高分: 0</div>
+  <div id="victoryMessage" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#ff0;font-size:36px;font-weight:bold;text-shadow:0 0 10px #000;display:none;">🎉 你赢了！ 🎉</div>
+  <button id="resetBtn" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);padding:8px 16px;font-size:16px;border:none;border-radius:5px;background:#4CAF50;color:#fff;cursor:pointer;">重置游戏</button>
+</div>
 
-<h1>2048 游戏</h1>
-<div id="game-container"></div>
-<div id="message">你赢了!</div>
-<button id="restartBtn">重置游戏</button>
+<style>
+.game-2048-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px 0;
+  box-sizing: border-box;
+}
+
+#game2048 {
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 1 / 1;
+  background: #111;
+  display: block;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+</style>
 
 <script>
-const container = document.getElementById('game-container');
-const message = document.getElementById('message');
-const restartBtn = document.getElementById('restartBtn');
+// 基础设置
+const canvas = document.getElementById('game2048');
+const ctx = canvas.getContext('2d');
+const scoreDisplay = document.getElementById('scoreDisplay');
+const highScoreDisplay = document.getElementById('highScoreDisplay');
+const victoryMessage = document.getElementById('victoryMessage');
+const resetBtn = document.getElementById('resetBtn');
+
 let grid = [];
-const SIZE = 4;
+const size = 4;
+let cellSize, particleRadius;
+let particles = [], flashes = [], ribbons = [];
+let score = 0;
+let highScore = 0;
+const WIN_SCORE = 2048;
 
-// 初始化
-function initGame(){
-    grid = Array(SIZE).fill(null).map(()=>Array(SIZE).fill(0));
-    addRandomTile();
-    addRandomTile();
-    drawGrid();
+// 粒子类
+class Particle{
+  constructor(x,y,color){
+    this.x=x; this.y=y;
+    this.vx=(Math.random()-0.5)*1.5;
+    this.vy=(Math.random()-0.5)*1.5;
+    this.color=color;
+    this.alpha=1;
+    this.radius=particleRadius;
+  }
+  update(){ this.x+=this.vx; this.y+=this.vy; this.alpha-=0.02;}
+  draw(){ if(this.alpha<=0) return; ctx.save(); ctx.globalAlpha=this.alpha; ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.fill(); ctx.restore();}
 }
 
-// 随机生成方块
-function addRandomTile(){
-    let empty = [];
-    for(let r=0;r<SIZE;r++){
-        for(let c=0;c<SIZE;c++){
-            if(grid[r][c]===0) empty.push([r,c]);
-        }
-    }
-    if(empty.length===0) return;
-    const [r,c] = empty[Math.floor(Math.random()*empty.length)];
-    grid[r][c] = Math.random()<0.9?2:4;
+// 闪烁动画
+class Flash{
+  constructor(x,y,size,color){ this.x=x; this.y=y; this.size=size; this.alpha=1; this.color=color;}
+  update(){ this.alpha-=0.05;}
+  draw(){ if(this.alpha<=0) return; ctx.save(); ctx.globalAlpha=this.alpha; ctx.fillStyle=this.color; ctx.fillRect(this.x-this.size/2,this.y-this.size/2,this.size,this.size); ctx.restore();}
 }
 
-// 绘制
+// 彩带背景
+class Ribbon{
+  constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.vx=Math.random()*1-0.5; this.vy=Math.random()*0.5+0.2; this.length=Math.random()*30+20; this.color=`hsl(${Math.random()*360},80%,60%)`;}
+  update(){ this.x+=this.vx; this.y+=this.vy; if(this.y>canvas.height) this.y=0; if(this.x>canvas.width) this.x=0; if(this.x<0) this.x=canvas.width;}
+  draw(){ ctx.strokeStyle=this.color; ctx.beginPath(); ctx.moveTo(this.x,this.y); ctx.lineTo(this.x,this.y-this.length); ctx.stroke();}
+}
+
+// 初始化格子
+function initGrid(){
+  grid = Array(size).fill().map(()=>Array(size).fill(0));
+  addRandom(); addRandom();
+  resizeCanvas();
+  ribbons=[]; for(let i=0;i<30;i++) ribbons.push(new Ribbon());
+  score=0; updateScore(); victoryMessage.style.display='none';
+}
+
+// 添加随机数字
+function addRandom(){
+  let empty=[]; for(let i=0;i<size;i++) for(let j=0;j<size;j++) if(grid[i][j]===0) empty.push([i,j]);
+  if(empty.length===0) return;
+  let [i,j]=empty[Math.floor(Math.random()*empty.length)];
+  grid[i][j]=Math.random()<0.9?2:4;
+  for(let k=0;k<10;k++) particles.push(new Particle(j*cellSize+cellSize/2,i*cellSize+cellSize/2,`hsl(${Math.random()*360},100%,50%)`));
+}
+
+// 自适应 canvas
+function resizeCanvas(){ const rect=canvas.getBoundingClientRect(); canvas.width=rect.width; canvas.height=rect.height; cellSize=canvas.width/size; particleRadius=cellSize/10;}
+
+// 绘制网格
 function drawGrid(){
-    container.innerHTML='';
-    for(let r=0;r<SIZE;r++){
-        for(let c=0;c<SIZE;c++){
-            const cell = document.createElement('div');
-            cell.className='cell';
-            if(grid[r][c]!==0) cell.textContent = grid[r][c];
-            container.appendChild(cell);
-        }
-    }
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ribbons.forEach(r=>{r.update(); r.draw();});
+  for(let i=0;i<size;i++){ for(let j=0;j<size;j++){
+    const val=grid[i][j];
+    ctx.fillStyle=val===0?'#222':`hsl(${val*10%360},80%,50%)`;
+    ctx.fillRect(j*cellSize+2,i*cellSize+2,cellSize-4,cellSize-4);
+    if(val>0){ ctx.fillStyle='#fff'; ctx.font=`${cellSize/2}px Arial`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(val,j*cellSize+cellSize/2,i*cellSize+cellSize/2);}
+  }}
+  particles.forEach((p,i)=>{p.update();p.draw();if(p.alpha<=0) particles.splice(i,1);});
+  flashes.forEach((f,i)=>{f.update();f.draw();if(f.alpha<=0) flashes.splice(i,1);});
 }
+
+// 更新分数
+function updateScore(){ scoreDisplay.textContent=`分数: ${score}`; if(score>highScore){highScore=score; highScoreDisplay.textContent=`最高分: ${highScore}`;}}
 
 // 移动逻辑
-function move(direction){
-    let moved=false;
-    function slide(row){
-        let arr=row.filter(v=>v!==0);
-        for(let i=0;i<arr.length-1;i++){
-            if(arr[i]===arr[i+1]){
-                arr[i]*=2; arr[i+1]=0;
-            }
-        }
-        arr = arr.filter(v=>v!==0);
-        while(arr.length<SIZE) arr.push(0);
-        return arr;
-    }
-    for(let i=0;i<SIZE;i++){
-        let original;
-        if(direction==='left'){
-            original = grid[i].slice();
-            grid[i] = slide(grid[i]);
-            if(JSON.stringify(original)!==JSON.stringify(grid[i])) moved=true;
-        } else if(direction==='right'){
-            original = grid[i].slice();
-            grid[i] = slide(grid[i].reverse()).reverse();
-            if(JSON.stringify(original)!==JSON.stringify(grid[i])) moved=true;
-        } else if(direction==='up'){
-            let col = grid.map(row=>row[i]);
-            let originalCol = col.slice();
-            col = slide(col);
-            for(let r=0;r<SIZE;r++) grid[r][i]=col[r];
-            if(JSON.stringify(originalCol)!==JSON.stringify(col)) moved=true;
-        } else if(direction==='down'){
-            let col = grid.map(row=>row[i]).reverse();
-            let originalCol = col.slice();
-            col = slide(col).reverse();
-            for(let r=0;r<SIZE;r++) grid[r][i]=col[r];
-            if(JSON.stringify(originalCol)!==JSON.stringify(col)) moved=true;
-        }
-    }
-    if(moved){ addRandomTile(); drawGrid(); checkWin(); }
+function move(dir){
+  let moved=false;
+  for(let i=0;i<size;i++){
+    let line=[];
+    for(let j=0;j<size;j++){ let val=dir==='left'?grid[i][j]:dir==='right'?grid[i][size-1-j]:dir==='up'?grid[j][i]:grid[size-1-j][i]; if(val!==0) line.push(val);}
+    for(let k=0;k<line.length-1;k++){ if(line[k]===line[k+1]){line[k]*=2; line.splice(k+1,1); flashes.push(new Flash((dir==='left'||dir==='right'?k:i)*cellSize+cellSize/2,(dir==='up'||dir==='down'?k:i)*cellSize+cellSize/2,cellSize,'#fff')); score+=line[k]; updateScore();}}
+    while(line.length<size) line.push(0);
+    for(let j=0;j<size;j++){ let val=dir==='left'?line[j]:dir==='right'?line[size-1-j]:dir==='up'?line[j]:line[size-1-j]; if(dir==='left'||dir==='right'){if(grid[i][j]!==val)moved=true;grid[i][j]=val;} else {if(grid[j][i]!==val)moved=true;grid[j][i]=val;}}
+  }
+  if(moved){addRandom(); drawGrid(); checkVictory();}
 }
 
-// 检查胜利条件
-function checkWin(){
-    const winValues = [2048,4096,8192,16384,32768];
-    for(let r=0;r<SIZE;r++){
-        for(let c=0;c<SIZE;c++){
-            if(winValues.includes(grid[r][c])){
-                showMessage('你赢了!',1000);
-                return;
-            }
-        }
-    }
-}
+// 检查胜利
+function checkVictory(){ if(score>=WIN_SCORE) victoryMessage.style.display='block';}
 
-// 显示临时消息
-function showMessage(msg,duration){
-    message.textContent = msg;
-    message.style.display = 'block';
-    setTimeout(()=>{ message.style.display='none'; }, duration);
-}
-
-// 键盘控制
+// 键盘
 document.addEventListener('keydown',e=>{
-    switch(e.key){
-        case 'ArrowUp': move('up'); break;
-        case 'ArrowDown': move('down'); break;
-        case 'ArrowLeft': move('left'); break;
-        case 'ArrowRight': move('right'); break;
-    }
+  switch(e.key){ case 'ArrowLeft': case 'a': move('left'); break; case 'ArrowRight': case 'd': move('right'); break; case 'ArrowUp': case 'w': move('up'); break; case 'ArrowDown': case 's': move('down'); break; }
 });
 
-// 重置
-restartBtn.addEventListener('click', initGame);
+// 手机滑动
+let startX=0,startY=0;
+canvas.addEventListener('touchstart',e=>{startX=e.touches[0].clientX; startY=e.touches[0].clientY;},{passive:true});
+canvas.addEventListener('touchend',e=>{ let dx=e.changedTouches[0].clientX-startX; let dy=e.changedTouches[0].clientY-startY; if(Math.abs(dx)>Math.abs(dy)){if(dx>0) move('right'); else move('left');} else{if(dy>0) move('down'); else move('up');}},{passive:true});
 
-// 启动
-initGame();
+// 重置按钮
+resetBtn.addEventListener('click',()=>{initGrid();});
+
+// 自适应
+window.addEventListener('resize',resizeCanvas);
+
+// 动画循环
+function loop(){drawGrid(); requestAnimationFrame(loop);}
+initGrid(); loop();
 </script>
-</body>
-</html>
