@@ -1,5 +1,5 @@
 ---
-title:About me
+title: About me
 ---
 
 笔者目前就读于spc，高中jdfz
