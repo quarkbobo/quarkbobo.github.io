@@ -1,0 +1,958 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fufu.png">
+  <link rel="icon" href="/img/fufu.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Meiyouqian">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="（回忆一些有想法的但是没做出来的题目）  找到复盘的地方了，有机会复盘一下，好歹是人生中第一个打的CTF MISC会飞的雷克萨斯题目：2025年1月30日W1ndys上网冲浪时，收到了舍友发来的聊天记录，聊天记录显示，一小孩放鞭炮引爆地面，请定位爆炸点的具体位置，该题解出需要通过正常的osint题目做题思路 是一题正常的osint题目 在csdn了解到OSINT代表开源网络情报，许多题目大致是给一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2025XYCTF">
+<meta property="og:url" content="https://mei-you-qian.github.io/2025/10/28/XYCTF/index.html">
+<meta property="og:site_name" content="玫幽倩的小博客">
+<meta property="og:description" content="（回忆一些有想法的但是没做出来的题目）  找到复盘的地方了，有机会复盘一下，好歹是人生中第一个打的CTF MISC会飞的雷克萨斯题目：2025年1月30日W1ndys上网冲浪时，收到了舍友发来的聊天记录，聊天记录显示，一小孩放鞭炮引爆地面，请定位爆炸点的具体位置，该题解出需要通过正常的osint题目做题思路 是一题正常的osint题目 在csdn了解到OSINT代表开源网络情报，许多题目大致是给一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1756396107918-c2abaa79-e013-4efd-940e-a25f90eb30c1.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744194985193-021f56a0-99e7-442b-83f7-b5e065adb1fb.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744195226310-84a36e01-e62a-474f-a91f-e2660eeeb61e.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744194441723-8cfbb12c-962d-43ca-9204-3debbfe75a8e.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744196456828-d1530616-3b48-4576-aee1-7dff20cf86a7.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744198872999-a0213f84-a39f-46d7-a2dc-eff2d6af6466.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744198938045-baff40fa-3dff-48a4-898c-878521958f12.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744199618870-26496674-8616-4541-b77c-219378529f26.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744199780421-1bd73c99-ea1a-4b91-a0f1-84b7ba881e0c.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744199922631-378b65cc-ddc6-4caf-b2be-360c400aadca.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744200037226-84438760-f420-40e9-9a36-aa851b6e284a.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744200312562-a54e20d3-a292-4d5b-9496-28364b913f38.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744200413375-11f6125f-a931-499b-9554-dde572a150ce.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744200468623-478a1af6-66f6-4584-92b0-cfede4a8120b.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757056361277-f6336a97-99fc-4d71-9f6c-811ab86604a2.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1744201395993-297e49cd-3fb5-47f9-85bd-47de0d996d05.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757056398892-05ad2158-850d-49dd-b867-5e5cd8a757e8.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757056620290-453f6e13-557e-4748-8f4f-db9e186febb1.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757056641378-2e3f7252-3033-44e1-9dfb-d39188c374f4.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757056671272-27139045-7ab6-4257-bb76-b5bb71fe6b89.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757056687991-19e1125f-223a-4ad1-8e18-bbdc03515013.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757056742259-fa663adb-9f32-4745-bc88-27cd0e6d62b8.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757056888048-00d02dd7-3b40-4d92-b3e4-b7757d1da232.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757072884372-261defce-3bb0-428e-a311-94524e521616.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757074539144-9d449234-cf49-4c95-88f6-18e4c0ae193c.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747743947651-9afa71e4-efe1-4b65-aec2-0b1d388f519e.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747744083719-15b8f20d-1141-4eea-bf65-c3e80a62bbd7.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747744099453-82cc451a-d937-4c42-9ce4-4b85857722fe.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747744228360-47899053-7e2d-4737-9330-72cad8e312c6.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747830077530-4f672739-c0e3-4d10-acc4-afad7c1d9b9f.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747830055163-e54236f9-d07d-4900-9bc0-3909ffd7a580.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747830046632-56bafe7f-2996-4fa3-8682-4363edec1cab.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747962560894-d463816c-19cc-433d-91c6-acfe2055c1a6.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747962816950-43b4351c-dfae-473d-9b2d-aa93a769b029.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747962896643-d23b2d45-8c6a-4cd3-8610-6e218ccba6e9.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747915843921-e3c907e0-8dee-4823-95e7-787e3bfa7ef1.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747916425085-64d8ff43-af2e-44a4-9d86-0c86d00a52e7.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747915007518-dff46548-efe6-4e51-98ee-117307e3f4b7.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747916432361-7915d99b-d5df-4192-af74-7404fe4cf5eb.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747916717203-c02a2989-3438-4950-855e-967c4501a077.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747916910357-a9f2dcb4-0d13-4093-b578-b1242ad2cfe0.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1747916885608-935bda21-395e-4a33-9fa6-dd6e81928c71.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757074738422-dc17d330-fe2d-4bc3-8c4f-8ce99ad89d05.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757074904652-d2b26a4b-d7fd-4fc1-b88d-196199db2ebb.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757075611407-a3079da4-79f8-414b-bef2-43388f79a5c2.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757074992343-14b3ca1e-deee-403f-b3e9-f8f4deac8f76.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757075475214-b64a8cc3-196c-4ced-803d-3283c2286e22.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757075466469-7336d70d-64b5-4d54-bcfb-47b7d089a260.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757075520073-62bf9b73-484d-4da1-999d-63d24a796168.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757075560351-5e2bcb7e-ebf5-44cf-aee8-b9abcb8918cc.jpeg">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757075837252-a66e54a6-8908-47d7-a7d6-34ede6878297.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757075870475-d51f9dd1-731c-41d3-bf8a-2eed37b86dee.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757075922362-8e97d227-4033-4392-afad-84a76e07d837.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757075940706-ed7aca53-bc9b-44a4-a922-d832ac63b3cf.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757075954308-7028ee9d-7218-4dc8-92cb-f80ffe421f96.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757076018330-80a04cee-3fbe-407d-83e1-884b3ee3abd9.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/XYCTF/1757076320476-62f552b4-986b-4800-b2c9-602cd1b8e65d.png">
+<meta property="article:published_time" content="2025-10-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-11-03T07:12:01.362Z">
+<meta property="article:author" content="Meiyouqian">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mei-you-qian.github.io/XYCTF/1756396107918-c2abaa79-e013-4efd-940e-a25f90eb30c1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>2025XYCTF - 玫幽倩的小博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css">
+<link rel="stylesheet" href="/css/scrollAnimation.css">
+<link rel="stylesheet" href="/css/mk.css">
+<link rel="stylesheet" href="/css/selection.css">
+<link rel="stylesheet" href="/css/glassBg.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"mei-you-qian.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.0"></head>
+
+
+<body><!-- hexo injector body_begin start --><div id="web_bg"></div><!-- hexo injector body_begin end -->
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>玫幽倩</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/beijing.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2025XYCTF"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-10-28 00:00" pubdate>
+          2025年10月28日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">2025XYCTF</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>（回忆一些有想法的但是没做出来的题目）</p>
+<p><img src="/XYCTF/1756396107918-c2abaa79-e013-4efd-940e-a25f90eb30c1.png" srcset="/img/loading.gif" lazyload></p>
+<p>找到复盘的地方了，有机会复盘一下，好歹是人生中第一个打的CTF</p>
+<h1 id="MISC"><a href="#MISC" class="headerlink" title="MISC"></a>MISC</h1><h2 id="会飞的雷克萨斯"><a href="#会飞的雷克萨斯" class="headerlink" title="会飞的雷克萨斯"></a>会飞的雷克萨斯</h2><p>题目：<font style="color:rgb(118, 190, 255);">2025年1月30日W1ndys上网冲浪时，收到了舍友发来的聊天记录，聊天记录显示，一小孩放鞭炮引爆地面，请定位爆炸点的具体位置，该题解出需要通过正常的osint题目做题思路</font></p>
+<p>是一题正常的osint题目</p>
+<p>在csdn了解到OSINT代表开源网络情报，许多题目大致是给一张照片然后询问图片经纬值的类型，他的经纬度精确到小数点后五位就是这道题的flag。</p>
+<p>但是这道题显然给了flag格式，不需要太麻烦</p>
+<p>图片的事件很显然是130的爆竹事件，很新的新闻，一搜很容易跳出答案是在<font style="color:rgb(31,35,41);">四川内江市资中县⽔南镇春岚北路，但是说在****内，脑子抽了怎么写都不对，什么中铁停车场内，草地里莫名其妙试了半天</font><img src="/XYCTF/1744194985193-021f56a0-99e7-442b-83f7-b5e065adb1fb.png" srcset="/img/loading.gif" lazyload></p>
+<p>其实只需要根据下图中的小东十七店名一搜就知道了，搜一下号码，地址便跳出来了</p>
+<p><img src="/XYCTF/1744195226310-84a36e01-e62a-474f-a91f-e2660eeeb61e.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到地址写的是城市中心内</p>
+<p><img src="/XYCTF/1744194441723-8cfbb12c-962d-43ca-9204-3debbfe75a8e.png" srcset="/img/loading.gif" lazyload></p>
+<p>所以flag出来了，就是<font style="color:rgb(31,35,41);">XYCTF{四川内江市资中县⽔南镇春岚北路城市中⼼内}，真的是最简单的一题了（）</font></p>
+<p><font style="color:rgb(31,35,41);"></font></p>
+<h2 id="sins"><a href="#sins" class="headerlink" title="sins"></a><font style="color:rgb(31,35,41);">sins</font></h2><p><font style="color:rgb(106, 115, 125);">“Come now, let us settle the matter,” says the LORD. “Though your sins are like scarlet, they shall be as white as snow; though they are red as crimson, they shall be like wool. - Isaiah 1:18</font></p>
+<p>题目怪中二的，附件是一个python文件，其实环境也就是运行了这个文件吧（大概？）</p>
+<p><img src="/XYCTF/1744196456828-d1530616-3b48-4576-aee1-7dff20cf86a7.png" srcset="/img/loading.gif" lazyload></p>
+<p>看这个python程序，大致是需要我输入一个只包含“i0123456789+-*%&#x2F;……&#x3D;《》~&amp;|：（）【】”的字符串，长度要在16以内</p>
+<p>别的看不懂了</p>
+<p>先看看lambda函数和eval函数：</p>
+<h5 id="lambda函数："><a href="#lambda函数：" class="headerlink" title="lambda函数："></a>lambda函数：</h5><p><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">Python 使用 </font><strong><font style="color:rgb(51, 51, 51);background-color:rgb(236, 234, 230);">lambda</font></strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);"> 来创建匿名函数。</font></p>
+<p><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">lambda 函数是一种小型、匿名的、内联函数，它可以具有任意数量的参数，但只能有一个表达式。</font></p>
+<p><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">匿名函数不需要使用</font><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);"> </font><strong><font style="color:rgb(51, 51, 51);background-color:rgb(236, 234, 230);">def</font></strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);"> </font><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">关键字定义完整函数。</font></p>
+<p><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">lambda 函数通常用于编写简单的、单行的函数，通常在需要函数作为参数传递的情况下使用，例如在 map()、filter()、reduce() 等函数中。</font></p>
+<p><strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">lambda 语法格式：</font></strong></p>
+<p><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">lambda arguments: expression</font></p>
+<ul>
+<li><code>&lt;font style=&quot;color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);&quot;&gt;lambda&lt;/font&gt;</code><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">是 Python 的关键字，用于定义 lambda 函数。</font></li>
+<li><code>&lt;font style=&quot;color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);&quot;&gt;arguments&lt;/font&gt;</code><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);"> </font><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">是参数列表，可以包含零个或多个参数，但必须在冒号(</font><code>&lt;font style=&quot;color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);&quot;&gt;:&lt;/font&gt;</code><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">)前指定。</font></li>
+<li><code>&lt;font style=&quot;color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);&quot;&gt;expression&lt;/font&gt;</code><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);"> 是一个表达式，用于计算并返回函数的结果。</font></li>
+</ul>
+<h5 id="eval函数"><a href="#eval函数" class="headerlink" title="eval函数"></a>eval函数</h5><p><strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">eval()</font></strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);"> </font><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">函数用来执行一个字符串表达式，并返回表达式的值。</font></p>
+<p><strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">字符串表达式</font></strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">可以包含变量、函数调用、运算符和其他 Python 语法元素。</font></p>
+<h6 id="语法"><a href="#语法" class="headerlink" title="语法"></a><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">语法</font></h6><p><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">以下是 eval() 方法的语法:</font></p>
+<p>eval(expression[, globals[, locals]])</p>
+<h6 id="参数"><a href="#参数" class="headerlink" title="参数"></a><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">参数</font></h6><ul>
+<li><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">expression – 表达式。</font></li>
+<li><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">globals – 变量作用域，全局命名空间，如果被提供，则必须是一个字典对象。</font></li>
+<li><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">locals – 变量作用域，局部命名空间，如果被提供，可以是任何映射对象。</font></li>
+</ul>
+<p><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">eval() 函数将字符串 expression 解析为 Python 表达式，并在指定的命名空间中</font></p>
+<p><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);"></font></p>
+<p>因此很显然啊，这题其实eval就是在执行lambda这个函数，用空字典作为 globals 和 locals，而这个lambda函数还是个带参数i的，命名了一个{inp}的函数</p>
+<p><del>好了后边看不懂了，我放弃了（答案是~~~~<font style="color:rgb(43,47,54);">f &#x3D; </font>~~~~<font style="color:rgb(166,38,164);">lambda </font>~~~~<font style="color:rgb(43,47,54);">i:</font>~~~~<font style="color:rgb(80,161,79);">‘1i–’</font>~~~~<font style="color:rgb(43,47,54);">[i%</font>~~~~<font style="color:rgb(152,104,1);">4</font>~~~~<font style="color:rgb(43,47,54);">::-</font>~~~~<font style="color:rgb(152,104,1);">2</font>~~~~<font style="color:rgb(43,47,54);">] </font>~~~~<em><font style="color:rgb(160,161,167);"># 15）</font></em></del></p>
+<h2 id="签个到吧"><a href="#签个到吧" class="headerlink" title="签个到吧"></a><font style="color:rgb(0, 0, 0);">签个到吧</font></h2><p><font style="color:rgb(118, 190, 255);">题目：最小的，具有图灵完备性的语言是？</font></p>
+<p>由提示易得这是个brainfuck语句，打开来一看也确实，但是喂给ai屁用没有（我现在发现文件名bf也在暗示就是这种语言）</p>
+<p><img src="/XYCTF/1744198872999-a0213f84-a39f-46d7-a2dc-eff2d6af6466.png" srcset="/img/loading.gif" lazyload></p>
+<p>对于brainfuck而言，字符含义如下<img src="/XYCTF/1744198938045-baff40fa-3dff-48a4-898c-878521958f12.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="思路一"><a href="#思路一" class="headerlink" title="思路一"></a>思路一</h3><p>可以发现，所有的brainfuck都没有输出符，所以肯定是解不出来的，很多在线的brainfuck解密网址也都无法解密，跟其格式不对有关，只需在所有[-]前边加上输出符号.即可</p>
+<p>“[-]”结构实际上是Brainfuck中的一个常见惯用语法。因为“[-]”的作用是将当前指针所在的单元清零。具体来说，循环会一直执行，直到当前单元的值为零。在循环内部，每次都会将当前单元减1，所以只要当前单元不为零，就会一直减到零为止。因此，无论当前单元的值是多少，执行“[-]”后都会变成0。</p>
+<p>在每个“[-]”前面加上输出符号“.”，也就是变成“.[-]”。这里的“.”在Brainfuck中是输出命令，作用是将当前单元的值作为ASCII字符输出。所以，每次执行“.[-]”的时候，会先输出当前单元的值，然后将该单元清零。</p>
+<p>因此这样子之后放入brainfuck解密网址即可解出flag（当然也能用脚本）</p>
+<p><img src="/XYCTF/1744199618870-26496674-8616-4541-b77c-219378529f26.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="思路二"><a href="#思路二" class="headerlink" title="思路二"></a>思路二</h3><p>在发现无法解开后用在线网站<a target="_blank" rel="noopener" href="https://copy.sh/brainfuck/"><font style="color:rgb(230, 116, 116);">https://copy.sh/brainfuck/</font></a> 看一下它的一个生成代码</p>
+<p>把代码丢给ds可以直接分析出flag</p>
+<p><img src="/XYCTF/1744199780421-1bd73c99-ea1a-4b91-a0f1-84b7ba881e0c.png" srcset="/img/loading.gif" lazyload></p>
+<p>（为什么我的ds不能，我不理解，算了）（你的ds我的ds好像不一样）</p>
+<p>flag{W3lC0me_t0_XYCTF_2025_Enj07_1t!}</p>
+<h2 id="XGCTF"><a href="#XGCTF" class="headerlink" title="XGCTF"></a>XGCTF</h2><p><font style="color:rgb(118, 190, 255);">题目：2024年CTFshow举办了一场名为“西瓜杯”的比赛（XGCTF）。其中LamentXU在出题的时候，从某场比赛拉了道原题下来改了改，结果传文件的时候传错了传成原题了。因为这件事LamentXU的损友dragonkeep在他之前的博客上的原题wp上加了一段flag来嘲笑LamentXU。请你找到XGCTF中唯一由LamentXU出的题，并找出这题对应的原题，接着找到dragonkeep师傅的博客，并从博客上讲解该题的博文中找到flag。（hint：dragonkeep师傅因为比较穷买不起域名，因此他博客的域名在dragonkeep的基础上多了个字母）</font></p>
+<p>直接一步步走就好，这题也不难，先找原题（题目不多，一翻马上就翻到了）</p>
+<p><img src="/XYCTF/1744199922631-378b65cc-ddc6-4caf-b2be-360c400aadca.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后我再去了csdn搜了一下wp</p>
+<p><img src="/XYCTF/1744200037226-84438760-f420-40e9-9a36-aa851b6e284a.png" srcset="/img/loading.gif" lazyload></p>
+<p>就看到了这样子的一段话，这题是CISCN华东南里边的，然后就去搜了搜CISCN的题目，很容易就找到了原题名为“pollute”</p>
+<p>直接搜索，如下图</p>
+<p><img src="/XYCTF/1744200312562-a54e20d3-a292-4d5b-9496-28364b913f38.png" srcset="/img/loading.gif" lazyload></p>
+<p>一下子就找到Dragonkeep师傅的老巢了，域名多个字母，对上了</p>
+<p>（然后我在这篇文章里读了半个小时什么都没看出来，浪费时间来的）</p>
+<p>还是谢晨师傅教的</p>
+<p>按住Ctrl+U，查看网页源代码，就能找到这个flag了</p>
+<p><img src="/XYCTF/1744200413375-11f6125f-a931-499b-9554-dde572a150ce.png" srcset="/img/loading.gif" lazyload></p>
+<p>一看就是base64解密，扔进去就有了</p>
+<p><img src="/XYCTF/1744200468623-478a1af6-66f6-4584-92b0-cfede4a8120b.png" srcset="/img/loading.gif" lazyload></p>
+<p>flag{1t_I3_t3E_s@Me_ChAl1eNge_aT_a1L_P1e@se_fOrg1ve_Me}</p>
+<h2 id="MADer也要当CTFer"><a href="#MADer也要当CTFer" class="headerlink" title="MADer也要当CTFer"></a><font style="color:rgb(0, 0, 0);">MADer也要当CTFer</font></h2><p><img src="/XYCTF/1757056361277-f6336a97-99fc-4d71-9f6c-811ab86604a2.png" srcset="/img/loading.gif" lazyload></p>
+<p>打开文件是个视频（挺好看还）</p>
+<p>当初用的媒体播放器看不出来啥，一头雾水，只发现了视频时长不对劲，五六个小时的东西那么快就结束了</p>
+<p><img src="/XYCTF/1744201395993-297e49cd-3fb5-47f9-85bd-47de0d996d05.png" srcset="/img/loading.gif" lazyload></p>
+<p>利用potplayer后直接就能跳出这些字幕</p>
+<p>可以看得出来这些字幕是十六进制的，于是考虑应该先提取字幕</p>
+<p>这边利用的是提示的小丸工具箱我们直接导出（用ffmpeg应该也行，但小丸方便一些）</p>
+<p><img src="/XYCTF/1757056398892-05ad2158-850d-49dd-b867-5e5cd8a757e8.png" srcset="/img/loading.gif" lazyload></p>
+<p>在抽取界面直接用第三方工具抽取</p>
+<p><img src="/XYCTF/1757056620290-453f6e13-557e-4748-8f4f-db9e186febb1.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边直接提取字幕</p>
+<p><img src="/XYCTF/1757056641378-2e3f7252-3033-44e1-9dfb-d39188c374f4.png" srcset="/img/loading.gif" lazyload></p>
+<p>是一个这样子的内容，是一个ass文件，我们编写脚本提取十六进制</p>
+<p><img src="/XYCTF/1757056671272-27139045-7ab6-4257-bb76-b5bb71fe6b89.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/XYCTF/1757056687991-19e1125f-223a-4ad1-8e18-bbdc03515013.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边直接输出到txt文件（因为太多了，控制台复制粘贴看不全）</p>
+<p><img src="/XYCTF/1757056742259-fa663adb-9f32-4745-bc88-27cd0e6d62b8.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到完整的十六进制内容，我们直接把十六进制转ASCII一下</p>
+<p><img src="/XYCTF/1757056888048-00d02dd7-3b40-4d92-b3e4-b7757d1da232.png" srcset="/img/loading.gif" lazyload></p>
+<p>RIFX不太认识是什么文件，ai阅读后得出为ae的文件</p>
+<p><img src="/XYCTF/1757072884372-261defce-3bb0-428e-a311-94524e521616.png" srcset="/img/loading.gif" lazyload></p>
+<p>我们下载AE扔进去</p>
+<p>把后缀改为.aep后用AE打开</p>
+<p>显示缺插件，AE真的是玩不来</p>
+<p>其实在notepad里直接打开找有意义的leet编码内容就能找到了（我照着别人的复盘的，大都是这样子做的，可是我真的找不到，我也不知道为什么）</p>
+<p><img src="/XYCTF/1757074539144-9d449234-cf49-4c95-88f6-18e4c0ae193c.png" srcset="/img/loading.gif" lazyload></p>
+<p> flag{l_re@IIy_w@nn@_2_Ie@rn_AE}</p>
+<h2 id="喜欢就说出来"><a href="#喜欢就说出来" class="headerlink" title="喜欢就说出来"></a><font style="color:rgb(0, 0, 0);">喜欢就说出来</font></h2><p><img src="/XYCTF/1747743947651-9afa71e4-efe1-4b65-aec2-0b1d388f519e.png" srcset="/img/loading.gif" lazyload></p>
+<p>题目附件给的是一个流量包，因此直接扔给wireshark先看看</p>
+<p>说是通过浏览器传递的，因此导出http看看</p>
+<p><img src="/XYCTF/1747744083719-15b8f20d-1141-4eea-bf65-c3e80a62bbd7.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/XYCTF/1747744099453-82cc451a-d937-4c42-9ce4-4b85857722fe.png" srcset="/img/loading.gif" lazyload></p>
+<p>发现有一个php文件</p>
+<p><img src="/XYCTF/1747744228360-47899053-7e2d-4737-9330-72cad8e312c6.png" srcset="/img/loading.gif" lazyload></p>
+<p>利用winhex打开后这个php文件里竟然有png的文件头</p>
+<p>先利用16进制编译器把png文件头<font style="color:rgb(255, 20, 147);">89 50 4E 47 0D 0A 1A 0A</font>之前的给删掉</p>
+<p><img src="/XYCTF/1747830077530-4f672739-c0e3-4d10-acc4-afad7c1d9b9f.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/XYCTF/1747830055163-e54236f9-d07d-4900-9bc0-3909ffd7a580.png" srcset="/img/loading.gif" lazyload></p>
+<p>得到png文件，用TweakPNG打开后观察其格式</p>
+<p><img src="/XYCTF/1747830046632-56bafe7f-2996-4fa3-8682-4363edec1cab.png" srcset="/img/loading.gif" lazyload></p>
+<p>发现这玩意两个文件头，是两张png文件合二为一的产物<br> 可以看到两个文件头，肯定是要分开来处理的</p>
+<p>:::info<br><del>（这里就是我最不能理解的一个点了，我尝试了去研究IDAT的顺序规律，没找到有规律可言，我又查了CRC，也就是一个检验png是否被篡改的罢了，只能用于检测数据传输中的错误。别人的wp说是不难的，一个一个摆正位置直到图片显示完整，难不成只能靠人力一个个试？？？问题是我试过了顺序不对也是变不成这个照片的，这就很麻烦，又要有删减，又要有位置的固定，必须试到这一个顺序和数目都对的可能性，是不是有什么我漏掉的线索？？？）</del></p>
+<p><del>（如果是这个短的其实倒还好，这个只要把长度为65536的IDAT都拉出来然后加一个53749的即可，顺序也不用改，但这是第二个头）</del></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs"><br></code></pre></td></tr></table></figure>
+
+<p>解决了，感谢何神，我怎么没想到</p>
+<p><img src="/XYCTF/1747962560894-d463816c-19cc-433d-91c6-acfe2055c1a6.png" srcset="/img/loading.gif" lazyload></p>
+<p>只要留个头留个尾，然后一个个块看就好了，然后很快就能像拼拼图一样拼好了</p>
+<p><img src="/XYCTF/1747962816950-43b4351c-dfae-473d-9b2d-aa93a769b029.png" srcset="/img/loading.gif" lazyload></p>
+<p>就像这样子，但是这个图片不修完没法放到stegsolve里，所以还是得一个个试然后拼成好的一张</p>
+<p><img src="/XYCTF/1747962896643-d23b2d45-8c6a-4cd3-8610-6e218ccba6e9.png" srcset="/img/loading.gif" lazyload></p>
+<p>当然了，选错文件头的话就什么都没有了，是一段乱码</p>
+<p>:::</p>
+<p><img src="/XYCTF/1747915843921-e3c907e0-8dee-4823-95e7-787e3bfa7ef1.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/XYCTF/1747916425085-64d8ff43-af2e-44a4-9d86-0c86d00a52e7.png" srcset="/img/loading.gif" lazyload></p>
+<p>这样先处理好第一张</p>
+<p><img src="/XYCTF/1747915007518-dff46548-efe6-4e51-98ee-117307e3f4b7.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/XYCTF/1747916432361-7915d99b-d5df-4192-af74-7404fe4cf5eb.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后是第二张</p>
+<p>可以发现第二张上边存在着一串flag，但是只有前半部分，不难猜到后半部分应该在另一张照片上</p>
+<p><img src="/XYCTF/1747916717203-c02a2989-3438-4950-855e-967c4501a077.png" srcset="/img/loading.gif" lazyload></p>
+<p>积累：这边可以根据ps调参看一下是不是有什么奇怪的地方，如此处的像素点（其实我刚刚试了图片预览也可看见，就是直接拉大，可以看到，就看能不能想到了）</p>
+<p><img src="/XYCTF/1747916910357-a9f2dcb4-0d13-4093-b578-b1242ad2cfe0.png" srcset="/img/loading.gif" lazyload></p>
+<p>最后根据原本的题目提示，520恰好出现在stegslove的extract preview里，尝试勾选plans后出现flag后半段，即ta_G@_t0kubetsu_Suki!!!}</p>
+<p><img src="/XYCTF/1747916885608-935bda21-395e-4a33-9fa6-dd6e81928c71.png" srcset="/img/loading.gif" lazyload></p>
+<p>得解</p>
+<p>flag{WatAshl_W@_anAta_G@_t0kubetsu_Suki!!!}</p>
+<h6 id=""><a href="#" class="headerlink" title=""></a></h6><h2 id="曼波曼波曼波"><a href="#曼波曼波曼波" class="headerlink" title="曼波曼波曼波"></a>曼波曼波曼波</h2><p><img src="/XYCTF/1757074738422-dc17d330-fe2d-4bc3-8c4f-8ce99ad89d05.png" srcset="/img/loading.gif" lazyload></p>
+<p>我已经不记得当时有没有做这道题了，肯定是没做出来，但是也不记得有没有做了（）</p>
+<p><img src="/XYCTF/1757074904652-d2b26a4b-d7fd-4fc1-b88d-196199db2ebb.png" srcset="/img/loading.gif" lazyload></p>
+<p>拿到是俩文件，一个txt一个png</p>
+<p>先看png</p>
+<p><img src="/XYCTF/1757075611407-a3079da4-79f8-414b-bef2-43388f79a5c2.png" srcset="/img/loading.gif" lazyload></p>
+<p>是个假flag，按我出题经验就是故意搞了个这样子的二维码，但是绝对藏东西了，否则毫无意义（真特么什么都没藏，打我脸来了，没东西放附件来干啥，就恶心一小下吗）</p>
+<p>binwalk没东西，lsb也没东西，那我们先略过</p>
+<p><img src="/XYCTF/1757074992343-14b3ca1e-deee-403f-b3e9-f8f4deac8f76.png" srcset="/img/loading.gif" lazyload></p>
+<p>txt打开很像很像base64，而且像反过来的</p>
+<p>我们直接编写脚本反着走一遍</p>
+<p><img src="/XYCTF/1757075475214-b64a8cc3-196c-4ced-803d-3283c2286e22.png" srcset="/img/loading.gif" lazyload></p>
+<p>放入cyberchef，果然有文件产出，看起来是jpg</p>
+<p><img src="/XYCTF/1757075466469-7336d70d-64b5-4d54-bcfb-47b7d089a260.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/XYCTF/1757075520073-62bf9b73-484d-4da1-999d-63d24a796168.png" srcset="/img/loading.gif" lazyload></p>
+<p>那我们直接改后缀</p>
+<p><img src="/XYCTF/1757075560351-5e2bcb7e-ebf5-44cf-aee8-b9abcb8918cc.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>是我们曼波，那题目的提示也是用完了</p>
+<p><img src="/XYCTF/1757075837252-a66e54a6-8908-47d7-a7d6-34ede6878297.png" srcset="/img/loading.gif" lazyload></p>
+<p>这jpg藏的东西有点多啊（）</p>
+<p>我们foremost一下</p>
+<p><img src="/XYCTF/1757075870475-d51f9dd1-731c-41d3-bf8a-2eed37b86dee.png" srcset="/img/loading.gif" lazyload></p>
+<p>是一个有仨文件的压缩包</p>
+<p><img src="/XYCTF/1757075922362-8e97d227-4033-4392-afad-84a76e07d837.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/XYCTF/1757075940706-ed7aca53-bc9b-44a4-a922-d832ac63b3cf.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/XYCTF/1757075954308-7028ee9d-7218-4dc8-92cb-f80ffe421f96.png" srcset="/img/loading.gif" lazyload></p>
+<p>一个png，一个加密的压缩包，一个提示词</p>
+<p>那我们直接用XYCTF2025试试看解密</p>
+<p>解开来还是这样子一张png，绝对是跟双图有关</p>
+<p><img src="/XYCTF/1757076018330-80a04cee-3fbe-407d-83e1-884b3ee3abd9.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/XYCTF/1757076320476-62f552b4-986b-4800-b2c9-602cd1b8e65d.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边是双图盲水印，其实我还是第一次遇到</p>
+<p>XYCTF{easy_yin_xie_dfbfuj877}(光是看着这水印输眼睛都要瞎掉了)</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CTF/" class="category-chain-item">CTF</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2025XYCTF</div>
+      <div>https://mei-you-qian.github.io/2025/10/28/XYCTF/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Meiyouqian</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年10月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/10/28/2025%E7%9B%98%E5%8F%A4%E7%9F%B3%E6%99%8B%E7%BA%A7%E8%B5%9B/" title="2025盘古石晋级赛">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2025盘古石晋级赛</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/10/23/2025SPC%E9%80%89%E6%8B%94%E8%B5%9B/" title="2025SPC选拔赛">
+                        <span class="hidden-mobile">2025SPC选拔赛</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="twikoo"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/twikoo/1.6.8/twikoo.all.min.js', function() {
+        var options = Object.assign(
+          {"envId":"cloud1-9g1zftrh46f4164f","region":"ap-shanghai","path":"window.location.pathname"},
+          {
+            el: '#twikoo',
+            path: 'window.location.pathname',
+            onCommentLoaded: function() {
+              Fluid.utils.listenDOMLoaded(function() {
+                var imgSelector = '#twikoo .tk-content img:not(.tk-owo-emotion)';
+                Fluid.plugins.imageCaption(imgSelector);
+                Fluid.plugins.fancyBox(imgSelector);
+              });
+            }
+          }
+        )
+        twikoo.init(options)
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/scrollAnimation.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<!-- hexo injector body_end start --><script src="/js/backgroundize.js"></script><!-- hexo injector body_end end --></body>
+</html>

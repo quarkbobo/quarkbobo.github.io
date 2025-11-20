@@ -1,0 +1,176 @@
+:root {
+    --control-text-color: #777;
+    --select-text-bg-color: rgba(223, 197, 223);
+    /*#7e66992e;*/
+    --search-select-bg-color: #8163bd;
+
+    /* side bar */
+    /* --side-bar-bg-color: #f7f7fb;
+  --active-file-text-color: #8163bd;
+  --active-file-bg-color: #e9e4f0;
+  --item-hover-bg-color: #e9e4f0;
+  --active-file-border-color: #8163bd; */
+
+    --title-color: rgb(44, 0, 131);
+    /* --blur-text-color: #c8c8c8; */
+    --text-color:
+        /*  #5e676d */
+        #333333
+        /* #2c3e50 */
+        /* #34495e */
+    ;
+    --light-text-color: #414141;
+    --font-sans-serif: "Ubuntu", "Source Sans Pro", sans-serif !important;
+    --font-monospace: "Fira Code", "Roboto Mono", monospace !important;
+
+    --purple-1: #31038c;
+    --purple-2: #44048e;
+    --purple-3: #fd5eb8;
+    --purple-4: #982eb5;
+    --purple-light-1: rgba(99, 99, 172, 0.05);
+    --purple-light-2: rgba(99, 99, 172, 0.1);
+    --purple-light-3: rgba(99, 99, 172, 0.2);
+    --purple-light-4: rgba(129, 99, 189, 0.3);
+    --purple-light-5: #e9e4f0;
+    --purple-light-6: rgba(129, 99, 189, 0.7);
+    --purple-light-7: rgba(129, 99, 189, 0.3);
+
+    --shadow: var(--purple-light-3) 0px 5px 10px;
+
+    --fence-border: #e7eaed;
+    --table-border: rgb(143, 143, 143);
+    --boxes: rgba(10, 10, 10, 0.05);
+}
+
+
+.markdown-body h1,
+.markdown-body h2 {
+    border-bottom: none;
+}
+
+
+
+
+
+.markdown-body>h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+    position: relative;
+    margin-top: 3.5em;
+    font-weight: normal;
+    cursor: text;
+    color: #6c549c;
+}
+
+h1 tt,
+h1 code {
+    font-size: inherit !important;
+}
+
+h2 tt,
+h2 code {
+    font-size: inherit !important;
+}
+
+h3 tt,
+h3 code {
+    font-size: inherit !important;
+}
+
+h4 tt,
+h4 code {
+    font-size: inherit !important;
+}
+
+h5 tt,
+h5 code {
+    font-size: inherit !important;
+}
+
+h6 tt,
+h6 code {
+    font-size: inherit !important;
+}
+
+
+
+h1 {
+    padding-bottom: 0.4rem;
+    font-size: 2.2rem;
+    line-height: 1.3;
+}
+
+h1 {
+    text-align: center;
+    padding-bottom: 0.3em;
+    font-size: 2.2em;
+    line-height: 1.2;
+    margin: 1.6em auto 1em;
+}
+
+h1:after {
+    content: "";
+    display: block;
+    margin: 0.2em auto 0;
+    width: 100px;
+    height: 2px;
+    border-bottom: 2px solid var(--title-color);
+}
+
+h2 {
+    /* margin: 1.4em auto 0.8em; */
+    /* padding-left: 5px; */
+    /* line-height: 1.0; */
+    font-size: 1.8em;
+    /* border-left: 5px solid var(--title-color); */
+    /* border-bottom: 1px solid var(--title-color); */
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin: 1.2em auto 0.5em;
+}
+
+h4 {
+    font-size: 1.3rem;
+}
+
+h5 {
+    font-size: 1.2rem;
+}
+
+h6 {
+    font-size: 1.1rem;
+}
+
+
+
+/* 引用 */
+.markdown-body blockquote {
+    border-left: 0.2rem solid var(--purple-light-4);
+    padding: 10px 15px;
+    color: var(--light-text-color);
+    background-color: var(--purple-light-1);
+}
+
+
+
+.markdown-body code {
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-size: 0.92rem;
+    /* color: var(--purple-3); */
+    background-color: var(--purple-light-1);
+}
+
+.markdown-body code {
+    margin: 0 2px;
+}
+
+
+.markdown-body pre {
+    --select-text-bg-color: rgba(223, 197, 223) !important;
+}

