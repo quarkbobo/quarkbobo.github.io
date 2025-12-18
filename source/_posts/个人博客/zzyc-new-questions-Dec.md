@@ -4,13 +4,20 @@ date: 2025-12-17
 ---
 
 <div style="padding:16px;border:1px solid #eee;border-radius:12px;margin:16px 0;">
-  <h3 style="margin:0 0 8px;">付费下载</h3>
-  <p style="margin:0 0 12px;">支付 5 元后自动获取下载链接与解压密码。</p>
-  <button id="buyBtn" style="padding:10px 14px;border-radius:10px;border:0;cursor:pointer;">
-    立即购买（5元）
-  </button>
-  <div id="buyMsg" style="margin-top:10px;white-space:pre-wrap;"></div>
+  <h3>付费下载（￥5）</h3>
+  <p>请使用微信或支付宝扫码付款。</p>
+
+  <img src="/images/wechat-pay.png" width="180">
+
+  <p style="margin-top:12px;">
+    付款后，请点击下面按钮填写付款信息。
+  </p>
+
+  <a href="/success/" style="display:inline-block;padding:10px 14px;border-radius:10px;background:#333;color:#fff;">
+    我已付款，填写信息
+  </a>
 </div>
+
 
 <script>
 (function(){
