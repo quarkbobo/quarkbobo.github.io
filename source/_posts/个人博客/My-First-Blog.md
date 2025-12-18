@@ -1,5 +1,6 @@
 ---
 title: My First Blog
+date: 2025-11-19
 ---
 
 Welcome to my first blog

@@ -1,5 +1,6 @@
 ---
 title: About me
+date: 2025-11-22
 ---
 
 笔者目前就读于spc，高中jdfz
