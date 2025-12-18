@@ -12,7 +12,7 @@ language: 'zh-CN'
 timezone: 'Asia/Shanghai'
 
 # URL
-url: http://example.com
+url: https://quark567.patrickliucloud.top
 permalink: :title/
 permalink_defaults:
 pretty_urls:

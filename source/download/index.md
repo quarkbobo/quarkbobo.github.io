@@ -2,7 +2,7 @@
 title: 下载与解压密码
 ---
 
-<div id="box" style="padding:16px;border:1px solid #eee;border-radius:12px;">
+<div style="padding:16px;border:1px solid #eee;border-radius:12px;">
   <h2 style="margin:0 0 8px;">领取结果</h2>
   <div id="out" style="white-space:pre-wrap;"></div>
 </div>
@@ -16,7 +16,7 @@ title: 下载与解压密码
   const token = params.get("token");
 
   if (!token) {
-    out.textContent = "缺少参数：token\n请从支付成功页进入本页面。";
+    out.textContent = "缺少参数：token";
     return;
   }
 
@@ -27,8 +27,6 @@ title: 下载与解压密码
     .then(j => {
       if (!j.ok) throw new Error(j.error || "redeem failed");
 
-      // j.download = 你的自有服务器链接
-      // j.password = ZIP_PASSWORD
       out.innerHTML =
         "✅ 领取成功\n\n" +
         "下载地址：\n" +
@@ -38,7 +36,7 @@ title: 下载与解压密码
         "（注意：token 只能使用一次）";
     })
     .catch(e => {
-      out.textContent = "领取失败：" + (e && e.message ? e.message : e) + "\n\n可能原因：token 过期/已使用。";
+      out.textContent = "领取失败：" + (e && e.message ? e.message : e);
     });
 })();
 </script>

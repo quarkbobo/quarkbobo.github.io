@@ -25,12 +25,10 @@ date: 2025-12-17
     try {
       const r = await fetch(API_BASE + "/api/create-order", { method: "POST" });
       const j = await r.json();
-
       if (!j.ok) throw new Error(j.error || "create-order failed");
 
-      // A 方案：返回的是 mock pay_url
-      msg.textContent = "订单已创建。\n即将跳转到“模拟付款”页面…";
-      // 跳到模拟付款链接（你点一下就算付款成功）
+      msg.textContent = "订单已创建，正在跳转支付…";
+      // 这里会自动跳到你自己的域名 /success（不会出现 pages.dev）
       location.href = j.pay_url;
     } catch (e) {
       msg.textContent = "失败：" + (e && e.message ? e.message : e);
@@ -39,6 +37,7 @@ date: 2025-12-17
   });
 })();
 </script>
+
 
 <div style="padding:16px;border:1px solid #eee;border-radius:12px;margin:16px 0;">
   ...
