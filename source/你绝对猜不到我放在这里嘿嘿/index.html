@@ -11,15 +11,21 @@
                    "PingFang SC","Microsoft YaHei",sans-serif;
       margin: 24px;
     }
-    .wrap { max-width: 900px; margin: auto; }
-    h1 { font-size: 22px; margin-bottom: 10px; }
-    .hint { opacity: .7; margin-bottom: 16px; }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    h1 { font-size: 22px; margin: 0 0 10px; }
+    .hint { opacity: .7; margin: 0 0 16px; line-height: 1.5; }
+    .bar { display:flex; gap:10px; align-items:center; margin: 0 0 14px; }
+    input[type="search"]{
+      flex:1; padding:10px 12px; border-radius:10px;
+      border:1px solid rgba(127,127,127,.35); background: transparent;
+      font-size: 14px;
+    }
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
       border: 1px solid rgba(127,127,127,.25);
-      border-radius: 10px;
+      border-radius: 12px;
       overflow: hidden;
     }
     li {
@@ -38,76 +44,155 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .actions {
-      display: flex;
-      gap: 8px;
-      white-space: nowrap;
-    }
+    .meta { opacity: .7; font-size: 12px; margin-left: 8px; }
+    .actions { display: flex; gap: 8px; white-space: nowrap; }
     a.btn {
       text-decoration: none;
       padding: 6px 10px;
       border: 1px solid rgba(127,127,127,.35);
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 14px;
     }
     a.btn:hover { filter: brightness(1.05); }
-    .empty { padding: 14px; opacity: .7; }
+    .empty { padding: 14px; opacity: .75; }
+    .err { padding: 14px; color: #b00020; }
+    .small { font-size: 12px; opacity: .7; margin-top: 12px; line-height: 1.5; }
+    code { padding: 2px 6px; border-radius: 8px; border: 1px solid rgba(127,127,127,.25); }
   </style>
 </head>
 <body>
 <div class="wrap">
   <h1>/files</h1>
-  <p class="hint">点击“预览/打开”新标签页查看，点击“下载”直接下载</p>
+  <p class="hint">
+    这是 GitHub Pages 版本：通过 GitHub API 自动列出文件。<br>
+    “预览/打开”会新标签页打开；“下载”会触发下载。
+  </p>
+
+  <div class="bar">
+    <input id="q" type="search" placeholder="搜索文件名… (支持中文)" />
+  </div>
 
   <ul id="list">
-    <li class="empty">正在读取文件列表…</li>
+    <li class="empty">正在从 GitHub 读取文件列表…</li>
   </ul>
+
+  <div id="small" class="small"></div>
 </div>
 
 <script>
+/** =========================
+ *  需要你改的配置（必改）
+ *  ========================= */
+const OWNER  = "把这里改成你的GitHub用户名";   // 例如: "quarkpoison"
+const REPO   = "把这里改成你的仓库名";         // 例如: "myblog"
+const BRANCH = "gh-pages";                    // Hexo deploy 常见：gh-pages；也可能是 main/master
+const DIR    = "files";                       // 你的文件目录：/files
+
+/** =========================
+ *  工具函数
+ *  ========================= */
+const listEl = document.getElementById("list");
+const qEl = document.getElementById("q");
+const smallEl = document.getElementById("small");
+
+function fmtBytes(bytes){
+  if (!Number.isFinite(bytes)) return "";
+  const units = ["B","KB","MB","GB","TB"];
+  let i = 0, n = bytes;
+  while (n >= 1024 && i < units.length-1){ n /= 1024; i++; }
+  return `${n.toFixed(i===0?0:1)} ${units[i]}`;
+}
+function extOf(name){
+  const i = name.lastIndexOf(".");
+  return i >= 0 ? name.slice(i+1).toLowerCase() : "";
+}
+function previewLabel(ext){
+  if (ext === "pdf") return "预览";
+  if (["png","jpg","jpeg","gif","webp","svg"].includes(ext)) return "查看";
+  if (["mp4","webm","mov","m4v"].includes(ext)) return "播放";
+  return "打开";
+}
+// 生成相对链接：/files/xxx
+function hrefFor(name){
+  // encode 每个段，避免中文/空格问题
+  return "./" + encodeURIComponent(name);
+}
+
+function render(items){
+  const kw = (qEl.value || "").trim().toLowerCase();
+  const filtered = !kw ? items : items.filter(it => it.name.toLowerCase().includes(kw));
+
+  listEl.innerHTML = "";
+  if (!filtered.length){
+    listEl.innerHTML = `<li class="empty">没有匹配的文件</li>`;
+    return;
+  }
+
+  for (const it of filtered){
+    const ext = extOf(it.name);
+    const label = previewLabel(ext);
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span class="name" title="${it.name}">
+        ${it.name}
+        <span class="meta">${it.size ? fmtBytes(it.size) : ""}</span>
+      </span>
+      <span class="actions">
+        <a class="btn" href="${hrefFor(it.name)}" target="_blank" rel="noopener">${label}</a>
+        <a class="btn" href="${hrefFor(it.name)}" download>下载</a>
+      </span>
+    `;
+    listEl.appendChild(li);
+  }
+}
+
+async function loadFromGitHub(){
+  // GitHub Contents API：列出某个目录
+  const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(DIR)}?ref=${encodeURIComponent(BRANCH)}`;
+
+  const res = await fetch(api, { headers: { "Accept": "application/vnd.github+json" } });
+
+  if (!res.ok){
+    const msg = await res.text().catch(() => "");
+    throw new Error(`GitHub API 请求失败：HTTP ${res.status}\n${msg}`);
+  }
+
+  const data = await res.json();
+  if (!Array.isArray(data)) throw new Error("返回不是目录列表。请检查 OWNER/REPO/BRANCH/DIR 配置是否正确。");
+
+  // 只保留文件，排除 index.html 自己
+  const items = data
+    .filter(x => x && x.type === "file")
+    .filter(x => (x.name || "").toLowerCase() !== "index.html")
+    .map(x => ({ name: x.name, size: x.size || 0 }))
+    .sort((a,b) => a.name.localeCompare(b.name, "zh-Hans-CN"));
+
+  return items;
+}
+
 (async () => {
-  const list = document.getElementById('list');
-
   try {
-    const res = await fetch('./');
-    const text = await res.text();
-
-    // 利用 Apache / Nginx / Hexo 生成的目录索引
-    const doc = new DOMParser().parseFromString(text, 'text/html');
-    const links = [...doc.querySelectorAll('a')]
-      .map(a => a.getAttribute('href'))
-      .filter(h => h && h !== '../' && h !== 'index.html');
-
-    list.innerHTML = '';
-
-    if (!links.length) {
-      list.innerHTML = '<li class="empty">此目录下暂无文件</li>';
+    // 配置没改就提示
+    if (OWNER.includes("改成") || REPO.includes("改成")){
+      listEl.innerHTML = `<li class="err">请先在本文件顶部把 <code>OWNER</code> / <code>REPO</code> 改成你的实际信息。</li>`;
+      smallEl.innerHTML = `你现在访问的是 <code>/files/</code>，但 GitHub API 需要知道仓库位置才能列出文件。`;
       return;
     }
 
-    links.forEach(name => {
-      const ext = name.split('.').pop().toLowerCase();
-      let label = '打开';
+    const items = await loadFromGitHub();
+    render(items);
 
-      if (ext === 'pdf') label = '预览';
-      if (['png','jpg','jpeg','gif','webp','svg'].includes(ext)) label = '查看';
-      if (['mp4','webm','mov','m4v'].includes(ext)) label = '播放';
+    smallEl.innerHTML =
+      `数据来源：GitHub API（<code>${OWNER}/${REPO}</code>，分支 <code>${BRANCH}</code>，目录 <code>/${DIR}</code>）。<br>` +
+      `如果提示 404：通常是分支名不对（把 <code>gh-pages</code> 改成 <code>main</code>/<code>master</code>）。如果提示 rate limit：换个网络/稍后再试。`;
 
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <span class="name" title="${decodeURIComponent(name)}">
-          ${decodeURIComponent(name)}
-        </span>
-        <span class="actions">
-          <a class="btn" href="${name}" target="_blank">${label}</a>
-          <a class="btn" href="${name}" download>下载</a>
-        </span>
-      `;
-      list.appendChild(li);
-    });
-
-  } catch (e) {
-    list.innerHTML = '<li class="empty">无法读取目录</li>';
+    qEl.addEventListener("input", () => render(items));
+  } catch (e){
+    listEl.innerHTML = `<li class="err">${String(e.message || e)}</li>`;
+    smallEl.innerHTML =
+      `排查：1）确认你 Hexo 部署后的分支里确实有 <code>/${DIR}</code> 目录；` +
+      `2）确认分支名 <code>${BRANCH}</code>；3）仓库如果是私有：GitHub API 无法匿名列出。`;
   }
 })();
 </script>
