@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>/files</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,
+                   "PingFang SC","Microsoft YaHei",sans-serif;
+      margin: 24px;
+    }
+    .wrap { max-width: 900px; margin: auto; }
+    h1 { font-size: 22px; margin-bottom: 10px; }
+    .hint { opacity: .7; margin-bottom: 16px; }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border: 1px solid rgba(127,127,127,.25);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-top: 1px solid rgba(127,127,127,.15);
+    }
+    li:first-child { border-top: none; }
+    .name {
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    a.btn {
+      text-decoration: none;
+      padding: 6px 10px;
+      border: 1px solid rgba(127,127,127,.35);
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    a.btn:hover { filter: brightness(1.05); }
+    .empty { padding: 14px; opacity: .7; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>/files</h1>
+  <p class="hint">点击“预览/打开”新标签页查看，点击“下载”直接下载</p>
+
+  <ul id="list">
+    <li class="empty">正在读取文件列表…</li>
+  </ul>
+</div>
+
+<script>
+(async () => {
+  const list = document.getElementById('list');
+
+  try {
+    const res = await fetch('./');
+    const text = await res.text();
+
+    // 利用 Apache / Nginx / Hexo 生成的目录索引
+    const doc = new DOMParser().parseFromString(text, 'text/html');
+    const links = [...doc.querySelectorAll('a')]
+      .map(a => a.getAttribute('href'))
+      .filter(h => h && h !== '../' && h !== 'index.html');
+
+    list.innerHTML = '';
+
+    if (!links.length) {
+      list.innerHTML = '<li class="empty">此目录下暂无文件</li>';
+      return;
+    }
+
+    links.forEach(name => {
+      const ext = name.split('.').pop().toLowerCase();
+      let label = '打开';
+
+      if (ext === 'pdf') label = '预览';
+      if (['png','jpg','jpeg','gif','webp','svg'].includes(ext)) label = '查看';
+      if (['mp4','webm','mov','m4v'].includes(ext)) label = '播放';
+
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span class="name" title="${decodeURIComponent(name)}">
+          ${decodeURIComponent(name)}
+        </span>
+        <span class="actions">
+          <a class="btn" href="${name}" target="_blank">${label}</a>
+          <a class="btn" href="${name}" download>下载</a>
+        </span>
+      `;
+      list.appendChild(li);
+    });
+
+  } catch (e) {
+    list.innerHTML = '<li class="empty">无法读取目录</li>';
+  }
+})();
+</script>
+</body>
+</html>
