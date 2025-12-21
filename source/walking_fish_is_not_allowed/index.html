@@ -52,10 +52,11 @@
       border: 1px solid rgba(127,127,127,.35);
       border-radius: 10px;
       font-size: 14px;
+      user-select: none;
     }
     a.btn:hover { filter: brightness(1.05); }
     .empty { padding: 14px; opacity: .75; }
-    .err { padding: 14px; color: #b00020; }
+    .err { padding: 14px; color: #b00020; white-space: pre-wrap; }
     .small { font-size: 12px; opacity: .7; margin-top: 12px; line-height: 1.5; }
     code { padding: 2px 6px; border-radius: 8px; border: 1px solid rgba(127,127,127,.25); }
   </style>
@@ -64,8 +65,8 @@
 <div class="wrap">
   <h1>/files</h1>
   <p class="hint">
-    这是 GitHub Pages 版本：通过 GitHub API 自动列出文件。<br>
-    “预览/打开”会新标签页打开；“下载”会触发下载。
+    文件列表来自 GitHub API（读取仓库源码的 <code>/source/files</code>）。<br>
+    “打开/下载”走站点真实路径 <code>/files/</code>（Hexo 发布后的目录），不受 NexT/PJAX 影响。
   </p>
 
   <div class="bar">
@@ -81,12 +82,17 @@
 
 <script>
 /** =========================
- *  需要你改的配置（必改）
+ *  你的真实配置（已按你截图填好）
  *  ========================= */
-const OWNER  = "quarkbobo";   // 例如: "quarkpoison"
-const REPO   = "quarkbobo.github.io";         // 例如: "myblog"
-const BRANCH = "master";                    // Hexo deploy 常见：gh-pages；也可能是 main/master
-const DIR    = "source/files";                       // 你的文件目录：/files
+const OWNER  = "quarkbobo";
+const REPO   = "quarkbobo.github.io";
+const BRANCH = "master";
+
+/** 用于 GitHub API 列目录（源码路径） */
+const DIR_FOR_API = "source/files";
+
+/** 用于站点访问/下载（发布后的路径） */
+const PUBLIC_PREFIX = "/files/";
 
 /** =========================
  *  工具函数
@@ -102,20 +108,14 @@ function fmtBytes(bytes){
   while (n >= 1024 && i < units.length-1){ n /= 1024; i++; }
   return `${n.toFixed(i===0?0:1)} ${units[i]}`;
 }
-function extOf(name){
-  const i = name.lastIndexOf(".");
-  return i >= 0 ? name.slice(i+1).toLowerCase() : "";
+
+function safeText(s){
+  return (s ?? "").toString();
 }
-function previewLabel(ext){
-  if (ext === "pdf") return "预览";
-  if (["png","jpg","jpeg","gif","webp","svg"].includes(ext)) return "查看";
-  if (["mp4","webm","mov","m4v"].includes(ext)) return "播放";
-  return "打开";
-}
-// 生成相对链接：/files/xxx
-function hrefFor(name){
-  // encode 每个段，避免中文/空格问题
-  return "./" + encodeURIComponent(name);
+
+/** 站点真实 URL：/files/<filename> */
+function publicUrl(name){
+  return PUBLIC_PREFIX + encodeURIComponent(name);
 }
 
 function render(items){
@@ -129,70 +129,87 @@ function render(items){
   }
 
   for (const it of filtered){
-    const ext = extOf(it.name);
-    const label = previewLabel(ext);
+    const name = safeText(it.name);
+    const size = it.size ? fmtBytes(it.size) : "";
 
     const li = document.createElement("li");
     li.innerHTML = `
-      <span class="name" title="${it.name}">
-        ${it.name}
-        <span class="meta">${it.size ? fmtBytes(it.size) : ""}</span>
+      <span class="name" title="${name}">
+        ${name}<span class="meta">${size}</span>
       </span>
       <span class="actions">
-        <a class="btn" href="${hrefFor(it.name)}" target="_blank" rel="noopener">${label}</a>
-        <a class="btn" href="${hrefFor(it.name)}" download>下载</a>
+        <a class="btn" href="javascript:void(0)" data-open="${name}">打开</a>
+        <a class="btn" href="javascript:void(0)" data-dl="${name}">下载</a>
       </span>
     `;
     listEl.appendChild(li);
   }
 }
 
+/** GitHub Contents API：列出某个目录 */
 async function loadFromGitHub(){
-  // GitHub Contents API：列出某个目录
-  const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(DIR)}?ref=${encodeURIComponent(BRANCH)}`;
+  // 注意：这里不要 encodeURIComponent 整个路径，否则 source/files 会变成 source%2Ffiles
+  const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${DIR_FOR_API}?ref=${encodeURIComponent(BRANCH)}`;
 
   const res = await fetch(api, { headers: { "Accept": "application/vnd.github+json" } });
-
   if (!res.ok){
     const msg = await res.text().catch(() => "");
     throw new Error(`GitHub API 请求失败：HTTP ${res.status}\n${msg}`);
   }
 
   const data = await res.json();
-  if (!Array.isArray(data)) throw new Error("返回不是目录列表。请检查 OWNER/REPO/BRANCH/DIR 配置是否正确。");
+  if (!Array.isArray(data)) throw new Error("返回不是目录列表。请检查 BRANCH/DIR_FOR_API 是否正确。");
 
-  // 只保留文件，排除 index.html 自己
-  const items = data
+  return data
     .filter(x => x && x.type === "file")
     .filter(x => (x.name || "").toLowerCase() !== "index.html")
     .map(x => ({ name: x.name, size: x.size || 0 }))
     .sort((a,b) => a.name.localeCompare(b.name, "zh-Hans-CN"));
-
-  return items;
 }
+
+/** 关键：用 JS 打开/下载，绕过 NexT/PJAX 拦截 */
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("a");
+  if (!a) return;
+
+  const openName = a.getAttribute("data-open");
+  const dlName = a.getAttribute("data-dl");
+  if (!openName && !dlName) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const name = openName || dlName;
+  const url = publicUrl(name);
+
+  if (openName) {
+    window.open(url, "_blank", "noopener");
+  } else {
+    const tmp = document.createElement("a");
+    tmp.href = url;
+    tmp.download = name;
+    document.body.appendChild(tmp);
+    tmp.click();
+    tmp.remove();
+  }
+});
 
 (async () => {
   try {
-    // 配置没改就提示
-    if (OWNER.includes("改成") || REPO.includes("改成")){
-      listEl.innerHTML = `<li class="err">请先在本文件顶部把 <code>OWNER</code> / <code>REPO</code> 改成你的实际信息。</li>`;
-      smallEl.innerHTML = `你现在访问的是 <code>/files/</code>，但 GitHub API 需要知道仓库位置才能列出文件。`;
-      return;
-    }
-
     const items = await loadFromGitHub();
     render(items);
 
     smallEl.innerHTML =
-      `数据来源：GitHub API（<code>${OWNER}/${REPO}</code>，分支 <code>${BRANCH}</code>，目录 <code>/${DIR}</code>）。<br>` +
-      `如果提示 404：通常是分支名不对（把 <code>gh-pages</code> 改成 <code>main</code>/<code>master</code>）。如果提示 rate limit：换个网络/稍后再试。`;
+      `数据来源：GitHub API（<code>${OWNER}/${REPO}</code>，分支 <code>${BRANCH}</code>，目录 <code>/${DIR_FOR_API}</code>）。<br>` +
+      `打开/下载：站点路径 <code>${PUBLIC_PREFIX}</code>。`;
 
     qEl.addEventListener("input", () => render(items));
   } catch (e){
     listEl.innerHTML = `<li class="err">${String(e.message || e)}</li>`;
     smallEl.innerHTML =
-      `排查：1）确认你 Hexo 部署后的分支里确实有 <code>/${DIR}</code> 目录；` +
-      `2）确认分支名 <code>${BRANCH}</code>；3）仓库如果是私有：GitHub API 无法匿名列出。`;
+      `排查：1）确认仓库 <code>${OWNER}/${REPO}</code> 的 <code>${BRANCH}</code> 分支存在 <code>/${DIR_FOR_API}</code>；` +
+      `2）确认站点上能直接访问 <code>${PUBLIC_PREFIX}文件名</code>；` +
+      `3）仓库若为私有，GitHub API 无法匿名列出。`;
   }
 })();
 </script>
