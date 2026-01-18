@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>吹牛骰 · Liar's Dice（单人 vs 2-4 人机）</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#111a33;
+      --panel2:#0f1730;
+      --text:#e7ecff;
+      --muted:#a9b2d6;
+      --accent:#6ea8ff;
+      --good:#3ddc97;
+      --bad:#ff5c7a;
+      --warn:#ffd166;
+      --chip:#1b2752;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "PingFang SC", "Microsoft YaHei", Arial;
+      background: radial-gradient(1200px 600px at 20% 0%, #18265d 0%, var(--bg) 55%),
+                  radial-gradient(900px 500px at 90% 40%, #21357a 0%, var(--bg) 60%);
+      color:var(--text);
+      min-height:100vh;
+    }
+    a{color:var(--accent)}
+
+    header{
+      padding: 22px 18px;
+      position:sticky; top:0; z-index: 10;
+      background: linear-gradient(180deg, rgba(11,16,32,.95) 0%, rgba(11,16,32,.55) 70%, rgba(11,16,32,0) 100%);
+      backdrop-filter: blur(6px);
+    }
+    .wrap{max-width: 1120px; margin: 0 auto; padding: 0 12px 32px;}
+    .titleRow{display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;}
+    h1{margin:0; font-size: 20px; letter-spacing:.2px;}
+    .sub{margin:6px 0 0; color: var(--muted); font-size: 13px;}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap: 14px;
+      margin-top: 10px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns: 1fr;}
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .cardHeader{
+      padding: 14px 14px 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.02) 100%);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .cardHeader h2{margin:0; font-size: 14px; letter-spacing:.3px;}
+    .cardHeader .hint{color:var(--muted); font-size: 12px;}
+
+    .cardBody{padding: 14px;}
+
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .row + .row{margin-top:10px;}
+
+    .btn{
+      appearance:none; border:none; cursor:pointer;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(110,168,255,.22) 0%, rgba(110,168,255,.14) 100%);
+      color: var(--text);
+      border: 1px solid rgba(110,168,255,.35);
+      transition: transform .08s ease, filter .18s ease;
+      font-weight: 650;
+      letter-spacing:.2px;
+    }
+    .btn:hover{filter: brightness(1.08)}
+    .btn:active{transform: translateY(1px) scale(.99)}
+    .btn.secondary{
+      background: linear-gradient(180deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.06) 100%);
+      border-color: rgba(255,255,255,.16);
+      font-weight: 600;
+    }
+    .btn.danger{
+      background: linear-gradient(180deg, rgba(255,92,122,.28) 0%, rgba(255,92,122,.14) 100%);
+      border-color: rgba(255,92,122,.45);
+    }
+    .btn.good{
+      background: linear-gradient(180deg, rgba(61,220,151,.25) 0%, rgba(61,220,151,.12) 100%);
+      border-color: rgba(61,220,151,.40);
+    }
+    .btn:disabled{
+      opacity:.45; cursor:not-allowed;
+      filter: grayscale(.2);
+    }
+
+    .select, .input{
+      background: rgba(15,23,48,.75);
+      border: 1px solid rgba(255,255,255,.14);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      outline: none;
+      min-width: 120px;
+    }
+    .input{min-width: 92px; width: 110px;}
+    .select:focus, .input:focus{border-color: rgba(110,168,255,.55); box-shadow: 0 0 0 3px rgba(110,168,255,.18)}
+
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .chips{display:flex; gap:8px; flex-wrap:wrap;}
+    .chip{
+      background: rgba(27,39,82,.75);
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .chip strong{color: var(--text)}
+
+    .players{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 560px){
+      .players{grid-template-columns: 1fr;}
+    }
+    .pCard{
+      background: rgba(15,23,48,.6);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      padding: 12px;
+      position: relative;
+    }
+    .pTop{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+    .pName{font-weight:750}
+    .pMeta{color:var(--muted); font-size:12px}
+    .diceRow{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;}
+
+    .die{
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.08) 100%);
+      border: 1px solid rgba(255,255,255,.16);
+      display:flex; align-items:center; justify-content:center;
+      font-size: 18px; font-weight: 850;
+      box-shadow: 0 10px 16px rgba(0,0,0,.25);
+      user-select:none;
+    }
+    .die.wild{outline: 2px solid rgba(255,209,102,.55);}
+
+    .die.rolling{animation: roll .65s ease-in-out infinite;}
+    @keyframes roll{
+      0%{transform: rotate(0deg) translateY(0)}
+      35%{transform: rotate(8deg) translateY(-2px)}
+      70%{transform: rotate(-10deg) translateY(1px)}
+      100%{transform: rotate(0deg) translateY(0)}
+    }
+
+    .log{
+      height: 320px;
+      overflow:auto;
+      padding: 12px;
+      background: rgba(15,23,48,.55);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .logItem{padding: 8px 10px; border-radius: 14px; margin: 8px 0; border:1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.04)}
+    .logItem .t{font-size: 12px; color: var(--muted); margin-bottom:4px}
+    .logItem.good{border-color: rgba(61,220,151,.35); background: rgba(61,220,151,.08)}
+    .logItem.bad{border-color: rgba(255,92,122,.35); background: rgba(255,92,122,.08)}
+    .logItem.warn{border-color: rgba(255,209,102,.35); background: rgba(255,209,102,.08)}
+
+    details{border-radius: 16px; border: 1px solid rgba(255,255,255,.12); background: rgba(15,23,48,.50); overflow:hidden}
+    summary{cursor:pointer; padding: 12px 14px; font-weight: 750;}
+    details .ruleBody{padding: 0 14px 14px; color: var(--muted); font-size: 13px; line-height: 1.6}
+    .ruleBody b{color: var(--text)}
+
+    .toast{
+      position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+      background: rgba(15,23,48,.92);
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 10px 12px;
+      border-radius: 999px;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      display:none;
+      z-index: 50;
+      max-width: 92vw;
+      font-size: 13px;
+    }
+
+    .small{font-size:12px; color: var(--muted)}
+    .kpi{display:flex; gap:10px; flex-wrap:wrap}
+    .kpi .badge{background: rgba(110,168,255,.12); border-color: rgba(110,168,255,.25); color: var(--text)}
+
+    .footerNote{margin-top: 12px; color: var(--muted); font-size: 12px; line-height: 1.5}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="titleRow">
+        <div>
+          <h1>吹牛骰 · Liar's Dice</h1>
+          <div class="sub">单人玩家 vs 2–4 人机 · 5 颗骰子/人 · 1 为万能点（可切换）</div>
+        </div>
+        <div class="kpi">
+          <span class="badge" id="kpiRound">回合：-</span>
+          <span class="badge" id="kpiTurn">行动：-</span>
+          <span class="badge" id="kpiBid">当前喊注：-</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <!-- 左：控制与规则 -->
+      <section class="card" aria-label="控制面板">
+        <div class="cardHeader">
+          <h2>控制面板</h2>
+          <div class="hint">先开局，再喊注或抓</div>
+        </div>
+        <div class="cardBody">
+          <div class="row">
+            <label class="small">人机数量</label>
+            <select class="select" id="aiCount">
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+            </select>
+            <label class="small">每人骰子</label>
+            <select class="select" id="dicePerPlayer">
+              <option value="5" selected>5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label class="small">规则：1 为万能</label>
+            <select class="select" id="wildRule">
+              <option value="on" selected>开启（酒吧常见）</option>
+              <option value="off">关闭（更硬核）</option>
+            </select>
+            <label class="small">淘汰：输一颗</label>
+            <select class="select" id="loseDieRule">
+              <option value="on" selected>开启</option>
+              <option value="off">关闭（只计分不淘汰）</option>
+            </select>
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <button class="btn good" id="btnNew">新游戏</button>
+            <button class="btn secondary" id="btnNextRound" disabled>开始/下一轮（摇骰）</button>
+            <button class="btn secondary" id="btnShowAll" disabled>开盅查看（调试）</button>
+          </div>
+
+          <div style="height:10px"></div>
+
+          <div class="card" style="background: rgba(15,23,48,.40); border-color: rgba(255,255,255,.10)">
+            <div class="cardHeader">
+              <h2>你的操作</h2>
+              <div class="hint">轮到你时可用</div>
+            </div>
+            <div class="cardBody">
+              <div class="row">
+                <label class="small">喊注：数量</label>
+                <input class="input" type="number" min="1" step="1" id="bidQty" value="1" />
+                <label class="small">点数</label>
+                <select class="select" id="bidFace">
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6" selected>6</option>
+                  <option value="1">1（报 1 时不万能）</option>
+                </select>
+              </div>
+              <div class="row">
+                <button class="btn" id="btnBid" disabled>喊注</button>
+                <button class="btn danger" id="btnCall" disabled>抓（质疑）</button>
+              </div>
+              <div class="footerNote">
+                小提示：
+                <ul style="margin:6px 0 0 18px; padding:0">
+                  <li>数量必须比上一手更大，或数量相同但点数更大。</li>
+                  <li>当 <b>1 为万能</b> 时，喊「X个Y(非1)」会把所有 1 也算作 Y。</li>
+                  <li>喊「X个1」时，只有 1 算 1，不万能。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:12px"></div>
+
+          <details>
+            <summary>📜 详细规则（建议展开阅读）</summary>
+            <div class="ruleBody">
+              <p><b>目标：</b>通过合理喊注、判断对手是否吹牛，在对局中存活到最后。</p>
+              <p><b>开局：</b>每人获得 N 颗骰子（默认 5）。每轮所有人同时摇骰并扣在桌面，每人只看自己。</p>
+              <p><b>喊注格式：</b>「X 个 Y」，表示：全场所有骰子里，至少有 X 颗是 Y。</p>
+              <p><b>1 为万能（可切换）：</b>当规则开启时，喊「X 个 Y（Y≠1）」时，<b>Y点 + 1点</b> 共同计数；喊「X 个 1」时只有 1 点计数。</p>
+              <p><b>行动：</b>轮到你时，你可以：
+                <br>① <b>加注</b>：报一个更大的注（数量更大，或数量相同点数更大）。
+                <br>② <b>抓</b>：质疑上一位玩家的注不成立，要求开盅。</p>
+              <p><b>开盅判定：</b>若桌面满足上一手喊注 → 抓的人输；否则被抓的人输。</p>
+              <p><b>输的惩罚：</b>若开启「输一颗」规则，输的人本局减少一颗骰子；骰子为 0 则淘汰。关闭则只显示输赢，不淘汰。</p>
+              <p><b>理性人机：</b>人机会根据：
+                <br>• 自己骰子中某点出现的概率
+                <br>• 当前喊注在全局成立的概率（贝叶斯/二项近似）
+                <br>• 你是否经常抓/经常加注（风格学习）
+                <br>来决定是跟注还是抓。</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- 右：玩家桌面与日志 -->
+      <section class="card" aria-label="桌面">
+        <div class="cardHeader">
+          <h2>桌面</h2>
+          <div class="hint" id="tableHint">点击“新游戏”开始</div>
+        </div>
+        <div class="cardBody">
+          <div class="players" id="players"></div>
+
+          <div style="height:12px"></div>
+
+          <div class="card" style="background: rgba(15,23,48,.38); border-color: rgba(255,255,255,.10)">
+            <div class="cardHeader">
+              <h2>对局日志</h2>
+              <div class="hint">会记录每次喊注/抓/开盅</div>
+            </div>
+            <div class="cardBody">
+              <div class="log" id="log"></div>
+              <div class="row" style="margin-top:10px">
+                <button class="btn secondary" id="btnClearLog">清空日志</button>
+                <span class="small">（不会影响游戏）</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  // -----------------------------
+  // Utilities
+  // -----------------------------
+  const $ = (sel) => document.querySelector(sel);
+  const el = (tag, cls) => { const n=document.createElement(tag); if(cls) n.className=cls; return n; };
+  const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+  const randInt = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+  const nowTime = () => new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+
+  function toast(msg){
+    const t = $('#toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    clearTimeout(toast._tm);
+    toast._tm = setTimeout(() => t.style.display='none', 1800);
+  }
+
+  function log(msg, kind=''){
+    const box = $('#log');
+    const item = el('div', 'logItem' + (kind ? ' '+kind : ''));
+    const tt = el('div','t');
+    tt.textContent = nowTime();
+    const body = el('div');
+    body.innerHTML = msg;
+    item.appendChild(tt);
+    item.appendChild(body);
+    box.appendChild(item);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  // -----------------------------
+  // Game State
+  // -----------------------------
+  const state = {
+    players: [],
+    aiCount: 3,
+    dicePerPlayer: 5,
+    wild: true,
+    loseDie: true,
+
+    round: 0,
+    turnIndex: 0,
+    bid: null, // {qty, face, by}
+    phase: 'idle', // idle | rolling | bidding | reveal | over
+
+    // player modeling (human behavior)
+    humanProfile: {
+      calls: 0,
+      bids: 0,
+      aggressiveScore: 0, // + when makes big jumps
+      recent: [] // last 8 actions
+    }
+  };
+
+  function makePlayer(name, isHuman=false, id=''){
+    return {
+      id: id || name,
+      name,
+      isHuman,
+      dice: [],
+      diceCount: state.dicePerPlayer,
+      alive: true,
+      // AI personality
+      boldness: isHuman ? 0 : (0.35 + Math.random()*0.4),
+      honesty: isHuman ? 0 : (0.45 + Math.random()*0.35),
+      memory: {
+        // track opponent patterns
+        seenCalls: 0,
+        seenBids: 0
+      }
+    };
+  }
+
+  function totalDiceAlive(){
+    return state.players.filter(p=>p.alive).reduce((s,p)=>s+p.diceCount,0);
+  }
+
+  function currentPlayer(){
+    return state.players[state.turnIndex];
+  }
+
+  function nextAliveIndex(from){
+    const n = state.players.length;
+    let i = from;
+    for(let k=0;k<n;k++){
+      i = (i+1)%n;
+      if(state.players[i].alive) return i;
+    }
+    return from;
+  }
+
+  function alivePlayers(){
+    return state.players.filter(p=>p.alive);
+  }
+
+  function winnerIfAny(){
+    const alive = alivePlayers();
+    if(alive.length===1) return alive[0];
+    return null;
+  }
+
+  // -----------------------------
+  // Dice & probability helpers
+  // -----------------------------
+  function rollDiceForAll(){
+    for(const p of state.players){
+      if(!p.alive) continue;
+      p.dice = [];
+      for(let i=0;i<p.diceCount;i++) p.dice.push(randInt(1,6));
+    }
+  }
+
+  function countMatching(dice, face, wild){
+    if(face===1) return dice.filter(x=>x===1).length;
+    if(!wild) return dice.filter(x=>x===face).length;
+    return dice.filter(x=>x===face || x===1).length;
+  }
+
+  // Binomial tail probability P(X >= k) for X~Bin(n,p)
+  function binomTail(n, p, k){
+    // small n only (<= 25-ish). We'll compute exact sum with stable multiplication.
+    if(k<=0) return 1;
+    if(k>n) return 0;
+    let prob = 0;
+    // compute pmf iteratively
+    // start at x=0
+    let pmf = Math.pow(1-p, n);
+    if(0>=k) prob += pmf;
+    for(let x=1; x<=n; x++){
+      pmf = pmf * ((n - x + 1) / x) * (p/(1-p));
+      if(x>=k) prob += pmf;
+    }
+    return clamp(prob,0,1);
+  }
+
+  function pFace(wild, face){
+    // probability a random unknown die counts as target for this bid
+    if(face===1) return 1/6;
+    return wild ? 2/6 : 1/6;
+  }
+
+  function bidProbabilityGivenMyDice(player, bid){
+    // estimate P(bid true) from player's perspective
+    const alive = alivePlayers();
+    const total = totalDiceAlive();
+    const mine = player.diceCount;
+    const unknown = total - mine;
+    const have = countMatching(player.dice, bid.face, state.wild);
+    const need = bid.qty - have;
+    if(need<=0) return 1;
+    const p = pFace(state.wild, bid.face);
+    return binomTail(unknown, p, need);
+  }
+
+  function bidLegality(newBid){
+    // return {ok, reason}
+    if(!newBid || !Number.isFinite(newBid.qty) || !Number.isFinite(newBid.face)) return {ok:false, reason:'无效喊注'};
+    if(newBid.qty<1) return {ok:false, reason:'数量至少为 1'};
+    if(newBid.face<1||newBid.face>6) return {ok:false, reason:'点数范围 1-6'};
+    if(state.bid==null) return {ok:true, reason:''};
+    const b = state.bid;
+    const bigger = (newBid.qty > b.qty) || (newBid.qty === b.qty && newBid.face > b.face);
+    if(!bigger) return {ok:false, reason:'必须比上一手更大（数量更大，或数量相同点数更大）'};
+    return {ok:true, reason:''};
+  }
+
+  // -----------------------------
+  // Rendering
+  // -----------------------------
+  function renderPlayers(){
+    const box = $('#players');
+    box.innerHTML = '';
+    for(const p of state.players){
+      const pc = el('div','pCard');
+      if(!p.alive) pc.style.opacity = .45;
+
+      const top = el('div','pTop');
+      const left = el('div');
+      const nm = el('div','pName'); nm.textContent = p.name + (p.isHuman ? '（你）' : '');
+      const meta = el('div','pMeta');
+      meta.textContent = p.alive ? `骰子：${p.diceCount}` : `已淘汰`;
+      left.appendChild(nm); left.appendChild(meta);
+
+      const right = el('div','chips');
+      if(p.isHuman){
+        right.appendChild(chip(`你的点数可见`, true));
+      } else {
+        right.appendChild(chip(`人机`, true));
+      }
+
+      top.appendChild(left); top.appendChild(right);
+      pc.appendChild(top);
+
+      const diceRow = el('div','diceRow');
+      // show human dice; AI dice as hidden
+      for(let i=0;i<p.diceCount;i++){
+        const d = el('div','die');
+        const v = p.dice[i] ?? 0;
+        if(p.isHuman || state.phase==='reveal' || $('#btnShowAll').dataset.reveal==='1'){
+          d.textContent = v;
+          if(state.wild && v===1) d.classList.add('wild');
+        } else {
+          d.textContent = '•';
+        }
+        diceRow.appendChild(d);
+      }
+      pc.appendChild(diceRow);
+
+      // turn indicator
+      if(p.alive && state.phase!=='idle'){
+        const isTurn = (state.players[state.turnIndex]===p);
+        if(isTurn){
+          pc.style.outline = '2px solid rgba(110,168,255,.55)';
+          pc.style.boxShadow = '0 0 0 6px rgba(110,168,255,.12), ' + getComputedStyle(document.documentElement).getPropertyValue('--shadow');
+        }
+      }
+
+      box.appendChild(pc);
+    }
+  }
+
+  function chip(text, solid=false){
+    const c = el('span','chip');
+    c.innerHTML = solid ? `<strong>${text}</strong>` : text;
+    return c;
+  }
+
+  function renderKPI(){
+    $('#kpiRound').textContent = `回合：${state.round || '-'}`;
+    const cp = currentPlayer();
+    $('#kpiTurn').textContent = `行动：${cp ? cp.name : '-'}${cp?.isHuman?'（你）':''}`;
+    $('#kpiBid').textContent = state.bid ? `当前喊注：${state.bid.qty} 个 ${state.bid.face}` : '当前喊注：-';
+  }
+
+  function setControls(){
+    const cp = currentPlayer();
+    const humanTurn = (cp && cp.isHuman);
+    const inBidPhase = (state.phase==='bidding');
+
+    $('#btnBid').disabled = !(humanTurn && inBidPhase);
+    $('#btnCall').disabled = !(humanTurn && inBidPhase && state.bid!=null);
+    $('#btnNextRound').disabled = (state.phase==='idle' || state.phase==='over') ? false : (state.phase==='rolling');
+
+    // cannot start next round in middle of bidding
+    if(state.phase==='bidding') $('#btnNextRound').disabled = true;
+    if(state.phase==='reveal') $('#btnNextRound').disabled = false;
+
+    // show all (debug)
+    $('#btnShowAll').disabled = state.phase==='idle';
+
+    // bid qty min
+    const minQty = state.bid ? state.bid.qty : 1;
+    $('#bidQty').min = minQty;
+  }
+
+  function setHint(text){
+    $('#tableHint').textContent = text;
+  }
+
+  async function animateRoll(){
+    state.phase = 'rolling';
+    setHint('摇骰中…');
+    renderKPI();
+    setControls();
+
+    // add rolling class
+    document.querySelectorAll('.die').forEach(d=>d.classList.add('rolling'));
+    // quick fake updates
+    const t0 = performance.now();
+    while(performance.now()-t0 < 900){
+      // update visible dice
+      for(const p of state.players){
+        if(!p.alive) continue;
+        for(let i=0;i<p.diceCount;i++){
+          if(p.isHuman){ p.dice[i] = randInt(1,6); }
+        }
+      }
+      renderPlayers();
+      await new Promise(r=>setTimeout(r, 85));
+    }
+
+    // final roll
+    rollDiceForAll();
+
+    // remove rolling
+    renderPlayers();
+    document.querySelectorAll('.die').forEach(d=>d.classList.remove('rolling'));
+  }
+
+  // -----------------------------
+  // Game Flow
+  // -----------------------------
+  function newGame(){
+    state.aiCount = parseInt($('#aiCount').value,10);
+    state.dicePerPlayer = parseInt($('#dicePerPlayer').value,10);
+    state.wild = ($('#wildRule').value==='on');
+    state.loseDie = ($('#loseDieRule').value==='on');
+
+    state.players = [];
+    state.players.push(makePlayer('玩家', true, 'human'));
+    for(let i=1;i<=state.aiCount;i++){
+      state.players.push(makePlayer('AI-'+i, false, 'ai'+i));
+    }
+
+    for(const p of state.players){
+      p.diceCount = state.dicePerPlayer;
+      p.alive = true;
+      p.dice = [];
+    }
+
+    state.round = 0;
+    state.turnIndex = 0;
+    state.bid = null;
+    state.phase = 'idle';
+
+    state.humanProfile = {calls:0,bids:0,aggressiveScore:0,recent:[]};
+
+    $('#btnShowAll').dataset.reveal = '0';
+    $('#log').innerHTML = '';
+
+    renderPlayers();
+    renderKPI();
+    setControls();
+    setHint('已创建新游戏。点击“开始/下一轮（摇骰）”。');
+    log(`🎲 新游戏开始：你 vs ${state.aiCount} 人机。规则：1为万能=${state.wild?'开启':'关闭'}，输一颗=${state.loseDie?'开启':'关闭'}。`, 'good');
+  }
+
+  async function startNextRound(){
+    if(state.phase==='bidding') return;
+
+    // clear previous bid
+    state.bid = null;
+
+    // advance round count
+    state.round += 1;
+
+    // choose starting player: rotate from last starter to keep fair
+    if(state.round===1){
+      state.turnIndex = 0;
+    } else {
+      state.turnIndex = nextAliveIndex(state.turnIndex); // simple rotate
+    }
+
+    await animateRoll();
+
+    state.phase = 'bidding';
+    setHint('已摇骰：轮到起手玩家喊注。');
+    renderPlayers();
+    renderKPI();
+    setControls();
+
+    log(`🟦 第 ${state.round} 回合开始。${currentPlayer().name} 先手。`, 'warn');
+
+    // if AI starts, let AI act
+    await maybeAIAutoPlay();
+  }
+
+  async function maybeAIAutoPlay(){
+    // allow chain of AI turns until human
+    let guard = 0;
+    while(state.phase==='bidding' && !currentPlayer().isHuman && guard++ < 40){
+      await new Promise(r=>setTimeout(r, 350));
+      const ai = currentPlayer();
+      const action = aiChooseAction(ai);
+      if(action.type==='call'){
+        log(`🤖 <b>${ai.name}</b> 选择 <b>抓</b>：质疑上一手「${state.bid.qty}个${state.bid.face}」。`);
+        await revealAndResolve(ai, state.bid.by);
+        break;
+      } else {
+        state.bid = {qty: action.bid.qty, face: action.bid.face, by: ai.id};
+        log(`🤖 <b>${ai.name}</b> 喊注：<b>${state.bid.qty} 个 ${state.bid.face}</b>。`);
+        state.turnIndex = nextAliveIndex(state.turnIndex);
+        renderPlayers(); renderKPI(); setControls();
+      }
+    }
+
+    if(state.phase==='bidding' && currentPlayer().isHuman){
+      setHint('轮到你：可以加注或抓。');
+      toast('轮到你了：喊注或抓');
+      renderKPI(); setControls();
+    }
+  }
+
+  function updateHumanProfile(action, bidBefore, bidAfter){
+    const hp = state.humanProfile;
+    if(action==='call') hp.calls++;
+    if(action==='bid') hp.bids++;
+
+    // aggressive: jump in qty
+    if(action==='bid' && bidBefore && bidAfter){
+      const jump = bidAfter.qty - bidBefore.qty;
+      if(jump>=2) hp.aggressiveScore += 1.0;
+      if(jump===1) hp.aggressiveScore += 0.35;
+      if(jump<=0) hp.aggressiveScore -= 0.15;
+    }
+    hp.recent.push({action, t:Date.now()});
+    if(hp.recent.length>8) hp.recent.shift();
+  }
+
+  // -----------------------------
+  // AI Decision (smart & rational)
+  // -----------------------------
+  function aiChooseAction(ai){
+    // Evaluate current bid probability from ai perspective
+    const b = state.bid;
+    const total = totalDiceAlive();
+
+    // Human style learning: more likely to bluff if aggressive
+    const hp = state.humanProfile;
+    const humanAgg = clamp(hp.aggressiveScore / Math.max(1, hp.bids), -1, 2);
+    const humanCallRate = hp.calls / Math.max(1, hp.calls + hp.bids);
+
+    // if no bid yet: open with a reasonable bid based on own dice
+    if(!b){
+      const best = aiSuggestBidFromHand(ai, null);
+      return {type:'bid', bid: best};
+    }
+
+    const pTrue = bidProbabilityGivenMyDice(ai, b);
+
+    // compute "call threshold" influenced by AI boldness/honesty and human style
+    // more aggressive human => more calling
+    // more frequent human calls => less bluffing? (AI expects human to call more)
+    let callThreshold = 0.22 + (0.22*(1-ai.boldness)) + (0.12*ai.honesty);
+    callThreshold += 0.10*humanAgg;          // aggressive human -> call more
+    callThreshold += 0.06*humanCallRate;     // if human often calls, AI also respects calling
+
+    callThreshold = clamp(callThreshold, 0.10, 0.55);
+
+    // If bid is very likely true, prefer to raise
+    // If very unlikely true, call
+    if(pTrue < callThreshold){
+      return {type:'call'};
+    }
+
+    // Otherwise, raise with a bid that remains plausible
+    const nextBid = aiSuggestBidFromHand(ai, b);
+
+    // Occasionally choose to call even if borderline (risk management)
+    const risk = (0.12 + 0.22*(1-ai.honesty));
+    if(pTrue < callThreshold + 0.08 && Math.random() < risk*0.35){
+      return {type:'call'};
+    }
+
+    return {type:'bid', bid: nextBid};
+  }
+
+  function aiSuggestBidFromHand(ai, baseBid){
+    // Build candidate bids and choose max expected value based on probability and "legal" constraints.
+    // We'll create a small neighborhood of bids near baseBid.
+
+    const total = totalDiceAlive();
+    const faces = [2,3,4,5,6,1];
+
+    // Determine minimum legal bid
+    let minQty = 1, minFace = 2;
+    if(baseBid){
+      minQty = baseBid.qty;
+      minFace = baseBid.face;
+    }
+
+    const candidates = [];
+
+    function pushBid(qty, face){
+      const bid = {qty, face};
+      if(!bidLegality(bid).ok) return;
+      const p = bidProbabilityGivenMyDice(ai, bid);
+      // value: prefer higher bids but penalize too-low probability
+      // boldness shifts risk tolerance
+      const riskPenalty = Math.pow(1 - p, 1.2 + (1-ai.boldness)*0.8);
+      const sizeReward = (qty*1.05) + (face===1 ? 0.12 : face/12);
+      const score = sizeReward - (riskPenalty * (1.2 + (1-ai.boldness)*0.6));
+      candidates.push({bid, p, score});
+    }
+
+    // Generate a band around current
+    const startQty = baseBid ? baseBid.qty : 1;
+    for(let dq=0; dq<=3; dq++){
+      const q = startQty + dq;
+      for(const f of faces){
+        // only consider f >= base face if same qty
+        pushBid(q, f);
+      }
+    }
+
+    // If baseBid exists, also consider same qty higher faces
+    if(baseBid){
+      for(const f of faces){
+        if(f>baseBid.face) pushBid(baseBid.qty, f);
+      }
+    }
+
+    // If no candidates (rare), fallback
+    if(!candidates.length){
+      const fallback = baseBid ? {qty: baseBid.qty+1, face: 2} : {qty:1, face:6};
+      return fallback;
+    }
+
+    // Choose best by score, but ensure probability not absurd
+    candidates.sort((a,b)=>b.score-a.score);
+
+    // filter by minimal probability based on honesty
+    const minP = 0.12 + 0.22*ai.honesty; // honest AI requires higher p
+    const filtered = candidates.filter(c => c.p >= minP);
+
+    const pickFrom = filtered.length ? filtered : candidates;
+
+    // Softmax-ish: pick among top 4 to avoid determinism
+    const top = pickFrom.slice(0,4);
+    const weights = top.map((c,i)=>Math.exp((c.score - top[0].score) * (2.0 - i*0.2)));
+    const sum = weights.reduce((s,x)=>s+x,0);
+    let r = Math.random()*sum;
+    for(let i=0;i<top.length;i++){
+      r -= weights[i];
+      if(r<=0) return top[i].bid;
+    }
+    return top[0].bid;
+  }
+
+  // -----------------------------
+  // Reveal & Resolve
+  // -----------------------------
+  function computeTableCounts(face){
+    let count = 0;
+    for(const p of state.players){
+      if(!p.alive) continue;
+      count += countMatching(p.dice, face, state.wild);
+    }
+    return count;
+  }
+
+  async function revealAndResolve(caller, targetBy){
+    state.phase = 'reveal';
+    setHint('开盅中…');
+    renderPlayers(); renderKPI(); setControls();
+
+    const bid = state.bid;
+    const totalCount = computeTableCounts(bid.face);
+    const success = (totalCount >= bid.qty);
+
+    // show all dice
+    $('#btnShowAll').dataset.reveal = '1';
+    renderPlayers();
+
+    const callerP = state.players.find(p=>p.id===caller.id);
+    const bidderP = state.players.find(p=>p.id===targetBy);
+
+    const msg = `🔎 开盅：点数 <b>${bid.face}</b>（${state.wild && bid.face!==1 ? '含1万能' : '不含万能'}）一共数到 <b>${totalCount}</b> 颗。喊注为 <b>${bid.qty} 个 ${bid.face}</b>。`;
+    log(msg, 'warn');
+
+    let loser = null;
+    if(success){
+      // caller loses
+      loser = callerP;
+      log(`✅ 喊注成立！因此 <b>${callerP.name}</b> 抓错了，判负。`, 'bad');
+    } else {
+      // bidder loses
+      loser = bidderP;
+      log(`❌ 喊注不成立！因此 <b>${bidderP.name}</b> 吹牛失败，判负。`, 'bad');
+    }
+
+    // apply penalty
+    if(state.loseDie){
+      loser.diceCount = Math.max(0, loser.diceCount - 1);
+      if(loser.diceCount===0){
+        loser.alive = false;
+        log(`💀 <b>${loser.name}</b> 骰子归零，已淘汰。`, 'bad');
+      } else {
+        log(`🥃 处罚：<b>${loser.name}</b> 少一颗骰子（剩余 ${loser.diceCount}）。`, 'warn');
+      }
+    } else {
+      log(`🥃 处罚规则关闭：本轮仅判负不淘汰。`, 'warn');
+    }
+
+    // check winner
+    const w = winnerIfAny();
+    if(w){
+      state.phase = 'over';
+      setHint(`游戏结束：${w.name}${w.isHuman?'（你）':''} 获胜！点击“新游戏”再来。`);
+      log(`🏆 <b>${w.name}</b> 获胜！`, 'good');
+      renderPlayers(); renderKPI(); setControls();
+      toast('游戏结束！');
+      return;
+    }
+
+    // Next round starter: loser starts (common house rule), else caller/ bidder? We'll choose loser.
+    state.turnIndex = state.players.indexOf(loser);
+
+    // keep reveal shown briefly then hide for next round
+    await new Promise(r=>setTimeout(r, 900));
+
+    // prepare for next round
+    state.bid = null;
+    $('#btnShowAll').dataset.reveal = '0';
+    setHint('本轮结束。点击“开始/下一轮（摇骰）”。');
+    renderPlayers(); renderKPI(); setControls();
+  }
+
+  // -----------------------------
+  // Human Actions
+  // -----------------------------
+  async function humanBid(){
+    if(state.phase!=='bidding') return;
+    const cp = currentPlayer();
+    if(!cp.isHuman) return;
+
+    const qty = parseInt($('#bidQty').value,10);
+    const face = parseInt($('#bidFace').value,10);
+    const newBid = {qty, face};
+
+    const leg = bidLegality(newBid);
+    if(!leg.ok){ toast(leg.reason); return; }
+
+    const prev = state.bid;
+    state.bid = {qty, face, by: cp.id};
+
+    updateHumanProfile('bid', prev, state.bid);
+
+    log(`🧍 你喊注：<b>${qty} 个 ${face}</b>。`);
+
+    state.turnIndex = nextAliveIndex(state.turnIndex);
+    renderPlayers(); renderKPI(); setControls();
+
+    await maybeAIAutoPlay();
+  }
+
+  async function humanCall(){
+    if(state.phase!=='bidding') return;
+    const cp = currentPlayer();
+    if(!cp.isHuman) return;
+    if(!state.bid){ toast('还没有人喊注，不能抓'); return; }
+
+    updateHumanProfile('call', state.bid, state.bid);
+
+    log(`🧍 你选择 <b>抓</b>：质疑上一手「${state.bid.qty}个${state.bid.face}」。`);
+    // caller is human, target is last bidder
+    await revealAndResolve(cp, state.bid.by);
+  }
+
+  // -----------------------------
+  // Debug show all
+  // -----------------------------
+  function toggleShowAll(){
+    const v = $('#btnShowAll').dataset.reveal==='1' ? '0' : '1';
+    $('#btnShowAll').dataset.reveal = v;
+    renderPlayers();
+    toast(v==='1' ? '已显示所有骰子（调试）' : '已隐藏AI骰子');
+  }
+
+  // -----------------------------
+  // Wire up UI
+  // -----------------------------
+  $('#btnNew').addEventListener('click', newGame);
+  $('#btnNextRound').addEventListener('click', startNextRound);
+  $('#btnBid').addEventListener('click', humanBid);
+  $('#btnCall').addEventListener('click', humanCall);
+  $('#btnShowAll').addEventListener('click', toggleShowAll);
+  $('#btnClearLog').addEventListener('click', ()=>{ $('#log').innerHTML=''; toast('日志已清空'); });
+
+  // Enter key triggers bid
+  $('#bidQty').addEventListener('keydown', (e)=>{ if(e.key==='Enter') humanBid(); });
+
+  // Initialize
+  renderPlayers();
+  renderKPI();
+  setControls();
+  setHint('点击“新游戏”开始。');
+
+})();
+</script>
+</body>
+</html>
