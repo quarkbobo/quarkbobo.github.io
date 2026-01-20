@@ -1,27 +1,106 @@
-const board = document.getElementById("board");
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>中国象棋 · 最小联机版</title>
 
+<style>
+  body {
+    margin: 0;
+    background: #1e1e1e;
+    color: #eee;
+    font-family: system-ui, sans-serif;
+  }
+
+  #ui {
+    padding: 8px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  input, button {
+    padding: 4px 6px;
+    font-size: 14px;
+  }
+
+  #roomLabel {
+    margin-left: 6px;
+    color: #9be;
+  }
+
+  #board {
+    position: relative;
+    width: min(92vw, 92vh);
+    aspect-ratio: 9 / 10;
+    margin: 10px auto;
+    background: #c9a063;
+  }
+
+  .grid {
+    position: absolute;
+    background: rgba(0,0,0,0.4);
+  }
+
+  .piece {
+    position: absolute;
+    border-radius: 50%;
+    background: #f4f4f4;
+    border: 1px solid #333;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    touch-action: none;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="ui">
+  <input id="username" placeholder="用户名（可空）">
+  <button id="create">创建房间</button>
+  <input id="roomInput" placeholder="房间号">
+  <button id="join">加入房间</button>
+  <button id="undo">悔棋</button>
+  <span id="roomLabel"></span>
+</div>
+
+<div id="board"></div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+/* =================== 基础状态 =================== */
+
+const board = document.getElementById("board");
 let CELL = 0;
-const PADDING_RATIO = 0.06;
+let PADDING = 0;
 
 let pieces = [];
 let history = [];
 
-let peer, conn;
+let peer = null;
+let conn = null;
 let roomId = null;
 let username = null;
 
-/* ================= 坐标系统 ================= */
+/* =================== 坐标系统（核心） =================== */
 
 function updateMetrics() {
   const size = board.clientWidth;
-  CELL = size * (1 - PADDING_RATIO * 2) / 8;
+  PADDING = size * 0.06;
+  CELL = (size - PADDING * 2) / 8;
 }
 
-function pos(x, y) {
-  const pad = board.clientWidth * PADDING_RATIO;
+function toPixel(x, y) {
   return {
-    left: pad + x * CELL,
-    top: pad + y * CELL
+    left: PADDING + x * CELL,
+    top: PADDING + y * CELL
   };
 }
 
@@ -30,41 +109,104 @@ window.addEventListener("resize", () => {
   render();
 });
 
-/* ================= 初始化棋子 ================= */
+/* =================== 初始化棋子 =================== */
 
 function initPieces() {
   pieces = [
-    { id: 1, text: "车", x: 0, y: 0 },
-    { id: 2, text: "马", x: 1, y: 0 },
-    { id: 3, text: "将", x: 4, y: 9 }
+    // 红
+    {id:1, text:"车", x:0, y:9},
+    {id:2, text:"马", x:1, y:9},
+    {id:3, text:"相", x:2, y:9},
+    {id:4, text:"仕", x:3, y:9},
+    {id:5, text:"帅", x:4, y:9},
+    {id:6, text:"仕", x:5, y:9},
+    {id:7, text:"相", x:6, y:9},
+    {id:8, text:"马", x:7, y:9},
+    {id:9, text:"车", x:8, y:9},
+
+    // 黑
+    {id:10, text:"车", x:0, y:0},
+    {id:11, text:"马", x:1, y:0},
+    {id:12, text:"象", x:2, y:0},
+    {id:13, text:"士", x:3, y:0},
+    {id:14, text:"将", x:4, y:0},
+    {id:15, text:"士", x:5, y:0},
+    {id:16, text:"象", x:6, y:0},
+    {id:17, text:"马", x:7, y:0},
+    {id:18, text:"车", x:8, y:0},
   ];
 }
 
-/* ================= 渲染 ================= */
+/* =================== 渲染 =================== */
 
-function render() {
-  board.innerHTML = "";
+function renderGrid() {
+  // 横线
+  for (let y = 0; y < 10; y++) {
+    const line = document.createElement("div");
+    line.className = "grid";
+    line.style.left = PADDING + "px";
+    line.style.top = (PADDING + y * CELL) + "px";
+    line.style.width = (CELL * 8) + "px";
+    line.style.height = "1px";
+    board.appendChild(line);
+  }
+
+  // 竖线
+  for (let x = 0; x < 9; x++) {
+    const line = document.createElement("div");
+    line.className = "grid";
+    line.style.top = PADDING + "px";
+    line.style.left = (PADDING + x * CELL) + "px";
+    line.style.height = (CELL * 9) + "px";
+    line.style.width = "1px";
+    board.appendChild(line);
+  }
+}
+
+function renderPieces() {
   pieces.forEach(p => {
     const el = document.createElement("div");
     el.className = "piece";
     el.textContent = p.text;
 
-    const { left, top } = pos(p.x, p.y);
-    const size = CELL * 0.8;
+    const {left, top} = toPixel(p.x, p.y);
+    const size = CELL * 0.78;
 
     el.style.width = el.style.height = size + "px";
-    el.style.left = left - size / 2 + "px";
-    el.style.top = top - size / 2 + "px";
+    el.style.left = (left - size / 2) + "px";
+    el.style.top = (top - size / 2) + "px";
+
+    // 点击移动（测试用）
+    el.onclick = () => {
+      history.push(JSON.parse(JSON.stringify(pieces)));
+      p.y = Math.max(0, p.y - 1);
+      sync();
+      render();
+    };
 
     board.appendChild(el);
   });
 }
 
-/* ================= 联机 ================= */
+function render() {
+  board.innerHTML = "";
+  renderGrid();
+  renderPieces();
+}
+
+/* =================== 用户名 =================== */
 
 function getUsername() {
-  const input = document.getElementById("username").value.trim();
-  return input || `未命名_${Math.floor(Math.random() * 10000)}`;
+  const v = document.getElementById("username").value.trim();
+  return v || ("未命名_" + Math.floor(Math.random() * 10000));
+}
+
+/* =================== 联机 =================== */
+
+function sync() {
+  if (conn && conn.open) {
+    conn.send({type:"sync", pieces});
+  }
 }
 
 document.getElementById("create").onclick = () => {
@@ -72,9 +214,8 @@ document.getElementById("create").onclick = () => {
   peer = new Peer();
   peer.on("open", id => {
     roomId = id;
-    document.getElementById("roomLabel").textContent = `房间号：${id}`;
+    document.getElementById("roomLabel").textContent = "房间号：" + id;
   });
-
   peer.on("connection", c => {
     conn = c;
     bindConn();
@@ -84,6 +225,7 @@ document.getElementById("create").onclick = () => {
 document.getElementById("join").onclick = () => {
   username = getUsername();
   const rid = document.getElementById("roomInput").value.trim();
+  if (!rid) return;
   peer = new Peer();
   peer.on("open", () => {
     conn = peer.connect(rid);
@@ -93,7 +235,7 @@ document.getElementById("join").onclick = () => {
 
 function bindConn() {
   conn.on("open", () => {
-    conn.send({ type: "sync", pieces, username });
+    conn.send({type:"sync", pieces});
   });
 
   conn.on("data", msg => {
@@ -101,19 +243,19 @@ function bindConn() {
       pieces = msg.pieces;
       render();
     }
-    if (msg.type === "undo_request") {
+    if (msg.type === "undo_req") {
       if (confirm("对方请求悔棋，是否同意？")) {
         undo();
-        conn.send({ type: "undo_accept" });
+        conn.send({type:"undo_ok"});
       }
     }
-    if (msg.type === "undo_accept") {
+    if (msg.type === "undo_ok") {
       undo();
     }
   });
 }
 
-/* ================= 悔棋 ================= */
+/* =================== 悔棋 =================== */
 
 function undo() {
   if (history.length === 0) return;
@@ -123,11 +265,15 @@ function undo() {
 
 document.getElementById("undo").onclick = () => {
   if (!conn) return alert("未联机");
-  conn.send({ type: "undo_request" });
+  conn.send({type:"undo_req"});
 };
 
-/* ================= 启动 ================= */
+/* =================== 启动 =================== */
 
 updateMetrics();
 initPieces();
 render();
+</script>
+
+</body>
+</html>
