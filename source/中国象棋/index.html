@@ -1,64 +1,93 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>中国象棋 · 手游级移动端</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+<title>中国象棋</title>
 
 <style>
+:root{
+  --board-max-desktop: 720px;
+  --board-max-mobile: 94vw;
+}
+
 html,body{
   margin:0;
-  padding:0;
-  background:#1b1a17;
+  background:#161512;
   color:#eee;
   font-family:"STKaiti","KaiTi","serif";
-  touch-action:manipulation;
   user-select:none;
 }
 
 #app{
-  max-width:520px;
-  margin:auto;
-  padding:8px;
+  display:flex;
+  justify-content:center;
+  padding:24px 0;
 }
 
+/* ======== 棋盘主体 ======== */
 #board{
   position:relative;
   width:100%;
+  background:radial-gradient(circle,#7b4a22,#4a2a12);
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.6) inset;
   aspect-ratio:9/10;
-  background:
-    radial-gradient(circle at center,#7a4a25 0%,#5a3518 60%,#3b220f 100%);
-  border-radius:12px;
-  box-shadow:0 12px 30px rgba(0,0,0,.6) inset;
 }
 
+/* 桌面端 */
+@media (pointer:fine){
+  #board{
+    max-width:var(--board-max-desktop);
+  }
+}
+
+/* 移动端 */
+@media (pointer:coarse){
+  #board{
+    max-width:var(--board-max-mobile);
+  }
+}
+
+/* ======== 网格 ======== */
 .grid{
   position:absolute;
-  left:5%;
-  top:5%;
-  width:90%;
-  height:90%;
+  inset:5%;
   pointer-events:none;
 }
 
 .line{
-  stroke:#2a160a;
+  stroke:#2b160a;
   stroke-width:2;
 }
 
+/* ======== 楚河汉界 ======== */
+#river{
+  position:absolute;
+  left:5%;
+  right:5%;
+  top:50%;
+  transform:translateY(-50%);
+  text-align:center;
+  font-size:1.6em;
+  color:#2b1408;
+  letter-spacing:.6em;
+  pointer-events:none;
+}
+
+/* ======== 棋子 ======== */
 .piece{
   position:absolute;
-  width:10.5%;
   aspect-ratio:1;
   border-radius:50%;
   background:radial-gradient(circle at 30% 30%,#fff,#ddd);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:1.4em;
   font-weight:bold;
   box-shadow:0 4px 10px rgba(0,0,0,.5);
   touch-action:none;
+  transition:box-shadow .15s;
 }
 
 .red{ color:#b40000; }
@@ -68,26 +97,45 @@ html,body{
   box-shadow:0 0 14px gold;
 }
 
-.hint{
-  position:absolute;
-  width:6%;
-  aspect-ratio:1;
-  border-radius:50%;
-  border:2px solid rgba(0,255,0,.65);
-  pointer-events:none;
+/* 桌面端棋子尺寸 */
+@media (pointer:fine){
+  .piece{
+    width:9%;
+    font-size:1.3em;
+  }
 }
 
-#river{
+/* 移动端棋子尺寸 */
+@media (pointer:coarse){
+  .piece{
+    width:11%;
+    font-size:1.45em;
+  }
+}
+
+/* ======== 合法点提示 ======== */
+.hint{
   position:absolute;
-  left:5%;
-  width:90%;
-  top:50%;
-  transform:translateY(-50%);
-  text-align:center;
-  font-size:1.6em;
-  color:#2b1408;
-  letter-spacing:.5em;
+  aspect-ratio:1;
+  border-radius:50%;
   pointer-events:none;
+  border:2px solid rgba(0,255,0,.7);
+}
+
+/* 桌面端弱化 */
+@media (pointer:fine){
+  .hint{
+    width:4.5%;
+    opacity:.4;
+  }
+}
+
+/* 移动端强化 */
+@media (pointer:coarse){
+  .hint{
+    width:6.5%;
+    opacity:.85;
+  }
 }
 </style>
 </head>
@@ -98,25 +146,28 @@ html,body{
 </div>
 
 <script>
-/* ================= 基础数据 ================= */
+/* ========= 环境判断 ========= */
+const isMobile = matchMedia("(pointer: coarse)").matches;
+
+/* ========= 基础 ========= */
 const board=document.getElementById("board");
 let CELL;
 let turn="red";
 let pieces=[];
-let clickSelected=null;
+let selected=null;
 let hints=[];
 
-const moveSound=new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=");
+const sound=new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=");
 
-/* ================= 棋盘绘制 ================= */
+/* ========= 棋盘 ========= */
 function drawBoard(){
   board.innerHTML="";
   CELL=board.clientWidth/9;
 
-  // 网格
   const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
-  svg.setAttribute("class","grid");
+  svg.classList.add("grid");
   svg.setAttribute("viewBox","0 0 9 10");
+
   for(let i=0;i<9;i++){
     const l=document.createElementNS(svg.namespaceURI,"line");
     l.setAttribute("x1",i);
@@ -135,115 +186,107 @@ function drawBoard(){
     l.classList.add("line");
     svg.appendChild(l);
   }
+
   board.appendChild(svg);
 
-  // 楚河汉界
   const river=document.createElement("div");
   river.id="river";
-  river.innerHTML="楚 河　汉 界";
+  river.textContent="楚 河　汉 界";
   board.appendChild(river);
 }
 
-/* ================= 初始化棋子 ================= */
+/* ========= 初始化棋子 ========= */
 const init=[
-["r","車",0,0],["n","馬",1,0],["b","相",2,0],["a","仕",3,0],["k","帥",4,0],
-["a","仕",5,0],["b","相",6,0],["n","馬",7,0],["r","車",8,0],
-["c","炮",1,2],["c","炮",7,2],
-["p","兵",0,3],["p","兵",2,3],["p","兵",4,3],["p","兵",6,3],["p","兵",8,3],
+["車",0,0,"red"],["馬",1,0,"red"],["相",2,0,"red"],["仕",3,0,"red"],["帅",4,0,"red"],
+["仕",5,0,"red"],["相",6,0,"red"],["馬",7,0,"red"],["車",8,0,"red"],
+["炮",1,2,"red"],["炮",7,2,"red"],
+["兵",0,3,"red"],["兵",2,3,"red"],["兵",4,3,"red"],["兵",6,3,"red"],["兵",8,3,"red"],
 
-["r","車",0,9],["n","馬",1,9],["b","象",2,9],["a","士",3,9],["k","將",4,9],
-["a","士",5,9],["b","象",6,9],["n","馬",7,9],["r","車",8,9],
-["c","砲",1,7],["c","砲",7,7],
-["p","卒",0,6],["p","卒",2,6],["p","卒",4,6],["p","卒",6,6],["p","卒",8,6]
+["車",0,9,"black"],["馬",1,9,"black"],["象",2,9,"black"],["士",3,9,"black"],["将",4,9,"black"],
+["士",5,9,"black"],["象",6,9,"black"],["馬",7,9,"black"],["車",8,9,"black"],
+["砲",1,7,"black"],["砲",7,7,"black"],
+["卒",0,6,"black"],["卒",2,6,"black"],["卒",4,6,"black"],["卒",6,6,"black"],["卒",8,6,"black"]
 ];
 
 function spawn(){
   pieces=[];
   init.forEach(d=>{
     const el=document.createElement("div");
-    el.className="piece "+(d[3]<5?"red":"black");
-    el.textContent=d[1];
+    el.className=`piece ${d[3]}`;
+    el.textContent=d[0];
     board.appendChild(el);
-    const p={t:d[0],x:d[2],y:d[3],c:d[3]<5?"red":"black",el};
+    const p={el,x:d[1],y:d[2],c:d[3]};
     pieces.push(p);
     place(p);
-    enablePiece(p);
+    bind(p);
   });
 }
 
-/* ================= 交互 ================= */
 function place(p){
-  p.el.style.left=(p.x+0.5)*CELL - p.el.offsetWidth/2 +"px";
+  p.el.style.left=(p.x+0.5)*CELL - p.el.offsetWidth/2+"px";
   p.el.style.top =(p.y+0.5)*CELL - p.el.offsetHeight/2+"px";
 }
 
-function enablePiece(p){
-  let sx,sy;
-  p.el.addEventListener("pointerdown",e=>{
+/* ========= 交互 ========= */
+function bind(p){
+  p.el.onclick=e=>{
+    e.stopPropagation();
     if(p.c!==turn) return;
-    sx=e.clientX; sy=e.clientY;
-    p.el.setPointerCapture(e.pointerId);
-  });
+    select(p);
+  };
 
-  p.el.addEventListener("pointerup",e=>{
-    if(p.c!==turn) return;
-    const dx=e.clientX-sx, dy=e.clientY-sy;
-    if(Math.abs(dx)+Math.abs(dy)<10){
-      selectPiece(p);
-      return;
-    }
-    const rect=board.getBoundingClientRect();
-    const x=Math.round((e.clientX-rect.left)/CELL);
-    const y=Math.round((e.clientY-rect.top)/CELL);
-    tryMove(p,x,y);
-  });
+  if(isMobile){
+    let sx,sy;
+    p.el.onpointerdown=e=>{
+      if(p.c!==turn) return;
+      sx=e.clientX; sy=e.clientY;
+    };
+    p.el.onpointerup=e=>{
+      if(Math.abs(e.clientX-sx)+Math.abs(e.clientY-sy)<10) return;
+      moveTo(p,e);
+    };
+  }
 }
 
-function selectPiece(p){
-  if(clickSelected){
-    clearHints();
-    clickSelected.el.classList.remove("selected");
-  }
-  clickSelected=p;
+board.onclick=e=>{
+  if(!selected) return;
+  moveTo(selected,e);
+};
+
+function select(p){
+  clearHints();
+  if(selected) selected.el.classList.remove("selected");
+  selected=p;
   p.el.classList.add("selected");
   showHints(p);
-  navigator.vibrate?.(20);
+  navigator.vibrate?.(15);
 }
 
-function tryMove(p,x,y){
-  if(!canMove(p,x,y)) return;
+function moveTo(p,e){
+  const r=board.getBoundingClientRect();
+  const x=Math.round((e.clientX-r.left)/CELL);
+  const y=Math.round((e.clientY-r.top)/CELL);
+  if(x<0||x>8||y<0||y>9) return;
   p.x=x; p.y=y;
   p.el.style.transition="transform .12s ease-out";
   place(p);
   setTimeout(()=>p.el.style.transition="",120);
   clearHints();
-  clickSelected=null;
+  selected=null;
   turn=turn==="red"?"black":"red";
-  moveSound.currentTime=0; moveSound.play();
+  sound.currentTime=0; sound.play();
   navigator.vibrate?.(30);
 }
 
-/* ================= 规则（简化但完整可玩） ================= */
-function canMove(p,x,y){
-  if(x<0||x>8||y<0||y>9) return false;
-  if(p.x===x&&p.y===y) return false;
-  const t=pieces.find(o=>o.x===x&&o.y===y);
-  if(t&&t.c===p.c) return false;
-  return true;
-}
-
-/* ================= 合法点提示 ================= */
+/* ========= 提示 ========= */
 function showHints(p){
-  clearHints();
   for(let x=0;x<9;x++)for(let y=0;y<10;y++){
-    if(canMove(p,x,y)){
-      const h=document.createElement("div");
-      h.className="hint";
-      h.style.left=(x+0.5)*CELL - CELL*0.03 +"px";
-      h.style.top =(y+0.5)*CELL - CELL*0.03 +"px";
-      board.appendChild(h);
-      hints.push(h);
-    }
+    const h=document.createElement("div");
+    h.className="hint";
+    h.style.left=(x+0.5)*CELL - CELL*0.03+"px";
+    h.style.top =(y+0.5)*CELL - CELL*0.03+"px";
+    board.appendChild(h);
+    hints.push(h);
   }
 }
 function clearHints(){
@@ -251,10 +294,10 @@ function clearHints(){
   hints=[];
 }
 
-/* ================= 启动 ================= */
+/* ========= 启动 ========= */
 drawBoard();
 spawn();
-window.addEventListener("resize",()=>{ drawBoard(); pieces.forEach(place); });
+addEventListener("resize",()=>{drawBoard();pieces.forEach(place);});
 </script>
 </body>
 </html>
