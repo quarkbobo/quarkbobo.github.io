@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>中国象棋 · 双人对战</title>
+
+<style>
+body {
+  background: #5a3b1c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: "KaiTi", "STKaiti", serif;
+}
+
+#game {
+  background: #d8b47a;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,.5),
+              0 10px 30px rgba(0,0,0,.6);
+}
+
+#board {
+  position: relative;
+  width: 450px;
+  height: 500px;
+  background: repeating-linear-gradient(
+    90deg,
+    #e3c18b,
+    #e3c18b 50px,
+    #d2a86a 50px,
+    #d2a86a 100px
+  );
+  border: 4px solid #3a240f;
+}
+
+.line {
+  position: absolute;
+  background: #3a240f;
+}
+
+.piece {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  line-height: 44px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.red {
+  background: #f7e5e5;
+  color: #b10000;
+  border: 2px solid #b10000;
+}
+
+.black {
+  background: #eee;
+  color: #000;
+  border: 2px solid #000;
+}
+
+.selected {
+  box-shadow: 0 0 10px 4px gold;
+}
+</style>
+</head>
+
+<body>
+<div id="game">
+  <div id="board"></div>
+</div>
+
+<script>
+const board = document.getElementById("board");
+const CELL = 50;
+let turn = "red";
+let selected = null;
+let pieces = [];
+
+const initPieces = [
+  ["车",0,0,"black"],["马",1,0,"black"],["象",2,0,"black"],["士",3,0,"black"],["将",4,0,"black"],
+  ["士",5,0,"black"],["象",6,0,"black"],["马",7,0,"black"],["车",8,0,"black"],
+  ["炮",1,2,"black"],["炮",7,2,"black"],
+  ["卒",0,3,"black"],["卒",2,3,"black"],["卒",4,3,"black"],["卒",6,3,"black"],["卒",8,3,"black"],
+
+  ["车",0,9,"red"],["马",1,9,"red"],["相",2,9,"red"],["仕",3,9,"red"],["帅",4,9,"red"],
+  ["仕",5,9,"red"],["相",6,9,"red"],["马",7,9,"red"],["车",8,9,"red"],
+  ["炮",1,7,"red"],["炮",7,7,"red"],
+  ["兵",0,6,"red"],["兵",2,6,"red"],["兵",4,6,"red"],["兵",6,6,"red"],["兵",8,6,"red"]
+];
+
+function drawBoard() {
+  for (let i=0;i<10;i++){
+    let h=document.createElement("div");
+    h.className="line";
+    h.style.width="450px";
+    h.style.height="1px";
+    h.style.top=i*CELL+"px";
+    board.appendChild(h);
+  }
+  for (let i=0;i<9;i++){
+    let v=document.createElement("div");
+    v.className="line";
+    v.style.height="500px";
+    v.style.width="1px";
+    v.style.left=i*CELL+"px";
+    board.appendChild(v);
+  }
+}
+
+function pieceAt(x,y){
+  return pieces.find(p=>p.x==x && p.y==y);
+}
+
+function createPiece(name,x,y,camp){
+  const el=document.createElement("div");
+  el.className=`piece ${camp}`;
+  el.innerText=name;
+  el.style.left=x*CELL+3+"px";
+  el.style.top=y*CELL+3+"px";
+
+  const obj={el,name,x,y,camp};
+  el.onclick=()=>{
+    if(obj.camp!==turn && !selected) return;
+    if(selected){
+      if(obj===selected){
+        el.classList.remove("selected");
+        selected=null;
+        return;
+      }
+      if(obj.camp!==selected.camp && canMove(selected,obj.x,obj.y,true)){
+        capture(selected,obj);
+      }
+    }else{
+      selected=obj;
+      el.classList.add("selected");
+    }
+  };
+
+  board.appendChild(el);
+  pieces.push(obj);
+}
+
+function move(p,x,y){
+  p.x=x; p.y=y;
+  p.el.style.left=x*CELL+3+"px";
+  p.el.style.top=y*CELL+3+"px";
+}
+
+function capture(from,to){
+  board.removeChild(to.el);
+  pieces=pieces.filter(p=>p!==to);
+  move(from,to.x,to.y);
+  endTurn();
+}
+
+board.onclick=e=>{
+  if(!selected) return;
+  const r=board.getBoundingClientRect();
+  const x=Math.floor((e.clientX-r.left)/CELL);
+  const y=Math.floor((e.clientY-r.top)/CELL);
+  if(canMove(selected,x,y,false)){
+    move(selected,x,y);
+    endTurn();
+  }
+};
+
+function endTurn(){
+  selected.el.classList.remove("selected");
+  selected=null;
+  turn=turn==="red"?"black":"red";
+}
+
+function canMove(p,x,y,isCapture){
+  if(x<0||x>8||y<0||y>9) return false;
+  const dx=x-p.x, dy=y-p.y;
+  const absx=Math.abs(dx), absy=Math.abs(dy);
+  const target=pieceAt(x,y);
+  if(target && target.camp===p.camp) return false;
+
+  switch(p.name){
+    case "车": return dx===0||dy===0;
+    case "马": return absx*absy===2;
+    case "相":
+    case "象":
+      if(absx!==2||absy!==2) return false;
+      return p.camp==="red"? y>=5 : y<=4;
+    case "仕":
+    case "士":
+      return absx===1&&absy===1 && x>=3&&x<=5 && (p.camp==="red"?y>=7:y<=2);
+    case "帅":
+    case "将":
+      return absx+absy===1 && x>=3&&x<=5 && (p.camp==="red"?y>=7:y<=2);
+    case "炮":
+      if(dx!==0&&dy!==0) return false;
+      let cnt=0;
+      pieces.forEach(o=>{
+        if(o!==p){
+          if(dx===0 && o.x===p.x && ((o.y>p.y&&o.y<y)||(o.y<p.y&&o.y>y))) cnt++;
+          if(dy===0 && o.y===p.y && ((o.x>p.x&&o.x<x)||(o.x<p.x&&o.x>x))) cnt++;
+        }
+      });
+      return isCapture?cnt===1:cnt===0;
+    case "兵":
+    case "卒":
+      if(p.camp==="red"){
+        if(y<5) return absx+absy===1;
+        return dx===0&&dy===-1;
+      }else{
+        if(y>4) return absx+absy===1;
+        return dx===0&&dy===1;
+      }
+  }
+  return false;
+}
+
+drawBoard();
+initPieces.forEach(p=>createPiece(...p));
+</script>
+</body>
+</html>
