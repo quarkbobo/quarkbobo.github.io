@@ -1,303 +1,133 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-<title>中国象棋</title>
+const board = document.getElementById("board");
 
-<style>
-:root{
-  --board-max-desktop: 720px;
-  --board-max-mobile: 94vw;
+let CELL = 0;
+const PADDING_RATIO = 0.06;
+
+let pieces = [];
+let history = [];
+
+let peer, conn;
+let roomId = null;
+let username = null;
+
+/* ================= 坐标系统 ================= */
+
+function updateMetrics() {
+  const size = board.clientWidth;
+  CELL = size * (1 - PADDING_RATIO * 2) / 8;
 }
 
-html,body{
-  margin:0;
-  background:#161512;
-  color:#eee;
-  font-family:"STKaiti","KaiTi","serif";
-  user-select:none;
+function pos(x, y) {
+  const pad = board.clientWidth * PADDING_RATIO;
+  return {
+    left: pad + x * CELL,
+    top: pad + y * CELL
+  };
 }
 
-#app{
-  display:flex;
-  justify-content:center;
-  padding:24px 0;
+window.addEventListener("resize", () => {
+  updateMetrics();
+  render();
+});
+
+/* ================= 初始化棋子 ================= */
+
+function initPieces() {
+  pieces = [
+    { id: 1, text: "车", x: 0, y: 0 },
+    { id: 2, text: "马", x: 1, y: 0 },
+    { id: 3, text: "将", x: 4, y: 9 }
+  ];
 }
 
-/* ======== 棋盘主体 ======== */
-#board{
-  position:relative;
-  width:100%;
-  background:radial-gradient(circle,#7b4a22,#4a2a12);
-  border-radius:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,.6) inset;
-  aspect-ratio:9/10;
-}
+/* ================= 渲染 ================= */
 
-/* 桌面端 */
-@media (pointer:fine){
-  #board{
-    max-width:var(--board-max-desktop);
-  }
-}
+function render() {
+  board.innerHTML = "";
+  pieces.forEach(p => {
+    const el = document.createElement("div");
+    el.className = "piece";
+    el.textContent = p.text;
 
-/* 移动端 */
-@media (pointer:coarse){
-  #board{
-    max-width:var(--board-max-mobile);
-  }
-}
+    const { left, top } = pos(p.x, p.y);
+    const size = CELL * 0.8;
 
-/* ======== 网格 ======== */
-.grid{
-  position:absolute;
-  inset:5%;
-  pointer-events:none;
-}
+    el.style.width = el.style.height = size + "px";
+    el.style.left = left - size / 2 + "px";
+    el.style.top = top - size / 2 + "px";
 
-.line{
-  stroke:#2b160a;
-  stroke-width:2;
-}
-
-/* ======== 楚河汉界 ======== */
-#river{
-  position:absolute;
-  left:5%;
-  right:5%;
-  top:50%;
-  transform:translateY(-50%);
-  text-align:center;
-  font-size:1.6em;
-  color:#2b1408;
-  letter-spacing:.6em;
-  pointer-events:none;
-}
-
-/* ======== 棋子 ======== */
-.piece{
-  position:absolute;
-  aspect-ratio:1;
-  border-radius:50%;
-  background:radial-gradient(circle at 30% 30%,#fff,#ddd);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-  box-shadow:0 4px 10px rgba(0,0,0,.5);
-  touch-action:none;
-  transition:box-shadow .15s;
-}
-
-.red{ color:#b40000; }
-.black{ color:#111; }
-
-.selected{
-  box-shadow:0 0 14px gold;
-}
-
-/* 桌面端棋子尺寸 */
-@media (pointer:fine){
-  .piece{
-    width:9%;
-    font-size:1.3em;
-  }
-}
-
-/* 移动端棋子尺寸 */
-@media (pointer:coarse){
-  .piece{
-    width:11%;
-    font-size:1.45em;
-  }
-}
-
-/* ======== 合法点提示 ======== */
-.hint{
-  position:absolute;
-  aspect-ratio:1;
-  border-radius:50%;
-  pointer-events:none;
-  border:2px solid rgba(0,255,0,.7);
-}
-
-/* 桌面端弱化 */
-@media (pointer:fine){
-  .hint{
-    width:4.5%;
-    opacity:.4;
-  }
-}
-
-/* 移动端强化 */
-@media (pointer:coarse){
-  .hint{
-    width:6.5%;
-    opacity:.85;
-  }
-}
-</style>
-</head>
-
-<body>
-<div id="app">
-  <div id="board"></div>
-</div>
-
-<script>
-/* ========= 环境判断 ========= */
-const isMobile = matchMedia("(pointer: coarse)").matches;
-
-/* ========= 基础 ========= */
-const board=document.getElementById("board");
-let CELL;
-let turn="red";
-let pieces=[];
-let selected=null;
-let hints=[];
-
-const sound=new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=");
-
-/* ========= 棋盘 ========= */
-function drawBoard(){
-  board.innerHTML="";
-  CELL=board.clientWidth/9;
-
-  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
-  svg.classList.add("grid");
-  svg.setAttribute("viewBox","0 0 9 10");
-
-  for(let i=0;i<9;i++){
-    const l=document.createElementNS(svg.namespaceURI,"line");
-    l.setAttribute("x1",i);
-    l.setAttribute("y1",0);
-    l.setAttribute("x2",i);
-    l.setAttribute("y2",9);
-    l.classList.add("line");
-    svg.appendChild(l);
-  }
-  for(let i=0;i<10;i++){
-    const l=document.createElementNS(svg.namespaceURI,"line");
-    l.setAttribute("x1",0);
-    l.setAttribute("y1",i);
-    l.setAttribute("x2",8);
-    l.setAttribute("y2",i);
-    l.classList.add("line");
-    svg.appendChild(l);
-  }
-
-  board.appendChild(svg);
-
-  const river=document.createElement("div");
-  river.id="river";
-  river.textContent="楚 河　汉 界";
-  board.appendChild(river);
-}
-
-/* ========= 初始化棋子 ========= */
-const init=[
-["車",0,0,"red"],["馬",1,0,"red"],["相",2,0,"red"],["仕",3,0,"red"],["帅",4,0,"red"],
-["仕",5,0,"red"],["相",6,0,"red"],["馬",7,0,"red"],["車",8,0,"red"],
-["炮",1,2,"red"],["炮",7,2,"red"],
-["兵",0,3,"red"],["兵",2,3,"red"],["兵",4,3,"red"],["兵",6,3,"red"],["兵",8,3,"red"],
-
-["車",0,9,"black"],["馬",1,9,"black"],["象",2,9,"black"],["士",3,9,"black"],["将",4,9,"black"],
-["士",5,9,"black"],["象",6,9,"black"],["馬",7,9,"black"],["車",8,9,"black"],
-["砲",1,7,"black"],["砲",7,7,"black"],
-["卒",0,6,"black"],["卒",2,6,"black"],["卒",4,6,"black"],["卒",6,6,"black"],["卒",8,6,"black"]
-];
-
-function spawn(){
-  pieces=[];
-  init.forEach(d=>{
-    const el=document.createElement("div");
-    el.className=`piece ${d[3]}`;
-    el.textContent=d[0];
     board.appendChild(el);
-    const p={el,x:d[1],y:d[2],c:d[3]};
-    pieces.push(p);
-    place(p);
-    bind(p);
   });
 }
 
-function place(p){
-  p.el.style.left=(p.x+0.5)*CELL - p.el.offsetWidth/2+"px";
-  p.el.style.top =(p.y+0.5)*CELL - p.el.offsetHeight/2+"px";
+/* ================= 联机 ================= */
+
+function getUsername() {
+  const input = document.getElementById("username").value.trim();
+  return input || `未命名_${Math.floor(Math.random() * 10000)}`;
 }
 
-/* ========= 交互 ========= */
-function bind(p){
-  p.el.onclick=e=>{
-    e.stopPropagation();
-    if(p.c!==turn) return;
-    select(p);
-  };
+document.getElementById("create").onclick = () => {
+  username = getUsername();
+  peer = new Peer();
+  peer.on("open", id => {
+    roomId = id;
+    document.getElementById("roomLabel").textContent = `房间号：${id}`;
+  });
 
-  if(isMobile){
-    let sx,sy;
-    p.el.onpointerdown=e=>{
-      if(p.c!==turn) return;
-      sx=e.clientX; sy=e.clientY;
-    };
-    p.el.onpointerup=e=>{
-      if(Math.abs(e.clientX-sx)+Math.abs(e.clientY-sy)<10) return;
-      moveTo(p,e);
-    };
-  }
-}
-
-board.onclick=e=>{
-  if(!selected) return;
-  moveTo(selected,e);
+  peer.on("connection", c => {
+    conn = c;
+    bindConn();
+  });
 };
 
-function select(p){
-  clearHints();
-  if(selected) selected.el.classList.remove("selected");
-  selected=p;
-  p.el.classList.add("selected");
-  showHints(p);
-  navigator.vibrate?.(15);
+document.getElementById("join").onclick = () => {
+  username = getUsername();
+  const rid = document.getElementById("roomInput").value.trim();
+  peer = new Peer();
+  peer.on("open", () => {
+    conn = peer.connect(rid);
+    bindConn();
+  });
+};
+
+function bindConn() {
+  conn.on("open", () => {
+    conn.send({ type: "sync", pieces, username });
+  });
+
+  conn.on("data", msg => {
+    if (msg.type === "sync") {
+      pieces = msg.pieces;
+      render();
+    }
+    if (msg.type === "undo_request") {
+      if (confirm("对方请求悔棋，是否同意？")) {
+        undo();
+        conn.send({ type: "undo_accept" });
+      }
+    }
+    if (msg.type === "undo_accept") {
+      undo();
+    }
+  });
 }
 
-function moveTo(p,e){
-  const r=board.getBoundingClientRect();
-  const x=Math.round((e.clientX-r.left)/CELL);
-  const y=Math.round((e.clientY-r.top)/CELL);
-  if(x<0||x>8||y<0||y>9) return;
-  p.x=x; p.y=y;
-  p.el.style.transition="transform .12s ease-out";
-  place(p);
-  setTimeout(()=>p.el.style.transition="",120);
-  clearHints();
-  selected=null;
-  turn=turn==="red"?"black":"red";
-  sound.currentTime=0; sound.play();
-  navigator.vibrate?.(30);
+/* ================= 悔棋 ================= */
+
+function undo() {
+  if (history.length === 0) return;
+  pieces = history.pop();
+  render();
 }
 
-/* ========= 提示 ========= */
-function showHints(p){
-  for(let x=0;x<9;x++)for(let y=0;y<10;y++){
-    const h=document.createElement("div");
-    h.className="hint";
-    h.style.left=(x+0.5)*CELL - CELL*0.03+"px";
-    h.style.top =(y+0.5)*CELL - CELL*0.03+"px";
-    board.appendChild(h);
-    hints.push(h);
-  }
-}
-function clearHints(){
-  hints.forEach(h=>h.remove());
-  hints=[];
-}
+document.getElementById("undo").onclick = () => {
+  if (!conn) return alert("未联机");
+  conn.send({ type: "undo_request" });
+};
 
-/* ========= 启动 ========= */
-drawBoard();
-spawn();
-addEventListener("resize",()=>{drawBoard();pieces.forEach(place);});
-</script>
-</body>
-</html>
+/* ================= 启动 ================= */
+
+updateMetrics();
+initPieces();
+render();
