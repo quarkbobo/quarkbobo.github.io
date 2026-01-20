@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>联机中国象棋 · 楚河汉界</title>
-
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
 <style>
@@ -14,59 +13,39 @@
   --line:#d6b47c;
   --red:#c03030;
 }
-
 body{
   margin:0;
-  background:radial-gradient(#140b05,#000);
+  background:radial-gradient(#120a05,#000);
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
   font-family:"KaiTi","STKaiti",serif;
+  color:#f5d28b;
 }
-
 #game{
   background:var(--wood);
   padding:12px;
   border-radius:14px;
   box-shadow:0 0 40px rgba(0,0,0,.8);
-  color:#f5d28b;
+  max-width:95vw;
 }
-
 #top{
   text-align:center;
+  font-size:14px;
   margin-bottom:6px;
 }
-
 #board{
   position:relative;
   width:min(90vw,420px);
   aspect-ratio:9/10;
-  background:
-    linear-gradient(145deg,#6a4420,#3d240f);
+  background:linear-gradient(145deg,#6a4420,#3d240f);
   border:3px solid #1a0f05;
 }
-
-.line{
-  position:absolute;
-  background:var(--line);
-}
-
-#river{
-  position:absolute;
-  top:50%;
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  padding:0 15%;
-  font-size:1.2em;
-  color:#e6c78a;
-  pointer-events:none;
-}
-
+.line{position:absolute;background:var(--line)}
 .piece{
   position:absolute;
-  width:10%;
+  width:8.8%;
   aspect-ratio:1;
   border-radius:50%;
   display:flex;
@@ -76,36 +55,44 @@ body{
   font-weight:bold;
   cursor:pointer;
 }
+.red{background:#f6e1e1;color:var(--red);border:2px solid var(--red)}
+.black{background:#ddd;color:#000;border:2px solid #000}
+.selected{box-shadow:0 0 10px 4px gold}
 
-.red{
-  background:#f6e1e1;
-  color:var(--red);
-  border:2px solid var(--red);
+#river{
+  position:absolute;
+  top:45%;
+  height:10%;
+  width:100%;
+  pointer-events:none;
 }
-
-.black{
-  background:#ddd;
-  color:#000;
-  border:2px solid #000;
-}
-
-.selected{
-  box-shadow:0 0 10px 4px gold;
+#river svg{
+  width:100%;
+  height:100%;
 }
 
 #panel{
-  margin-top:6px;
   display:flex;
   gap:6px;
+  margin-top:6px;
 }
-
 input,button{
-  flex:1;
-  background:#1a0f05;
+  background:#111;
   color:#f5d28b;
   border:1px solid #c9a063;
   border-radius:6px;
   padding:6px;
+  flex:1;
+}
+
+#chat{
+  margin-top:6px;
+  background:#0e0804;
+  border:1px solid #3a2613;
+  padding:6px;
+  height:100px;
+  overflow:auto;
+  font-size:12px;
 }
 </style>
 </head>
@@ -113,39 +100,71 @@ input,button{
 <body>
 <div id="game">
   <div id="top">
+    用户：<span id="user"></span> |
     身份：<span id="role">未连接</span> |
-    回合：<span id="turn">-</span>
+    状态：<span id="state">等待</span>
   </div>
 
   <div id="board">
-    <div id="river"><span>楚河</span><span>汉界</span></div>
+    <div id="river">
+      <!-- SVG 书法楚河汉界 -->
+      <svg viewBox="0 0 100 10" preserveAspectRatio="none">
+        <text x="25" y="7" text-anchor="middle"
+          font-size="7" fill="#e6c78a"
+          style="font-family:KaiTi,STKaiti;letter-spacing:2">
+          楚河
+        </text>
+        <text x="75" y="7" text-anchor="middle"
+          font-size="7" fill="#e6c78a"
+          style="font-family:KaiTi,STKaiti;letter-spacing:2">
+          汉界
+        </text>
+      </svg>
+    </div>
   </div>
 
   <div id="panel">
-    <button onclick="createRoom()">创建房间</button>
+    <input id="name" placeholder="用户名（可空）">
     <input id="room" placeholder="房间号">
+  </div>
+  <div id="panel">
+    <button onclick="createRoom()">创建</button>
     <button onclick="joinRoom()">加入</button>
   </div>
+
+  <div id="chat"></div>
 </div>
 
 <script>
-/* ====== PeerJS ====== */
-let peer=new Peer();
-let conn=null;
-let myCamp=null;
+/* ========= 用户 ========= */
+let username = "";
+function genName(){
+  return "未命名_" + Math.random().toString(36).slice(2,6);
+}
+username = genName();
+document.getElementById("user").innerText = username;
 
-/* ====== 棋局 ====== */
+/* ========= PeerJS ========= */
+let peer=null, conn=null;
+let myCamp=null, host=false;
+
+/* ========= 聊天 ========= */
+const chat = document.getElementById("chat");
+function log(msg){
+  chat.innerHTML += msg + "<br>";
+  chat.scrollTop = chat.scrollHeight;
+}
+
+/* ========= 棋盘数据 ========= */
 const board=document.getElementById("board");
 const CELL=board.clientWidth/9;
-let turn="red",selected=null,pieces=[];
+let turn="red", selected=null, pieces=[];
 
-/* ====== 初始化棋子 ====== */
 const init=[
 ["车",0,0,"black"],["马",1,0,"black"],["象",2,0,"black"],["士",3,0,"black"],["将",4,0,"black"],
 ["士",5,0,"black"],["象",6,0,"black"],["马",7,0,"black"],["车",8,0,"black"],
 ["炮",1,2,"black"],["炮",7,2,"black"],
 ["卒",0,3,"black"],["卒",2,3,"black"],["卒",4,3,"black"],["卒",6,3,"black"],["卒",8,3,"black"],
-
 ["车",0,9,"red"],["马",1,9,"red"],["相",2,9,"red"],["仕",3,9,"red"],["帅",4,9,"red"],
 ["仕",5,9,"red"],["相",6,9,"red"],["马",7,9,"red"],["车",8,9,"red"],
 ["炮",1,7,"red"],["炮",7,7,"red"],
@@ -153,6 +172,7 @@ const init=[
 ];
 
 function drawBoard(){
+  board.innerHTML += "";
   for(let i=0;i<10;i++){
     let h=document.createElement("div");
     h.className="line";
@@ -171,24 +191,13 @@ function drawBoard(){
   }
 }
 
-function createPiece(name,x,y,camp){
+function createPiece(n,x,y,c){
   const el=document.createElement("div");
-  el.className=`piece ${camp}`;
-  el.innerText=name;
+  el.className=`piece ${c}`;
+  el.innerText=n;
   board.appendChild(el);
-  const p={el,name,x,y,camp};
+  const p={el,n,x,y,c};
   place(p);
-  el.onclick=e=>{
-    e.stopPropagation();
-    if(myCamp!==turn||p.camp!==myCamp&&!selected) return;
-    if(selected){
-      if(p===selected){clearSel();return;}
-      if(p.camp!==selected.camp&&canMove(selected,p.x,p.y)){
-        syncMove(selected.x,selected.y,p.x,p.y);
-        applyMove(selected.x,selected.y,p.x,p.y);
-      }
-    }else{select(p);}
-  };
   pieces.push(p);
 }
 
@@ -197,74 +206,55 @@ function place(p){
   p.el.style.top=p.y*CELL+"px";
 }
 
-function pieceAt(x,y){return pieces.find(p=>p.x===x&&p.y===y);}
-function select(p){selected=p;p.el.classList.add("selected");}
-function clearSel(){selected.el.classList.remove("selected");selected=null;}
-
-function canMove(p,x,y){
-  const dx=x-p.x,dy=y-p.y,ax=Math.abs(dx),ay=Math.abs(dy);
-  if(x<0||x>8||y<0||y>9) return false;
-  const t=pieceAt(x,y); if(t&&t.camp===p.camp) return false;
-  switch(p.name){
-    case"车":return dx===0||dy===0;
-    case"马":return ax*ay===2;
-    case"相":case"象":return ax===2&&ay===2&&(p.camp==="red"?y>=5:y<=4);
-    case"仕":case"士":return ax===1&&ay===1&&x>=3&&x<=5&&(p.camp==="red"?y>=7:y<=2);
-    case"帅":case"将":return ax+ay===1&&x>=3&&x<=5&&(p.camp==="red"?y>=7:y<=2);
-    case"炮":return dx===0||dy===0;
-    case"兵":case"卒":
-      return p.camp==="red"? (y<5?ax+ay===1:dx===0&&dy===-1):(y>4?ax+ay===1:dx===0&&dy===1);
-  }
-  return false;
-}
-
-function applyMove(x1,y1,x2,y2){
-  const p=pieceAt(x1,y1);
-  const t=pieceAt(x2,y2);
-  if(t){board.removeChild(t.el);pieces=pieces.filter(o=>o!==t);}
-  p.x=x2;p.y=y2;place(p);
-  clearSel();
-  turn=turn==="red"?"black":"red";
-  document.getElementById("turn").innerText=turn==="red"?"红":"黑";
-}
-
-/* ====== 联机 ====== */
+/* ========= 房间 ========= */
 function createRoom(){
-  alert("房间号："+peer.id);
+  const r=document.getElementById("room").value.trim();
+  const n=document.getElementById("name").value.trim();
+  if(n) username=n;
+  peer=new Peer(r);
+  host=true;
+  myCamp="red";
+  document.getElementById("role").innerText="红方（房主）";
+  peer.on("connection",c=>{
+    conn=c;
+    syncState();
+    log("🔗 玩家加入");
+  });
+  start();
 }
 
 function joinRoom(){
-  conn=peer.connect(document.getElementById("room").value);
-  bindConn();
-}
-
-peer.on("connection",c=>{
-  conn=c;
-  myCamp="red";
-  document.getElementById("role").innerText="红方";
-  bindConn();
-});
-
-function bindConn(){
-  conn.on("open",()=>{
-    if(!myCamp){
-      myCamp="black";
-      document.getElementById("role").innerText="黑方";
-    }
-    document.getElementById("turn").innerText="红";
-  });
-  conn.on("data",d=>{
-    applyMove(...d);
+  const r=document.getElementById("room").value.trim();
+  const n=document.getElementById("name").value.trim();
+  if(n) username=n;
+  peer=new Peer();
+  peer.on("open",()=>{
+    conn=peer.connect(r);
+    myCamp="black";
+    document.getElementById("role").innerText="黑方";
+    conn.on("data",d=>loadState(d));
   });
 }
 
-function syncMove(x1,y1,x2,y2){
-  if(conn) conn.send([x1,y1,x2,y2]);
+function syncState(){
+  if(conn) conn.send({pieces,turn});
+}
+function loadState(d){
+  pieces=[];
+  board.querySelectorAll(".piece").forEach(p=>p.remove());
+  d.pieces.forEach(p=>createPiece(p.n,p.x,p.y,p.c));
+  turn=d.turn;
+  document.getElementById("state").innerText="对局中";
 }
 
-/* ====== 启动 ====== */
-drawBoard();
-init.forEach(p=>createPiece(...p));
+/* ========= 启动 ========= */
+function start(){
+  drawBoard();
+  pieces=[];
+  init.forEach(p=>createPiece(p[0],p[1],p[2],p[3]));
+  document.getElementById("state").innerText="等待中";
+}
+start();
 </script>
 </body>
 </html>
