@@ -1,220 +1,72 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
-<title>中国象棋 · 手游级交互最小版</title>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>中国象棋 · 正确棋盘基座</title>
 <style>
 body {
   margin: 0;
-  background: #1b1b1b;
-  color: #eee;
-  font-family: system-ui, -apple-system;
-}
-#ui {
+  background: #111;
   display: flex;
-  gap: 6px;
-  padding: 8px;
   justify-content: center;
-  flex-wrap: wrap;
-}
-input,button {
-  padding: 4px 6px;
-  font-size: 14px;
-}
-#board {
-  position: relative;
-  width: min(94vw, 94vh);
-  aspect-ratio: 9/10;
-  margin: auto;
-  background: #caa46a;
-  border-radius: 8px;
-}
-.grid {
-  position: absolute;
-  background: rgba(0,0,0,.35);
-}
-.piece {
-  position: absolute;
-  border-radius: 50%;
-  background: #f8f8f8;
-  border: 1px solid #333;
-  font-weight: bold;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  user-select: none;
-  touch-action: none;
-  transition: left .12s, top .12s;
+  height: 100vh;
 }
-.piece.active {
-  box-shadow: 0 0 0 3px #ffd54f;
-}
-.hint {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(0,255,0,.35);
-  pointer-events: none;
+svg {
+  width: min(96vw, 700px);
+  height: auto;
 }
 </style>
 </head>
-
 <body>
 
-<div id="ui">
-  <input id="username" placeholder="用户名（可空）">
-  <button id="create">创建房间</button>
-  <input id="roomInput" placeholder="房间号">
-  <button id="join">加入</button>
-</div>
+<svg viewBox="0 0 1000 1100">
 
-<div id="board"></div>
+  <!-- 背板 -->
+  <rect x="50" y="50" width="900" height="1000" rx="24" fill="#e2c18c"/>
 
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script>
-/* ================= 坐标系统 ================= */
-const board = document.getElementById("board");
-let CELL=0,PAD=0;
+  <!-- 棋盘线 -->
+  <g stroke="#5a3a1e" stroke-width="3">
 
-function updateMetrics(){
-  const s=board.clientWidth;
-  PAD=s*0.06;
-  CELL=(s-PAD*2)/8;
-}
-function px(x,y){
-  return {x:PAD+x*CELL,y:PAD+y*CELL};
-}
-window.addEventListener("resize",()=>{updateMetrics();render();});
-
-/* ================= 数据 ================= */
-let pieces=[];
-let selected=null;
-let hints=[];
-let history=[];
-
-/* ================= 初始化 ================= */
-function initPieces(){
-  pieces=[
-    {id:1,t:"车",x:0,y:9},{id:2,t:"马",x:1,y:9},{id:3,t:"相",x:2,y:9},
-    {id:4,t:"仕",x:3,y:9},{id:5,t:"帅",x:4,y:9},
-    {id:6,t:"仕",x:5,y:9},{id:7,t:"相",x:6,y:9},
-    {id:8,t:"马",x:7,y:9},{id:9,t:"车",x:8,y:9},
-    {id:10,t:"车",x:0,y:0},{id:11,t:"马",x:1,y:0},
-    {id:12,t:"象",x:2,y:0},{id:13,t:"士",x:3,y:0},
-    {id:14,t:"将",x:4,y:0},{id:15,t:"士",x:5,y:0},
-    {id:16,t:"象",x:6,y:0},{id:17,t:"马",x:7,y:0},
-    {id:18,t:"车",x:8,y:0},
-  ];
-}
-
-/* ================= 合法走法（简化） ================= */
-function legalMoves(p){
-  const m=[];
-  [[1,0],[-1,0],[0,1],[0,-1]].forEach(d=>{
-    const nx=p.x+d[0],ny=p.y+d[1];
-    if(nx>=0&&nx<=8&&ny>=0&&ny<=9)m.push({x:nx,y:ny});
-  });
-  return m;
-}
-
-/* ================= 渲染 ================= */
-function renderGrid(){
-  for(let i=0;i<10;i++){
-    const l=document.createElement("div");
-    l.className="grid";
-    l.style.left=PAD+"px";
-    l.style.top=(PAD+i*CELL)+"px";
-    l.style.width=CELL*8+"px";
-    l.style.height="1px";
-    board.appendChild(l);
-  }
-  for(let i=0;i<9;i++){
-    const l=document.createElement("div");
-    l.className="grid";
-    l.style.top=PAD+"px";
-    l.style.left=(PAD+i*CELL)+"px";
-    l.style.height=CELL*9+"px";
-    l.style.width="1px";
-    board.appendChild(l);
-  }
-}
-
-function renderHints(){
-  hints.forEach(h=>{
-    const d=document.createElement("div");
-    d.className="hint";
-    const p=px(h.x,h.y);
-    const s=CELL*0.25;
-    d.style.width=d.style.height=s+"px";
-    d.style.left=(p.x-s/2)+"px";
-    d.style.top=(p.y-s/2)+"px";
-    board.appendChild(d);
-  });
-}
-
-function renderPieces(){
-  pieces.forEach(p=>{
-    const d=document.createElement("div");
-    d.className="piece"+(selected===p?" active":"");
-    d.textContent=p.t;
-    const pos=px(p.x,p.y);
-    const s=CELL*0.78;
-    d.style.width=d.style.height=s+"px";
-    d.style.left=(pos.x-s/2)+"px";
-    d.style.top=(pos.y-s/2)+"px";
-    d.style.fontSize=s*0.45+"px";
-
-    d.onclick=e=>{
-      e.stopPropagation();
-      if(selected===p){selected=null;hints=[];}
-      else{
-        selected=p;
-        hints=legalMoves(p);
-        navigator.vibrate?.(10);
+    <!-- 竖线 9 列 -->
+    <!-- 中间竖线贯通，其余在河界断开 -->
+    <script><![CDATA[
+      for (let i = 0; i < 9; i++) {
+        const x = 100 + i * 100;
+        if (i === 0 || i === 8) {
+          document.write(`<line x1="${x}" y1="100" x2="${x}" y2="1000"/>`);
+        } else {
+          document.write(`
+            <line x1="${x}" y1="100" x2="${x}" y2="500"/>
+            <line x1="${x}" y1="600" x2="${x}" y2="1000"/>
+          `);
+        }
       }
-      render();
-    };
+    ]]></script>
 
-    enableDrag(d,p);
-    board.appendChild(d);
-  });
-}
+    <!-- 横线 -->
+    <script><![CDATA[
+      for (let j = 0; j < 10; j++) {
+        if (j === 4 || j === 5) continue; // 河界
+        const y = 100 + j * 100;
+        document.write(`<line x1="100" y1="${y}" x2="900" y2="${y}"/>`);
+      }
+    ]]></script>
 
-function render(){
-  board.innerHTML="";
-  renderGrid();
-  renderHints();
-  renderPieces();
-}
+    <!-- 九宫 -->
+    <line x1="400" y1="100" x2="600" y2="300"/>
+    <line x1="600" y1="100" x2="400" y2="300"/>
+    <line x1="400" y1="800" x2="600" y2="1000"/>
+    <line x1="600" y1="800" x2="400" y2="1000"/>
 
-/* ================= 拖拽（吸附） ================= */
-function enableDrag(el,p){
-  let sx,sy;
-  el.onpointerdown=e=>{
-    el.setPointerCapture(e.pointerId);
-    sx=e.clientX;sy=e.clientY;
-  };
-  el.onpointerup=e=>{
-    const dx=e.clientX-sx,dy=e.clientY-sy;
-    if(Math.abs(dx)<5&&Math.abs(dy)<5)return;
-    const nx=Math.round((p.x*CELL+dx)/CELL);
-    const ny=Math.round((p.y*CELL+dy)/CELL);
-    if(nx>=0&&nx<=8&&ny>=0&&ny<=9){
-      history.push(JSON.parse(JSON.stringify(pieces)));
-      p.x=nx;p.y=ny;
-      navigator.vibrate?.(20);
-    }
-    selected=null;hints=[];
-    render();
-  };
-}
+  </g>
 
-/* ================= 启动 ================= */
-updateMetrics();
-initPieces();
-render();
-</script>
+  <!-- 楚河汉界 -->
+  <text x="350" y="570" font-size="56" text-anchor="middle" fill="#7a3e1d" font-family="KaiTi">楚 河</text>
+  <text x="650" y="570" font-size="56" text-anchor="middle" fill="#7a3e1d" font-family="KaiTi">汉 界</text>
+
+</svg>
 
 </body>
 </html>
