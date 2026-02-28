@@ -1,9 +1,9 @@
 ---
-title: 政治月测后宫版1月新题题库
-date: 2025-1-24
+title: 政治月测后宫版2月新题题库
+date: 2025-2-24
 ---
 
-下载地址：https://quark567.patrickliucloud.top/
+下载地址：https://quark567.patrickliucloud.top/(´⊙ω⊙`)
 
 关注我的wx公众号
 
