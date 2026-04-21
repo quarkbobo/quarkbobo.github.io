@@ -1,72 +1,41 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>中国象棋 · 正确棋盘基座</title>
-<style>
-body {
-  margin: 0;
-  background: #111;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-svg {
-  width: min(96vw, 700px);
-  height: auto;
-}
-</style>
-</head>
-<body>
-
-<svg viewBox="0 0 1000 1100">
-
-  <!-- 背板 -->
-  <rect x="50" y="50" width="900" height="1000" rx="24" fill="#e2c18c"/>
-
-  <!-- 棋盘线 -->
-  <g stroke="#5a3a1e" stroke-width="3">
-
-    <!-- 竖线 9 列 -->
-    <!-- 中间竖线贯通，其余在河界断开 -->
-    <script><![CDATA[
-      for (let i = 0; i < 9; i++) {
-        const x = 100 + i * 100;
-        if (i === 0 || i === 8) {
-          document.write(`<line x1="${x}" y1="100" x2="${x}" y2="1000"/>`);
-        } else {
-          document.write(`
-            <line x1="${x}" y1="100" x2="${x}" y2="500"/>
-            <line x1="${x}" y1="600" x2="${x}" y2="1000"/>
-          `);
-        }
-      }
-    ]]></script>
-
-    <!-- 横线 -->
-    <script><![CDATA[
-      for (let j = 0; j < 10; j++) {
-        if (j === 4 || j === 5) continue; // 河界
-        const y = 100 + j * 100;
-        document.write(`<line x1="100" y1="${y}" x2="900" y2="${y}"/>`);
-      }
-    ]]></script>
-
-    <!-- 九宫 -->
-    <line x1="400" y1="100" x2="600" y2="300"/>
-    <line x1="600" y1="100" x2="400" y2="300"/>
-    <line x1="400" y1="800" x2="600" y2="1000"/>
-    <line x1="600" y1="800" x2="400" y2="1000"/>
-
-  </g>
-
-  <!-- 楚河汉界 -->
-  <text x="350" y="570" font-size="56" text-anchor="middle" fill="#7a3e1d" font-family="KaiTi">楚 河</text>
-  <text x="650" y="570" font-size="56" text-anchor="middle" fill="#7a3e1d" font-family="KaiTi">汉 界</text>
-
-</svg>
-
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中国象棋联机版</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="rotateHint" class="rotate-hint">手机横屏体验更佳</div>
+    <main class="layout">
+      <section class="board-panel">
+        <div id="board" class="board"></div>
+      </section>
+      <section class="side-panel">
+        <h1>中国象棋联机版</h1>
+        <div class="room-box">
+          <input id="serverUrlInput" placeholder="后端地址，如 https://xxx.onrender.com" />
+          <button id="saveServerBtn">保存后端地址</button>
+          <input id="roomIdInput" placeholder="输入房间号" />
+          <button id="createRoomBtn">创建房间</button>
+          <button id="joinRoomBtn">加入房间</button>
+          <button id="watchRoomBtn">观战加入</button>
+        </div>
+        <p id="roomText" class="meta">未加入房间</p>
+        <p id="roleText" class="meta">身份：-</p>
+        <p id="timerText" class="meta">红方 30:00 | 黑方 30:00</p>
+        <p id="status" class="status">请先填写后端地址并创建/加入房间</p>
+        <div class="buttons">
+          <button id="resetBtn">重新开局</button>
+          <button id="flipBtn">翻转棋盘</button>
+          <button id="undoBtn">请求悔棋</button>
+          <button id="undoAcceptBtn">同意悔棋</button>
+          <button id="undoRejectBtn">拒绝悔棋</button>
+        </div>
+      </section>
+    </main>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script src="./main.js"></script>
+  </body>
 </html>
