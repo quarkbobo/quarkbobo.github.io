@@ -44,12 +44,33 @@ let flipped = false;
 let myRole = "watcher";
 let currentRoomId = "";
 
+function normalizeServerUrl(url) {
+  return String(url || "").trim().replace(/\/$/, "");
+}
+
+function readQueryServerUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return normalizeServerUrl(params.get("server"));
+}
+
+function readConfigServerUrl() {
+  const direct = window.__XIANGQI_SERVER_URL__;
+  const fromConfig = window.__XIANGQI_SERVER_CONFIG__?.serverUrl;
+  return normalizeServerUrl(direct || fromConfig);
+}
+
 function readServerUrl() {
-  return localStorage.getItem("xiangqi_server_url") || "";
+  const queryUrl = readQueryServerUrl();
+  if (queryUrl) return queryUrl;
+
+  const configuredUrl = readConfigServerUrl();
+  if (configuredUrl) return configuredUrl;
+
+  return normalizeServerUrl(localStorage.getItem("xiangqi_server_url") || "");
 }
 
 function writeServerUrl(url) {
-  localStorage.setItem("xiangqi_server_url", url);
+  localStorage.setItem("xiangqi_server_url", normalizeServerUrl(url));
 }
 
 function connectSocket() {
@@ -165,9 +186,10 @@ function roomIdFromInput() {
 }
 
 saveServerBtn.addEventListener("click", () => {
-  const url = serverUrlInput.value.trim().replace(/\/$/, "");
+  const url = normalizeServerUrl(serverUrlInput.value);
   if (!url) return;
   writeServerUrl(url);
+  serverUrlInput.value = url;
   connectSocket();
 });
 
@@ -192,5 +214,6 @@ undoAcceptBtn.addEventListener("click", () => socket?.emit("game:undo:respond", 
 undoRejectBtn.addEventListener("click", () => socket?.emit("game:undo:respond", { accept: false }));
 
 serverUrlInput.value = readServerUrl();
+if (readQueryServerUrl()) writeServerUrl(serverUrlInput.value);
 if (serverUrlInput.value) connectSocket();
 render();

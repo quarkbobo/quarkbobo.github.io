@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: xiangqi-server
+    runtime: node
+    plan: free
+    rootDir: xiangqi-server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
