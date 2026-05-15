@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>/files</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,
+                   "PingFang SC","Microsoft YaHei",sans-serif;
+      margin: 24px;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    h1 { font-size: 22px; margin: 0 0 10px; }
+    .hint { opacity: .7; margin: 0 0 16px; line-height: 1.5; }
+    .bar { display:flex; gap:10px; align-items:center; margin: 0 0 14px; }
+    input[type="search"]{
+      flex:1; padding:10px 12px; border-radius:10px;
+      border:1px solid rgba(127,127,127,.35); background: transparent;
+      font-size: 14px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border: 1px solid rgba(127,127,127,.25);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-top: 1px solid rgba(127,127,127,.15);
+    }
+    li:first-child { border-top: none; }
+    .name {
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meta { opacity: .7; font-size: 12px; margin-left: 8px; }
+    .actions { display: flex; gap: 8px; white-space: nowrap; }
+    a.btn {
+      text-decoration: none;
+      padding: 6px 10px;
+      border: 1px solid rgba(127,127,127,.35);
+      border-radius: 10px;
+      font-size: 14px;
+      user-select: none;
+      cursor: pointer;
+    }
+    a.btn:hover { filter: brightness(1.05); }
+    .empty { padding: 14px; opacity: .75; }
+    .err { padding: 14px; color: #b00020; white-space: pre-wrap; }
+    .small { font-size: 12px; opacity: .7; margin-top: 12px; line-height: 1.5; }
+    code { padding: 2px 6px; border-radius: 8px; border: 1px solid rgba(127,127,127,.25); }
+
+    /* ====== 推文预览区 ====== */
+    .article-section {
+      margin-top: 36px;
+      border-top: 1px solid rgba(127,127,127,.2);
+      padding-top: 24px;
+    }
+    .article-section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .article-hint {
+      opacity: .65;
+      font-size: 13px;
+      margin: 0 0 16px;
+    }
+    .md-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .md-tab {
+      padding: 7px 16px;
+      border: 1px solid rgba(127,127,127,.35);
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      background: transparent;
+      user-select: none;
+      transition: background .15s, border-color .15s;
+    }
+    .md-tab:hover { background: rgba(127,127,127,.08); }
+    .md-tab.active {
+      background: rgba(0,0,0,.08);
+      border-color: rgba(0,0,0,.4);
+      font-weight: 500;
+    }
+    @media (prefers-color-scheme: dark) {
+      .md-tab.active {
+        background: rgba(255,255,255,.12);
+        border-color: rgba(255,255,255,.4);
+      }
+    }
+
+    /* 微信公众号风格渲染 */
+    .article-body {
+      background: var(--article-bg, #fff);
+      border: 1px solid rgba(127,127,127,.2);
+      border-radius: 12px;
+      padding: 28px 24px;
+      max-width: 640px;
+      line-height: 1.8;
+      font-size: 15px;
+      color: #333;
+      min-height: 120px;
+    }
+    @media (prefers-color-scheme: dark) {
+      .article-body { color: #ddd; }
+    }
+    .article-body h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 16px;
+      line-height: 1.4;
+      color: #1a1a1a;
+    }
+    @media (prefers-color-scheme: dark) {
+      .article-body h1 { color: #eee; }
+    }
+    .article-body h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 24px 0 10px;
+      padding-left: 10px;
+      border-left: 4px solid #c0392b;
+      line-height: 1.5;
+    }
+    .article-body h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 20px 0 8px;
+    }
+    .article-body p {
+      margin: 10px 0;
+    }
+    .article-body strong {
+      font-weight: 600;
+      color: #c0392b;
+    }
+    .article-body em {
+      font-style: italic;
+      opacity: .75;
+    }
+    .article-body ul, .article-body ol {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+    .article-body li {
+      border: none;
+      padding: 2px 0;
+      display: list-item;
+      justify-content: initial;
+      gap: 0;
+    }
+    .article-body li::before { display: none; }
+    .article-body hr {
+      border: none;
+      border-top: 1px dashed rgba(127,127,127,.3);
+      margin: 20px 0;
+    }
+    .article-body blockquote {
+      border-left: 3px solid #c0392b;
+      background: rgba(192,57,43,.04);
+      padding: 10px 16px;
+      margin: 14px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .article-body blockquote p { margin: 4px 0; }
+    .article-body code {
+      background: rgba(127,127,127,.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .article-body .placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100px;
+      opacity: .5;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>/files</h1>
+  <p class="hint">
+    文件列表来自 GitHub API（读取仓库源码的 <code>/source/files</code>）。<br>
+    "打开/下载"走站点真实路径 <code>/files/</code>（Hexo 发布后的目录），不受 NexT/PJAX 影响。
+  </p>
+
+  <div class="bar">
+    <input id="q" type="search" placeholder="搜索文件名… (支持中文)" />
+  </div>
+
+  <ul id="list">
+    <li class="empty">正在从 GitHub 读取文件列表…</li>
+  </ul>
+
+  <div id="small" class="small"></div>
+
+  <!-- ====== 推文内容区 ====== -->
+  <div class="article-section">
+    <h2 class="article-section-title">📝 推文预览</h2>
+    <p class="article-hint">点击下方标签，或点击文件列表中的 .md 文件即可在此预览推文内容</p>
+    <div class="md-selector" id="mdTabs"></div>
+    <div class="article-body" id="articleBody">
+      <div class="placeholder">选择一篇推文以预览…</div>
+    </div>
+  </div>
+</div>
+
+<!-- marked.js：轻量 Markdown → HTML 渲染器 -->
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+
+<script>
+/** =========================
+ *  你的真实配置（已按你截图填好）
+ *  ========================= */
+const OWNER  = "quarkbobo";
+const REPO   = "quarkbobo.github.io";
+const BRANCH = "master";
+
+/** 用于 GitHub API 列目录（源码路径） */
+const DIR_FOR_API = "source/files";
+
+/** 用于站点访问/下载（发布后的路径） */
+const PUBLIC_PREFIX = "/files/";
+
+/** =========================
+ *  工具函数
+ *  ========================= */
+const listEl  = document.getElementById("list");
+const qEl     = document.getElementById("q");
+const smallEl = document.getElementById("small");
+const mdTabs  = document.getElementById("mdTabs");
+const articleBody = document.getElementById("articleBody");
+
+/** 全量文件列表缓存 */
+let allItems = [];
+/** 当前选中的 md 文件名 */
+let activeMd = null;
+
+function fmtBytes(bytes){
+  if (!Number.isFinite(bytes)) return "";
+  const units = ["B","KB","MB","GB","TB"];
+  let i = 0, n = bytes;
+  while (n >= 1024 && i < units.length-1){ n /= 1024; i++; }
+  return `${n.toFixed(i===0?0:1)} ${units[i]}`;
+}
+
+function safeText(s){
+  return (s ?? "").toString();
+}
+
+/** 站点真实 URL：/files/<filename> */
+function publicUrl(name){
+  return PUBLIC_PREFIX + encodeURIComponent(name);
+}
+
+/** 获取 .md 文件的原始内容 URL（GitHub raw） */
+function rawUrl(name){
+  return `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${DIR_FOR_API}/${encodeURIComponent(name)}`;
+}
+
+/** =========================
+ *  文件列表渲染（保留原逻辑）
+ *  ========================= */
+function render(items){
+  const kw = (qEl.value || "").trim().toLowerCase();
+  const filtered = !kw ? items : items.filter(it => it.name.toLowerCase().includes(kw));
+
+  listEl.innerHTML = "";
+  if (!filtered.length){
+    listEl.innerHTML = `<li class="empty">没有匹配的文件</li>`;
+    return;
+  }
+
+  for (const it of filtered){
+    const name = safeText(it.name);
+    const size = it.size ? fmtBytes(it.size) : "";
+    const isMd = name.toLowerCase().endsWith(".md");
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span class="name" title="${name}">
+        ${name}<span class="meta">${size}</span>
+      </span>
+      <span class="actions">
+        ${isMd ? `<a class="btn" href="javascript:void(0)" data-preview="${name}">预览</a>` : ""}
+        <a class="btn" href="javascript:void(0)" data-open="${name}">打开</a>
+        <a class="btn" href="javascript:void(0)" data-dl="${name}">下载</a>
+      </span>
+    `;
+    listEl.appendChild(li);
+  }
+}
+
+/** =========================
+ *  推文标签栏渲染
+ *  ========================= */
+function renderMdTabs(){
+  const mdFiles = allItems.filter(it => it.name.toLowerCase().endsWith(".md"));
+  mdTabs.innerHTML = "";
+
+  if (!mdFiles.length){
+    mdTabs.innerHTML = '<span style="opacity:.5;font-size:13px">暂无推文 (.md) 文件</span>';
+    return;
+  }
+
+  for (const it of mdFiles){
+    const btn = document.createElement("button");
+    btn.className = "md-tab" + (activeMd === it.name ? " active" : "");
+    btn.textContent = it.name.replace(/\.md$/i, "");
+    btn.addEventListener("click", () => loadArticle(it.name));
+    mdTabs.appendChild(btn);
+  }
+}
+
+/** =========================
+ *  加载并渲染 .md 推文
+ *  ========================= */
+async function loadArticle(name){
+  activeMd = name;
+  renderMdTabs();
+  articleBody.innerHTML = '<div class="placeholder">正在加载…</div>';
+
+  try {
+    const url = rawUrl(name);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const md = await res.text();
+
+    /** 用 marked 渲染 Markdown → HTML */
+    if (typeof marked !== "undefined") {
+      articleBody.innerHTML = marked.parse(md);
+    } else {
+      /** 降级：marked 加载失败时做简单渲染 */
+      articleBody.innerHTML = simpleMdRender(md);
+    }
+  } catch (e) {
+    articleBody.innerHTML = `<div class="err">加载推文失败：${safeText(e.message)}</div>`;
+  }
+}
+
+/** 极简 Markdown 降级渲染（marked 不可用时） */
+function simpleMdRender(md){
+  return md
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
+    .replace(/^- (.+)$/gm, "<li>$1</li>")
+    .replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>")
+    .replace(/\n{2,}/g, "<br><br>")
+    .replace(/\n/g, "<br>");
+}
+
+/** =========================
+ *  GitHub API：列出目录
+ *  ========================= */
+async function loadFromGitHub(){
+  const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${DIR_FOR_API}?ref=${encodeURIComponent(BRANCH)}`;
+
+  const res = await fetch(api, { headers: { "Accept": "application/vnd.github+json" } });
+  if (!res.ok){
+    const msg = await res.text().catch(() => "");
+    throw new Error(`GitHub API 请求失败：HTTP ${res.status}\n${msg}`);
+  }
+
+  const data = await res.json();
+  if (!Array.isArray(data)) throw new Error("返回不是目录列表。请检查 BRANCH/DIR_FOR_API 是否正确。");
+
+  return data
+    .filter(x => x && x.type === "file")
+    .filter(x => (x.name || "").toLowerCase() !== "index.html")
+    .map(x => ({ name: x.name, size: x.size || 0 }))
+    .sort((a,b) => a.name.localeCompare(b.name, "zh-Hans-CN"));
+}
+
+/** =========================
+ *  点击事件：打开 / 下载 / 预览
+ *  ========================= */
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("a, button");
+  if (!a) return;
+
+  const openName  = a.getAttribute("data-open");
+  const dlName    = a.getAttribute("data-dl");
+  const prevName  = a.getAttribute("data-preview");
+
+  if (!openName && !dlName && !prevName) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  /** 预览 .md 文件 */
+  if (prevName) {
+    loadArticle(prevName);
+    document.querySelector(".article-section").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+
+  const name = openName || dlName;
+
+  /** 如果点击打开的是 .md 文件，也触发预览 */
+  if (openName && openName.toLowerCase().endsWith(".md")) {
+    loadArticle(openName);
+    document.querySelector(".article-section").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+
+  const url = publicUrl(name);
+
+  if (openName) {
+    window.open(url, "_blank", "noopener");
+  } else {
+    const tmp = document.createElement("a");
+    tmp.href = url;
+    tmp.download = name;
+    document.body.appendChild(tmp);
+    tmp.click();
+    tmp.remove();
+  }
+});
+
+/** =========================
+ *  初始化
+ *  ========================= */
+(async () => {
+  try {
+    const items = await loadFromGitHub();
+    allItems = items;
+    render(items);
+
+    smallEl.innerHTML =
+      `数据来源：GitHub API（<code>${OWNER}/${REPO}</code>，分支 <code>${BRANCH}</code>，目录 <code>/${DIR_FOR_API}</code>）。<br>` +
+      `打开/下载：站点路径 <code>${PUBLIC_PREFIX}</code>。`;
+
+    qEl.addEventListener("input", () => render(items));
+
+    /** 渲染推文标签栏 */
+    renderMdTabs();
+
+    /** 如果有 .md 文件，自动加载第一篇 */
+    const firstMd = items.find(it => it.name.toLowerCase().endsWith(".md"));
+    if (firstMd) loadArticle(firstMd.name);
+
+  } catch (e){
+    listEl.innerHTML = `<li class="err">${String(e.message || e)}</li>`;
+    smallEl.innerHTML =
+      `排查：1）确认仓库 <code>${OWNER}/${REPO}</code> 的 <code>${BRANCH}</code> 分支存在 <code>/${DIR_FOR_API}</code>；` +
+      `2）确认站点上能直接访问 <code>${PUBLIC_PREFIX}文件名</code>；` +
+      `3）仓库若为私有，GitHub API 无法匿名列出。`;
+  }
+})();
+</script>
+</body>
+</html>
