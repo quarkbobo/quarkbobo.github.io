@@ -2,336 +2,438 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <title>/files</title>
+  <title>焦糖玛琪朵 ♡ 文件中心</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    :root { color-scheme: light dark; }
+    :root {
+      --c-bg: #f5f5f7;
+      --c-card: #fff;
+      --c-text: #1d1d1f;
+      --c-text2: #6e6e73;
+      --c-border: rgba(0,0,0,.08);
+      --c-accent: #c0392b;
+      --c-accent-light: rgba(192,57,43,.08);
+      --c-hover: rgba(0,0,0,.03);
+      --c-success: #27ae60;
+      --c-tag-bg: rgba(192,57,43,.08);
+      --c-tag-text: #c0392b;
+      --radius: 14px;
+      --radius-sm: 10px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --c-bg: #1a1a1c;
+        --c-card: #2a2a2e;
+        --c-text: #f5f5f7;
+        --c-text2: #8e8e93;
+        --c-border: rgba(255,255,255,.08);
+        --c-hover: rgba(255,255,255,.04);
+        --c-tag-bg: rgba(192,57,43,.18);
+        --c-tag-text: #e57373;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,
-                   "PingFang SC","Microsoft YaHei",sans-serif;
-      margin: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                   "PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+      background: var(--c-bg);
+      color: var(--c-text);
+      line-height: 1.6;
+      min-height: 100vh;
     }
-    .wrap { max-width: 980px; margin: 0 auto; }
-    h1 { font-size: 22px; margin: 0 0 10px; }
-    .hint { opacity: .7; margin: 0 0 16px; line-height: 1.5; }
-    .bar { display:flex; gap:10px; align-items:center; margin: 0 0 14px; }
-    input[type="search"]{
-      flex:1; padding:10px 12px; border-radius:10px;
-      border:1px solid rgba(127,127,127,.35); background: transparent;
-      font-size: 14px;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      border: 1px solid rgba(127,127,127,.25);
-      border-radius: 12px;
+
+    /* ===== 顶部 Hero ===== */
+    .hero {
+      background: linear-gradient(135deg, #c0392b 0%, #e74c3c 50%, #ff6f61 100%);
+      padding: 48px 24px 40px;
+      text-align: center;
+      color: #fff;
+      position: relative;
       overflow: hidden;
     }
-    li {
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.07);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.05);
+    }
+    .hero-icon { font-size: 42px; margin-bottom: 10px; position: relative; z-index: 1; }
+    .hero h1 { font-size: 26px; font-weight: 700; letter-spacing: .5px; position: relative; z-index: 1; }
+    .hero p  { font-size: 14px; opacity: .85; margin-top: 6px; position: relative; z-index: 1; }
+
+    /* ===== 主体 ===== */
+    .main { max-width: 860px; margin: -28px auto 40px; padding: 0 16px; position: relative; z-index: 2; }
+    .card {
+      background: var(--c-card);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
+      padding: 22px 24px;
+      margin-bottom: 20px;
+    }
+
+    /* ===== 搜索栏 ===== */
+    .search-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 0; }
+    .search-bar input[type="search"] {
+      flex: 1;
+      padding: 11px 14px 11px 38px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--c-border);
+      background: var(--c-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238e8e93' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1114 9.5 4.5 4.5 0 019.5 14z'/%3E%3C/svg%3E") 12px center no-repeat;
+      font-size: 14px;
+      color: var(--c-text);
+      outline: none;
+      transition: border-color .15s;
+    }
+    .search-bar input[type="search"]:focus { border-color: var(--c-accent); }
+    .search-bar input[type="search"]::placeholder { color: var(--c-text2); }
+    .file-count {
+      font-size: 13px;
+      color: var(--c-text2);
+      white-space: nowrap;
+    }
+
+    /* ===== 分类标签 ===== */
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .tab-btn {
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--c-border);
+      background: transparent;
+      color: var(--c-text2);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .15s;
+      user-select: none;
+    }
+    .tab-btn:hover { background: var(--c-hover); }
+    .tab-btn.active {
+      background: var(--c-tag-bg);
+      color: var(--c-tag-text);
+      border-color: transparent;
+      font-weight: 500;
+    }
+
+    /* ===== 文件列表 ===== */
+    .file-list { display: flex; flex-direction: column; gap: 4px; }
+    .file-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 12px;
       padding: 12px 14px;
-      border-top: 1px solid rgba(127,127,127,.15);
+      border-radius: var(--radius-sm);
+      transition: background .12s;
+      cursor: default;
     }
-    li:first-child { border-top: none; }
-    .name {
-      flex: 1;
-      min-width: 0;
+    .file-item:hover { background: var(--c-hover); }
+
+    .file-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .ext-txt .file-icon { background: #e8f4fd; }
+    .ext-md  .file-icon { background: var(--c-tag-bg); }
+    .ext-xlsx .file-icon,
+    .ext-xls .file-icon { background: #e8f7ef; }
+
+    .file-info { flex: 1; min-width: 0; }
+    .file-name {
+      font-size: 14px; font-weight: 500;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: var(--c-text);
     }
-    .meta { opacity: .7; font-size: 12px; margin-left: 8px; }
-    .actions { display: flex; gap: 8px; white-space: nowrap; }
-    a.btn {
-      text-decoration: none;
-      padding: 6px 10px;
-      border: 1px solid rgba(127,127,127,.35);
-      border-radius: 10px;
-      font-size: 14px;
-      user-select: none;
-      cursor: pointer;
-    }
-    a.btn:hover { filter: brightness(1.05); }
-    .empty { padding: 14px; opacity: .75; }
-    .err { padding: 14px; color: #b00020; white-space: pre-wrap; }
-    .small { font-size: 12px; opacity: .7; margin-top: 12px; line-height: 1.5; }
-    code { padding: 2px 6px; border-radius: 8px; border: 1px solid rgba(127,127,127,.25); }
+    .file-meta { font-size: 12px; color: var(--c-text2); margin-top: 2px; }
 
-    /* ====== 推文预览区 ====== */
-    .article-section {
-      margin-top: 36px;
-      border-top: 1px solid rgba(127,127,127,.2);
-      padding-top: 24px;
+    .file-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--c-border);
+      background: transparent;
+      color: var(--c-text);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .12s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
     }
-    .article-section-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin: 0 0 6px;
+    .btn:hover { background: var(--c-accent); color: #fff; border-color: var(--c-accent); }
+    .btn-preview { border-color: var(--c-accent); color: var(--c-accent); }
+    .btn-preview:hover { background: var(--c-accent); color: #fff; }
+
+    .empty-msg {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--c-text2);
+      font-size: 14px;
+    }
+
+    /* ===== 推文预览区 ===== */
+    .article-section { margin-top: 8px; }
+    .article-head {
       display: flex;
       align-items: center;
       gap: 8px;
+      margin-bottom: 14px;
     }
-    .article-hint {
-      opacity: .65;
-      font-size: 13px;
-      margin: 0 0 16px;
-    }
-    .md-selector {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .md-tab {
-      padding: 7px 16px;
-      border: 1px solid rgba(127,127,127,.35);
+    .article-head h2 { font-size: 17px; font-weight: 600; }
+    .article-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .art-tab {
+      padding: 5px 14px;
       border-radius: 20px;
+      border: 1px solid var(--c-border);
+      background: transparent;
+      color: var(--c-text2);
       font-size: 13px;
       cursor: pointer;
-      background: transparent;
-      user-select: none;
-      transition: background .15s, border-color .15s;
+      transition: all .15s;
     }
-    .md-tab:hover { background: rgba(127,127,127,.08); }
-    .md-tab.active {
-      background: rgba(0,0,0,.08);
-      border-color: rgba(0,0,0,.4);
-      font-weight: 500;
-    }
-    @media (prefers-color-scheme: dark) {
-      .md-tab.active {
-        background: rgba(255,255,255,.12);
-        border-color: rgba(255,255,255,.4);
-      }
-    }
+    .art-tab:hover { background: var(--c-hover); }
+    .art-tab.active { background: var(--c-tag-bg); color: var(--c-tag-text); border-color: transparent; font-weight: 500; }
 
-    /* 微信公众号风格渲染 */
     .article-body {
-      background: var(--article-bg, #fff);
-      border: 1px solid rgba(127,127,127,.2);
-      border-radius: 12px;
-      padding: 28px 24px;
-      max-width: 640px;
+      background: var(--c-bg);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      padding: 24px 20px;
+      min-height: 100px;
       line-height: 1.8;
       font-size: 15px;
-      color: #333;
-      min-height: 120px;
+      color: var(--c-text);
     }
-    @media (prefers-color-scheme: dark) {
-      .article-body { color: #ddd; }
-    }
-    .article-body h1 {
-      font-size: 22px;
-      font-weight: 700;
-      margin: 0 0 16px;
-      line-height: 1.4;
-      color: #1a1a1a;
-    }
-    @media (prefers-color-scheme: dark) {
-      .article-body h1 { color: #eee; }
-    }
-    .article-body h2 {
-      font-size: 18px;
-      font-weight: 600;
-      margin: 24px 0 10px;
-      padding-left: 10px;
-      border-left: 4px solid #c0392b;
-      line-height: 1.5;
-    }
-    .article-body h3 {
-      font-size: 16px;
-      font-weight: 600;
-      margin: 20px 0 8px;
-    }
-    .article-body p {
-      margin: 10px 0;
-    }
-    .article-body strong {
-      font-weight: 600;
-      color: #c0392b;
-    }
-    .article-body em {
-      font-style: italic;
-      opacity: .75;
-    }
-    .article-body ul, .article-body ol {
-      padding-left: 20px;
-      margin: 10px 0;
-    }
-    .article-body li {
-      border: none;
-      padding: 2px 0;
-      display: list-item;
-      justify-content: initial;
-      gap: 0;
-    }
-    .article-body li::before { display: none; }
-    .article-body hr {
-      border: none;
-      border-top: 1px dashed rgba(127,127,127,.3);
-      margin: 20px 0;
-    }
+    .article-body h1 { font-size: 22px; font-weight: 700; margin: 0 0 14px; line-height: 1.4; }
+    .article-body h2 { font-size: 17px; font-weight: 600; margin: 20px 0 8px; padding-left: 10px; border-left: 3px solid var(--c-accent); }
+    .article-body h3 { font-size: 15px; font-weight: 600; margin: 16px 0 6px; }
+    .article-body p  { margin: 8px 0; }
+    .article-body strong { color: var(--c-accent); font-weight: 600; }
+    .article-body ul, .article-body ol { padding-left: 20px; margin: 8px 0; }
+    .article-body li { margin: 3px 0; }
+    .article-body hr { border: none; border-top: 1px dashed var(--c-border); margin: 18px 0; }
     .article-body blockquote {
-      border-left: 3px solid #c0392b;
-      background: rgba(192,57,43,.04);
-      padding: 10px 16px;
-      margin: 14px 0;
-      border-radius: 0 8px 8px 0;
+      border-left: 3px solid var(--c-accent);
+      background: var(--c-accent-light);
+      padding: 10px 14px;
+      margin: 12px 0;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 14px;
     }
-    .article-body blockquote p { margin: 4px 0; }
     .article-body code {
-      background: rgba(127,127,127,.08);
-      padding: 2px 6px;
+      background: rgba(127,127,127,.1);
+      padding: 1px 5px;
       border-radius: 4px;
       font-size: 13px;
     }
-    .article-body .placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100px;
-      opacity: .5;
-      font-size: 14px;
+    .article-placeholder {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 80px; color: var(--c-text2); font-size: 14px;
+    }
+
+    /* ===== 底部信息 ===== */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--c-text2);
+      padding: 20px 16px 32px;
+      line-height: 1.8;
+    }
+    .footer code {
+      background: rgba(127,127,127,.1);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 600px) {
+      .hero { padding: 36px 16px 32px; }
+      .hero h1 { font-size: 20px; }
+      .card { padding: 16px; }
+      .file-item { flex-wrap: wrap; }
+      .file-actions { width: 100%; justify-content: flex-end; }
     }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>/files</h1>
-  <p class="hint">
-    文件列表来自 GitHub API（读取仓库源码的 <code>/source/files</code>）。<br>
-    "打开/下载"走站点真实路径 <code>/files/</code>（Hexo 发布后的目录），不受 NexT/PJAX 影响。
-  </p>
 
-  <div class="bar">
-    <input id="q" type="search" placeholder="搜索文件名… (支持中文)" />
-  </div>
-
-  <ul id="list">
-    <li class="empty">正在从 GitHub 读取文件列表…</li>
-  </ul>
-
-  <div id="small" class="small"></div>
-
-  <!-- ====== 推文内容区 ====== -->
-  <div class="article-section">
-    <h2 class="article-section-title">📝 推文预览</h2>
-    <p class="article-hint">点击下方标签，或点击文件列表中的 .md 文件即可在此预览推文内容</p>
-    <div class="md-selector" id="mdTabs"></div>
-    <div class="article-body" id="articleBody">
-      <div class="placeholder">选择一篇推文以预览…</div>
-    </div>
-  </div>
+<!-- ===== Hero 顶部 ===== -->
+<div class="hero">
+  <div class="hero-icon">🍬</div>
+  <h1>焦糖玛琪朵 ♡ 文件中心</h1>
+  <p>学院月测题库 · 学习资料共享 · 持续更新中</p>
 </div>
 
-<!-- marked.js：轻量 Markdown → HTML 渲染器 -->
+<!-- ===== 主体 ===== -->
+<div class="main">
+
+  <!-- 文件列表卡片 -->
+  <div class="card">
+    <div class="search-bar">
+      <input id="q" type="search" placeholder="搜索文件名…" />
+      <span class="file-count" id="fileCount"></span>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab-btn active" data-filter="all">全部</button>
+      <button class="tab-btn" data-filter=".txt">TXT</button>
+      <button class="tab-btn" data-filter=".xlsx">XLSX</button>
+      <button class="tab-btn" data-filter=".md">Markdown</button>
+    </div>
+
+    <div class="file-list" id="list">
+      <div class="empty-msg">正在从 GitHub 读取文件列表…</div>
+    </div>
+  </div>
+
+  <!-- 推文预览卡片 -->
+  <div class="card article-section" id="articleSection">
+    <div class="article-head">
+      <span style="font-size:20px">📝</span>
+      <h2>推文预览</h2>
+    </div>
+    <p style="font-size:13px;color:var(--c-text2);margin-bottom:12px;">点击下方标签预览推文，或点击文件列表中的「预览」按钮</p>
+    <div class="article-tabs" id="mdTabs"></div>
+    <div class="article-body" id="articleBody">
+      <div class="article-placeholder">选择一篇推文以预览内容…</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 底部 -->
+<div class="footer">
+  数据来源：GitHub API（<code>quarkbobo/quarkbobo.github.io</code>，master 分支，目录 <code>/source/files/</code>）<br>
+  文件访问路径：<code>/files/</code> · 本页面部署于 <code>/焦糖玛琪朵(｡•ㅅ•｡)♡/</code>
+</div>
+
+<!-- marked.js：Markdown → HTML -->
 <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
 
 <script>
 /** =========================
- *  你的真实配置（已按你截图填好）
+ *  配置（按你的仓库填写）
  *  ========================= */
-const OWNER  = "quarkbobo";
-const REPO   = "quarkbobo.github.io";
-const BRANCH = "master";
+const OWNER   = "quarkbobo";
+const REPO    = "quarkbobo.github.io";
+const BRANCH  = "master";
+const DIR_API = "source/files";       // GitHub API 读取路径
+const PREFIX  = "/files/";           // 站点文件访问路径
 
-/** 用于 GitHub API 列目录（源码路径） */
-const DIR_FOR_API = "source/files";
+/** =========================
+ *  状态
+ *  ========================= */
+let allItems  = [];
+let activeMd  = null;
+let activeTab = "all";
 
-/** 用于站点访问/下载（发布后的路径） */
-const PUBLIC_PREFIX = "/files/";
+const listEl    = document.getElementById("list");
+const qEl       = document.getElementById("q");
+const fileCount = document.getElementById("fileCount");
+const tabsEl    = document.getElementById("tabs");
+const mdTabsEl  = document.getElementById("mdTabs");
+const articleEl = document.getElementById("articleBody");
 
 /** =========================
  *  工具函数
  *  ========================= */
-const listEl  = document.getElementById("list");
-const qEl     = document.getElementById("q");
-const smallEl = document.getElementById("small");
-const mdTabs  = document.getElementById("mdTabs");
-const articleBody = document.getElementById("articleBody");
-
-/** 全量文件列表缓存 */
-let allItems = [];
-/** 当前选中的 md 文件名 */
-let activeMd = null;
-
 function fmtBytes(bytes){
-  if (!Number.isFinite(bytes)) return "";
-  const units = ["B","KB","MB","GB","TB"];
-  let i = 0, n = bytes;
-  while (n >= 1024 && i < units.length-1){ n /= 1024; i++; }
-  return `${n.toFixed(i===0?0:1)} ${units[i]}`;
+  if(!Number.isFinite(bytes)) return "";
+  const u=["B","KB","MB","GB"]; let i=0,n=bytes;
+  while(n>=1024&&i<u.length-1){n/=1024;i++}
+  return `${n.toFixed(i===0?0:1)} ${u[i]}`;
 }
-
-function safeText(s){
-  return (s ?? "").toString();
+function safe(s){ return (s??"").toString().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;") }
+function extClass(name){
+  const e=name.toLowerCase();
+  if(e.endsWith(".txt"))  return "ext-txt";
+  if(e.endsWith(".md"))   return "ext-md";
+  if(e.endsWith(".xlsx")||e.endsWith(".xls")) return "ext-xlsx";
+  return "";
 }
-
-/** 站点真实 URL：/files/<filename> */
-function publicUrl(name){
-  return PUBLIC_PREFIX + encodeURIComponent(name);
+function fileEmoji(name){
+  const e=name.toLowerCase();
+  if(e.endsWith(".txt"))  return "📄";
+  if(e.endsWith(".md"))   return "📝";
+  if(e.endsWith(".xlsx")||e.endsWith(".xls")) return "📊";
+  return "📄";
 }
-
-/** 获取 .md 文件的原始内容 URL（GitHub raw） */
-function rawUrl(name){
-  return `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${DIR_FOR_API}/${encodeURIComponent(name)}`;
-}
+function publicUrl(name){ return PREFIX + encodeURIComponent(name); }
+function rawUrl(name){ return `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${DIR_API}/${encodeURIComponent(name)}`; }
 
 /** =========================
- *  文件列表渲染（保留原逻辑）
+ *  渲染文件列表
  *  ========================= */
-function render(items){
-  const kw = (qEl.value || "").trim().toLowerCase();
-  const filtered = !kw ? items : items.filter(it => it.name.toLowerCase().includes(kw));
+function renderList(){
+  const kw = (qEl.value||"").trim().toLowerCase();
+  let items = allItems.filter(it => {
+    if(activeTab==="all") return true;
+    return it.name.toLowerCase().endsWith(activeTab);
+  });
+  if(kw) items = items.filter(it => it.name.toLowerCase().includes(kw));
+
+  fileCount.textContent = items.length ? `共 ${items.length} 个文件` : "";
+
+  if(!items.length){
+    listEl.innerHTML = `<div class="empty-msg">${kw?"没有匹配的文件 🔍":"该分类暂无文件"}</div>`;
+    return;
+  }
 
   listEl.innerHTML = "";
-  if (!filtered.length){
-    listEl.innerHTML = `<li class="empty">没有匹配的文件</li>`;
-    return;
-  }
+  for(const it of items){
+    const name  = it.name;
+    const isMd  = name.toLowerCase().endsWith(".md");
+    const ext   = name.split(".").pop().toLowerCase();
+    const cls   = extClass(name);
+    const emoji = fileEmoji(name);
+    const size  = it.size ? fmtBytes(it.size) : "";
 
-  for (const it of filtered){
-    const name = safeText(it.name);
-    const size = it.size ? fmtBytes(it.size) : "";
-    const isMd = name.toLowerCase().endsWith(".md");
-
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <span class="name" title="${name}">
-        ${name}<span class="meta">${size}</span>
-      </span>
-      <span class="actions">
-        ${isMd ? `<a class="btn" href="javascript:void(0)" data-preview="${name}">预览</a>` : ""}
-        <a class="btn" href="javascript:void(0)" data-open="${name}">打开</a>
-        <a class="btn" href="javascript:void(0)" data-dl="${name}">下载</a>
-      </span>
+    const div = document.createElement("div");
+    div.className = `file-item ${cls}`;
+    div.innerHTML = `
+      <div class="file-icon">${emoji}</div>
+      <div class="file-info">
+        <div class="file-name" title="${safe(name)}">${safe(name)}</div>
+        <div class="file-meta">${size ? size+" · " : ""}${ext.toUpperCase()} 文件</div>
+      </div>
+      <div class="file-actions">
+        ${isMd ? `<button class="btn btn-preview" data-preview="${safe(name)}">预览</button>` : ""}
+        <button class="btn" data-open="${safe(name)}">打开</button>
+        <button class="btn" data-dl="${safe(name)}">下载</button>
+      </div>
     `;
-    listEl.appendChild(li);
+    listEl.appendChild(div);
   }
 }
 
 /** =========================
- *  推文标签栏渲染
+ *  推文标签栏
  *  ========================= */
 function renderMdTabs(){
-  const mdFiles = allItems.filter(it => it.name.toLowerCase().endsWith(".md"));
-  mdTabs.innerHTML = "";
-
-  if (!mdFiles.length){
-    mdTabs.innerHTML = '<span style="opacity:.5;font-size:13px">暂无推文 (.md) 文件</span>';
-    return;
-  }
-
-  for (const it of mdFiles){
+  const mds = allItems.filter(it=>it.name.toLowerCase().endsWith(".md"));
+  mdTabsEl.innerHTML = "";
+  if(!mds.length){ mdTabsEl.innerHTML='<span style="font-size:13px;color:var(--c-text2)">暂无推文文件</span>'; return; }
+  for(const it of mds){
     const btn = document.createElement("button");
-    btn.className = "md-tab" + (activeMd === it.name ? " active" : "");
-    btn.textContent = it.name.replace(/\.md$/i, "");
-    btn.addEventListener("click", () => loadArticle(it.name));
-    mdTabs.appendChild(btn);
+    btn.className = "art-tab" + (activeMd===it.name?" active":"");
+    btn.textContent = it.name.replace(/\.md$/i,"");
+    btn.addEventListener("click",()=>loadArticle(it.name));
+    mdTabsEl.appendChild(btn);
   }
 }
 
@@ -341,137 +443,94 @@ function renderMdTabs(){
 async function loadArticle(name){
   activeMd = name;
   renderMdTabs();
-  articleBody.innerHTML = '<div class="placeholder">正在加载…</div>';
-
-  try {
-    const url = rawUrl(name);
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const md = await res.text();
-
-    /** 用 marked 渲染 Markdown → HTML */
-    if (typeof marked !== "undefined") {
-      articleBody.innerHTML = marked.parse(md);
-    } else {
-      /** 降级：marked 加载失败时做简单渲染 */
-      articleBody.innerHTML = simpleMdRender(md);
-    }
-  } catch (e) {
-    articleBody.innerHTML = `<div class="err">加载推文失败：${safeText(e.message)}</div>`;
+  articleEl.innerHTML = '<div class="article-placeholder">正在加载…</div>';
+  try{
+    const r = await fetch(rawUrl(name));
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    const md = await r.text();
+    articleEl.innerHTML = (typeof marked!=="undefined") ? marked.parse(md) : simpleRender(md);
+    document.getElementById("articleSection").scrollIntoView({behavior:"smooth",block:"start"});
+  }catch(e){
+    articleEl.innerHTML = `<div style="color:#b00020;padding:12px;">加载失败：${safe(e.message)}</div>`;
   }
 }
 
-/** 极简 Markdown 降级渲染（marked 不可用时） */
-function simpleMdRender(md){
-  return md
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>")
-    .replace(/\n{2,}/g, "<br><br>")
-    .replace(/\n/g, "<br>");
+/** 降级渲染（marked 不可用时）*/
+function simpleRender(md){
+  return md.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g,"<em>$1</em>")
+    .replace(/^### (.+)$/gm,"<h3>$1</h3>")
+    .replace(/^## (.+)$/gm,"<h2>$1</h2>")
+    .replace(/^# (.+)$/gm,"<h1>$1</h1>")
+    .replace(/\n{2,}/g,"<br><br>")
+    .replace(/\n/g,"<br>");
 }
 
 /** =========================
- *  GitHub API：列出目录
+ *  GitHub API：读取目录
  *  ========================= */
 async function loadFromGitHub(){
-  const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${DIR_FOR_API}?ref=${encodeURIComponent(BRANCH)}`;
-
-  const res = await fetch(api, { headers: { "Accept": "application/vnd.github+json" } });
-  if (!res.ok){
-    const msg = await res.text().catch(() => "");
-    throw new Error(`GitHub API 请求失败：HTTP ${res.status}\n${msg}`);
-  }
-
+  const api=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${DIR_API}?ref=${encodeURIComponent(BRANCH)}`;
+  const res = await fetch(api,{headers:{"Accept":"application/vnd.github+json"}});
+  if(!res.ok){ const t=await res.text().catch(()=>""); throw new Error(`GitHub API 失败：HTTP ${res.status}\n${t}`); }
   const data = await res.json();
-  if (!Array.isArray(data)) throw new Error("返回不是目录列表。请检查 BRANCH/DIR_FOR_API 是否正确。");
-
-  return data
-    .filter(x => x && x.type === "file")
-    .filter(x => (x.name || "").toLowerCase() !== "index.html")
-    .map(x => ({ name: x.name, size: x.size || 0 }))
-    .sort((a,b) => a.name.localeCompare(b.name, "zh-Hans-CN"));
+  if(!Array.isArray(data)) throw new Error("返回不是目录列表，请检查配置。");
+  return data.filter(x=>x&&x.type==="file")
+    .filter(x=>(x.name||"").toLowerCase()!=="index.html" && !x.name.endsWith(".py"))
+    .map(x=>({name:x.name,size:x.size||0}))
+    .sort((a,b)=>a.name.localeCompare(b.name,"zh-Hans-CN"));
 }
 
 /** =========================
- *  点击事件：打开 / 下载 / 预览
+ *  事件绑定
  *  ========================= */
-document.addEventListener("click", (e) => {
-  const a = e.target.closest("a, button");
-  if (!a) return;
+tabsEl.addEventListener("click",e=>{
+  const btn = e.target.closest(".tab-btn");
+  if(!btn) return;
+  tabsEl.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  activeTab = btn.dataset.filter;
+  renderList();
+});
 
-  const openName  = a.getAttribute("data-open");
-  const dlName    = a.getAttribute("data-dl");
-  const prevName  = a.getAttribute("data-preview");
-
-  if (!openName && !dlName && !prevName) return;
-
-  e.preventDefault();
-  e.stopPropagation();
-
-  /** 预览 .md 文件 */
-  if (prevName) {
-    loadArticle(prevName);
-    document.querySelector(".article-section").scrollIntoView({ behavior: "smooth", block: "start" });
-    return;
-  }
-
-  const name = openName || dlName;
-
-  /** 如果点击打开的是 .md 文件，也触发预览 */
-  if (openName && openName.toLowerCase().endsWith(".md")) {
-    loadArticle(openName);
-    document.querySelector(".article-section").scrollIntoView({ behavior: "smooth", block: "start" });
-    return;
-  }
-
-  const url = publicUrl(name);
-
-  if (openName) {
-    window.open(url, "_blank", "noopener");
+document.addEventListener("click",e=>{
+  const btn = e.target.closest("button, a");
+  if(!btn) return;
+  const preview = btn.dataset.preview;
+  const open    = btn.dataset.open;
+  const dl       = btn.dataset.dl;
+  if(!preview && !open && !dl) return;
+  e.preventDefault(); e.stopPropagation();
+  if(preview){ loadArticle(preview); return; }
+  const name = open || dl;
+  const url  = publicUrl(name);
+  if(open){
+    // .md 文件点击"打开"也触发预览
+    if(name.toLowerCase().endsWith(".md")){ loadArticle(name); return; }
+    window.open(url,"_blank","noopener");
   } else {
-    const tmp = document.createElement("a");
-    tmp.href = url;
-    tmp.download = name;
-    document.body.appendChild(tmp);
-    tmp.click();
-    tmp.remove();
+    const a=document.createElement("a");
+    a.href=url; a.download=name;
+    document.body.appendChild(a); a.click(); a.remove();
   }
 });
+
+qEl.addEventListener("input", renderList);
 
 /** =========================
  *  初始化
  *  ========================= */
-(async () => {
-  try {
-    const items = await loadFromGitHub();
-    allItems = items;
-    render(items);
-
-    smallEl.innerHTML =
-      `数据来源：GitHub API（<code>${OWNER}/${REPO}</code>，分支 <code>${BRANCH}</code>，目录 <code>/${DIR_FOR_API}</code>）。<br>` +
-      `打开/下载：站点路径 <code>${PUBLIC_PREFIX}</code>。`;
-
-    qEl.addEventListener("input", () => render(items));
-
-    /** 渲染推文标签栏 */
+(async()=>{
+  try{
+    allItems = await loadFromGitHub();
+    renderList();
     renderMdTabs();
-
-    /** 如果有 .md 文件，自动加载第一篇 */
-    const firstMd = items.find(it => it.name.toLowerCase().endsWith(".md"));
-    if (firstMd) loadArticle(firstMd.name);
-
-  } catch (e){
-    listEl.innerHTML = `<li class="err">${String(e.message || e)}</li>`;
-    smallEl.innerHTML =
-      `排查：1）确认仓库 <code>${OWNER}/${REPO}</code> 的 <code>${BRANCH}</code> 分支存在 <code>/${DIR_FOR_API}</code>；` +
-      `2）确认站点上能直接访问 <code>${PUBLIC_PREFIX}文件名</code>；` +
-      `3）仓库若为私有，GitHub API 无法匿名列出。`;
+    // 自动加载第一篇 .md
+    const first = allItems.find(it=>it.name.toLowerCase().endsWith(".md"));
+    if(first) loadArticle(first.name);
+  }catch(e){
+    listEl.innerHTML = `<div class="empty-msg" style="color:#b00020">${safe(e.message)}</div>`;
   }
 })();
 </script>
