@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>像素排序变换 - Pixel Sort Morph</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0d0d1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 20px 40px;
+    overflow-x: hidden;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #6c63ff, #00d2a0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 2px;
+  }
+  header p {
+    font-size: 0.85rem;
+    color: #888;
+  }
+
+  .main-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1000px;
+    justify-content: center;
+  }
+
+  /* ── Left panel: uploads ──────────────── */
+  .left-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 220px;
+    flex-shrink: 0;
+  }
+  .upload-panel {
+    background: #151528;
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #252540;
+  }
+  .upload-panel h3 {
+    font-size: 0.9rem;
+    color: #aaa;
+    letter-spacing: 0.5px;
+  }
+  .upload-zone {
+    width: 100%;
+    aspect-ratio: 1;
+    border: 2px dashed #333355;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    overflow: hidden;
+    background: #0d0d1f;
+  }
+  .upload-zone:hover { border-color: #6c63ff; background: #12122a; }
+  .upload-zone.has-image { border-style: solid; border-color: #333355; }
+  .upload-zone img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .upload-zone .placeholder { text-align: center; color: #555; pointer-events: none; }
+  .upload-zone .placeholder .icon { font-size: 1.6rem; margin-bottom: 4px; display: block; }
+  .upload-zone .placeholder span { font-size: 0.8rem; }
+
+  .upload-panel label.file-btn {
+    display: inline-block;
+    padding: 7px 18px;
+    background: #6c63ff;
+    color: #fff;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+  }
+  .upload-panel label.file-btn:hover { background: #5a52e0; }
+  .upload-panel input[type="file"] { display: none; }
+  .upload-panel .info { font-size: 0.7rem; color: #666; text-align: center; }
+
+  /* ── Right panel: canvas + controls ───── */
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .canvas-wrapper {
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #252540;
+    box-shadow: 0 0 80px rgba(108, 99, 255, 0.12);
+    line-height: 0;
+  }
+  canvas#mainCanvas {
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  .status {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #666;
+    min-height: 20px;
+    transition: color 0.2s;
+  }
+  .status.ready { color: #00d2a0; }
+  .status.animating { color: #6c63ff; }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    background: #151528;
+    border-radius: 12px;
+    padding: 14px 20px;
+    border: 1px solid #252540;
+  }
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: center;
+  }
+  .control-group label {
+    font-size: 0.7rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .control-group select,
+  .control-group input[type="range"] {
+    background: #1a1a30;
+    border: 1px solid #333355;
+    color: #e0e0e0;
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .control-group select { min-width: 100px; }
+  .control-group input[type="range"] {
+    width: 90px;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 5px;
+    background: #252540;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+  }
+  .control-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    background: #6c63ff;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .control-group .range-value {
+    font-size: 0.75rem;
+    color: #aaa;
+  }
+
+  .btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .btn-transform {
+    background: linear-gradient(135deg, #6c63ff, #00d2a0);
+    color: #fff;
+    font-size: 1rem;
+    padding: 12px 32px;
+    box-shadow: 0 4px 20px rgba(108, 99, 255, 0.3);
+  }
+  .btn-transform:hover:not(:disabled) { box-shadow: 0 6px 30px rgba(108, 99, 255, 0.5); }
+
+  .btn-reset {
+    background: #252540;
+    color: #ccc;
+  }
+  .btn-reset:hover:not(:disabled) { background: #303055; }
+
+  .btn-toggle {
+    background: #1a1a30;
+    color: #777;
+    border: 1px solid #333355;
+    padding: 7px 14px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 20px;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+  .btn-toggle:hover:not(:disabled) { border-color: #6c63ff; color: #aaa; }
+  .btn-toggle.active {
+    background: rgba(108, 99, 255, 0.2);
+    color: #b8b0ff;
+    border-color: #6c63ff;
+    box-shadow: 0 0 14px rgba(108, 99, 255, 0.25);
+  }
+
+  @media (max-width: 850px) {
+    body { padding: 10px 10px 20px; }
+    header { margin-bottom: 10px; }
+    header h1 { font-size: 1.3rem; }
+    header p { font-size: 0.75rem; }
+    .main-layout { flex-direction: column; align-items: center; gap: 10px; }
+    .left-panel { flex-direction: row; width: 100%; max-width: 500px; gap: 8px; }
+    .upload-panel { flex: 1; padding: 10px; gap: 6px; border-radius: 10px; }
+    .upload-panel h3 { font-size: 0.75rem; }
+    .upload-zone { border-radius: 8px; }
+    .left-panel .upload-zone { aspect-ratio: unset; height: 80px; }
+    .upload-panel label.file-btn { font-size: 0.75rem; padding: 5px 12px; }
+    .upload-panel .info { font-size: 0.65rem; }
+    .right-panel { width: 100%; gap: 8px; }
+    .canvas-wrapper { border-radius: 10px; }
+    .controls { padding: 10px 12px; gap: 8px; border-radius: 10px; }
+    .btn { font-size: 0.78rem; padding: 8px 16px; }
+    .btn-transform { font-size: 0.9rem; padding: 10px 22px; }
+    .btn-toggle { font-size: 0.72rem; padding: 6px 10px; }
+    .control-group label { font-size: 0.65rem; }
+    .control-group select, .control-group input[type="range"] { font-size: 0.75rem; padding: 4px 6px; }
+    .control-group select { min-width: 80px; }
+    .control-group input[type="range"] { width: 70px; }
+    .status { font-size: 0.7rem; min-height: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Pixel Sort Morph</h1>
+  <p>上传两张图片 — 用像素排序的方式将第一张图的像素重新排列，拼出第二张图</p>
+</header>
+
+<div class="main-layout">
+
+  <!-- ── Left: upload panels ────────────── -->
+  <div class="left-panel">
+    <div class="upload-panel">
+      <h3>图片 A（源）</h3>
+      <div class="upload-zone" id="zoneA">
+        <div class="placeholder"><span class="icon">🖼️</span><span>点击或拖拽上传</span></div>
+      </div>
+      <label class="file-btn" for="fileA">选择图片 A</label>
+      <input type="file" id="fileA" accept="image/*">
+      <div class="info" id="infoA"></div>
+    </div>
+
+    <div class="upload-panel">
+      <h3>图片 B（目标）</h3>
+      <div class="upload-zone" id="zoneB">
+        <div class="placeholder"><span class="icon">🖼️</span><span>点击或拖拽上传</span></div>
+      </div>
+      <label class="file-btn" for="fileB">选择图片 B</label>
+      <input type="file" id="fileB" accept="image/*">
+      <div class="info" id="infoB"></div>
+    </div>
+  </div>
+
+  <!-- ── Right: canvas + controls ───────── -->
+  <div class="right-panel">
+    <div class="canvas-wrapper">
+      <canvas id="mainCanvas"></canvas>
+    </div>
+    <div class="status" id="status">请先上传两张图片</div>
+    <div class="controls">
+      <div class="control-group">
+        <label>分辨率</label>
+        <input type="range" id="resolution" min="50" max="250" value="120" step="10">
+        <span class="range-value" id="resVal">120×120</span>
+      </div>
+      <div class="control-group">
+        <label>排序依据</label>
+        <select id="sortMethod">
+          <option value="luminance">明度</option>
+          <option value="saturation">饱和度</option>
+          <option value="hue">色相</option>
+          <option value="red">红色通道</option>
+          <option value="green">绿色通道</option>
+          <option value="blue">蓝色通道</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>动画时长</label>
+        <select id="duration">
+          <option value="1500">1.5 秒</option>
+          <option value="2500" selected>2.5 秒</option>
+          <option value="4000">4 秒</option>
+          <option value="6000">6 秒</option>
+        </select>
+      </div>
+      <button class="btn btn-toggle" id="btnTrail">✨ 拖尾效果</button>
+      <button class="btn btn-toggle" id="btnBgImgA">🖼️ 背景图A</button>
+      <button class="btn btn-transform" id="btnTransform" disabled>⟳ 开始变换</button>
+      <button class="btn btn-reset" id="btnReset" disabled>↺ 重置</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // ── DOM refs ──────────────────────────────
+  const canvas = document.getElementById('mainCanvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  const statusEl = document.getElementById('status');
+  const btnTransform = document.getElementById('btnTransform');
+  const btnReset = document.getElementById('btnReset');
+  const btnTrail = document.getElementById('btnTrail');
+  const btnBgImgA = document.getElementById('btnBgImgA');
+  const resSlider = document.getElementById('resolution');
+  const resVal = document.getElementById('resVal');
+  const sortSelect = document.getElementById('sortMethod');
+  const durSelect = document.getElementById('duration');
+  const zoneA = document.getElementById('zoneA');
+  const zoneB = document.getElementById('zoneB');
+  const fileA = document.getElementById('fileA');
+  const fileB = document.getElementById('fileB');
+  const infoA = document.getElementById('infoA');
+  const infoB = document.getElementById('infoB');
+
+  // ── State ─────────────────────────────────
+  let originalImgA = null;
+  let originalImgB = null;
+  let imageAData = null;
+  let imageBData = null;
+  let sortedA = null;
+  let animationId = null;
+  let isAnimating = false;
+  let trailOn = false;
+  let bgImgAOn = false;
+  let trailBuffer = null;   // ImageData accumulator for trail effect
+
+  // Responsive canvas display sizing
+  function getDisplaySize() {
+    const isMobile = window.innerWidth <= 850;
+    if (isMobile) {
+      // Mobile: canvas takes most of the screen width, minus padding
+      // Reserve vertical space for: header(~50) + uploads(~90) + controls(~70) + gaps(~30) + padding(~30) ≈ 270
+      return Math.min(window.innerWidth - 20, window.innerHeight - 270, 500);
+    }
+    // Desktop: left panel is 220px + 20px gap, reserve space for controls/header below
+    return Math.min(580, window.innerWidth - 300, window.innerHeight - 280);
+  }
+
+  // ── Helpers ───────────────────────────────
+  const getResolution = () => parseInt(resSlider.value);
+  const getSortMethod = () => sortSelect.value;
+  const getDuration = () => parseInt(durSelect.value);
+
+  function sortKey(r, g, b, method) {
+    switch (method) {
+      case 'luminance':
+        return 0.299 * r + 0.587 * g + 0.114 * b;
+      case 'saturation': {
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        return max === 0 ? 0 : (max - min) / max;
+      }
+      case 'hue': {
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        if (max === min) return 0;
+        const d = max - min;
+        if (max === r) return ((g - b) / d + (g < b ? 6 : 0)) / 6;
+        if (max === g) return ((b - r) / d + 2) / 6;
+        return ((r - g) / d + 4) / 6;
+      }
+      case 'red':   return r;
+      case 'green': return g;
+      case 'blue':  return b;
+      default:      return 0.299 * r + 0.587 * g + 0.114 * b;
+    }
+  }
+
+  // ── Image processing ──────────────────────
+  function fileToImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error('图片加载失败'));
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error('文件读取失败'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function cropAndResize(img, size) {
+    const c = document.createElement('canvas');
+    c.width = size; c.height = size;
+    const octx = c.getContext('2d');
+    const iw = img.naturalWidth, ih = img.naturalHeight;
+    const imgAspect = iw / ih;
+    let sx, sy, sw, sh;
+    if (imgAspect > 1) {
+      sh = ih; sw = ih; sx = (iw - sw) / 2; sy = 0;
+    } else {
+      sw = iw; sh = iw; sx = 0; sy = (ih - sh) / 2;
+    }
+    octx.drawImage(img, sx, sy, sw, sh, 0, 0, size, size);
+    return octx.getImageData(0, 0, size, size);
+  }
+
+  function processImages() {
+    if (!imageAData || !imageBData) return;
+    const method = getSortMethod();
+    const size = imageAData.width;
+
+    function extract(imageData) {
+      const d = imageData.data;
+      const pixels = [];
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const i = (y * size + x) * 4;
+          pixels.push({
+            r: d[i], g: d[i + 1], b: d[i + 2],
+            x, y,
+            key: sortKey(d[i], d[i + 1], d[i + 2], method)
+          });
+        }
+      }
+      return pixels;
+    }
+
+    const pixelsA = extract(imageAData);
+    const pixelsB = extract(imageBData);
+    pixelsA.sort((a, b) => a.key - b.key);
+    pixelsB.sort((a, b) => a.key - b.key);
+
+    sortedA = new Array(size * size);
+    for (let i = 0; i < pixelsA.length; i++) {
+      sortedA[i] = {
+        r: pixelsA[i].r, g: pixelsA[i].g, b: pixelsA[i].b,
+        sx: pixelsA[i].x, sy: pixelsA[i].y,
+        tx: pixelsB[i].x, ty: pixelsB[i].y,
+      };
+    }
+  }
+
+  // ── Rendering ─────────────────────────────
+  function setCanvasSize(size) {
+    canvas.width = size;
+    canvas.height = size;
+    const ds = getDisplaySize();
+    canvas.style.width = ds + 'px';
+    canvas.style.height = ds + 'px';
+  }
+
+  function renderImageA() {
+    if (!imageAData) return;
+    const size = imageAData.width;
+    setCanvasSize(size);
+    ctx.putImageData(imageAData, 0, 0);
+  }
+
+  function renderFrame(progress) {
+    if (!sortedA) return;
+    const size = imageAData.width;
+    setCanvasSize(size);
+
+    if (!trailOn) {
+      // ── Fresh frame (no trail) ──────────
+      const imgData = ctx.createImageData(size, size);
+      const data = imgData.data;
+      if (bgImgAOn && imageAData) {
+        // Use Image A as background
+        const src = imageAData.data;
+        for (let i = 0; i < data.length; i++) {
+          data[i] = src[i];
+        }
+      } else {
+        // Dark background
+        for (let i = 0; i < data.length; i += 4) {
+          data[i] = 10; data[i + 1] = 8; data[i + 2] = 20; data[i + 3] = 255;
+        }
+      }
+      for (const p of sortedA) {
+        const cx = p.sx + (p.tx - p.sx) * progress;
+        const cy = p.sy + (p.ty - p.sy) * progress;
+        const ix = Math.round(cx), iy = Math.round(cy);
+        if (ix >= 0 && ix < size && iy >= 0 && iy < size) {
+          const idx = (iy * size + ix) * 4;
+          data[idx] = p.r; data[idx + 1] = p.g; data[idx + 2] = p.b; data[idx + 3] = 255;
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+    } else {
+      // ── Trail effect: accumulate frames ──
+      if (!trailBuffer || trailBuffer.width !== size) {
+        trailBuffer = ctx.createImageData(size, size);
+        initTrailBuffer(size);
+      }
+      const buf = trailBuffer.data;
+      const decay = 0.98; // lower = shorter trails, higher = longer trails
+
+      if (bgImgAOn && imageAData) {
+        // Fade toward Image A background
+        const src = imageAData.data;
+        for (let i = 0; i < buf.length; i += 4) {
+          buf[i]     = buf[i]     * decay + src[i]     * (1 - decay);
+          buf[i + 1] = buf[i + 1] * decay + src[i + 1] * (1 - decay);
+          buf[i + 2] = buf[i + 2] * decay + src[i + 2] * (1 - decay);
+          buf[i + 3] = 255;
+        }
+      } else {
+        // Fade toward dark
+        for (let i = 0; i < buf.length; i += 4) {
+          buf[i]     *= decay;
+          buf[i + 1] *= decay;
+          buf[i + 2] *= decay;
+          buf[i + 3] = 255;
+        }
+      }
+      // Draw current pixel positions at full brightness
+      for (const p of sortedA) {
+        const cx = p.sx + (p.tx - p.sx) * progress;
+        const cy = p.sy + (p.ty - p.sy) * progress;
+        const ix = Math.round(cx), iy = Math.round(cy);
+        if (ix >= 0 && ix < size && iy >= 0 && iy < size) {
+          const idx = (iy * size + ix) * 4;
+          buf[idx] = p.r; buf[idx + 1] = p.g; buf[idx + 2] = p.b; buf[idx + 3] = 255;
+        }
+      }
+      ctx.putImageData(trailBuffer, 0, 0);
+    }
+  }
+
+  function initTrailBuffer(size) {
+    const buf = trailBuffer.data;
+    if (bgImgAOn && imageAData) {
+      const src = imageAData.data;
+      for (let i = 0; i < buf.length; i++) {
+        buf[i] = src[i];
+      }
+    } else {
+      for (let i = 0; i < buf.length; i += 4) {
+        buf[i] = 10; buf[i + 1] = 8; buf[i + 2] = 20; buf[i + 3] = 255;
+      }
+    }
+  }
+
+  // ── Animation ─────────────────────────────
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  function startAnimation() {
+    if (isAnimating || !sortedA) return;
+    isAnimating = true;
+    trailBuffer = null; // will be initialized on first frame
+    btnTransform.disabled = true;
+    btnReset.disabled = true;
+    statusEl.textContent = '变换中...';
+    statusEl.className = 'status animating';
+
+    const duration = getDuration();
+    const startTime = performance.now();
+
+    function frame(now) {
+      const elapsed = now - startTime;
+      const raw = Math.min(elapsed / duration, 1);
+      renderFrame(easeInOutCubic(raw));
+      if (raw < 1) {
+        animationId = requestAnimationFrame(frame);
+      } else {
+        isAnimating = false;
+        animationId = null;
+        trailBuffer = null;
+        btnTransform.disabled = false;
+        btnReset.disabled = false;
+        statusEl.textContent = '变换完成！用图片 A 的像素拼出了图片 B 的结构';
+        statusEl.className = 'status ready';
+      }
+    }
+    animationId = requestAnimationFrame(frame);
+  }
+
+  function resetToA() {
+    if (isAnimating) { cancelAnimationFrame(animationId); isAnimating = false; animationId = null; }
+    trailBuffer = null;
+    renderImageA();
+    btnTransform.disabled = false;
+    btnReset.disabled = false;
+    statusEl.textContent = '已重置 — 点击"开始变换"查看动画';
+    statusEl.className = 'status ready';
+  }
+
+  function onBothReady() {
+    processImages();
+    renderImageA();
+    btnTransform.disabled = false;
+    btnReset.disabled = false;
+    statusEl.textContent = '准备就绪 — 点击"开始变换"查看动画';
+    statusEl.className = 'status ready';
+  }
+
+  function reprocessBoth() {
+    const size = getResolution();
+    if (originalImgA) {
+      imageAData = cropAndResize(originalImgA, size);
+      infoA.textContent = `已处理: ${size}×${size} 像素`;
+    }
+    if (originalImgB) {
+      imageBData = cropAndResize(originalImgB, size);
+      infoB.textContent = `已处理: ${size}×${size} 像素`;
+    }
+    if (imageAData && imageBData) onBothReady();
+  }
+
+  // ── Upload handling ───────────────────────
+  function createUploadHandler(zoneEl, fileInput, infoEl, side) {
+    async function handleFile(file) {
+      infoEl.textContent = '加载中...';
+      try {
+        const img = await fileToImage(file);
+        if (side === 'A') originalImgA = img;
+        else originalImgB = img;
+
+        // Show thumbnail
+        zoneEl.querySelector('img')?.remove();
+        zoneEl.querySelector('.placeholder')?.remove();
+        const reader = new FileReader();
+        reader.onload = e => {
+          const thumb = document.createElement('img');
+          thumb.src = e.target.result;
+          zoneEl.appendChild(thumb);
+        };
+        reader.readAsDataURL(file);
+        zoneEl.classList.add('has-image');
+
+        const size = getResolution();
+        const imageData = cropAndResize(img, size);
+        infoEl.textContent = `已处理: ${size}×${size} 像素`;
+
+        if (side === 'A') {
+          imageAData = imageData;
+          if (imageBData) onBothReady();
+          else { statusEl.textContent = '已加载图片 A — 请上传图片 B'; statusEl.className = 'status'; }
+        } else {
+          imageBData = imageData;
+          if (imageAData) onBothReady();
+          else { statusEl.textContent = '已加载图片 B — 请上传图片 A'; statusEl.className = 'status'; }
+        }
+      } catch (err) {
+        infoEl.textContent = '加载失败: ' + err.message;
+        console.error(err);
+      }
+    }
+
+    zoneEl.addEventListener('click', () => fileInput.click());
+    zoneEl.addEventListener('dragover', e => { e.preventDefault(); zoneEl.style.borderColor = '#6c63ff'; });
+    zoneEl.addEventListener('dragleave', () => { zoneEl.style.borderColor = ''; });
+    zoneEl.addEventListener('drop', e => {
+      e.preventDefault();
+      zoneEl.style.borderColor = '';
+      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files[0]) handleFile(fileInput.files[0]);
+    });
+  }
+
+  createUploadHandler(zoneA, fileA, infoA, 'A');
+  createUploadHandler(zoneB, fileB, infoB, 'B');
+
+  // ── Control events ────────────────────────
+  resSlider.addEventListener('input', () => {
+    resVal.textContent = getResolution() + '×' + getResolution();
+  });
+  resSlider.addEventListener('change', () => {
+    if (isAnimating) return;
+    resVal.textContent = getResolution() + '×' + getResolution();
+    reprocessBoth();
+  });
+  sortSelect.addEventListener('change', () => {
+    if (isAnimating) return;
+    if (imageAData && imageBData) {
+      processImages();
+      renderImageA();
+      statusEl.textContent = '排序方式已更新';
+      statusEl.className = 'status ready';
+    }
+  });
+
+  btnTransform.addEventListener('click', startAnimation);
+  btnReset.addEventListener('click', resetToA);
+
+  // Toggle: trail effect
+  btnTrail.addEventListener('click', () => {
+    trailOn = !trailOn;
+    btnTrail.classList.toggle('active', trailOn);
+    trailBuffer = null;
+  });
+
+  // Toggle: Image A as background
+  btnBgImgA.addEventListener('click', () => {
+    bgImgAOn = !bgImgAOn;
+    btnBgImgA.classList.toggle('active', bgImgAOn);
+    trailBuffer = null;
+  });
+
+  // Resize canvas on window resize
+  window.addEventListener('resize', () => {
+    if (imageAData && !isAnimating) {
+      setCanvasSize(imageAData.width);
+      ctx.putImageData(imageAData, 0, 0);
+    }
+  });
+
+  // ── Init ──────────────────────────────────
+  resVal.textContent = getResolution() + '×' + getResolution();
+  setCanvasSize(getResolution());
+})();
+</script>
+
+</body>
+</html>
