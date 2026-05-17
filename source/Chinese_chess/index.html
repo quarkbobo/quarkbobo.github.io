@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国象棋</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'SimHei', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .game-wrapper {
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .game-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .game-status {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .current-turn {
+            font-size: 20px;
+            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        .red-turn {
+            background: #fee;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+        }
+        
+        .black-turn {
+            background: #e8e8e8;
+            color: #2c3e50;
+            border: 2px solid #2c3e50;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .status-text {
+            font-size: 16px;
+            color: #666;
+            padding: 8px 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .check-warning {
+            color: #e74c3c;
+            font-weight: bold;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .board-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        #board {
+            display: block;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .game-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .move-history {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .move-history h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .move-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .move-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+        
+        .move-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .move-red {
+            border-left: 3px solid #e74c3c;
+        }
+        
+        .move-black {
+            border-left: 3px solid #2c3e50;
+        }
+        
+        .buttons {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        .btn-restart {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .btn-restart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-undo {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+        
+        .btn-undo:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(149, 165, 166, 0.4);
+        }
+        
+        .btn-undo:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .game-over.show {
+            display: flex;
+        }
+        
+        .game-over-content {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            animation: slideIn 0.5s;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .game-over-content h2 {
+            font-size: 42px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .game-over-content button {
+            font-size: 18px;
+            padding: 15px 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .game-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            #board {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-wrapper">
+        <div class="game-header">
+            <h1>🏛️ 中国象棋</h1>
+            <div class="game-status">
+                <div class="current-turn" id="currentTurn">🔴 红方走棋</div>
+                <div class="status-text" id="statusText">点击棋子选择，点击目标位置移动</div>
+            </div>
+        </div>
+        
+        <div class="board-container">
+            <canvas id="board" width="560" height="620"></canvas>
+        </div>
+        
+        <div class="game-controls">
+            <div class="move-history">
+                <h3>📝 走棋记录</h3>
+                <div class="move-list" id="moveList">
+                    <div style="text-align: center; color: #999; padding: 20px;">游戏开始后显示走棋记录</div>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn-restart" onclick="game.restart()">🔄 重新开始</button>
+                <button class="btn-undo" id="undoBtn" onclick="game.undo()" disabled>↩️ 悔棋</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="game-over" id="gameOver">
+        <div class="game-over-content">
+            <h2 id="winnerText"></h2>
+            <button class="btn-restart" onclick="game.restart(); document.getElementById('gameOver').classList.remove('show');">🔄 再来一局</button>
+        </div>
+    </div>
+
+    <script>
+        class Piece {
+            constructor(type, x, y, side) {
+                this.type = type;
+                this.x = x;
+                this.y = y;
+                this.side = side;
+                this.captured = false;
+            }
+        }
+        
+        class XiangqiGame {
+            constructor() {
+                this.canvas = document.getElementById('board');
+                this.ctx = this.canvas.getContext('2d');
+                this.gridSize = 60;
+                this.padding = 40;
+                this.selectedPiece = null;
+                this.currentTurn = 'red';
+                this.gameOver = false;
+                this.moveHistory = [];
+                this.moveCount = 0;
+                
+                this.initGame();
+                this.bindEvents();
+                this.draw();
+                this.updateUI();
+            }
+            
+            initGame() {
+                this.pieces = [];
+                this.initPieces();
+                this.updateBoard();
+            }
+            
+            initPieces() {
+                // 红方 (上方)
+                const redPieces = [
+                    new Piece('车', 0, 0, 'red'),
+                    new Piece('马', 1, 0, 'red'),
+                    new Piece('相', 2, 0, 'red'),
+                    new Piece('仕', 3, 0, 'red'),
+                    new Piece('帅', 4, 0, 'red'),
+                    new Piece('仕', 5, 0, 'red'),
+                    new Piece('相', 6, 0, 'red'),
+                    new Piece('马', 7, 0, 'red'),
+                    new Piece('车', 8, 0, 'red'),
+                    new Piece('炮', 1, 2, 'red'),
+                    new Piece('炮', 7, 2, 'red'),
+                    new Piece('兵', 0, 3, 'red'),
+                    new Piece('兵', 2, 3, 'red'),
+                    new Piece('兵', 4, 3, 'red'),
+                    new Piece('兵', 6, 3, 'red'),
+                    new Piece('兵', 8, 3, 'red')
+                ];
+                
+                // 黑方 (下方)
+                const blackPieces = [
+                    new Piece('车', 0, 9, 'black'),
+                    new Piece('马', 1, 9, 'black'),
+                    new Piece('象', 2, 9, 'black'),
+                    new Piece('士', 3, 9, 'black'),
+                    new Piece('将', 4, 9, 'black'),
+                    new Piece('士', 5, 9, 'black'),
+                    new Piece('象', 6, 9, 'black'),
+                    new Piece('马', 7, 9, 'black'),
+                    new Piece('车', 8, 9, 'black'),
+                    new Piece('炮', 1, 7, 'black'),
+                    new Piece('炮', 7, 7, 'black'),
+                    new Piece('卒', 0, 6, 'black'),
+                    new Piece('卒', 2, 6, 'black'),
+                    new Piece('卒', 4, 6, 'black'),
+                    new Piece('卒', 6, 6, 'black'),
+                    new Piece('卒', 8, 6, 'black')
+                ];
+                
+                this.pieces = [...redPieces, ...blackPieces];
+            }
+            
+            updateBoard() {
+                this.board = Array(10).fill(null).map(() => Array(9).fill(null));
+                this.pieces.forEach(piece => {
+                    if (!piece.captured) {
+                        this.board[piece.y][piece.x] = piece;
+                    }
+                });
+            }
+            
+            bindEvents() {
+                this.canvas.addEventListener('click', (e) => this.handleClick(e));
+            }
+            
+            handleClick(e) {
+                if (this.gameOver) return;
+                
+                const rect = this.canvas.getBoundingClientRect();
+                const scaleX = this.canvas.width / rect.width;
+                const scaleY = this.canvas.height / rect.height;
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+                
+                const boardX = Math.round((x - this.padding) / this.gridSize);
+                const boardY = Math.round((y - this.padding) / this.gridSize);
+                
+                if (boardX < 0 || boardX > 8 || boardY < 0 || boardY > 9) {
+                    this.selectedPiece = null;
+                    this.draw();
+                    return;
+                }
+                
+                const clickedPiece = this.board[boardY][boardX];
+                
+                if (this.selectedPiece) {
+                    if (clickedPiece && clickedPiece.side === this.currentTurn) {
+                        this.selectedPiece = clickedPiece;
+                    } else {
+                        if (this.isValidMove(this.selectedPiece, boardX, boardY)) {
+                            this.movePiece(this.selectedPiece, boardX, boardY);
+                        } else {
+                            this.selectedPiece = null;
+                        }
+                    }
+                } else {
+                    if (clickedPiece && clickedPiece.side === this.currentTurn) {
+                        this.selectedPiece = clickedPiece;
+                    }
+                }
+                
+                this.draw();
+            }
+            
+            isValidMove(piece, targetX, targetY) {
+                if (targetX < 0 || targetX > 8 || targetY < 0 || targetY > 9) return false;
+                
+                const targetPiece = this.board[targetY][targetX];
+                if (targetPiece && targetPiece.side === piece.side) return false;
+                
+                const dx = targetX - piece.x;
+                const dy = targetY - piece.y;
+                
+                let isValid = false;
+                
+                switch(piece.type) {
+                    case '帅':
+                    case '将':
+                        isValid = this.isValidGeneral(piece, targetX, targetY, dx, dy);
+                        break;
+                    case '仕':
+                    case '士':
+                        isValid = this.isValidAdvisor(piece, targetX, targetY, dx, dy);
+                        break;
+                    case '相':
+                    case '象':
+                        isValid = this.isValidElephant(piece, targetX, targetY, dx, dy);
+                        break;
+                    case '马':
+                        isValid = this.isValidHorse(piece, targetX, targetY, dx, dy);
+                        break;
+                    case '车':
+                        isValid = this.isValidChariot(piece, targetX, targetY, dx, dy);
+                        break;
+                    case '炮':
+                        isValid = this.isValidCannon(piece, targetX, targetY, dx, dy);
+                        break;
+                    case '兵':
+                    case '卒':
+                        isValid = this.isValidSoldier(piece, targetX, targetY, dx, dy);
+                        break;
+                }
+                
+                if (!isValid) return false;
+                
+                // 模拟移动，检查是否会将自己的将/帅暴露给对方的将军
+                const originalX = piece.x;
+                const originalY = piece.y;
+                const capturedPiece = this.board[targetY][targetX];
+                
+                piece.x = targetX;
+                piece.y = targetY;
+                if (capturedPiece) capturedPiece.captured = true;
+                this.updateBoard();
+                
+                const inCheck = this.isInCheck(piece.side);
+                
+                piece.x = originalX;
+                piece.y = originalY;
+                if (capturedPiece) capturedPiece.captured = false;
+                this.updateBoard();
+                
+                return !inCheck;
+            }
+            
+            isValidGeneral(piece, targetX, targetY, dx, dy) {
+                const palaceX = [3, 4, 5];
+                const palaceY = piece.side === 'red' ? [0, 1, 2] : [7, 8, 9];
+                
+                if (!palaceX.includes(targetX) || !palaceY.includes(targetY)) return false;
+                if (Math.abs(dx) + Math.abs(dy) !== 1) return false;
+                
+                return true;
+            }
+            
+            isValidAdvisor(piece, targetX, targetY, dx, dy) {
+                const palaceX = [3, 4, 5];
+                const palaceY = piece.side === 'red' ? [0, 1, 2] : [7, 8, 9];
+                
+                if (!palaceX.includes(targetX) || !palaceY.includes(targetY)) return false;
+                if (Math.abs(dx) !== 1 || Math.abs(dy) !== 1) return false;
+                
+                return true;
+            }
+            
+            isValidElephant(piece, targetX, targetY, dx, dy) {
+                if (piece.side === 'red' && targetY > 4) return false;
+                if (piece.side === 'black' && targetY < 5) return false;
+                
+                if (Math.abs(dx) !== 2 || Math.abs(dy) !== 2) return false;
+                
+                const eyeX = piece.x + dx / 2;
+                const eyeY = piece.y + dy / 2;
+                if (this.board[eyeY][eyeX]) return false;
+                
+                return true;
+            }
+            
+            isValidHorse(piece, targetX, targetY, dx, dy) {
+                const absDx = Math.abs(dx);
+                const absDy = Math.abs(dy);
+                
+                if (!((absDx === 2 && absDy === 1) || (absDx === 1 && absDy === 2))) return false;
+                
+                if (absDx === 2) {
+                    const legX = piece.x + dx / 2;
+                    if (this.board[piece.y][legX]) return false;
+                } else {
+                    const legY = piece.y + dy / 2;
+                    if (this.board[legY][piece.x]) return false;
+                }
+                
+                return true;
+            }
+            
+            isValidChariot(piece, targetX, targetY, dx, dy) {
+                if (dx !== 0 && dy !== 0) return false;
+                
+                if (dx !== 0) {
+                    const step = dx > 0 ? 1 : -1;
+                    for (let x = piece.x + step; x !== targetX; x += step) {
+                        if (this.board[piece.y][x]) return false;
+                    }
+                } else {
+                    const step = dy > 0 ? 1 : -1;
+                    for (let y = piece.y + step; y !== targetY; y += step) {
+                        if (this.board[y][piece.x]) return false;
+                    }
+                }
+                
+                return true;
+            }
+            
+            isValidCannon(piece, targetX, targetY, dx, dy) {
+                if (dx !== 0 && dy !== 0) return false;
+                
+                const targetPiece = this.board[targetY][targetX];
+                let jumpCount = 0;
+                
+                if (dx !== 0) {
+                    const step = dx > 0 ? 1 : -1;
+                    for (let x = piece.x + step; x !== targetX; x += step) {
+                        if (this.board[piece.y][x]) jumpCount++;
+                    }
+                } else {
+                    const step = dy > 0 ? 1 : -1;
+                    for (let y = piece.y + step; y !== targetY; y += step) {
+                        if (this.board[y][piece.x]) jumpCount++;
+                    }
+                }
+                
+                if (targetPiece) {
+                    return jumpCount === 1;
+                } else {
+                    return jumpCount === 0;
+                }
+            }
+            
+            isValidSoldier(piece, targetX, targetY, dx, dy) {
+                const absDx = Math.abs(dx);
+                const absDy = Math.abs(dy);
+                
+                if (piece.side === 'red') {
+                    if (piece.y <= 4) {
+                        return dx === 0 && dy === 1;
+                    } else {
+                        return (absDx === 1 && dy === 0) || (dx === 0 && dy === 1);
+                    }
+                } else {
+                    if (piece.y >= 5) {
+                        return dx === 0 && dy === -1;
+                    } else {
+                        return (absDx === 1 && dy === 0) || (dx === 0 && dy === -1);
+                    }
+                }
+            }
+            
+            isInCheck(side) {
+                const general = side === 'red' 
+                    ? this.pieces.find(p => !p.captured && p.side === 'red' && p.type === '帅')
+                    : this.pieces.find(p => !p.captured && p.side === 'black' && p.type === '将');
+                
+                if (!general) return false;
+                
+                const opponent = side === 'red' ? 'black' : 'red';
+                
+                for (let piece of this.pieces) {
+                    if (piece.captured || piece.side !== opponent) continue;
+                    
+                    if (this.isValidMoveIgnoreCheck(piece, general.x, general.y)) {
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+            
+            isValidMoveIgnoreCheck(piece, targetX, targetY) {
+                if (targetX < 0 || targetX > 8 || targetY < 0 || targetY > 9) return false;
+                
+                const targetPiece = this.board[targetY][targetX];
+                if (targetPiece && targetPiece.side === piece.side) return false;
+                
+                const dx = targetX - piece.x;
+                const dy = targetY - piece.y;
+                
+                switch(piece.type) {
+                    case '帅':
+                    case '将':
+                        return this.isValidGeneral(piece, targetX, targetY, dx, dy);
+                    case '仕':
+                    case '士':
+                        return this.isValidAdvisor(piece, targetX, targetY, dx, dy);
+                    case '相':
+                    case '象':
+                        return this.isValidElephant(piece, targetX, targetY, dx, dy);
+                    case '马':
+                        return this.isValidHorse(piece, targetX, targetY, dx, dy);
+                    case '车':
+                        return this.isValidChariot(piece, targetX, targetY, dx, dy);
+                    case '炮':
+                        return this.isValidCannon(piece, targetX, targetY, dx, dy);
+                    case '兵':
+                    case '卒':
+                        return this.isValidSoldier(piece, targetX, targetY, dx, dy);
+                    default:
+                        return false;
+                }
+            }
+            
+            hasValidMoves(side) {
+                for (let piece of this.pieces) {
+                    if (piece.captured || piece.side !== side) continue;
+                    
+                    for (let y = 0; y < 10; y++) {
+                        for (let x = 0; x < 9; x++) {
+                            if (this.isValidMove(piece, x, y)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+            
+            movePiece(piece, targetX, targetY) {
+                const capturedPiece = this.board[targetY][targetX];
+                
+                this.moveHistory.push({
+                    piece: piece,
+                    fromX: piece.x,
+                    fromY: piece.y,
+                    toX: targetX,
+                    toY: targetY,
+                    captured: capturedPiece
+                });
+                
+                if (capturedPiece) {
+                    capturedPiece.captured = true;
+                }
+                
+                piece.x = targetX;
+                piece.y = targetY;
+                
+                this.updateBoard();
+                this.moveCount++;
+                
+                this.addMoveToHistory(piece, targetX, targetY, capturedPiece);
+                
+                const opponent = this.currentTurn === 'red' ? 'black' : 'red';
+                
+                if (this.isInCheck(opponent)) {
+                    if (!this.hasValidMoves(opponent)) {
+                        this.gameOver = true;
+                        const winner = this.currentTurn === 'red' ? '红方' : '黑方';
+                        this.showGameOver(winner + '获胜！');
+                        return;
+                    } else {
+                        this.showStatus('⚠️ 将军！' + (opponent === 'red' ? '红方' : '黑方') + '被将军！', true);
+                    }
+                } else if (!this.hasValidMoves(opponent)) {
+                    this.gameOver = true;
+                    const winner = this.currentTurn === 'red' ? '红方' : '黑方';
+                    this.showGameOver(winner + '获胜！');
+                    return;
+                } else {
+                    this.showStatus((opponent === 'red' ? '红方' : '黑方') + '走棋', false);
+                }
+                
+                this.currentTurn = opponent;
+                this.selectedPiece = null;
+                
+                this.updateUI();
+                this.updateUndoButton();
+                this.draw();
+            }
+            
+            addMoveToHistory(piece, toX, toY, captured) {
+                const moveList = document.getElementById('moveList');
+                
+                if (moveList.firstChild && moveList.firstChild.style.textAlign === 'center') {
+                    moveList.innerHTML = '';
+                }
+                
+                const moveDiv = document.createElement('div');
+                moveDiv.className = 'move-item ' + (piece.side === 'red' ? 'move-red' : 'move-black');
+                
+                const fromPos = this.getPositionName(piece.x, piece.y);
+                const toPos = this.getPositionName(toX, toY);
+                const captureText = captured ? ' 吃 ' + captured.type : '';
+                
+                moveDiv.innerHTML = `
+                    <span>${this.moveCount}. ${piece.type}</span>
+                    <span>${fromPos} → ${toPos}${captureText}</span>
+                `;
+                
+                moveList.insertBefore(moveDiv, moveList.firstChild);
+            }
+            
+            getPositionName(x, y) {
+                const redLabels = ['九', '八', '七', '六', '五', '四', '三', '二', '一'];
+                return redLabels[x] + (9 - y);
+            }
+            
+            showStatus(text, isWarning) {
+                const statusEl = document.getElementById('statusText');
+                statusEl.textContent = text;
+                statusEl.className = 'status-text' + (isWarning ? ' check-warning' : '');
+            }
+            
+            showGameOver(text) {
+                const gameOverEl = document.getElementById('gameOver');
+                const winnerText = document.getElementById('winnerText');
+                winnerText.textContent = text;
+                gameOverEl.classList.add('show');
+            }
+            
+            updateUI() {
+                const turnEl = document.getElementById('currentTurn');
+                turnEl.textContent = this.currentTurn === 'red' ? '🔴 红方走棋' : '⚫ 黑方走棋';
+                turnEl.className = 'current-turn ' + (this.currentTurn === 'red' ? 'red-turn' : 'black-turn');
+            }
+            
+            updateUndoButton() {
+                const undoBtn = document.getElementById('undoBtn');
+                undoBtn.disabled = this.moveHistory.length === 0 || this.gameOver;
+            }
+            
+            undo() {
+                if (this.moveHistory.length === 0 || this.gameOver) return;
+                
+                const lastMove = this.moveHistory.pop();
+                
+                lastMove.piece.x = lastMove.fromX;
+                lastMove.piece.y = lastMove.fromY;
+                
+                if (lastMove.captured) {
+                    lastMove.captured.captured = false;
+                }
+                
+                this.updateBoard();
+                this.selectedPiece = null;
+                this.gameOver = false;
+                this.moveCount--;
+                
+                this.currentTurn = this.currentTurn === 'red' ? 'black' : 'red';
+                
+                const moveList = document.getElementById('moveList');
+                if (moveList.firstChild && !moveList.firstChild.style.textAlign) {
+                    moveList.removeChild(moveList.firstChild);
+                }
+                
+                if (this.moveCount === 0) {
+                    moveList.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">游戏开始后显示走棋记录</div>';
+                }
+                
+                this.updateUI();
+                this.updateUndoButton();
+                this.showStatus((this.currentTurn === 'red' ? '红方' : '黑方') + '走棋（已悔棋）', false);
+                
+                this.draw();
+            }
+            
+            restart() {
+                this.selectedPiece = null;
+                this.currentTurn = 'red';
+                this.gameOver = false;
+                this.moveHistory = [];
+                this.moveCount = 0;
+                
+                document.getElementById('moveList').innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">游戏开始后显示走棋记录</div>';
+                document.getElementById('gameOver').classList.remove('show');
+                
+                this.initPieces();
+                this.updateBoard();
+                this.updateUI();
+                this.updateUndoButton();
+                this.showStatus('点击棋子选择，点击目标位置移动', false);
+                
+                this.draw();
+            }
+            
+            draw() {
+                this.drawBoard();
+                this.drawPieces();
+                if (this.selectedPiece) {
+                    this.drawSelected();
+                    this.drawValidMoves();
+                }
+            }
+            
+            drawBoard() {
+                const ctx = this.ctx;
+                const gridSize = this.gridSize;
+                const padding = this.padding;
+                
+                ctx.fillStyle = '#f5deb3';
+                ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                
+                for (let i = 0; i < 10; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(padding, padding + i * gridSize);
+                    ctx.lineTo(padding + 8 * gridSize, padding + i * gridSize);
+                    ctx.stroke();
+                }
+                
+                for (let i = 0; i < 9; i++) {
+                    if (i === 0 || i === 8) {
+                        ctx.beginPath();
+                        ctx.moveTo(padding + i * gridSize, padding);
+                        ctx.lineTo(padding + i * gridSize, padding + 9 * gridSize);
+                        ctx.stroke();
+                    } else {
+                        ctx.beginPath();
+                        ctx.moveTo(padding + i * gridSize, padding);
+                        ctx.lineTo(padding + i * gridSize, padding + 4 * gridSize);
+                        ctx.stroke();
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(padding + i * gridSize, padding + 5 * gridSize);
+                        ctx.lineTo(padding + i * gridSize, padding + 9 * gridSize);
+                        ctx.stroke();
+                    }
+                }
+                
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(padding + 3 * gridSize, padding);
+                ctx.lineTo(padding + 5 * gridSize, padding + 2 * gridSize);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(padding + 5 * gridSize, padding);
+                ctx.lineTo(padding + 3 * gridSize, padding + 2 * gridSize);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(padding + 3 * gridSize, padding + 7 * gridSize);
+                ctx.lineTo(padding + 5 * gridSize, padding + 9 * gridSize);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(padding + 5 * gridSize, padding + 7 * gridSize);
+                ctx.lineTo(padding + 3 * gridSize, padding + 9 * gridSize);
+                ctx.stroke();
+                
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 32px Microsoft YaHei';
+                ctx.textAlign = 'center';
+                ctx.fillText('楚 河', padding + 2 * gridSize, padding + 4.7 * gridSize);
+                ctx.fillText('汉 界', padding + 6 * gridSize, padding + 4.7 * gridSize);
+            }
+            
+            drawPieces() {
+                this.pieces.forEach(piece => {
+                    if (!piece.captured) {
+                        this.drawPiece(piece);
+                    }
+                });
+            }
+            
+            drawPiece(piece) {
+                const ctx = this.ctx;
+                const gridSize = this.gridSize;
+                const padding = this.padding;
+                const x = padding + piece.x * gridSize;
+                const y = padding + piece.y * gridSize;
+                const radius = gridSize * 0.4;
+                
+                ctx.beginPath();
+                ctx.arc(x + 2, y + 2, radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0,0,0,0.2)';
+                ctx.fill();
+                
+                const gradient = ctx.createRadialGradient(x - radius/3, y - radius/3, 0, x, y, radius);
+                gradient.addColorStop(0, '#fff');
+                gradient.addColorStop(1, '#f0f0f0');
+                
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                ctx.strokeStyle = piece.side === 'red' ? '#c0392b' : '#2c3e50';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.arc(x, y, radius * 0.85, 0, Math.PI * 2);
+                ctx.strokeStyle = piece.side === 'red' ? '#c0392b' : '#2c3e50';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                
+                ctx.fillStyle = piece.side === 'red' ? '#c0392b' : '#2c3e50';
+                ctx.font = 'bold 26px Microsoft YaHei';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(piece.type, x, y);
+            }
+            
+            drawSelected() {
+                const ctx = this.ctx;
+                const gridSize = this.gridSize;
+                const padding = this.padding;
+                const x = padding + this.selectedPiece.x * gridSize;
+                const y = padding + this.selectedPiece.y * gridSize;
+                
+                ctx.strokeStyle = '#f39c12';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(x, y, gridSize * 0.45, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            drawValidMoves() {
+                const ctx = this.ctx;
+                const gridSize = this.gridSize;
+                const padding = this.padding;
+                
+                for (let y = 0; y < 10; y++) {
+                    for (let x = 0; x < 9; x++) {
+                        if (this.isValidMove(this.selectedPiece, x, y)) {
+                            const drawX = padding + x * gridSize;
+                            const drawY = padding + y * gridSize;
+                            
+                            ctx.beginPath();
+                            if (this.board[y][x]) {
+                                ctx.arc(drawX, drawY, gridSize * 0.45, 0, Math.PI * 2);
+                                ctx.strokeStyle = 'rgba(231, 76, 60, 0.6)';
+                                ctx.lineWidth = 3;
+                                ctx.stroke();
+                            } else {
+                                ctx.arc(drawX, drawY, gridSize * 0.2, 0, Math.PI * 2);
+                                ctx.fillStyle = 'rgba(46, 204, 113, 0.5)';
+                                ctx.fill();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        let game;
+        window.onload = () => {
+            game = new XiangqiGame();
+        };
+    </script>
+</body>
+</html>

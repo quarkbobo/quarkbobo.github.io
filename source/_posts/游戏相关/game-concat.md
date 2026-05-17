@@ -1,37 +1,14 @@
 ---
 title: 游戏合集
-date: 2025-11-20
+date: 2026-5-17
 ---
 
-反正是薅Chatgpt5.0的羊毛​​
+<a href="https://quark567.patrickliucloud.top/snake" target="_blank">贪吃蛇CTF</a>
 
-# 贪吃蛇CTF
+<a href="https://quark567.patrickliucloud.top/2048" target="_blank">2048</a>
 
-https://quark567.patrickliucloud.top/snake
+<a href="https://quark567.patrickliucloud.top/Chinese_chess" target="_blank">中国象棋</a>
 
-# 2048
-
-https://quark567.patrickliucloud.top/2048
-
-建议电脑端游玩，特别爽！
-
-# 中国象棋（联机）
-
-前端入口：
-
-https://quark567.patrickliucloud.top/中国象棋
-
-后端地址填写方式（在中国象棋页面内填写）：
-
-- 本地：`http://localhost:3000`
-- 线上：`https://你的后端域名`（例如 Render/Railway 部署地址）
-
-中国象棋后端接口（健康检查）：
-
-- `GET /api/health`
-- 示例：`https://你的后端域名/api/health`
-
-
-
+<a href="https://quark567.patrickliucloud.top/international_chess" target="_blank">国际象棋</a>
 
 
