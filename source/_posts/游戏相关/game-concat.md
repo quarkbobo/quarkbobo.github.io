@@ -7,8 +7,8 @@ date: 2026-5-17
 
 <a href="https://quark567.patrickliucloud.top/2048" target="_blank">2048</a>
 
-<a href="https://quark567.patrickliucloud.top/Chinese_chess" target="_blank">中国象棋</a>
+<a href="https://quark567.patrickliucloud.top/中国象棋" target="_blank">中国象棋</a>
 
-<a href="https://quark567.patrickliucloud.top/international_chess" target="_blank">国际象棋</a>
+<a href="https://quark567.patrickliucloud.top/国际象棋" target="_blank">国际象棋</a>
 
 
