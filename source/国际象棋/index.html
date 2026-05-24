@@ -220,6 +220,40 @@
             transform: none;
         }
         
+        .btn-draw {
+            background: #3d5a4b;
+            color: #fff;
+        }
+        
+        .btn-draw:hover:not(:disabled) {
+            background: #4a6d5b;
+            transform: translateY(-2px);
+        }
+        
+        .btn-draw:disabled {
+            background: #2a2826;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-resign {
+            background: #6b3a3a;
+            color: #fff;
+        }
+        
+        .btn-resign:hover:not(:disabled) {
+            background: #7d4a4a;
+            transform: translateY(-2px);
+        }
+        
+        .btn-resign:disabled {
+            background: #2a2826;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         .game-over {
             position: fixed;
             top: 0;
@@ -308,6 +342,8 @@
             <div class="buttons">
                 <button class="btn-restart" onclick="game.restart()">🔄 重新开始</button>
                 <button class="btn-undo" id="undoBtn" onclick="game.undo()" disabled>↩️ 悔棋</button>
+                <button class="btn-draw" id="drawBtn" onclick="game.claimDraw()" disabled>🤝 提和</button>
+                <button class="btn-resign" id="resignBtn" onclick="game.resign()" disabled>🏳️ 认输</button>
             </div>
         </div>
     </div>
@@ -319,63 +355,55 @@
         </div>
     </div>
 
-    <script>
-        // 音效系统
+    <script>// 音效系统
         class SoundManager {
             constructor() {
                 this.context = null;
                 this.enabled = true;
-                this.moveSound = null;
-                this.captureSound = null;
-                this.checkSound = null;
                 this.initAudio();
             }
             
             async initAudio() {
                 try {
                     this.context = new (window.AudioContext || window.webkitAudioContext)();
-                    await this.loadSounds();
                 } catch(e) {
-                    console.log('音效初始化失败:', e);
                     this.enabled = false;
                 }
             }
             
-            async loadSounds() {
-                // 这里可以加载实际的音频文件
-                // 暂时使用 Web Audio API 生成
-            }
-            
             playMove() {
                 if (!this.enabled || !this.context) return;
-                this.playTone(800, 0.1, 'sine', 0.3);
+                this.playTone(800, 0.08, 'sine', 0.25);
             }
             
             playCapture() {
                 if (!this.enabled || !this.context) return;
-                this.playTone(600, 0.15, 'sawtooth', 0.3);
-                setTimeout(() => this.playTone(400, 0.1, 'sawtooth', 0.2), 50);
+                this.playTone(600, 0.12, 'sawtooth', 0.25);
+                setTimeout(() => this.playTone(400, 0.08, 'sawtooth', 0.2), 50);
             }
             
             playCheck() {
                 if (!this.enabled || !this.context) return;
-                this.playTone(1000, 0.2, 'sine', 0.3);
-                setTimeout(() => this.playTone(1200, 0.2, 'sine', 0.3), 100);
+                this.playTone(1000, 0.15, 'sine', 0.25);
+                setTimeout(() => this.playTone(1200, 0.15, 'sine', 0.25), 100);
+            }
+            
+            playCastle() {
+                if (!this.enabled || !this.context) return;
+                this.playTone(500, 0.1, 'sine', 0.3);
+                setTimeout(() => this.playTone(700, 0.1, 'sine', 0.3), 80);
+                setTimeout(() => this.playTone(900, 0.1, 'sine', 0.3), 160);
             }
             
             playTone(frequency, duration, type, volume) {
                 const oscillator = this.context.createOscillator();
                 const gainNode = this.context.createGain();
-                
                 oscillator.connect(gainNode);
                 gainNode.connect(this.context.destination);
-                
                 oscillator.frequency.value = frequency;
                 oscillator.type = type;
-                
                 gainNode.gain.setValueAtTime(volume, this.context.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, this.context.currentTime + duration);
-                
                 oscillator.start(this.context.currentTime);
                 oscillator.stop(this.context.currentTime + duration);
             }
@@ -397,7 +425,6 @@
                     'Black_King', 'Black_Queen', 'Black_Rook', 
                     'Black_Bishop', 'Black_Knight', 'Black_Pawn'
                 ];
-                
                 pieceNames.forEach(name => {
                     const img = new Image();
                     img.src = `assets/${name}.png`;
@@ -412,12 +439,8 @@
             
             getPieceName(type) {
                 const names = {
-                    'king': 'King',
-                    'queen': 'Queen',
-                    'rook': 'Rook',
-                    'bishop': 'Bishop',
-                    'knight': 'Knight',
-                    'pawn': 'Pawn'
+                    'king': 'King', 'queen': 'Queen', 'rook': 'Rook',
+                    'bishop': 'Bishop', 'knight': 'Knight', 'pawn': 'Pawn'
                 };
                 return names[type];
             }
@@ -447,11 +470,19 @@
                 this.moveHistory = [];
                 this.moveCount = 0;
                 this.enPassantTarget = null;
+                // 50步规则：无吃子且无兵移动的半回合数（0-100）
+                this.halfMoveClock = 0;
+                // 三次重复局面检测
+                this.positionHistory = [];
+                // 兵升变等待状态
+                this.promotionPending = null;
                 
                 this.initGame();
                 this.bindEvents();
+                this.positionHistory.push(this.getPositionKey());
                 this.draw();
                 this.updateUI();
+                this.updateUndoButton();
             }
             
             initGame() {
@@ -461,7 +492,6 @@
             }
             
             initPieces() {
-                // 白方 (下方)
                 const whitePieces = [
                     new Piece('rook', 0, 7, 'white'),
                     new Piece('knight', 1, 7, 'white'),
@@ -472,12 +502,10 @@
                     new Piece('knight', 6, 7, 'white'),
                     new Piece('rook', 7, 7, 'white')
                 ];
-                
                 for (let i = 0; i < 8; i++) {
                     whitePieces.push(new Piece('pawn', i, 6, 'white'));
                 }
                 
-                // 黑方 (上方)
                 const blackPieces = [
                     new Piece('rook', 0, 0, 'black'),
                     new Piece('knight', 1, 0, 'black'),
@@ -488,7 +516,6 @@
                     new Piece('knight', 6, 0, 'black'),
                     new Piece('rook', 7, 0, 'black')
                 ];
-                
                 for (let i = 0; i < 8; i++) {
                     blackPieces.push(new Piece('pawn', i, 1, 'black'));
                 }
@@ -510,7 +537,7 @@
             }
             
             handleClick(e) {
-                if (this.gameOver) return;
+                if (this.gameOver || this.promotionPending) return;
                 
                 const rect = this.canvas.getBoundingClientRect();
                 const scaleX = this.canvas.width / rect.width;
@@ -535,7 +562,7 @@
                         this.draw();
                     } else {
                         if (this.isValidMove(this.selectedPiece, boardX, boardY)) {
-                            this.movePiece(this.selectedPiece, boardX, boardY);
+                            this.executeMove(this.selectedPiece, boardX, boardY);
                         } else {
                             this.selectedPiece = null;
                             this.draw();
@@ -549,6 +576,8 @@
                 }
             }
             
+            // === 走法合法性验证 ===
+            
             isValidMove(piece, targetX, targetY) {
                 if (targetX < 0 || targetX > 7 || targetY < 0 || targetY > 7) return false;
                 
@@ -556,58 +585,52 @@
                 if (targetPiece && targetPiece.color === piece.color) return false;
                 
                 let isValid = false;
-                
                 switch(piece.type) {
-                    case 'king':
-                        isValid = this.isValidKing(piece, targetX, targetY);
-                        break;
-                    case 'queen':
-                        isValid = this.isValidQueen(piece, targetX, targetY);
-                        break;
-                    case 'rook':
-                        isValid = this.isValidRook(piece, targetX, targetY);
-                        break;
-                    case 'bishop':
-                        isValid = this.isValidBishop(piece, targetX, targetY);
-                        break;
-                    case 'knight':
-                        isValid = this.isValidKnight(piece, targetX, targetY);
-                        break;
-                    case 'pawn':
-                        isValid = this.isValidPawn(piece, targetX, targetY);
-                        break;
+                    case 'king':   isValid = this.isValidKing(piece, targetX, targetY); break;
+                    case 'queen':  isValid = this.isValidQueen(piece, targetX, targetY); break;
+                    case 'rook':   isValid = this.isValidRook(piece, targetX, targetY); break;
+                    case 'bishop': isValid = this.isValidBishop(piece, targetX, targetY); break;
+                    case 'knight': isValid = this.isValidKnight(piece, targetX, targetY); break;
+                    case 'pawn':   isValid = this.isValidPawn(piece, targetX, targetY); break;
                 }
-                
                 if (!isValid) return false;
                 
-                const originalX = piece.x;
-                const originalY = piece.y;
+                // 模拟走棋，检测是否导致己方被将军
+                const originalX = piece.x, originalY = piece.y;
                 const capturedPiece = this.board[targetY][targetX];
                 const originalEnPassant = this.enPassantTarget;
+                const origHasMoved = piece.hasMoved;
                 
-                piece.x = targetX;
-                piece.y = targetY;
+                piece.x = targetX; piece.y = targetY; piece.hasMoved = true;
                 if (capturedPiece) capturedPiece.captured = true;
                 
+                let enPassantCaptured = null;
                 if (piece.type === 'pawn' && this.enPassantTarget && 
                     targetX === this.enPassantTarget.x && targetY === this.enPassantTarget.y) {
-                    const capturedPawn = this.board[originalY][targetX];
-                    if (capturedPawn) capturedPawn.captured = true;
+                    enPassantCaptured = this.board[originalY][targetX];
+                    if (enPassantCaptured) enPassantCaptured.captured = true;
+                }
+                
+                // 王车易位时临时移动车
+                let castlingRook = null, rookOrigX = null;
+                if (piece.type === 'king' && Math.abs(targetX - originalX) === 2) {
+                    const rookX = targetX > originalX ? 7 : 0;
+                    const rookNewX = targetX > originalX ? targetX - 1 : targetX + 1;
+                    castlingRook = this.board[originalY][rookX];
+                    if (castlingRook) {
+                        rookOrigX = castlingRook.x;
+                        castlingRook.x = rookNewX;
+                    }
                 }
                 
                 this.updateBoard();
-                
                 const inCheck = this.isInCheck(piece.color);
                 
-                piece.x = originalX;
-                piece.y = originalY;
+                // 恢复
+                piece.x = originalX; piece.y = originalY; piece.hasMoved = origHasMoved;
                 if (capturedPiece) capturedPiece.captured = false;
-                
-                if (piece.type === 'pawn' && this.enPassantTarget && 
-                    targetX === this.enPassantTarget.x && targetY === this.enPassantTarget.y) {
-                    const capturedPawn = this.board[originalY][targetX];
-                    if (capturedPawn) capturedPawn.captured = false;
-                }
+                if (enPassantCaptured) enPassantCaptured.captured = false;
+                if (castlingRook) castlingRook.x = rookOrigX;
                 
                 this.enPassantTarget = originalEnPassant;
                 this.updateBoard();
@@ -619,8 +642,10 @@
                 const dx = Math.abs(targetX - piece.x);
                 const dy = Math.abs(targetY - piece.y);
                 
+                // 普通移动
                 if (dx <= 1 && dy <= 1) return true;
                 
+                // 王车易位
                 if (dy === 0 && dx === 2 && !piece.hasMoved) {
                     const direction = targetX > piece.x ? 1 : -1;
                     const rookX = direction > 0 ? 7 : 0;
@@ -629,12 +654,23 @@
                     if (!rook || rook.type !== 'rook' || rook.hasMoved) return false;
                     if (this.isInCheck(piece.color)) return false;
                     
+                    // 王经过和到达的格子不能被攻击
+                    const opponentColor = piece.color === 'white' ? 'black' : 'white';
+                    const kingPathX = [];
+                    let cx = piece.x;
+                    while (cx !== targetX) {
+                        cx += direction;
+                        kingPathX.push(cx);
+                    }
+                    for (let kx of kingPathX) {
+                        if (this.isSquareAttacked(kx, piece.y, opponentColor)) return false;
+                    }
+                    
+                    // 王和车之间不能有棋子（不包括王和车自身）
                     const startX = Math.min(piece.x, rookX) + 1;
                     const endX = Math.max(piece.x, rookX) - 1;
-                    
                     for (let x = startX; x <= endX; x++) {
                         if (this.board[piece.y][x]) return false;
-                        if (this.isSquareAttacked(x, piece.y, piece.color === 'white' ? 'black' : 'white')) return false;
                     }
                     
                     return true;
@@ -649,44 +685,31 @@
             
             isValidRook(piece, targetX, targetY) {
                 if (piece.x !== targetX && piece.y !== targetY) return false;
-                
                 const stepX = targetX > piece.x ? 1 : targetX < piece.x ? -1 : 0;
                 const stepY = targetY > piece.y ? 1 : targetY < piece.y ? -1 : 0;
-                
-                let x = piece.x + stepX;
-                let y = piece.y + stepY;
-                
+                let x = piece.x + stepX, y = piece.y + stepY;
                 while (x !== targetX || y !== targetY) {
                     if (this.board[y][x]) return false;
-                    x += stepX;
-                    y += stepY;
+                    x += stepX; y += stepY;
                 }
-                
                 return true;
             }
             
             isValidBishop(piece, targetX, targetY) {
                 if (Math.abs(targetX - piece.x) !== Math.abs(targetY - piece.y)) return false;
-                
                 const stepX = targetX > piece.x ? 1 : -1;
                 const stepY = targetY > piece.y ? 1 : -1;
-                
-                let x = piece.x + stepX;
-                let y = piece.y + stepY;
-                
+                let x = piece.x + stepX, y = piece.y + stepY;
                 while (x !== targetX && y !== targetY) {
                     if (this.board[y][x]) return false;
-                    x += stepX;
-                    y += stepY;
+                    x += stepX; y += stepY;
                 }
-                
                 return true;
             }
             
             isValidKnight(piece, targetX, targetY) {
                 const dx = Math.abs(targetX - piece.x);
                 const dy = Math.abs(targetY - piece.y);
-                
                 return (dx === 2 && dy === 1) || (dx === 1 && dy === 2);
             }
             
@@ -696,203 +719,383 @@
                 const dx = targetX - piece.x;
                 const dy = targetY - piece.y;
                 
+                // 前进一格
                 if (dx === 0 && dy === direction && !this.board[targetY][targetX]) {
                     return true;
                 }
-                
+                // 前进两格（起始位置）
                 if (dx === 0 && dy === 2 * direction && piece.y === startRow && !this.board[targetY][targetX]) {
                     const middleY = piece.y + direction;
                     if (!this.board[middleY][piece.x]) return true;
                 }
-                
+                // 斜吃
                 if (Math.abs(dx) === 1 && dy === direction) {
                     if (this.board[targetY][targetX]) return true;
-                    
+                    // 吃过路兵
                     if (this.enPassantTarget && 
                         targetX === this.enPassantTarget.x && 
                         targetY === this.enPassantTarget.y) {
                         return true;
                     }
                 }
-                
                 return false;
             }
+            
+            // === 将军与攻击检测 ===
             
             isInCheck(color) {
                 const king = this.pieces.find(p => !p.captured && p.color === color && p.type === 'king');
                 if (!king) return false;
-                
                 return this.isSquareAttacked(king.x, king.y, color === 'white' ? 'black' : 'white');
             }
             
             isSquareAttacked(x, y, byColor) {
                 for (let piece of this.pieces) {
                     if (piece.captured || piece.color !== byColor) continue;
-                    
-                    if (this.isValidMoveIgnoreCheck(piece, x, y)) {
-                        return true;
-                    }
+                    if (this.isValidMoveRaw(piece, x, y)) return true;
                 }
                 return false;
             }
             
-            isValidMoveIgnoreCheck(piece, targetX, targetY) {
+            // 不考虑将军的走法验证（用于攻击检测）
+            isValidMoveRaw(piece, targetX, targetY) {
                 if (targetX < 0 || targetX > 7 || targetY < 0 || targetY > 7) return false;
-                
                 const targetPiece = this.board[targetY][targetX];
                 if (targetPiece && targetPiece.color === piece.color) return false;
                 
                 switch(piece.type) {
-                    case 'king':
-                        return this.isValidKingIgnoreCheck(piece, targetX, targetY);
+                    case 'king': {
+                        const dx = Math.abs(targetX - piece.x);
+                        const dy = Math.abs(targetY - piece.y);
+                        return dx <= 1 && dy <= 1;
+                    }
                     case 'queen':
-                        return this.isValidQueenIgnoreCheck(piece, targetX, targetY);
+                        return this.isValidRook(piece, targetX, targetY) || this.isValidBishop(piece, targetX, targetY);
                     case 'rook':
                         return this.isValidRook(piece, targetX, targetY);
                     case 'bishop':
                         return this.isValidBishop(piece, targetX, targetY);
                     case 'knight':
                         return this.isValidKnight(piece, targetX, targetY);
-                    case 'pawn':
-                        return this.isValidPawnIgnoreCheck(piece, targetX, targetY);
+                    case 'pawn': {
+                        const direction = piece.color === 'white' ? -1 : 1;
+                        const dx = targetX - piece.x;
+                        const dy = targetY - piece.y;
+                        return Math.abs(dx) === 1 && dy === direction;
+                    }
                     default:
                         return false;
                 }
             }
             
-            isValidKingIgnoreCheck(piece, targetX, targetY) {
-                const dx = Math.abs(targetX - piece.x);
-                const dy = Math.abs(targetY - piece.y);
-                return dx <= 1 && dy <= 1;
-            }
-            
-            isValidQueenIgnoreCheck(piece, targetX, targetY) {
-                return this.isValidRook(piece, targetX, targetY) || this.isValidBishop(piece, targetX, targetY);
-            }
-            
-            isValidPawnIgnoreCheck(piece, targetX, targetY) {
-                const direction = piece.color === 'white' ? -1 : 1;
-                const dx = targetX - piece.x;
-                const dy = targetY - piece.y;
-                
-                if (dx === 0 && dy === direction) return true;
-                if (Math.abs(dx) === 1 && dy === direction) return true;
-                
-                return false;
-            }
-            
             hasValidMoves(color) {
                 for (let piece of this.pieces) {
                     if (piece.captured || piece.color !== color) continue;
-                    
                     for (let y = 0; y < 8; y++) {
                         for (let x = 0; x < 8; x++) {
-                            if (this.isValidMove(piece, x, y)) {
-                                return true;
-                            }
+                            if (this.isValidMove(piece, x, y)) return true;
                         }
                     }
                 }
                 return false;
             }
             
-            movePiece(piece, targetX, targetY) {
+            // === 局面记录（FEN部分） ===
+            
+            getPositionKey() {
+                // 生成局面特征字符串用于三次重复检测
+                // 包含：所有棋子位置+当前走棋方+易位权+过路兵目标
+                let key = '';
+                for (let y = 0; y < 8; y++) {
+                    for (let x = 0; x < 8; x++) {
+                        const piece = this.board[y][x];
+                        if (piece && !piece.captured) {
+                            key += piece.color[0] + piece.type[0] + x + y + ';';
+                        }
+                    }
+                }
+                key += '|turn:' + this.currentTurn;
+                
+                // 易位权
+                const wk = this.pieces.find(p => !p.captured && p.type === 'king' && p.color === 'white');
+                const bk = this.pieces.find(p => !p.captured && p.type === 'king' && p.color === 'black');
+                const wrK = this.pieces.find(p => !p.captured && p.type === 'rook' && p.color === 'white' && p.x === 7);
+                const wrQ = this.pieces.find(p => !p.captured && p.type === 'rook' && p.color === 'white' && p.x === 0);
+                const brK = this.pieces.find(p => !p.captured && p.type === 'rook' && p.color === 'black' && p.x === 7);
+                const brQ = this.pieces.find(p => !p.captured && p.type === 'rook' && p.color === 'black' && p.x === 0);
+                key += '|castling:';
+                if (wk && !wk.hasMoved && wrK && !wrK.hasMoved) key += 'K';
+                if (wk && !wk.hasMoved && wrQ && !wrQ.hasMoved) key += 'Q';
+                if (bk && !bk.hasMoved && brK && !brK.hasMoved) key += 'k';
+                if (bk && !bk.hasMoved && brQ && !brQ.hasMoved) key += 'q';
+                
+                if (this.enPassantTarget) {
+                    key += '|ep:' + this.enPassantTarget.x + ',' + this.enPassantTarget.y;
+                }
+                
+                return key;
+            }
+            
+            // === 兵升变UI ===
+            
+            showPromotionUI(piece, targetX, targetY, callback) {
+                // 移除旧弹窗
+                const old = document.getElementById('promotionDialog');
+                if (old) old.remove();
+                
+                const color = piece.color;
+                const prefix = color === 'white' ? 'White' : 'Black';
+                const pieces = ['Queen', 'Rook', 'Bishop', 'Knight'];
+                const types = ['queen', 'rook', 'bishop', 'knight'];
+                
+                const overlay = document.createElement('div');
+                overlay.id = 'promotionDialog';
+                overlay.style.cssText = `
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                    background: rgba(0,0,0,0.75); z-index: 2000;
+                    display: flex; justify-content: center; align-items: center;
+                `;
+                
+                const dialog = document.createElement('div');
+                dialog.style.cssText = `
+                    background: #262421; padding: 25px; border-radius: 12px;
+                    text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+                `;
+                
+                const title = document.createElement('div');
+                title.textContent = '选择升变棋子';
+                title.style.cssText = 'color: #fff; font-size: 20px; margin-bottom: 18px;';
+                dialog.appendChild(title);
+                
+                const grid = document.createElement('div');
+                grid.style.cssText = 'display: flex; gap: 12px; justify-content: center;';
+                
+                pieces.forEach((name, i) => {
+                    const btn = document.createElement('div');
+                    btn.style.cssText = `
+                        width: 70px; height: 70px; background: #3d3a36; 
+                        border-radius: 8px; cursor: pointer; display: flex;
+                        align-items: center; justify-content: center;
+                        transition: all 0.2s; border: 2px solid transparent;
+                    `;
+                    btn.onmouseenter = () => { btn.style.borderColor = '#f0d9b5'; btn.style.background = '#4a4540'; };
+                    btn.onmouseleave = () => { btn.style.borderColor = 'transparent'; btn.style.background = '#3d3a36'; };
+                    
+                    const img = pieceImages.getImage(types[i], color);
+                    if (img && img.complete) {
+                        const imgEl = document.createElement('img');
+                        imgEl.src = img.src;
+                        imgEl.style.cssText = 'width: 60px; height: 60px;';
+                        btn.appendChild(imgEl);
+                    } else {
+                        btn.textContent = ['♛','♜','♝','♞'][i];
+                        btn.style.cssText += 'font-size: 36px; color: #fff;';
+                    }
+                    
+                    btn.onclick = () => {
+                        overlay.remove();
+                        callback(types[i]);
+                    };
+                    grid.appendChild(btn);
+                });
+                
+                dialog.appendChild(grid);
+                overlay.appendChild(dialog);
+                document.body.appendChild(overlay);
+            }
+            
+            // === 执行走棋 ===
+            
+            executeMove(piece, targetX, targetY) {
+                // 检测兵是否到达底线
+                const promotionRow = piece.color === 'white' ? 0 : 7;
+                if (piece.type === 'pawn' && targetY === promotionRow) {
+                    this.promotionPending = { piece, targetX, targetY };
+                    this.showPromotionUI(piece, targetX, targetY, (promoType) => {
+                        this.promotionPending = null;
+                        this.movePiece(piece, targetX, targetY, promoType);
+                    });
+                    return;
+                }
+                
+                this.movePiece(piece, targetX, targetY, null);
+            }
+            
+            movePiece(piece, targetX, targetY, promotionType) {
+                const fromX = piece.x, fromY = piece.y;
                 const capturedPiece = this.board[targetY][targetX];
                 const isEnPassant = piece.type === 'pawn' && this.enPassantTarget && 
                                    targetX === this.enPassantTarget.x && targetY === this.enPassantTarget.y;
                 
+                // 检测王车易位
+                let isCastling = false;
+                let castlingRook = null, rookFromX = null, rookToX = null;
+                if (piece.type === 'king' && Math.abs(targetX - fromX) === 2) {
+                    isCastling = true;
+                    const rookX = targetX > fromX ? 7 : 0;
+                    rookFromX = rookX;
+                    rookToX = targetX > fromX ? targetX - 1 : targetX + 1;
+                    castlingRook = this.board[fromY][rookX];
+                }
+                
+                // 记录50步规则：吃子或兵移动时重置
+                const isCapture = capturedPiece || isEnPassant;
+                const isPawnMove = piece.type === 'pawn';
+                
                 this.moveHistory.push({
                     piece: piece,
-                    fromX: piece.x,
-                    fromY: piece.y,
-                    toX: targetX,
-                    toY: targetY,
+                    fromX: fromX, fromY: fromY,
+                    toX: targetX, toY: targetY,
                     captured: capturedPiece,
                     enPassant: isEnPassant,
-                    castling: false,
-                    promotion: false
+                    enPassantCaptured: null,
+                    castling: isCastling,
+                    castlingRook: castlingRook,
+                    rookFromX: rookFromX,
+                    rookToX: rookToX,
+                    promotion: false,
+                    promotionType: null,
+                    halfMoveClock: this.halfMoveClock
                 });
                 
+                const moveRecord = this.moveHistory[this.moveHistory.length - 1];
+                
+                // 吃过路兵
                 if (isEnPassant) {
-                    const capturedPawn = this.board[piece.y][targetX];
+                    const capturedPawn = this.board[fromY][targetX];
                     if (capturedPawn) {
                         capturedPawn.captured = true;
-                        this.moveHistory[this.moveHistory.length - 1].captured = capturedPawn;
+                        moveRecord.enPassantCaptured = capturedPawn;
                     }
                 }
                 
+                // 普通吃子
                 if (capturedPiece) {
                     capturedPiece.captured = true;
                 }
                 
+                // 移动棋子
                 piece.x = targetX;
                 piece.y = targetY;
                 piece.hasMoved = true;
                 
-                if (piece.type === 'pawn') {
-                    if ((piece.color === 'white' && targetY === 0) || 
-                        (piece.color === 'black' && targetY === 7)) {
-                        piece.type = 'queen';
-                        this.moveHistory[this.moveHistory.length - 1].promotion = true;
-                    }
+                // 王车易位：移动车
+                if (isCastling && castlingRook) {
+                    castlingRook.x = rookToX;
+                    castlingRook.hasMoved = true;
                 }
                 
-                if (piece.type === 'pawn' && Math.abs(targetY - this.moveHistory[this.moveHistory.length - 1].fromY) === 2) {
-                    this.enPassantTarget = {
-                        x: piece.x,
-                        y: (targetY + this.moveHistory[this.moveHistory.length - 1].fromY) / 2
-                    };
+                // 兵升变
+                if (promotionType) {
+                    piece.type = promotionType;
+                    moveRecord.promotion = true;
+                    moveRecord.promotionType = promotionType;
+                }
+                
+                // 设置过路兵目标
+                if (piece.type === 'pawn' && Math.abs(targetY - fromY) === 2) {
+                    this.enPassantTarget = { x: piece.x, y: (targetY + fromY) / 2 };
                 } else {
                     this.enPassantTarget = null;
+                }
+                
+                // 更新50步规则计数
+                if (isCapture || isPawnMove) {
+                    this.halfMoveClock = 0;
+                } else {
+                    this.halfMoveClock++;
                 }
                 
                 this.updateBoard();
                 this.moveCount++;
                 
-                this.addMoveToHistory(piece, targetX, targetY, 
-                    this.moveHistory[this.moveHistory.length - 1].captured, 
-                    false,
-                    this.moveHistory[this.moveHistory.length - 1].promotion);
+                // 走棋记录显示
+                this.addMoveToHistory(piece, fromX, fromY, targetX, targetY, isCapture, isCastling, isEnPassant, !!promotionType, promotionType);
                 
-                // 播放音效
-                if (this.moveHistory[this.moveHistory.length - 1].captured || isEnPassant) {
+                // 音效
+                if (isCastling) {
+                    soundManager.playCastle();
+                } else if (isCapture || isEnPassant) {
                     soundManager.playCapture();
                 } else {
                     soundManager.playMove();
                 }
                 
-                const opponent = this.currentTurn === 'white' ? 'black' : 'white';
+                // 检查对手是否被将军（刚走棋的玩家是否将军了对手）
+                const movingPlayer = piece.color; // 刚走完棋的玩家
+                const opponent = movingPlayer === 'white' ? 'black' : 'white';
+                const isCheck = this.isInCheck(opponent);
+                const hasMoves = this.hasValidMoves(opponent);
                 
-                if (this.isInCheck(opponent)) {
-                    if (!this.hasValidMoves(opponent)) {
-                        this.gameOver = true;
-                        const winner = this.currentTurn === 'white' ? '白方' : '黑方';
-                        soundManager.playCheck();
-                        this.showGameOver(winner + '获胜！');
-                        return;
-                    } else {
-                        soundManager.playCheck();
-                        this.showStatus('⚠️ 将军！' + (opponent === 'white' ? '白方' : '黑方') + '被将军！', true);
-                    }
-                } else if (!this.hasValidMoves(opponent)) {
+                // 50步规则判定
+                if (this.halfMoveClock >= 100) {
                     this.gameOver = true;
-                    this.showGameOver('平局！困毙！');
+                    this.showGameOver('和棋！50步规则（无吃子无兵移动）');
+                    this.updateMoveListWithResult('1/2-1/2');
                     return;
-                } else {
-                    this.showStatus((opponent === 'white' ? '白方' : '黑方') + '走棋', false);
                 }
                 
-                this.currentTurn = opponent;
-                this.selectedPiece = null;
+                if (isCheck) {
+                    if (!hasMoves) {
+                        this.gameOver = true;
+                        const winner = movingPlayer === 'white' ? '白方' : '黑方';
+                        const loser = opponent === 'white' ? '白方' : '黑方';
+                        soundManager.playCheck();
+                        this.showGameOver(`${winner}获胜！将杀${loser}！`);
+                        this.updateMoveListWithResult(opponent === 'white' ? '0-1' : '1-0');
+                        return;
+                    }
+                    soundManager.playCheck();
+                } else if (!hasMoves) {
+                    this.gameOver = true;
+                    this.showGameOver('和棋！逼和（无子可动）');
+                    this.updateMoveListWithResult('1/2-1/2');
+                    return;
+                }
                 
+                // 所有终局条件检查通过，现在切换回合
+                this.currentTurn = opponent;
+                
+                // 记录局面（三次重复检测，需要在回合切换后记录）
+                this.positionHistory.push(this.getPositionKey());
+                
+                // 三次重复局面判定
+                const posKey = this.getPositionKey();
+                const repeatCount = this.positionHistory.filter(k => k === posKey).length;
+                if (repeatCount >= 3) {
+                    this.gameOver = true;
+                    this.showGameOver('和棋！三次重复局面');
+                    this.updateMoveListWithResult('1/2-1/2');
+                    return;
+                }
+                
+                const statusExtra = this.halfMoveClock > 0 ? ` (50步计数: ${Math.floor(this.halfMoveClock / 2)})` : '';
+                if (isCheck) {
+                    this.showStatus('将军！' + (opponent === 'white' ? '白方' : '黑方') + '被将军！' + statusExtra, true);
+                } else {
+                    this.showStatus((opponent === 'white' ? '白方' : '黑方') + '走棋' + statusExtra, false);
+                }
+                
+                this.selectedPiece = null;
                 this.updateUI();
                 this.updateUndoButton();
                 this.draw();
             }
             
-            addMoveToHistory(piece, toX, toY, captured, castling, promotion) {
+            // === 走棋记录 ===
+            
+            getPositionName(x, y) {
+                const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+                return files[x] + (8 - y);
+            }
+            
+            getPieceSymbol(piece) {
+                const symbols = { 'king': 'K', 'queen': 'Q', 'rook': 'R', 'bishop': 'B', 'knight': 'N', 'pawn': '' };
+                return symbols[piece.type] || '';
+            }
+            
+            addMoveToHistory(piece, fromX, fromY, toX, toY, isCapture, isCastling, isEnPassant, isPromotion, promoType) {
                 const moveList = document.getElementById('moveList');
-                
                 if (moveList.firstChild && moveList.firstChild.style.textAlign === 'center') {
                     moveList.innerHTML = '';
                 }
@@ -901,43 +1104,46 @@
                 moveDiv.className = 'move-item ' + (piece.color === 'white' ? 'move-white' : 'move-black');
                 
                 let moveText = '';
-                
-                if (castling) {
-                    moveText = toX > piece.x ? 'O-O' : 'O-O-O';
+                if (isCastling) {
+                    moveText = toX > fromX ? 'O-O' : 'O-O-O';
                 } else {
-                    const pieceSymbol = piece.type === 'pawn' ? '' : this.getPieceSymbol(piece);
-                    const captureSymbol = captured ? 'x' : '';
-                    const fromPos = this.getPositionName(piece.x, piece.y);
+                    const symbol = this.getPieceSymbol(piece);
+                    const fromPos = this.getPositionName(fromX, fromY);
                     const toPos = this.getPositionName(toX, toY);
-                    moveText = pieceSymbol + (captureSymbol ? '' : '') + fromPos + captureSymbol + toPos;
+                    
+                    if (piece.type === 'pawn') {
+                        if (isCapture || isEnPassant) {
+                            moveText = fromPos[0] + 'x' + toPos;
+                        } else {
+                            moveText = toPos;
+                        }
+                    } else {
+                        moveText = symbol + (isCapture ? 'x' : '') + toPos;
+                    }
                 }
                 
-                if (promotion) moveText += '=Q';
+                if (isPromotion) {
+                    const promoSymbols = { 'queen': 'Q', 'rook': 'R', 'bishop': 'B', 'knight': 'N' };
+                    moveText += '=' + (promoSymbols[promoType] || 'Q');
+                }
                 
+                const moveNum = Math.ceil(this.moveCount / 2);
                 moveDiv.innerHTML = `
-                    <span>${Math.ceil(this.moveCount / 2)}. ${piece.color === 'white' ? '' : '...'}</span>
+                    <span>${moveNum}${piece.color === 'white' ? '.' : '...'}</span>
                     <span>${moveText}</span>
                 `;
-                
                 moveList.insertBefore(moveDiv, moveList.firstChild);
             }
             
-            getPositionName(x, y) {
-                const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-                return files[x] + (8 - y);
+            updateMoveListWithResult(result) {
+                const moveList = document.getElementById('moveList');
+                const resultDiv = document.createElement('div');
+                resultDiv.style.cssText = 'text-align: center; color: #f0d9b5; font-weight: bold; padding: 10px; font-size: 16px;';
+                resultDiv.textContent = result;
+                moveList.insertBefore(resultDiv, moveList.firstChild);
             }
             
-            getPieceSymbol(piece) {
-                const symbols = {
-                    'king': 'K',
-                    'queen': 'Q',
-                    'rook': 'R',
-                    'bishop': 'B',
-                    'knight': 'N',
-                    'pawn': ''
-                };
-                return symbols[piece.type] || '';
-            }
+            // === UI状态 ===
             
             showStatus(text, isWarning) {
                 const statusEl = document.getElementById('statusText');
@@ -950,6 +1156,7 @@
                 const winnerText = document.getElementById('winnerText');
                 winnerText.textContent = text;
                 gameOverEl.classList.add('show');
+                this.updateUndoButton();
             }
             
             updateUI() {
@@ -961,49 +1168,112 @@
             updateUndoButton() {
                 const undoBtn = document.getElementById('undoBtn');
                 undoBtn.disabled = this.moveHistory.length === 0 || this.gameOver;
+                const drawBtn = document.getElementById('drawBtn');
+                const resignBtn = document.getElementById('resignBtn');
+                drawBtn.disabled = this.gameOver;
+                resignBtn.disabled = this.gameOver;
             }
+            
+            // === 悔棋 ===
             
             undo() {
                 if (this.moveHistory.length === 0 || this.gameOver) return;
                 
                 const lastMove = this.moveHistory.pop();
                 
+                // 恢复棋子位置
                 lastMove.piece.x = lastMove.fromX;
                 lastMove.piece.y = lastMove.fromY;
-                lastMove.piece.hasMoved = lastMove.piece.x !== lastMove.toX || lastMove.piece.y !== lastMove.toY;
+                lastMove.piece.hasMoved = false;
+                // 检查是否还有过移动记录
+                const stillMoved = this.moveHistory.some(m => m.piece === lastMove.piece);
+                if (stillMoved) lastMove.piece.hasMoved = true;
                 
+                // 恢复被吃棋子
                 if (lastMove.captured) {
                     lastMove.captured.captured = false;
                 }
-                
-                if (lastMove.enPassant) {
-                    const capturedPawn = this.pieces.find(p => !p.captured && p.color !== lastMove.piece.color && 
-                        p.x === lastMove.toX && p.y === lastMove.fromY);
-                    if (capturedPawn) capturedPawn.captured = false;
+                if (lastMove.enPassantCaptured) {
+                    lastMove.enPassantCaptured.captured = false;
                 }
+                
+                // 恢复升变
+                if (lastMove.promotion) {
+                    lastMove.piece.type = 'pawn';
+                }
+                
+                // 恢复易位车
+                if (lastMove.castling && lastMove.castlingRook) {
+                    lastMove.castlingRook.x = lastMove.rookFromX;
+                    lastMove.castlingRook.hasMoved = false;
+                    const rookStillMoved = this.moveHistory.some(m => m.castlingRook === lastMove.castlingRook);
+                    if (rookStillMoved) lastMove.castlingRook.hasMoved = true;
+                }
+                
+                // 恢复50步计数
+                this.halfMoveClock = lastMove.halfMoveClock;
+                
+                // 恢复过路兵目标
+                this.enPassantTarget = null;
+                if (this.moveHistory.length > 0) {
+                    const prev = this.moveHistory[this.moveHistory.length - 1];
+                    if (prev.piece.type === 'pawn' && Math.abs(prev.toY - prev.fromY) === 2) {
+                        this.enPassantTarget = { x: prev.piece.x, y: (prev.toY + prev.fromY) / 2 };
+                    }
+                }
+                
+                // 恢复局面历史
+                this.positionHistory.pop();
                 
                 this.updateBoard();
                 this.selectedPiece = null;
                 this.gameOver = false;
                 this.moveCount--;
                 
-                this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white';
+                this.currentTurn = lastMove.piece.color;
                 
+                // 移除走棋记录
                 const moveList = document.getElementById('moveList');
-                if (moveList.firstChild && !moveList.firstChild.style.textAlign) {
+                if (moveList.firstChild && moveList.firstChild.className.includes('move-item')) {
                     moveList.removeChild(moveList.firstChild);
                 }
-                
+                // 也移除结果行
+                if (moveList.firstChild && !moveList.firstChild.className.includes('move-item') && moveList.firstChild.style.textAlign === 'center') {
+                    moveList.removeChild(moveList.firstChild);
+                }
                 if (this.moveCount === 0) {
                     moveList.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">游戏开始后显示走棋记录</div>';
                 }
                 
+                document.getElementById('gameOver').classList.remove('show');
+                
                 this.updateUI();
                 this.updateUndoButton();
                 this.showStatus((this.currentTurn === 'white' ? '白方' : '黑方') + '走棋（已悔棋）', false);
-                
                 this.draw();
             }
+            
+            // === 提和 / 认输 ===
+            
+            claimDraw() {
+                if (this.gameOver) return;
+                this.gameOver = true;
+                this.showGameOver('和棋！双方协议和棋');
+                this.updateMoveListWithResult('1/2-1/2');
+                this.draw();
+            }
+            
+            resign() {
+                if (this.gameOver) return;
+                this.gameOver = true;
+                const winner = this.currentTurn === 'white' ? '黑方' : '白方';
+                const result = this.currentTurn === 'white' ? '0-1' : '1-0';
+                this.showGameOver(`${winner}获胜！对方认输`);
+                this.updateMoveListWithResult(result);
+                this.draw();
+            }
+            
+            // === 重新开始 ===
             
             restart() {
                 this.selectedPiece = null;
@@ -1012,23 +1282,31 @@
                 this.moveHistory = [];
                 this.moveCount = 0;
                 this.enPassantTarget = null;
+                this.halfMoveClock = 0;
+                this.positionHistory = [];
+                this.promotionPending = null;
+                
+                const oldDialog = document.getElementById('promotionDialog');
+                if (oldDialog) oldDialog.remove();
                 
                 document.getElementById('moveList').innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">游戏开始后显示走棋记录</div>';
                 document.getElementById('gameOver').classList.remove('show');
                 
                 this.initPieces();
                 this.updateBoard();
+                this.positionHistory.push(this.getPositionKey());
                 this.updateUI();
                 this.updateUndoButton();
                 this.showStatus('点击棋子选择，点击目标位置移动', false);
-                
                 this.draw();
             }
+            
+            // === 绘制 ===
             
             draw() {
                 this.drawBoard();
                 this.drawPieces();
-                if (this.selectedPiece) {
+                if (this.selectedPiece && !this.promotionPending) {
                     this.drawSelected();
                     this.drawValidMoves();
                 }
@@ -1060,9 +1338,7 @@
             
             drawPieces() {
                 this.pieces.forEach(piece => {
-                    if (!piece.captured) {
-                        this.drawPiece(piece);
-                    }
+                    if (!piece.captured) this.drawPiece(piece);
                 });
             }
             
@@ -1074,16 +1350,13 @@
                 const y = padding + piece.y * squareSize;
                 
                 const img = pieceImages.getImage(piece.type, piece.color);
-                
                 if (img && img.complete) {
                     ctx.drawImage(img, x + 2, y + 2, squareSize - 4, squareSize - 4);
                 } else {
-                    // 如果图片未加载，使用备用文字
                     ctx.font = `${squareSize * 0.6}px Arial`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillStyle = piece.color === 'white' ? '#fff' : '#000';
-                    
                     const symbols = {
                         'king': piece.color === 'white' ? '♔' : '♚',
                         'queen': piece.color === 'white' ? '♕' : '♛',
@@ -1092,7 +1365,6 @@
                         'knight': piece.color === 'white' ? '♘' : '♞',
                         'pawn': piece.color === 'white' ? '♙' : '♟'
                     };
-                    
                     ctx.fillText(symbols[piece.type], x + squareSize / 2, y + squareSize / 2);
                 }
             }
@@ -1103,8 +1375,7 @@
                 const padding = this.padding;
                 const x = padding + this.selectedPiece.x * squareSize;
                 const y = padding + this.selectedPiece.y * squareSize;
-                
-                ctx.fillStyle = 'rgba(255, 255, 0, 0.3)';
+                ctx.fillStyle = 'rgba(255, 255, 0, 0.35)';
                 ctx.fillRect(x, y, squareSize, squareSize);
             }
             
@@ -1120,13 +1391,13 @@
                             const drawY = padding + y * squareSize;
                             
                             if (this.board[y][x]) {
-                                ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+                                ctx.strokeStyle = 'rgba(255, 60, 60, 0.6)';
                                 ctx.lineWidth = 3;
-                                ctx.strokeRect(drawX + 2, drawY + 2, squareSize - 4, squareSize - 4);
+                                ctx.strokeRect(drawX + 3, drawY + 3, squareSize - 6, squareSize - 6);
                             } else {
-                                ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
+                                ctx.fillStyle = 'rgba(0, 200, 0, 0.35)';
                                 ctx.beginPath();
-                                ctx.arc(drawX + squareSize / 2, drawY + squareSize / 2, squareSize * 0.2, 0, Math.PI * 2);
+                                ctx.arc(drawX + squareSize / 2, drawY + squareSize / 2, squareSize * 0.18, 0, Math.PI * 2);
                                 ctx.fill();
                             }
                         }
@@ -1138,7 +1409,6 @@
         let game;
         window.onload = () => {
             game = new ChessGame();
-        };
-    </script>
+        };</script>
 </body>
 </html>
