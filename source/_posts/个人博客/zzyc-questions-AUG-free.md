@@ -51,7 +51,7 @@ tags:
 
 ## 🔗 相关链接
 
-- 🏠 <a href="https://quark567.patrickliucloud.top/焦糖玛琪朵(｡•ㅅ•｡)♡" target="_blank">文件中心 · 焦糖玛琪朵</a>
+- 🏠 <a href="https://quark567.patrickliucloud.top/COCKY ZHOU" target="_blank">文件中心 · COCKY ZHOU</a>
 - 📝 更多推文持续更新中，欢迎转发给同学一起备考！
 
 ---
