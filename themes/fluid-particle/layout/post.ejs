@@ -1,0 +1,5 @@
+<% if (page.path === 'index.html') { %>
+  <section data-fluid-home><h1><%= theme.hero.title %></h1><%- page.content %></section>
+<% } else { %>
+  <article><h1><%= page.title %></h1><%- page.content %></article>
+<% } %>

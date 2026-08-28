@@ -1,0 +1,11 @@
+name: 流体粒子
+hero:
+  eyebrow: PERSONAL ARCHIVE · DEEP SPACE SIGNAL
+  title: 在噪声里，保留信号。
+  description: 技术笔记、游戏实验与日常观测。
+menu:
+  首页: /
+  归档: /archives/
+  分类: /categories/
+  标签: /tags/
+  关于: /About-me/
