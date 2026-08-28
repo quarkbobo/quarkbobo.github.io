@@ -1,0 +1,17 @@
+<% const archivePosts = posts && typeof posts.toArray === 'function' ? posts.toArray() : Array.from(posts || []) %>
+<section class="archive-shell content-shell" aria-labelledby="archive-title">
+  <p class="section-kicker">DEEP SPACE ARCHIVE</p>
+  <h1 id="archive-title"><%= title %></h1>
+  <ol class="archive-list">
+    <% if (archivePosts.length) { %>
+      <% archivePosts.forEach(post => { %>
+        <li>
+          <time datetime="<%= date_xml(post.date) %>"><%= date(post.date, 'YYYY-MM-DD') %></time>
+          <a href="<%= url_for(post.path) %>"><%= post.title %></a>
+        </li>
+      <% }) %>
+    <% } else { %>
+      <li class="empty-state">档案中还没有记录</li>
+    <% } %>
+  </ol>
+</section>

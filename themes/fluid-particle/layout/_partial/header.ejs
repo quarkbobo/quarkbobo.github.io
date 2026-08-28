@@ -1,0 +1,11 @@
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-brand" href="<%= url_for('/') %>" aria-label="<%= config.title %> 首页">Q / LOG</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu">菜单</button>
+    <nav id="site-menu" class="site-nav" aria-label="主要导航">
+      <% Object.entries(theme.menu).forEach(([label, href]) => { %>
+        <a href="<%= url_for(href) %>"><%= label %></a>
+      <% }) %>
+    </nav>
+  </div>
+</header>

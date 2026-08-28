@@ -1,0 +1,7 @@
+<article class="post-card">
+  <p class="post-card__date"><time datetime="<%= date_xml(post.date) %>"><%= date(post.date, 'YYYY-MM-DD') %></time></p>
+  <h3><a href="<%= url_for(post.path) %>"><%= post.title %></a></h3>
+  <% const summary = strip_html(post.excerpt || post.content || '').replace(/\s+/g, ' ').trim() %>
+  <% if (summary) { %><p class="post-card__summary"><%= summary.slice(0, 112) %><%= summary.length > 112 ? '…' : '' %></p><% } %>
+  <a class="post-card__link" href="<%= url_for(post.path) %>" aria-label="阅读《<%= post.title %>》">阅读全文 <span aria-hidden="true">↗</span></a>
+</article>

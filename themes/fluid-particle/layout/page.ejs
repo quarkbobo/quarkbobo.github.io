@@ -1,1 +1,21 @@
-<article><h1><%= page.title %></h1><%- page.content %></article>
+<% if (page.type === 'categories' || page.type === 'tags') { %>
+  <% const taxonomy = page.type === 'categories' ? site.categories : site.tags %>
+  <% const items = taxonomy && typeof taxonomy.toArray === 'function' ? taxonomy.toArray() : Array.from(taxonomy || []) %>
+  <section class="taxonomy-shell content-shell" aria-labelledby="taxonomy-title">
+    <p class="section-kicker"><%= page.type === 'categories' ? 'COLLECTIONS' : 'KEYWORDS' %></p>
+    <h1 id="taxonomy-title"><%= page.title %></h1>
+    <ul class="taxonomy-index">
+      <% if (items.length) { %>
+        <% items.sort((a, b) => String(a.name).localeCompare(String(b.name), 'zh-CN')).forEach(item => { %>
+          <li>
+            <a href="<%= url_for(item.path) %>"><span><%= item.name %></span><small><%= item.length %> 篇</small></a>
+          </li>
+        <% }) %>
+      <% } else { %>
+        <li class="empty-state">档案中还没有记录</li>
+      <% } %>
+    </ul>
+  </section>
+<% } else { %>
+  <%- partial('_partial/post-full', { post: page }) %>
+<% } %>

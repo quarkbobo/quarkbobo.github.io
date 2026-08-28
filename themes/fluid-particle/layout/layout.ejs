@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="<%= config.language || 'zh-CN' %>">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title><%= page.title ? page.title + ' · ' + config.title : config.title %></title>
-    <%- css('css/main.css') %>
-  </head>
-  <body><main id="main-content"><%- body %></main></body>
+  <%- partial('_partial/head') %>
+  <% const isHome = page.path === '/' || page.path === 'index.html' %>
+  <body class="<%= isHome ? 'is-home' : 'is-inner' %>">
+    <a class="skip-link" href="#main-content">跳到正文</a>
+    <%- partial('_partial/header') %>
+    <main id="main-content" tabindex="-1"><%- body %></main>
+    <%- partial('_partial/footer') %>
+  </body>
 </html>

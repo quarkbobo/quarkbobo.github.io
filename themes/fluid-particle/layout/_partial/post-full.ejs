@@ -1,0 +1,17 @@
+<% const outline = toc(post.content || '', { min_depth: 2, max_depth: 3, list_number: false }) %>
+<div class="article-layout content-shell">
+  <article class="article-shell">
+    <header class="article-header">
+      <p class="section-kicker">ARCHIVE ENTRY</p>
+      <h1><%= post.title %></h1>
+      <% if (post.date) { %><time datetime="<%= date_xml(post.date) %>"><%= date(post.date, 'YYYY-MM-DD') %></time><% } %>
+    </header>
+    <div class="article-body"><%- post.content || '' %></div>
+  </article>
+  <% if (outline && outline.trim()) { %>
+    <aside class="article-toc" aria-label="文章目录">
+      <p>文章目录</p>
+      <%- outline %>
+    </aside>
+  <% } %>
+</div>

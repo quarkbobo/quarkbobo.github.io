@@ -1,0 +1,37 @@
+<% const homePosts = posts && typeof posts.toArray === 'function' ? posts.toArray() : Array.from(posts || []) %>
+<div class="home-shell" data-fluid-home>
+  <section class="home-hero" aria-labelledby="home-title">
+    <div class="home-hero__copy">
+      <p class="hero-eyebrow"><%= theme.hero.eyebrow %></p>
+      <p class="site-name"><%= config.title %></p>
+      <h1 id="home-title"><%= theme.hero.title %></h1>
+      <p class="hero-description"><%= theme.hero.description %></p>
+      <a class="hero-entry" href="#latest-posts">进入最新记录 <span aria-hidden="true">↓</span></a>
+    </div>
+    <div class="hero-scene" data-fluid-scene aria-hidden="true"></div>
+  </section>
+
+  <section id="latest-posts" class="home-section" aria-labelledby="latest-title">
+    <div class="section-heading">
+      <p class="section-kicker">LATEST ENTRIES</p>
+      <h2 id="latest-title">最新记录</h2>
+    </div>
+    <% if (homePosts.length) { %>
+      <div class="post-grid">
+        <% homePosts.slice(0, 10).forEach(post => { %>
+          <%- partial('_partial/post-card', { post }) %>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <p class="empty-state">档案中还没有记录</p>
+    <% } %>
+  </section>
+
+  <section class="catalogue-section home-section" aria-labelledby="catalogue-title">
+    <div class="section-heading">
+      <p class="section-kicker">CATALOGUE</p>
+      <h2 id="catalogue-title">博客目录</h2>
+    </div>
+    <div class="catalogue-content"><%- catalogue.content || '' %></div>
+  </section>
+</div>

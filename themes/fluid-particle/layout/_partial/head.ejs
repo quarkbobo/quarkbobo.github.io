@@ -1,0 +1,10 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#010208">
+  <meta name="description" content="<%= config.description || theme.hero.description %>">
+  <title><%= page.title ? page.title + ' · ' + config.title : config.title %></title>
+  <%- css('css/main.css') %>
+  <%- css('css/post.css') %>
+  <script src="<%= url_for('/js/site.js') %>" defer></script>
+</head>

@@ -1,1 +1,4 @@
-<section data-fluid-category><h1><%= page.title || '分类' %></h1></section>
+<%- partial('_partial/archive-list', {
+  title: page.title || '分类',
+  posts: page.posts || []
+}) %>
