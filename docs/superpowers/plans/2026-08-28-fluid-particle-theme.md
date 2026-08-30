@@ -808,27 +808,43 @@ Expected: all automated checks PASS; the guideline review has no unresolved high
 Run:
 
 ```powershell
-$workspace = (Resolve-Path 'C:/Users/Lenovo/Desktop/Quarkbobo').Path
-$legacyTheme = (Resolve-Path 'C:/Users/Lenovo/Desktop/Quarkbobo/themes/next theme').Path
-if (-not $legacyTheme.StartsWith($workspace + [IO.Path]::DirectorySeparatorChar)) { throw 'Legacy theme target escaped workspace.' }
+$workspace = (Resolve-Path -LiteralPath ((git rev-parse --show-toplevel).Trim())).Path
+$themesRoot = (Resolve-Path -LiteralPath (Join-Path $workspace 'themes')).Path
+$legacyTheme = (Resolve-Path -LiteralPath (Join-Path $themesRoot 'next theme')).Path
+$expectedLegacyTheme = Join-Path $themesRoot 'next theme'
+if (-not [string]::Equals($legacyTheme, $expectedLegacyTheme, [StringComparison]::OrdinalIgnoreCase)) { throw 'Legacy theme target is not the exact NexT directory.' }
+if (-not $legacyTheme.StartsWith($themesRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) { throw 'Legacy theme target escaped the current worktree themes directory.' }
+if ((git branch --show-current).Trim() -ne 'codex/fluid-particle-theme') { throw 'Task 8 is not running on the isolated redesign branch.' }
+if (-not (Select-String -LiteralPath (Join-Path $workspace '_config.yml') -Pattern '^theme:\s*fluid-particle\s*$' -Quiet)) { throw 'The current worktree is not using fluid-particle.' }
+$legacyTracked = @(git ls-files -- 'themes/next theme')
+if ($legacyTracked.Count -ne 302) { throw "Expected 302 tracked NexT files, found $($legacyTracked.Count)." }
+$legacyStatus = @(git status --short --untracked-files=all -- 'themes/next theme')
+if ($legacyStatus.Count) { throw "NexT is not clean:`n$($legacyStatus -join "`n")" }
+git diff --cached --quiet
+if ($LASTEXITCODE -ne 0) { throw 'The index must be empty before retiring NexT.' }
 Select-String -Path docs/recovery/2026-08-28-redesign-backup.md -Pattern 'Quarkbobo-before-redesign-'
 npm run clean
 npm run build
 node --test test/*.test.cjs
 ```
 
-Expected: exact legacy target is inside `themes`; backup record exists; build/tests PASS before deletion.
+Expected: the workspace is derived from the current Git worktree; the exact legacy target is inside that worktree's `themes` directory; `fluid-particle` is active; backup record exists; build/tests PASS before deletion. Never substitute the main checkout path while Task 8 is running in an isolated worktree.
+
+`npm run clean` removes only ignored Hexo outputs (`public/` and `db.json`) in this repository. Reconfirm they remain ignored generated artifacts before running it; do not place hand-authored files there.
 
 - [ ] **Step 2: Remove only the verified legacy theme directory**
 
 Run:
 
 ```powershell
-Remove-Item -LiteralPath $legacyTheme -Recurse
-if (Test-Path -LiteralPath $legacyTheme) { throw 'Legacy theme still exists.' }
+git rm -r -- 'themes/next theme'
+if ($LASTEXITCODE -ne 0) { throw 'Git refused to retire a dirty or mismatched NexT tree.' }
+$stagedRetirement = @(git diff --cached --name-status)
+if ($stagedRetirement.Count -ne $legacyTracked.Count) { throw 'The staged retirement count changed unexpectedly.' }
+if ($stagedRetirement | Where-Object { $_ -notmatch '^D\s+themes/next theme/' }) { throw 'The index contains changes outside the exact NexT retirement.' }
 ```
 
-This deletion is authorized by the approved spec and recoverable from the full external backup.
+This tracked deletion is authorized by the approved spec and recoverable from the full external backup. Deliberately omit `-f`: modified tracked files must make the operation fail, and untracked files must never be removed implicitly.
 
 - [ ] **Step 3: Re-run the complete verification after deletion**
 
@@ -841,7 +857,7 @@ node --test test/*.test.cjs
 git status --short
 ```
 
-Expected: build/tests PASS. `source/files` deletions remain unstaged and unchanged. No backup, `public/`, `node_modules/`, or `.superpowers/` content is staged.
+Expected: build/tests PASS. Unrelated changes in the main checkout remain untouched. No backup, `public/`, `node_modules/`, or `.superpowers/` content is staged.
 
 - [ ] **Step 4: Commit only the NexT retirement**
 
