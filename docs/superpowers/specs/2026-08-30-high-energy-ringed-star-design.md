@@ -1,7 +1,7 @@
 # High-Energy Ringed Star Design
 
-**Date:** 2026-08-30  
-**Status:** Approved direction, implementation pending  
+**Date:** 2026-08-30
+**Status:** Approved direction, implementation pending
 **Theme:** 流体粒子 (`fluid-particle`)
 
 ## Context

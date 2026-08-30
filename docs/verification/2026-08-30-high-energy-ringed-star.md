@@ -4,11 +4,12 @@ This record covers the final responsive geometry, interaction, visual, performan
 
 ## Automated verification
 
-- `npm test`: 98 passed, 0 failed, 0 skipped after a fresh Hexo clean and build.
-- `node --test test/theme-browser-behavior.test.cjs`: 9 passed, 0 failed, including the real generated-home geometry probe.
+- `npm test`: 99 passed, 0 failed, 0 skipped after a fresh Hexo clean and build.
+- `node --test test/theme-browser-behavior.test.cjs`: 10 passed, 0 failed, including the real generated-home geometry probe and its clipping regression.
 - The geometry test's initial 320×740 RED result reported 0 visible prominence groups. After the mobile-only prominence sizing and static upward prominence-field shift, the same probe passed with 2 visible groups.
 - At 1440×900, the final probe reported no horizontal overflow, 5 visible prominence groups, no prominence/copy intersections, and matching `-10deg` ring and surface angles.
 - At the constrained 320×740 acceptance layout, the final probe reported no horizontal overflow, 2 visible prominence groups, no prominence/copy intersections, and matching `-10deg` ring and surface angles.
+- The visible-group calculation intersects raw prominence bounds with the acceptance viewport and every overflow-clipping ancestor. Its synthetic sensitivity case proves that a 24×24 child with raw bounds inside the 320×740 viewport is excluded when its 1×1 `overflow: hidden` ancestor clips it completely.
 
 ## Viewport inspection
 

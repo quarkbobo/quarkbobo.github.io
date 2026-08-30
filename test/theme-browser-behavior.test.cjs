@@ -411,25 +411,58 @@ function runStellarCompositionProbe (viewport) {
       addEventListener('load', function () {
         const scene = document.getElementById('space-scene')
         const prominenceGroups = Array.from(document.querySelectorAll('.saturn-prominence'))
+        const acceptanceViewport = { left: 0, top: 0, right: ${acceptanceWidth}, bottom: ${viewportHeight} }
         const rectanglesIntersect = function (first, second) {
           return first.left < second.right && first.right > second.left &&
             first.top < second.bottom && first.bottom > second.top
         }
+        const intersectRectangles = function (first, second) {
+          return {
+            left: Math.max(first.left, second.left),
+            top: Math.max(first.top, second.top),
+            right: Math.min(first.right, second.right),
+            bottom: Math.min(first.bottom, second.bottom)
+          }
+        }
+        const visibleBounds = function (element) {
+          let bounds = intersectRectangles(element.getBoundingClientRect(), acceptanceViewport)
+          for (let ancestor = element.parentElement; ancestor; ancestor = ancestor.parentElement) {
+            const style = getComputedStyle(ancestor)
+            if (style.overflowX !== 'visible' || style.overflowY !== 'visible') {
+              bounds = intersectRectangles(bounds, ancestor.getBoundingClientRect())
+            }
+          }
+          return bounds
+        }
+        const hasVisibleBounds = function (element) {
+          const bounds = visibleBounds(element)
+          return bounds.right > bounds.left && bounds.bottom > bounds.top
+        }
+        const clippingAncestor = document.createElement('div')
+        const clippedSyntheticGroup = document.createElement('div')
+        clippingAncestor.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;overflow:hidden;pointer-events:none;'
+        clippedSyntheticGroup.style.cssText = 'position:absolute;left:20px;top:20px;width:24px;height:24px;'
+        clippingAncestor.append(clippedSyntheticGroup)
+        document.body.append(clippingAncestor)
+        const clippedSyntheticRect = clippedSyntheticGroup.getBoundingClientRect()
+        const rawViewportVisible = clippedSyntheticRect.width > 0 && clippedSyntheticRect.height > 0 &&
+          clippedSyntheticRect.right > 0 && clippedSyntheticRect.bottom > 0 &&
+          clippedSyntheticRect.left < ${acceptanceWidth} && clippedSyntheticRect.top < ${viewportHeight}
 
         scene.classList.add('motion-paused')
         document.getElementById('probe-result').textContent = JSON.stringify({
           noHorizontalOverflow: document.body.scrollWidth <= ${acceptanceWidth},
-          visibleProminenceGroups: prominenceGroups.filter(function (group) {
-            const rect = group.getBoundingClientRect()
-            return rect.width > 0 && rect.height > 0 && rect.right > 0 && rect.bottom > 0 &&
-              rect.left < ${acceptanceWidth} && rect.top < ${viewportHeight}
-          }).length,
+          visibleProminenceGroups: prominenceGroups.filter(hasVisibleBounds).length,
           copyIntersections: prominenceGroups.filter(function (group) {
             return rectanglesIntersect(
               group.getBoundingClientRect(),
               document.querySelector('.home-hero__copy').getBoundingClientRect()
             )
           }).map(function (group) { return group.getAttribute('class') }),
+          syntheticClipping: {
+            rawViewportVisible,
+            clippingAwareVisible: hasVisibleBounds(clippedSyntheticGroup)
+          },
           ringAngle: getComputedStyle(document.querySelector('.saturn-ring')).getPropertyValue('--saturn-equator-angle').trim(),
           bandsAngle: getComputedStyle(document.querySelector('.saturn-bands')).getPropertyValue('--saturn-equator-angle').trim()
         })
@@ -589,4 +622,12 @@ test('stellar prominences stay visible, clear of hero copy, and aligned without 
     assert.equal(probe.ringAngle, '-10deg', `${viewport.width}px ring angle`)
     assert.equal(probe.bandsAngle, '-10deg', `${viewport.width}px bands angle`)
   }
+})
+
+test('stellar geometry probe excludes a viewport event fully clipped by an overflow ancestor', () => {
+  // Replacing clipping-aware geometry with raw child rectangles would count this invisible synthetic event.
+  const probe = runStellarCompositionProbe({ width: 320, height: 740 })
+
+  assert.equal(probe.syntheticClipping.rawViewportVisible, true)
+  assert.equal(probe.syntheticClipping.clippingAwareVisible, false)
 })
