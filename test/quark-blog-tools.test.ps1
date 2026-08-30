@@ -31,6 +31,8 @@ $requiredFunctions = @(
     'Invoke-QuarkPreview'
     'Invoke-QuarkBuild'
     'Invoke-QuarkPublish'
+    'Invoke-QuarkBlogAction'
+    'Invoke-QuarkBlogEntryPoint'
     'Show-QuarkBlogMenu'
 )
 foreach ($functionName in $requiredFunctions) {
@@ -45,8 +47,11 @@ $commands = Get-QuarkPublishCommands -CommitMessage 'test message'
 $joined = $commands -join "`n"
 Assert-True ($joined -notmatch '--force') 'Publish must never force push.'
 Assert-True ($joined -notmatch 'reset\s+--hard') 'Publish must never hard reset.'
+Assert-True ($joined -match 'git symbolic-ref --quiet --short HEAD') 'Publish must verify the symbolic current branch.'
 Assert-True ($joined -match 'git status --short --branch') 'Publish must show status.'
 Assert-True ($joined -match 'git diff --stat') 'Publish must show a diff summary.'
+Assert-True ((@($commands | Where-Object { $_ -ceq 'git diff --cached --name-status' })).Count -eq 2) 'Publish must show staged names before and after staging.'
+Assert-True ((@($commands | Where-Object { $_ -ceq 'git diff --cached --stat' })).Count -eq 2) 'Publish must show staged stats before and after staging.'
 Assert-True ($joined -match 'git push origin master') 'Publish must use a normal master push.'
 
 $specialMessage = 'fix: "quoted" & | ; $(New-Item BAD) ' + (-join @([char]0x4E2D, [char]0x6587))
@@ -146,8 +151,18 @@ $invalidActionResult = Invoke-TestPowerShell -ArgumentList @(
 Assert-True ($invalidActionResult.ExitCode -ne 0) 'An action outside the allowlist must fail parameter binding.'
 
 $script:PublishJournal = [System.Collections.Generic.List[object]]::new()
+$script:ConfirmationPrompts = [System.Collections.Generic.List[string]]::new()
+$script:ConfirmationAnswers = [System.Collections.Generic.Queue[string]]::new()
 $script:PublishMode = 'Success'
-$script:StagedOutput = @('source/_posts/example.md')
+$script:BranchOutput = @('master')
+$script:StatusOutput = @('## master', '?? source/_posts/new article.md')
+$script:UnstagedStatOutput = @('themes/fluid-particle/layout/index.ejs | 2 +-')
+$script:InitialCachedNameStatusOutput = @('M' + "`t" + 'source/_posts/already-staged.md')
+$script:InitialCachedStatOutput = @('source/_posts/already-staged.md | 1 +')
+$script:FinalCachedNameStatusOutput = @('R100' + "`t" + 'source/_posts/already-staged.md' + "`t" + 'source/_posts/renamed.md', 'A' + "`t" + 'source/_posts/new article.md')
+$script:FinalCachedStatOutput = @('2 files changed, 3 insertions(+)')
+$script:CachedNameStatusCallCount = 0
+$script:CachedStatCallCount = 0
 $commandRunner = {
     param(
         [string]$FilePath,
@@ -162,23 +177,54 @@ $commandRunner = {
     $verb = $ArgumentList[2]
     $exitCode = 0
     $output = @()
-    if (($verb -eq 'status') -and ($script:PublishMode -eq 'StatusFails')) {
+
+    if (($verb -eq 'symbolic-ref') -and ($script:PublishMode -in @('DetachedHead', 'BranchQueryFails'))) {
+        $exitCode = 1
+    }
+    elseif ($verb -eq 'symbolic-ref') {
+        $output = @($script:BranchOutput)
+    }
+    elseif (($verb -eq 'status') -and ($script:PublishMode -eq 'StatusFails')) {
         $exitCode = 1
     }
     elseif ($verb -eq 'status') {
-        $output = @('## master')
+        $output = @($script:StatusOutput)
     }
-    elseif (($verb -eq 'diff') -and ($ArgumentList[3] -eq '--stat') -and ($script:PublishMode -eq 'DiffFails')) {
+    elseif (($verb -eq 'diff') -and ($ArgumentList.Count -eq 4) -and ($ArgumentList[3] -eq '--stat') -and ($script:PublishMode -eq 'UnstagedStatFails')) {
         $exitCode = 1
     }
-    elseif (($verb -eq 'diff') -and ($ArgumentList[3] -eq '--stat')) {
-        $output = @('source/_posts/example.md | 1 +')
+    elseif (($verb -eq 'diff') -and ($ArgumentList.Count -eq 4) -and ($ArgumentList[3] -eq '--stat')) {
+        $output = @($script:UnstagedStatOutput)
     }
-    elseif (($verb -eq 'diff') -and ($ArgumentList[3] -eq '--cached') -and ($script:PublishMode -eq 'CachedDiffFails')) {
-        $exitCode = 1
+    elseif (($verb -eq 'diff') -and ($ArgumentList[3] -eq '--cached') -and ($ArgumentList[4] -eq '--name-status')) {
+        $script:CachedNameStatusCallCount++
+        if (($script:CachedNameStatusCallCount -eq 1) -and ($script:PublishMode -eq 'InitialCachedNameStatusFails')) {
+            $exitCode = 1
+        }
+        elseif (($script:CachedNameStatusCallCount -eq 2) -and ($script:PublishMode -eq 'FinalCachedNameStatusFails')) {
+            $exitCode = 1
+        }
+        elseif ($script:CachedNameStatusCallCount -eq 1) {
+            $output = @($script:InitialCachedNameStatusOutput)
+        }
+        else {
+            $output = @($script:FinalCachedNameStatusOutput)
+        }
     }
-    elseif (($verb -eq 'diff') -and ($ArgumentList[3] -eq '--cached')) {
-        $output = @($script:StagedOutput)
+    elseif (($verb -eq 'diff') -and ($ArgumentList[3] -eq '--cached') -and ($ArgumentList[4] -eq '--stat')) {
+        $script:CachedStatCallCount++
+        if (($script:CachedStatCallCount -eq 1) -and ($script:PublishMode -eq 'InitialCachedStatFails')) {
+            $exitCode = 1
+        }
+        elseif (($script:CachedStatCallCount -eq 2) -and ($script:PublishMode -eq 'FinalCachedStatFails')) {
+            $exitCode = 1
+        }
+        elseif ($script:CachedStatCallCount -eq 1) {
+            $output = @($script:InitialCachedStatOutput)
+        }
+        else {
+            $output = @($script:FinalCachedStatOutput)
+        }
     }
     elseif (($verb -eq 'add') -and ($script:PublishMode -eq 'AddFails')) {
         $exitCode = 1
@@ -196,140 +242,158 @@ $commandRunner = {
     }
 }
 
-function Get-PublishVerbs {
-    @($script:PublishJournal | ForEach-Object { $_.Arguments[2] })
+function Reset-PublishFixture {
+    $script:PublishJournal.Clear()
+    $script:ConfirmationPrompts.Clear()
+    $script:ConfirmationAnswers.Clear()
+    $script:PublishMode = 'Success'
+    $script:BranchOutput = @('master')
+    $script:StatusOutput = @('## master', '?? source/_posts/new article.md')
+    $script:UnstagedStatOutput = @('themes/fluid-particle/layout/index.ejs | 2 +-')
+    $script:InitialCachedNameStatusOutput = @('M' + "`t" + 'source/_posts/already-staged.md')
+    $script:InitialCachedStatOutput = @('source/_posts/already-staged.md | 1 +')
+    $script:FinalCachedNameStatusOutput = @('R100' + "`t" + 'source/_posts/already-staged.md' + "`t" + 'source/_posts/renamed.md', 'A' + "`t" + 'source/_posts/new article.md')
+    $script:FinalCachedStatOutput = @('2 files changed, 3 insertions(+)')
+    $script:CachedNameStatusCallCount = 0
+    $script:CachedStatCallCount = 0
 }
 
-$expectedPrompt = -join @(
-    [char]0x8F93, [char]0x5165, ' P ', [char]0x7EE7, [char]0x7EED,
-    [char]0x63D0, [char]0x4EA4, [char]0x5E76, [char]0x666E,
-    [char]0x901A, [char]0x63A8, [char]0x9001, [char]0xFF1B,
-    [char]0x5176, [char]0x4ED6, [char]0x952E, [char]0x53D6,
-    [char]0x6D88
-)
-$script:ConfirmationPrompts = [System.Collections.Generic.List[string]]::new()
-$cancelReader = {
+function Get-PublishCommandKeys {
+    @($script:PublishJournal | ForEach-Object {
+        ($_.Arguments[2..($_.Arguments.Count - 1)] -join ' ')
+    })
+}
+
+$confirmationReader = {
     param([string]$Prompt)
     [void]$script:ConfirmationPrompts.Add($Prompt)
-    'p'
+    if ($script:ConfirmationAnswers.Count -eq 0) {
+        throw 'An unexpected confirmation was requested.'
+    }
+    $script:ConfirmationAnswers.Dequeue()
 }
-$null = @(Invoke-QuarkPublish -CommitMessage 'cancelled' -CommandRunner $commandRunner -ConfirmationReader $cancelReader *>&1)
-Assert-SequenceEqual -Actual @(Get-PublishVerbs) -Expected @('status', 'diff') -Message 'Lowercase p must cancel before staging.'
-Assert-SequenceEqual -Actual @($script:ConfirmationPrompts) -Expected @($expectedPrompt) -Message 'Publish confirmation prompt changed.'
-
-$script:PublishJournal.Clear()
-$script:PublishMode = 'CommitFails'
-$script:StagedOutput = @('source/_posts/example.md')
-$confirmReader = { param([string]$Prompt) 'P' }
 $neverConfirmReader = { param([string]$Prompt) throw 'Confirmation must not be requested.' }
 
-$script:PublishJournal.Clear()
-$script:PublishMode = 'StatusFails'
-$statusFailureThrown = $false
-$statusFailureMessage = ''
-try {
-    $null = @(Invoke-QuarkPublish -CommitMessage 'status failure' -CommandRunner $commandRunner -ConfirmationReader $neverConfirmReader *>&1)
-}
-catch {
-    $statusFailureThrown = $true
-    $statusFailureMessage = $_.Exception.Message
-}
-Assert-True $statusFailureThrown 'A failed status must throw.'
-Assert-True ($statusFailureMessage -match 'Status failed') 'A status failure must report the failing gate.'
-Assert-SequenceEqual -Actual @(Get-PublishVerbs) -Expected @('status') -Message 'A failed status must stop immediately.'
+$firstPrompt = [regex]::Unescape('\u8f93\u5165\u5927\u5199 P \u6682\u5b58\u5168\u90e8\u66f4\u6539\uff1b\u5176\u4ed6\u952e\u53d6\u6d88')
+$secondPrompt = [regex]::Unescape('\u518d\u6b21\u8f93\u5165\u5927\u5199 P \u63d0\u4ea4\u5e76\u666e\u901a\u63a8\u9001\uff1b\u5176\u4ed6\u952e\u53d6\u6d88\uff08\u66f4\u6539\u5c06\u4fdd\u7559\u4e3a\u5df2\u6682\u5b58\uff09')
+$initialCommands = @(
+    'symbolic-ref --quiet --short HEAD'
+    'status --short --branch'
+    'diff --stat'
+    'diff --cached --name-status'
+    'diff --cached --stat'
+)
+$afterFirstConfirmationCommands = @(
+    $initialCommands
+    'add --all'
+    'diff --cached --name-status'
+    'diff --cached --stat'
+)
 
-$script:PublishJournal.Clear()
-$script:PublishMode = 'DiffFails'
-$diffFailureThrown = $false
-$diffFailureMessage = ''
-try {
-    $null = @(Invoke-QuarkPublish -CommitMessage 'diff failure' -CommandRunner $commandRunner -ConfirmationReader $neverConfirmReader *>&1)
-}
-catch {
-    $diffFailureThrown = $true
-    $diffFailureMessage = $_.Exception.Message
-}
-Assert-True $diffFailureThrown 'A failed diff summary must throw.'
-Assert-True ($diffFailureMessage -match 'Diff summary failed') 'A diff failure must report the failing gate.'
-Assert-SequenceEqual -Actual @(Get-PublishVerbs) -Expected @('status', 'diff') -Message 'A failed diff summary must stop before confirmation.'
+Reset-PublishFixture
+$script:ConfirmationAnswers.Enqueue('p')
+$cancelOutput = @(Invoke-QuarkPublish -CommitMessage 'cancelled' -CommandRunner $commandRunner -ConfirmationReader $confirmationReader *>&1)
+Assert-SequenceEqual -Actual @(Get-PublishCommandKeys) -Expected $initialCommands -Message 'Lowercase p must cancel before staging.'
+Assert-SequenceEqual -Actual @($script:ConfirmationPrompts) -Expected @($firstPrompt) -Message 'The first publish prompt must require uppercase P.'
+$cancelText = $cancelOutput -join "`n"
+Assert-True ($cancelText -match [regex]::Escape([regex]::Unescape('\u6ca1\u6709\u65b0\u589e\u6682\u5b58'))) 'First cancellation must explain that staging was not changed.'
 
-$script:PublishJournal.Clear()
-$script:PublishMode = 'CachedDiffFails'
-$cachedDiffFailureThrown = $false
-$cachedDiffFailureMessage = ''
-try {
-    $null = @(Invoke-QuarkPublish -CommitMessage 'cached diff failure' -CommandRunner $commandRunner -ConfirmationReader $confirmReader *>&1)
-}
-catch {
-    $cachedDiffFailureThrown = $true
-    $cachedDiffFailureMessage = $_.Exception.Message
-}
-Assert-True $cachedDiffFailureThrown 'A failed cached diff must throw.'
-Assert-True ($cachedDiffFailureMessage -match 'Staged diff failed') 'A cached diff failure must report the failing gate.'
-Assert-SequenceEqual -Actual @(Get-PublishVerbs) -Expected @('status', 'diff', 'add', 'diff') -Message 'A failed cached diff must stop before commit and push.'
+Reset-PublishFixture
+$script:ConfirmationAnswers.Enqueue('P')
+$script:ConfirmationAnswers.Enqueue('p')
+$secondCancelOutput = @(Invoke-QuarkPublish -CommitMessage 'cancel after staging' -CommandRunner $commandRunner -ConfirmationReader $confirmationReader *>&1)
+Assert-SequenceEqual -Actual @(Get-PublishCommandKeys) -Expected $afterFirstConfirmationCommands -Message 'Second cancellation must leave staged changes without committing or pushing.'
+Assert-SequenceEqual -Actual @($script:ConfirmationPrompts) -Expected @($firstPrompt, $secondPrompt) -Message 'Publish must require two distinct uppercase-P confirmations.'
+$secondCancelText = $secondCancelOutput -join "`n"
+Assert-True ($secondCancelText -match [regex]::Escape([regex]::Unescape('\u5df2\u4fdd\u7559\u4e3a\u6682\u5b58\u72b6\u6001'))) 'Second cancellation must clearly say that changes remain staged.'
+Assert-True ($secondCancelText -match [regex]::Escape([regex]::Unescape('\u5c1a\u672a\u63d0\u4ea4\u6216\u63a8\u9001'))) 'Second cancellation must clearly say that commit and push did not run.'
 
-$commitFailureThrown = $false
-$commitFailureMessage = ''
-$script:PublishJournal.Clear()
-$script:PublishMode = 'CommitFails'
-$script:StagedOutput = @('source/_posts/example.md')
-try {
-    $null = @(Invoke-QuarkPublish -CommitMessage 'commit failure' -CommandRunner $commandRunner -ConfirmationReader $confirmReader *>&1)
+Reset-PublishFixture
+$script:ConfirmationAnswers.Enqueue('P')
+$script:ConfirmationAnswers.Enqueue('P')
+$publishOutput = @(Invoke-QuarkPublish -CommitMessage $specialMessage -CommandRunner $commandRunner -ConfirmationReader $confirmationReader *>&1)
+$expectedSuccessCommands = @(
+    $afterFirstConfirmationCommands
+    "commit -m $specialMessage"
+    'push origin master'
+)
+Assert-SequenceEqual -Actual @(Get-PublishCommandKeys) -Expected $expectedSuccessCommands -Message 'Successful publish uses the wrong command order.'
+Assert-SequenceEqual -Actual @($script:ConfirmationPrompts) -Expected @($firstPrompt, $secondPrompt) -Message 'Successful publish must receive both confirmations.'
+$publishText = $publishOutput -join "`n"
+foreach ($visibleLine in @(
+    '?? source/_posts/new article.md'
+    'themes/fluid-particle/layout/index.ejs | 2 +-'
+    ('M' + "`t" + 'source/_posts/already-staged.md')
+    'source/_posts/already-staged.md | 1 +'
+    ('R100' + "`t" + 'source/_posts/already-staged.md' + "`t" + 'source/_posts/renamed.md')
+    ('A' + "`t" + 'source/_posts/new article.md')
+    '2 files changed, 3 insertions(+)'
+)) {
+    Assert-True ($publishText.Contains($visibleLine)) "Publish preview did not show: $visibleLine"
 }
-catch {
-    $commitFailureThrown = $true
-    $commitFailureMessage = $_.Exception.Message
-}
-Assert-True $commitFailureThrown 'A failed commit must throw.'
-Assert-True ($commitFailureMessage -match 'Commit failed') 'A failed commit must explain that changes remain local.'
-Assert-SequenceEqual -Actual @(Get-PublishVerbs) -Expected @('status', 'diff', 'add', 'diff', 'commit') -Message 'A failed commit must stop before push.'
-
-$script:PublishJournal.Clear()
-$script:PublishMode = 'AddFails'
-$script:StagedOutput = @('source/_posts/example.md')
-$addFailureThrown = $false
-try {
-    $null = @(Invoke-QuarkPublish -CommitMessage 'add failure' -CommandRunner $commandRunner -ConfirmationReader $confirmReader *>&1)
-}
-catch {
-    $addFailureThrown = $true
-}
-Assert-True $addFailureThrown 'A failed add must throw.'
-Assert-SequenceEqual -Actual @(Get-PublishVerbs) -Expected @('status', 'diff', 'add') -Message 'A failed add must stop before cached diff, commit, or push.'
-
-$script:PublishJournal.Clear()
-$script:PublishMode = 'Success'
-$script:StagedOutput = @('source/_posts/example.md')
-$specialMessage = 'fix: "quoted" & | ; $(New-Item BAD) ' + (-join @([char]0x4E2D, [char]0x6587))
-$null = @(Invoke-QuarkPublish -CommitMessage $specialMessage -CommandRunner $commandRunner -ConfirmationReader $confirmReader *>&1)
-Assert-SequenceEqual -Actual @(Get-PublishVerbs) -Expected @('status', 'diff', 'add', 'diff', 'commit', 'push') -Message 'Successful publish uses the wrong command order.'
 $commitCall = @($script:PublishJournal | Where-Object { $_.Arguments[2] -eq 'commit' })
 Assert-True ($commitCall.Count -eq 1) 'Successful publish must make exactly one commit call.'
 Assert-SequenceEqual -Actual @($commitCall[0].Arguments) -Expected @('-C', 'C:\Users\Lenovo\Desktop\Quarkbobo', 'commit', '-m', $specialMessage) -Message 'Commit message must remain one literal argument.'
 $pushCall = @($script:PublishJournal | Where-Object { $_.Arguments[2] -eq 'push' })
 Assert-SequenceEqual -Actual @($pushCall[0].Arguments) -Expected @('-C', 'C:\Users\Lenovo\Desktop\Quarkbobo', 'push', 'origin', 'master') -Message 'Publish must use a normal master push.'
-
-$script:PublishJournal.Clear()
-$script:PublishMode = 'PushFails'
-$script:StagedOutput = @('source/_posts/example.md')
-$pushFailureThrown = $false
-$pushFailureMessage = ''
-try {
-    $null = @(Invoke-QuarkPublish -CommitMessage 'push failure' -CommandRunner $commandRunner -ConfirmationReader $confirmReader *>&1)
+Assert-True (-not (($pushCall[0].Arguments -join ' ') -match '--force')) 'Publish must never force push.'
+foreach ($publishCall in $script:PublishJournal) {
+    Assert-True ($publishCall.FilePath -ceq 'git') 'Every publish stage must invoke git directly.'
+    Assert-True ($publishCall.Arguments[0] -ceq '-C') 'Every publish stage must anchor git to the fixed project path.'
+    Assert-True ($publishCall.Arguments[1] -ceq 'C:\Users\Lenovo\Desktop\Quarkbobo') 'Every publish stage used the wrong project path.'
 }
-catch {
-    $pushFailureThrown = $true
-    $pushFailureMessage = $_.Exception.Message
-}
-Assert-True $pushFailureThrown 'A failed push must throw.'
-Assert-True ($pushFailureMessage -match 'Push failed') 'A push failure must explain that the commit remains local.'
-Assert-SequenceEqual -Actual @(Get-PublishVerbs) -Expected @('status', 'diff', 'add', 'diff', 'commit', 'push') -Message 'A failed push must not run another command.'
 
-$script:PublishJournal.Clear()
-$script:PublishMode = 'Success'
-$script:StagedOutput = @()
-$null = @(Invoke-QuarkPublish -CommitMessage 'nothing staged' -CommandRunner $commandRunner -ConfirmationReader $confirmReader *>&1)
-Assert-SequenceEqual -Actual @(Get-PublishVerbs) -Expected @('status', 'diff', 'add', 'diff', 'push') -Message 'An empty staging area must skip commit and use a normal push.'
+foreach ($wrongBranch in @('feature/not-master', 'Master')) {
+    Reset-PublishFixture
+    $script:BranchOutput = @($wrongBranch)
+    $featureFailureThrown = $false
+    try {
+        $null = @(Invoke-QuarkPublish -CommitMessage 'wrong branch' -CommandRunner $commandRunner -ConfirmationReader $neverConfirmReader *>&1)
+    }
+    catch {
+        $featureFailureThrown = $true
+    }
+    Assert-True $featureFailureThrown "Publish must reject the non-exact branch name: $wrongBranch"
+    Assert-SequenceEqual -Actual @(Get-PublishCommandKeys) -Expected @('symbolic-ref --quiet --short HEAD') -Message 'A non-master branch must stop before preview or staging.'
+}
+
+$failureCases = @(
+    [pscustomobject]@{ Name = 'detached HEAD'; Mode = 'DetachedHead'; Answers = @(); Commands = @('symbolic-ref --quiet --short HEAD') }
+    [pscustomobject]@{ Name = 'branch query'; Mode = 'BranchQueryFails'; Answers = @(); Commands = @('symbolic-ref --quiet --short HEAD') }
+    [pscustomobject]@{ Name = 'status'; Mode = 'StatusFails'; Answers = @(); Commands = @($initialCommands[0..1]) }
+    [pscustomobject]@{ Name = 'unstaged stat'; Mode = 'UnstagedStatFails'; Answers = @(); Commands = @($initialCommands[0..2]) }
+    [pscustomobject]@{ Name = 'initial cached names'; Mode = 'InitialCachedNameStatusFails'; Answers = @(); Commands = @($initialCommands[0..3]) }
+    [pscustomobject]@{ Name = 'initial cached stat'; Mode = 'InitialCachedStatFails'; Answers = @(); Commands = @($initialCommands) }
+    [pscustomobject]@{ Name = 'add'; Mode = 'AddFails'; Answers = @('P'); Commands = @($initialCommands + 'add --all') }
+    [pscustomobject]@{ Name = 'final cached names'; Mode = 'FinalCachedNameStatusFails'; Answers = @('P'); Commands = @($initialCommands + 'add --all' + 'diff --cached --name-status') }
+    [pscustomobject]@{ Name = 'final cached stat'; Mode = 'FinalCachedStatFails'; Answers = @('P'); Commands = @($afterFirstConfirmationCommands) }
+    [pscustomobject]@{ Name = 'commit'; Mode = 'CommitFails'; Answers = @('P', 'P'); Commands = @($afterFirstConfirmationCommands + 'commit -m failure test') }
+    [pscustomobject]@{ Name = 'push'; Mode = 'PushFails'; Answers = @('P', 'P'); Commands = @($afterFirstConfirmationCommands + 'commit -m failure test' + 'push origin master') }
+)
+foreach ($failureCase in $failureCases) {
+    Reset-PublishFixture
+    $script:PublishMode = $failureCase.Mode
+    foreach ($answer in $failureCase.Answers) {
+        $script:ConfirmationAnswers.Enqueue($answer)
+    }
+    $failureThrown = $false
+    try {
+        $null = @(Invoke-QuarkPublish -CommitMessage 'failure test' -CommandRunner $commandRunner -ConfirmationReader $confirmationReader *>&1)
+    }
+    catch {
+        $failureThrown = $true
+    }
+    Assert-True $failureThrown "A failed $($failureCase.Name) stage must throw."
+    Assert-SequenceEqual -Actual @(Get-PublishCommandKeys) -Expected @($failureCase.Commands) -Message "A failed $($failureCase.Name) stage did not stop immediately."
+}
+
+Reset-PublishFixture
+$script:FinalCachedNameStatusOutput = @()
+$script:FinalCachedStatOutput = @()
+$script:ConfirmationAnswers.Enqueue('P')
+$script:ConfirmationAnswers.Enqueue('P')
+$null = @(Invoke-QuarkPublish -CommitMessage 'nothing staged' -CommandRunner $commandRunner -ConfirmationReader $confirmationReader *>&1)
+Assert-SequenceEqual -Actual @(Get-PublishCommandKeys) -Expected @($afterFirstConfirmationCommands + 'push origin master') -Message 'An empty staging area must skip commit and use a normal push only after the second confirmation.'
 
 $originalPathsFunction = (Get-Command -Name 'Get-QuarkBlogPaths' -CommandType Function).ScriptBlock
 $script:BuildProject = Join-Path ([System.IO.Path]::GetTempPath()) ("quark-missing-$([guid]::NewGuid().ToString('N'))")
@@ -440,6 +504,67 @@ finally {
 Assert-True $missingNpmThrew 'Build must throw when npm.cmd is unavailable even if LASTEXITCODE was zero.'
 
 Set-Item -LiteralPath Function:\Get-QuarkBlogPaths -Value $originalPathsFunction
+
+$script:MenuPrompts = [System.Collections.Generic.List[string]]::new()
+$menuOutput = @(Show-QuarkBlogMenu -CommitMessage 'menu test' -SelectionReader {
+    param([string]$Prompt)
+    [void]$script:MenuPrompts.Add($Prompt)
+    '0'
+} *>&1)
+$menuText = $menuOutput -join "`n"
+foreach ($menuLabel in @(
+    [regex]::Unescape('Quark \u535a\u5ba2\u5de5\u5177')
+    [regex]::Unescape('\u6253\u5f00\u6587\u7ae0\u76ee\u5f55')
+    [regex]::Unescape('\u9884\u89c8\u535a\u5ba2')
+    [regex]::Unescape('\u6784\u5efa\u535a\u5ba2')
+    [regex]::Unescape('\u5b89\u5168\u53d1\u5e03')
+)) {
+    Assert-True ($menuText.Contains($menuLabel)) "Menu did not show the Chinese label: $menuLabel"
+}
+Assert-SequenceEqual -Actual @($script:MenuPrompts) -Expected @([regex]::Unescape('\u8bf7\u9009\u62e9\u64cd\u4f5c')) -Message 'The menu prompt must be Chinese.'
+
+$script:DispatchCalls = [System.Collections.Generic.List[string]]::new()
+$failingDispatcher = {
+    param([string]$SelectedAction, [string]$SelectedCommitMessage)
+    [void]$script:DispatchCalls.Add($SelectedAction)
+    throw 'simulated launcher failure'
+}
+$script:PausePrompts = [System.Collections.Generic.List[string]]::new()
+$pauseReader = {
+    param([string]$Prompt)
+    [void]$script:PausePrompts.Add($Prompt)
+    ''
+}
+$interactiveExitCode = 0
+$interactiveFailureOutput = @(Invoke-QuarkBlogEntryPoint -Action 'Menu' -CommitMessage 'menu failure' -ActionDispatcher $failingDispatcher -PauseReader $pauseReader -ExitCode ([ref]$interactiveExitCode) *>&1)
+$interactiveFailureText = $interactiveFailureOutput -join "`n"
+Assert-True ($interactiveExitCode -ne 0) 'An interactive Menu failure must produce a nonzero exit code.'
+Assert-SequenceEqual -Actual @($script:DispatchCalls) -Expected @('Menu') -Message 'The entry point dispatched the wrong interactive action.'
+Assert-True ($interactiveFailureText.Contains('simulated launcher failure')) 'The interactive recovery message must include the original failure.'
+Assert-True ($interactiveFailureText.Contains([regex]::Unescape('\u8bf7\u68c0\u67e5\u9879\u76ee\u8def\u5f84'))) 'The interactive recovery message must tell the user what to check.'
+Assert-True ($interactiveFailureText.Contains([regex]::Unescape('\u91cd\u65b0\u6253\u5f00'))) 'The interactive recovery message must explain how to retry.'
+Assert-SequenceEqual -Actual @($script:PausePrompts) -Expected @([regex]::Unescape('\u6309\u56de\u8f66\u952e\u5173\u95ed\u7a97\u53e3')) -Message 'An interactive failure must wait for Enter before closing.'
+
+$script:DispatchCalls.Clear()
+$script:PausePrompts.Clear()
+$lowercaseMenuExitCode = 0
+$null = @(Invoke-QuarkBlogEntryPoint -Action 'menu' -CommitMessage 'lowercase menu failure' -ActionDispatcher $failingDispatcher -PauseReader $pauseReader -ExitCode ([ref]$lowercaseMenuExitCode) *>&1)
+Assert-True ($lowercaseMenuExitCode -ne 0) 'The case-insensitive Menu action must still use interactive error handling.'
+Assert-SequenceEqual -Actual @($script:PausePrompts) -Expected @([regex]::Unescape('\u6309\u56de\u8f66\u952e\u5173\u95ed\u7a97\u53e3')) -Message 'Lowercase menu must wait for Enter after failure.'
+
+$script:DispatchCalls.Clear()
+$script:PausePrompts.Clear()
+$explicitFailureThrown = $false
+try {
+    $explicitExitCode = 0
+    $null = @(Invoke-QuarkBlogEntryPoint -Action 'Build' -CommitMessage 'explicit failure' -ActionDispatcher $failingDispatcher -PauseReader $pauseReader -ExitCode ([ref]$explicitExitCode) *>&1)
+}
+catch {
+    $explicitFailureThrown = $true
+}
+Assert-True $explicitFailureThrown 'A failing explicit action must propagate its error for automation.'
+Assert-SequenceEqual -Actual @($script:DispatchCalls) -Expected @('Build') -Message 'The entry point dispatched the wrong explicit action.'
+Assert-True ($script:PausePrompts.Count -eq 0) 'A failing explicit non-interactive action must not pause.'
 
 $script:ProcessCalls = [System.Collections.Generic.List[object]]::new()
 function Start-Process {
