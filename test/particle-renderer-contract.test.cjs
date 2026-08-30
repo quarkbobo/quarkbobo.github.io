@@ -268,6 +268,9 @@ function createHarness (options = {}) {
         state.drawFrames.push({
           trailSegments: 0,
           maxPointerMagnitude: 0,
+          pointerX: 0,
+          pointerY: 0,
+          strokes: [],
           particles: new Map(),
           draws: new Map(),
           positionedParticleIndex: -1
@@ -280,7 +283,10 @@ function createHarness (options = {}) {
         const frame = state.drawFrames[state.drawFrames.length - 1]
         if (frame) frame.trailSegments++
       },
-      stroke () {},
+      stroke () {
+        const frame = state.drawFrames[state.drawFrames.length - 1]
+        if (frame) frame.strokes.push({ alpha: context.globalAlpha, style: context.strokeStyle })
+      },
       fillRect () {},
       drawImage (sprite, left, top, width, height) {
         state.drawImageCount++
@@ -289,7 +295,8 @@ function createHarness (options = {}) {
           frame.draws.set(frame.positionedParticleIndex, {
             x: left + width / 2,
             y: top + height / 2,
-            size: Math.max(width, height)
+            size: Math.max(width, height),
+            alpha: context.globalAlpha
           })
         }
       },
@@ -314,12 +321,19 @@ function createHarness (options = {}) {
       height: 0,
       clientWidth: width,
       clientHeight: height,
+      _boundsLeft: canvasOptions.left || 0,
+      _boundsTop: canvasOptions.top || 0,
       style: {},
       parentElement: scene,
       classList: new FakeClassList(),
       getBoundingClientRect () {
         state.boundsReads++
-        return { left: 0, top: 0, width: this.clientWidth, height: this.clientHeight }
+        return {
+          left: this._boundsLeft,
+          top: this._boundsTop,
+          width: this.clientWidth,
+          height: this.clientHeight
+        }
       },
       getContext: () => canvasOptions.contextAvailable === false || options.contextAvailable === false ? null : context,
       _context: context,
@@ -401,6 +415,8 @@ function createHarness (options = {}) {
         const frame = state.drawFrames[state.drawFrames.length - 1]
         if (frame && options.recordPointer) {
           frame.maxPointerMagnitude = Math.max(frame.maxPointerMagnitude, Math.hypot(pointer.x, pointer.y))
+          frame.pointerX = pointer.x
+          frame.pointerY = pointer.y
         }
         if (frame && options.recordParticles) {
           frame.particles.set(particle.index, particle)
@@ -528,6 +544,7 @@ test('app initialization reuses one renderer and one listener per global event t
 
   assert.equal(second, first)
   assert.equal(harness.window.listenerCount('resize'), 1)
+  assert.equal(harness.window.listenerCount('scroll'), 1)
   assert.equal(harness.window.listenerCount('pointermove'), 1)
   assert.equal(harness.document.listenerCount('visibilitychange'), 1)
   first.destroy()
@@ -535,6 +552,7 @@ test('app initialization reuses one renderer and one listener per global event t
   const third = harness.renderer.mount(harness.makeCanvas())
   assert.notEqual(third, first)
   assert.equal(harness.window.listenerCount('resize'), 1)
+  assert.equal(harness.window.listenerCount('scroll'), 1)
   assert.equal(harness.document.listenerCount('visibilitychange'), 1)
   third.destroy()
 })
@@ -979,6 +997,153 @@ test('every desktop quality level keeps an approximately 84/13/3 layer quota', (
   lifecycle.destroy()
 })
 
+test('quality-budget removals fade out while inactive phases keep advancing through wrap', () => {
+  // Skipping a removed particle before phase advancement freezes its orbit and makes later restoration jump backward.
+  const harness = createHarness({ recordParticles: true })
+  const lifecycle = harness.renderer.mount(harness.makeCanvas())
+  harness.flushIdle()
+
+  let timestamp = 100
+  harness.flushRaf(timestamp)
+  for (let frame = 0; frame < 119; frame++) {
+    timestamp += 20
+    harness.flushRaf(timestamp)
+  }
+
+  assert.equal(lifecycle.snapshot().qualityLevel, 2)
+  const fullFrame = harness.state.drawFrames.at(-1)
+  const inactivePool = [...fullFrame.particles.values()].filter(particle => particle.index >= 210)
+  const fadingParticle = inactivePool.find(particle =>
+    particle.layer === 'dust' && particle.phase > 0.2 && particle.phase < 0.75
+  )
+  const wrappingParticle = inactivePool.reduce((latest, particle) =>
+    !latest || particle.phase > latest.phase ? particle : latest
+  , null)
+  assert.ok(fadingParticle, 'the deterministic inactive prefix contains a mid-orbit dust sample')
+  assert.ok(wrappingParticle && wrappingParticle.phase > 0.9, 'the deterministic pool contains a near-wrap sample')
+
+  const fadingPhaseBeforeRemoval = fadingParticle.phase
+  const fadingAlphaBeforeRemoval = fullFrame.draws.get(fadingParticle.index).alpha
+  let expectedWrappingPhase = wrappingParticle.phase
+  let wrapped = false
+  const removalAlphas = []
+
+  for (let frame = 0; frame < 3; frame++) {
+    timestamp += 20
+    harness.flushRaf(timestamp)
+    const frameDraw = harness.state.drawFrames.at(-1).draws.get(fadingParticle.index)
+    assert.ok(frameDraw, `removed particle remains drawable during fade frame ${frame}`)
+    removalAlphas.push(frameDraw.alpha)
+    const previousWrappingPhase = expectedWrappingPhase
+    expectedWrappingPhase = (expectedWrappingPhase + 0.02 / wrappingParticle.lifetime) % 1
+    wrapped = wrapped || expectedWrappingPhase < previousWrappingPhase
+    assert.ok(
+      Math.abs(wrappingParticle.phase - expectedWrappingPhase) < 1e-12,
+      `inactive phase advances on fade frame ${frame}`
+    )
+  }
+
+  assert.equal(lifecycle.snapshot().qualityLevel, 1)
+  assert.equal(lifecycle.snapshot().particleCount, 210)
+  assertLayerQuota(lifecycle.snapshot())
+  assert.ok(fadingParticle.phase > fadingPhaseBeforeRemoval, 'the removed mid-orbit sample advances')
+  assert.ok(removalAlphas[0] > 0 && removalAlphas[0] < fadingAlphaBeforeRemoval)
+  assert.ok(removalAlphas[1] > 0 && removalAlphas[1] < removalAlphas[0])
+  assert.ok(removalAlphas[2] > 0 && removalAlphas[2] < removalAlphas[1])
+
+  for (let frame = 0; frame < 80 && !wrapped; frame++) {
+    const previousPhase = expectedWrappingPhase
+    timestamp += 50
+    harness.flushRaf(timestamp)
+    expectedWrappingPhase = (expectedWrappingPhase + 0.05 / wrappingParticle.lifetime) % 1
+    wrapped = expectedWrappingPhase < previousPhase
+    assert.ok(
+      Math.abs(wrappingParticle.phase - expectedWrappingPhase) < 1e-12,
+      `inactive phase stays continuous near wrap frame ${frame}`
+    )
+  }
+  assert.equal(wrapped, true, 'the inactive sample crosses phase wrap during the test')
+  lifecycle.destroy()
+})
+
+test('restored quality particles fade in over multiple frames while metrics expose the target quota', () => {
+  // Restoring a hidden prefix at full alpha in one frame produces a visible quality-switch flash.
+  const harness = createHarness({ recordParticles: true })
+  const lifecycle = harness.renderer.mount(harness.makeCanvas())
+  harness.flushIdle()
+
+  let timestamp = 100
+  harness.flushRaf(timestamp)
+  const pool = [...harness.state.drawFrames.at(-1).particles.values()]
+  for (let frame = 0; frame < 120; frame++) {
+    timestamp += 20
+    harness.flushRaf(timestamp)
+  }
+  assert.equal(lifecycle.snapshot().qualityLevel, 1)
+
+  for (let frame = 0; frame < 119; frame++) {
+    timestamp += 15
+    harness.flushRaf(timestamp)
+  }
+  assert.equal(lifecycle.snapshot().qualityLevel, 1)
+  const restoredParticle = pool.find(particle =>
+    particle.index >= 210 && particle.layer === 'dust' && particle.phase > 0.2 && particle.phase < 0.75
+  )
+  assert.ok(restoredParticle, 'the restored prefix contains a mid-orbit dust sample')
+
+  const restoredAlphas = []
+  for (let frame = 0; frame < 3; frame++) {
+    timestamp += 15
+    harness.flushRaf(timestamp)
+    const draw = harness.state.drawFrames.at(-1).draws.get(restoredParticle.index)
+    assert.ok(draw, `restored particle is drawable on fade frame ${frame}`)
+    restoredAlphas.push(draw.alpha)
+  }
+
+  assert.equal(lifecycle.snapshot().qualityLevel, 2)
+  assert.equal(lifecycle.snapshot().particleCount, 320)
+  assertLayerQuota(lifecycle.snapshot())
+  assert.ok(restoredAlphas[0] > 0)
+  assert.ok(restoredAlphas[1] > restoredAlphas[0])
+  assert.ok(restoredAlphas[2] > restoredAlphas[1])
+  lifecycle.destroy()
+})
+
+test('mobile-to-desktop additions fade in instead of appearing at full alpha', () => {
+  // A running breakpoint expansion must transition the added desktop prefix without changing the reported target budget.
+  const harness = createHarness({ width: 390, height: 700, recordParticles: true })
+  const canvas = harness.makeCanvas()
+  const lifecycle = harness.renderer.mount(canvas)
+  harness.flushIdle()
+
+  harness.flushRaf(100)
+  harness.window.innerWidth = 1280
+  canvas.clientWidth = 1280
+  canvas.clientHeight = 720
+  harness.window.dispatch('resize')
+  harness.flushRaf(116)
+  assert.equal(lifecycle.snapshot().particleCount, 320)
+  assertLayerQuota(lifecycle.snapshot())
+
+  harness.flushRaf(132)
+  const firstDesktopFrame = harness.state.drawFrames.at(-1)
+  const addedParticle = [...firstDesktopFrame.particles.values()].find(particle =>
+    particle.index >= 160 && particle.layer === 'dust' && particle.phase > 0.2 && particle.phase < 0.75
+  )
+  assert.ok(addedParticle, 'the added desktop prefix contains a mid-orbit dust sample')
+  const addedAlphas = [firstDesktopFrame.draws.get(addedParticle.index).alpha]
+
+  harness.flushRaf(148)
+  addedAlphas.push(harness.state.drawFrames.at(-1).draws.get(addedParticle.index).alpha)
+  harness.flushRaf(164)
+  addedAlphas.push(harness.state.drawFrames.at(-1).draws.get(addedParticle.index).alpha)
+
+  assert.ok(addedAlphas[0] > 0)
+  assert.ok(addedAlphas[1] > addedAlphas[0])
+  assert.ok(addedAlphas[2] > addedAlphas[1])
+  lifecycle.destroy()
+})
+
 test('every supported particle prefix keeps deterministic two-to-four glint groups with readable screen geometry', () => {
   // Metadata-only phase checks miss sprites that overlap or split across opposite ends when member phases wrap.
   const capture = viewport => {
@@ -1046,6 +1211,85 @@ test('every supported particle prefix keeps deterministic two-to-four glint grou
   }
 })
 
+test('quality removals keep fading streak trails instead of cutting them off', () => {
+  // Fading only the streak sprite would leave its line to disappear one frame earlier than the particle.
+  const harness = createHarness({ recordParticles: true })
+  const lifecycle = harness.renderer.mount(harness.makeCanvas())
+  harness.flushIdle()
+
+  let timestamp = 100
+  harness.flushRaf(timestamp)
+  for (let frame = 0; frame < 89; frame++) {
+    timestamp += 50
+    harness.flushRaf(timestamp)
+  }
+  for (let frame = 0; frame < 30; frame++) {
+    timestamp += 1
+    harness.flushRaf(timestamp)
+  }
+  assert.equal(lifecycle.snapshot().qualityLevel, 2)
+
+  timestamp += 20
+  harness.flushRaf(timestamp)
+  const transitionFrame = harness.state.drawFrames.at(-1)
+  const transitionStreaks = [...transitionFrame.particles.values()].filter(particle =>
+    particle.layer === 'streak' &&
+    transitionFrame.draws.has(particle.index) &&
+    particle.phase > 0.055 &&
+    particle.streakSlot % 6 < 2
+  )
+  const removedTrails = transitionStreaks.filter(particle => particle.index >= 210)
+  assert.ok(removedTrails.length > 0, 'the deterministic burst includes a removed streak trail')
+  assert.equal(lifecycle.snapshot().qualityLevel, 1)
+  assert.equal(transitionFrame.trailSegments, transitionStreaks.length, 'removed streak lines remain during fade')
+  assert.ok(transitionFrame.strokes.some(stroke => {
+    const fullAlpha = stroke.style.includes('103, 234, 255') ? 0.82 * 0.7 : 0.76 * 0.7
+    return stroke.alpha > 0 && stroke.alpha < fullAlpha
+  }), 'at least one retained trail stroke uses its fading particle opacity')
+  lifecycle.destroy()
+})
+
+test('mobile-to-desktop streak trails share the added particles fade-in alpha', () => {
+  // A dim new streak sprite with a full-bright trail would still flash at a running breakpoint expansion.
+  const harness = createHarness({ width: 390, height: 700, recordParticles: true })
+  const canvas = harness.makeCanvas()
+  const lifecycle = harness.renderer.mount(canvas)
+  harness.flushIdle()
+
+  let timestamp = 100
+  harness.flushRaf(timestamp)
+  for (let frame = 0; frame < 101; frame++) {
+    timestamp += 50
+    harness.flushRaf(timestamp)
+  }
+  assert.equal(lifecycle.snapshot().qualityLevel, 2)
+
+  harness.window.innerWidth = 1280
+  canvas.clientWidth = 1280
+  canvas.clientHeight = 720
+  harness.window.dispatch('resize')
+  timestamp += 16
+  harness.flushRaf(timestamp)
+  timestamp += 16
+  harness.flushRaf(timestamp)
+
+  const firstDesktopFrame = harness.state.drawFrames.at(-1)
+  const addedTrails = [...firstDesktopFrame.particles.values()].filter(particle =>
+    particle.index >= 160 &&
+    particle.layer === 'streak' &&
+    firstDesktopFrame.draws.has(particle.index) &&
+    particle.phase > 0.055 &&
+    (particle.streakSlot - 6 + 9) % 9 < 2
+  )
+  assert.ok(addedTrails.length > 0, 'the deterministic burst includes an added desktop streak trail')
+  assert.equal(lifecycle.snapshot().particleCount, 320)
+  assert.ok(firstDesktopFrame.strokes.some(stroke => {
+    const fullAlpha = stroke.style.includes('103, 234, 255') ? 0.82 * 0.7 : 0.76 * 0.7
+    return stroke.alpha > 0 && stroke.alpha < fullAlpha
+  }), 'at least one new trail stroke starts below full alpha')
+  lifecycle.destroy()
+})
+
 test('streak trails have deterministic quiet intervals and sparse burst frames', () => {
   // Drawing every streak line on every frame would turn the rare high-energy layer into constant visual noise.
   const harness = createHarness()
@@ -1097,6 +1341,7 @@ test('the hot loop reuses sprites and destroy removes every owned listener and c
   assert.equal(harness.state.documentQueries, queriesAfterBoot)
   assert.equal(harness.window.listenerCount('pointermove'), 1)
   assert.equal(harness.window.listenerCount('resize'), 1)
+  assert.equal(harness.window.listenerCount('scroll'), 1)
   assert.equal(harness.document.listenerCount('visibilitychange'), 1)
 
   const second = harness.renderer.mount(harness.makeCanvas())
@@ -1108,30 +1353,32 @@ test('the hot loop reuses sprites and destroy removes every owned listener and c
 
   assert.equal(harness.window.listenerCount('pointermove'), 0)
   assert.equal(harness.window.listenerCount('resize'), 0)
+  assert.equal(harness.window.listenerCount('scroll'), 0)
   assert.equal(harness.document.listenerCount('visibilitychange'), 0)
   assert.equal(harness.pendingRafs(), 0)
 })
 
-test('pointer events coalesce layout reads and the hot loop reuses two position outputs', () => {
-  // Reading bounds per pointer event or omitting scratch outputs would scale allocations/layout with input and particle count.
+test('pointer events use cached bounds and the hot loop reuses two position outputs', () => {
+  // Reading bounds in an active render frame or omitting scratch outputs would scale layout/allocation work with input and particles.
   const harness = createHarness({ recordPointer: true, recordPositionOutputs: true })
   const lifecycle = harness.renderer.mount(harness.makeCanvas())
   harness.flushIdle()
   const initialBoundsReads = harness.state.boundsReads
+  assert.equal(initialBoundsReads, 1, 'initial resize caches one canvas bound')
 
   for (let index = 0; index < 20; index++) {
     harness.window.dispatch('pointermove', { clientX: 800 + index, clientY: 500 + index })
   }
   assert.equal(harness.state.boundsReads, initialBoundsReads, 'pointer handler performs no layout read')
   harness.flushRaf(100)
-  assert.equal(harness.state.boundsReads, initialBoundsReads + 1, 'one rendered frame resolves one bound')
+  assert.equal(harness.state.boundsReads, initialBoundsReads, 'an active render frame performs no layout read')
 
   for (let index = 0; index < 10; index++) {
     harness.window.dispatch('pointermove', { clientX: 900 + index, clientY: 550 + index })
   }
-  assert.equal(harness.state.boundsReads, initialBoundsReads + 1)
+  assert.equal(harness.state.boundsReads, initialBoundsReads)
   harness.flushRaf(116)
-  assert.equal(harness.state.boundsReads, initialBoundsReads + 2)
+  assert.equal(harness.state.boundsReads, initialBoundsReads)
   assert.ok(harness.state.drawFrames.at(-1).maxPointerMagnitude > 0)
 
   let timestamp = 116
@@ -1143,7 +1390,53 @@ test('pointer events coalesce layout reads and the hot loop reuses two position 
   assert.ok(harness.state.positionCalls > lifecycle.snapshot().particleCount)
   assert.equal(harness.state.positionCallsWithoutOutput, 0)
   assert.equal(harness.state.positionOutputs.size, 2)
+  assert.equal(harness.state.boundsReads, initialBoundsReads, 'steady animation never re-reads bounds')
   lifecycle.destroy()
+})
+
+test('scroll and resize coalesce one bounds refresh and keep a stationary pointer canvas-relative', () => {
+  // A cached client-to-canvas transform must be invalidated when scrolling moves the canvas under a stationary pointer.
+  const harness = createHarness({ recordPointer: true })
+  const canvas = harness.makeCanvas()
+  const lifecycle = harness.renderer.mount(canvas)
+  harness.flushIdle()
+
+  assert.equal(harness.window.listenerCount('scroll'), 1)
+  harness.window.dispatch('pointermove', { clientX: 1000, clientY: 300 })
+  let timestamp = 100
+  harness.flushRaf(timestamp)
+  for (let frame = 0; frame < 12; frame++) {
+    timestamp += 50
+    harness.flushRaf(timestamp)
+  }
+  const pointerBeforeScroll = harness.state.drawFrames.at(-1).pointerX
+  assert.ok(pointerBeforeScroll > 7, `pointer settles near the right edge: ${pointerBeforeScroll}`)
+
+  const readsBeforeRefresh = harness.state.boundsReads
+  const pendingBeforeRefresh = harness.pendingRafs()
+  canvas._boundsLeft = 500
+  for (let event = 0; event < 20; event++) {
+    harness.window.dispatch('scroll')
+    harness.window.dispatch('resize')
+  }
+  assert.equal(harness.state.boundsReads, readsBeforeRefresh, 'event handlers perform no synchronous layout read')
+  assert.equal(harness.pendingRafs(), pendingBeforeRefresh + 1, 'scroll and resize share one refresh frame')
+
+  timestamp += 50
+  harness.flushRaf(timestamp)
+  assert.equal(harness.state.boundsReads, readsBeforeRefresh + 1, 'the merged refresh reads bounds once')
+  for (let frame = 0; frame < 12; frame++) {
+    timestamp += 50
+    harness.flushRaf(timestamp)
+  }
+  const pointerAfterScroll = harness.state.drawFrames.at(-1).pointerX
+  assert.ok(
+    Math.abs(pointerAfterScroll) < Math.abs(pointerBeforeScroll) * 0.1,
+    `stationary pointer is recomputed against moved bounds: ${pointerAfterScroll}`
+  )
+
+  lifecycle.destroy()
+  assert.equal(harness.window.listenerCount('scroll'), 0)
 })
 
 test('requestIdleCallback falls back to a deferred timer', () => {
@@ -1193,5 +1486,18 @@ test('destroy cancels initialization and coalesced resize work before it runs', 
     assert.equal(harness.pendingRafs(), 1)
     lifecycle.destroy()
     assert.equal(harness.pendingRafs(), 0)
+  })
+
+  await t.test('pending scroll bounds frame', () => {
+    const harness = createHarness()
+    const lifecycle = harness.renderer.mount(harness.makeCanvas())
+    harness.flushIdle()
+    lifecycle.stop()
+    harness.window.dispatch('scroll')
+
+    assert.equal(harness.pendingRafs(), 1)
+    lifecycle.destroy()
+    assert.equal(harness.pendingRafs(), 0)
+    assert.equal(harness.window.listenerCount('scroll'), 0)
   })
 })

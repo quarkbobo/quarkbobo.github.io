@@ -23,6 +23,7 @@
   const STREAK_BURST_DURATION_MS = 1200
   const STREAK_ROTATE_MS = 180
   const STREAK_TRAIL_LIMIT = 2
+  const ACTIVATION_FADE_MS = 240
   const GLINT_GROUP_PHASE_STEP = 0.3819660112501051
   const GLINT_FORMATION_GAP = 0.46
   const EMPTY_LAYER_COUNTS = Object.freeze({ dust: 0, glint: 0, streak: 0 })
@@ -268,6 +269,7 @@
     const buckets = [[], [], [], [], [], []]
     const pointer = { x: 0, y: 0 }
     const pointerTarget = { x: 0, y: 0 }
+    const pointerBounds = { left: 0, top: 0, width: 1, height: 1 }
     const viewport = { width: 1, height: 1 }
     const positionOutput = { x: 0, y: 0 }
     const trailOutput = { x: 0, y: 0 }
@@ -296,10 +298,13 @@
     let trailWindowStart = 0
     let trailWindowCount = 0
     let qualityState = { level: 2, frameTimes: [] }
+    let particles = []
     let pointerListenerAttached = false
     let pointerClientX = 0
     let pointerClientY = 0
+    let pointerHasPosition = false
     let pointerUpdatePending = false
+    let resizePending = false
     let motionQueryListenerMode = ''
     const motionToggle = config.motionToggle
     const motionScene = canvas.parentElement
@@ -340,13 +345,23 @@
       pointer.y = 0
       pointerTarget.x = 0
       pointerTarget.y = 0
+      pointerHasPosition = false
       pointerUpdatePending = false
       if (shouldListen) root.addEventListener('pointermove', onPointerMove, { passive: true })
       else root.removeEventListener('pointermove', onPointerMove)
       pointerListenerAttached = shouldListen
     }
 
-    function syncParticleBudget () {
+    function syncParticleActivation (snap) {
+      for (let index = 0; index < particles.length; index++) {
+        const particle = particles[index]
+        const target = particle.index < metrics.particleCount ? 1 : 0
+        particle.activationTarget = target
+        if (snap) particle.activationOpacity = target
+      }
+    }
+
+    function syncParticleBudget (snapActivation) {
       if (!initialized) return
       if (reducedMotion) {
         metrics.qualityLevel = 0
@@ -357,6 +372,7 @@
         metrics.particleCount = counts[qualityState.level]
         metrics.layerCounts = qualityLayerCounts[qualityState.level]
       }
+      syncParticleActivation(Boolean(snapActivation))
     }
 
     function syncViewportPolicy () {
@@ -368,11 +384,19 @@
       reducedCount = isMobile ? mobileReducedCount : desktopReducedCount
       reducedLayerCounts = isMobile ? mobileReducedLayerCounts : desktopReducedLayerCounts
       syncPointerListener()
-      syncParticleBudget()
+      syncParticleBudget(reducedMotion || !requestedRunning)
     }
 
-    function resizeNow () {
-      resizeFrameId = 0
+    function refreshPointerBounds () {
+      const bounds = canvas.getBoundingClientRect()
+      pointerBounds.left = Number.isFinite(bounds.left) ? bounds.left : 0
+      pointerBounds.top = Number.isFinite(bounds.top) ? bounds.top : 0
+      pointerBounds.width = Number.isFinite(bounds.width) ? bounds.width : 0
+      pointerBounds.height = Number.isFinite(bounds.height) ? bounds.height : 0
+      if (pointerHasPosition) pointerUpdatePending = true
+    }
+
+    function resizeNow (refreshBounds) {
       if (destroyed) return
       syncViewportPolicy()
       const width = Math.max(1, canvas.clientWidth || 1)
@@ -385,22 +409,47 @@
       canvas.width = Math.round(width * dpr)
       canvas.height = Math.round(height * dpr)
       context.setTransform(dpr, 0, 0, dpr, 0, 0)
+      if (refreshBounds !== false) {
+        refreshPointerBounds()
+        syncPointerTarget()
+      }
       if (initialized && (reducedMotion || !requestedRunning)) drawParticles(0)
     }
 
+    function flushLayoutRefresh () {
+      resizeFrameId = 0
+      if (destroyed) return
+      if (resizePending) {
+        resizePending = false
+        resizeNow(true)
+      } else {
+        refreshPointerBounds()
+        syncPointerTarget()
+      }
+    }
+
+    function queueLayoutRefresh () {
+      if (!resizeFrameId && !destroyed) resizeFrameId = root.requestAnimationFrame(flushLayoutRefresh)
+    }
+
     function queueResize () {
-      if (!resizeFrameId && !destroyed) resizeFrameId = root.requestAnimationFrame(resizeNow)
+      resizePending = true
+      queueLayoutRefresh()
+    }
+
+    function queueBoundsRefresh () {
+      queueLayoutRefresh()
     }
 
     function drawBucket (bucketIndex, deltaSeconds) {
       const bucket = buckets[bucketIndex]
       const length = bucket.length
       const sprite = sprites[bucketIndex % 2]
-      const activeCount = metrics.particleCount
       const scale = LAYER_SCALE[bucketIndex]
       const baseAlpha = LAYER_ALPHA[bucketIndex]
       const isStreak = bucketIndex >= 4
       let trailSegments = 0
+      let trailOpacity = 1
 
       if (isStreak && trailWindowCount) {
         context.beginPath()
@@ -410,8 +459,16 @@
 
       for (let index = 0; index < length; index++) {
         const particle = bucket[index]
-        if (particle.index >= activeCount) continue
         if (deltaSeconds) particle.phase = core.advancePhase(particle.phase, deltaSeconds, particle.lifetime)
+        if (deltaSeconds && particle.activationOpacity !== particle.activationTarget) {
+          const activationStep = deltaSeconds * 1000 / ACTIVATION_FADE_MS
+          if (particle.activationOpacity < particle.activationTarget) {
+            particle.activationOpacity = Math.min(particle.activationTarget, particle.activationOpacity + activationStep)
+          } else {
+            particle.activationOpacity = Math.max(particle.activationTarget, particle.activationOpacity - activationStep)
+          }
+        }
+        if (particle.activationOpacity <= 0.001) continue
         const position = core.positionParticle(particle, particle.phase, viewport, pointer, positionOutput)
         if (particle.layer === 'glint' && particle.formationOffset) {
           position.x += particle.formationOffset * Math.SQRT1_2
@@ -431,14 +488,15 @@
           const trail = core.positionParticle(particle, particle.phase - 0.035, viewport, pointer, trailOutput)
           context.moveTo(trail.x, trail.y)
           context.lineTo(position.x, position.y)
+          trailOpacity = Math.min(trailOpacity, particle.activationOpacity)
           trailSegments++
         }
-        context.globalAlpha = fade * baseAlpha * pulse
+        context.globalAlpha = fade * baseAlpha * pulse * particle.activationOpacity
         context.drawImage(sprite, position.x - size / 2, position.y - size / 2, size, size)
       }
 
       if (trailSegments) {
-        context.globalAlpha = baseAlpha * 0.7
+        context.globalAlpha = baseAlpha * 0.7 * trailOpacity
         context.stroke()
       }
     }
@@ -486,13 +544,12 @@
 
       if (rawDeltaMs) {
         recordFrame(rawDeltaMs)
-        const previousQualityLevel = metrics.qualityLevel
+        const previousQualityLevel = qualityState.level
         qualityState = core.nextQuality(qualityState, rawDeltaMs)
-        metrics.qualityLevel = qualityState.level
-        metrics.particleCount = counts[qualityState.level]
-        metrics.layerCounts = qualityLayerCounts[qualityState.level]
-        if (previousQualityLevel !== qualityState.level &&
-          (previousQualityLevel === 0 || qualityState.level === 0)) resizeNow()
+        if (previousQualityLevel !== qualityState.level) {
+          syncParticleBudget(false)
+          if (previousQualityLevel === 0 || qualityState.level === 0) resizeNow(false)
+        }
       }
 
       updateTrailGate(motionDeltaMs)
@@ -508,18 +565,20 @@
       idleId = 0
       if (destroyed) return
       const rng = core.createRng(Number.isInteger(config.seed) ? config.seed : 0x51A7E11)
-      const particles = createQuotaParticles(core, rng, allocationCheckpoints, allocationQuotas)
+      particles = createQuotaParticles(core, rng, allocationCheckpoints, allocationQuotas)
       let streakSlot = 0
       for (let index = 0; index < particles.length; index++) {
         const particle = particles[index]
+        particle.activationOpacity = 0
+        particle.activationTarget = 0
         const layerOffset = particle.layer === 'dust' ? 0 : particle.layer === 'glint' ? 2 : 4
         const colorOffset = (particle.index + particle.band) & 1
         if (particle.layer === 'streak') particle.streakSlot = streakSlot++
         buckets[layerOffset + colorOffset].push(particle)
       }
       initialized = true
-      syncParticleBudget()
-      resizeNow()
+      syncParticleBudget(true)
+      resizeNow(true)
 
       if (!reducedMotion) scheduleFrame()
     }
@@ -537,16 +596,16 @@
     function onPointerMove (event) {
       pointerClientX = Number.isFinite(event.clientX) ? event.clientX : 0
       pointerClientY = Number.isFinite(event.clientY) ? event.clientY : 0
+      pointerHasPosition = true
       pointerUpdatePending = true
     }
 
     function syncPointerTarget () {
       if (!pointerUpdatePending) return
       pointerUpdatePending = false
-      const bounds = canvas.getBoundingClientRect()
-      if (!bounds.width || !bounds.height) return
-      pointerTarget.x = ((pointerClientX - bounds.left) / bounds.width - 0.5) * 16
-      pointerTarget.y = ((pointerClientY - bounds.top) / bounds.height - 0.5) * 16
+      if (!pointerBounds.width || !pointerBounds.height) return
+      pointerTarget.x = ((pointerClientX - pointerBounds.left) / pointerBounds.width - 0.5) * 16
+      pointerTarget.y = ((pointerClientY - pointerBounds.top) / pointerBounds.height - 0.5) * 16
     }
 
     function onVisibilityChange () {
@@ -571,10 +630,11 @@
       animationFrameId = 0
       if (!initialized) return
 
-      syncParticleBudget()
+      syncParticleBudget(reducedMotion || !requestedRunning)
       if (resizeFrameId) root.cancelAnimationFrame(resizeFrameId)
       resizeFrameId = 0
-      resizeNow()
+      resizePending = false
+      resizeNow(true)
       if (!reducedMotion) scheduleFrame()
     }
 
@@ -615,12 +675,14 @@
       destroyed = true
       if (resizeFrameId) root.cancelAnimationFrame(resizeFrameId)
       resizeFrameId = 0
+      resizePending = false
       if (idleId) {
         if (idleUsesTimeout) root.clearTimeout(idleId)
         else if (typeof root.cancelIdleCallback === 'function') root.cancelIdleCallback(idleId)
       }
       idleId = 0
       root.removeEventListener('resize', queueResize)
+      root.removeEventListener('scroll', queueBoundsRefresh)
       if (pointerListenerAttached) root.removeEventListener('pointermove', onPointerMove)
       pointerListenerAttached = false
       document.removeEventListener('visibilitychange', onVisibilityChange)
@@ -639,6 +701,7 @@
     }
 
     root.addEventListener('resize', queueResize)
+    root.addEventListener('scroll', queueBoundsRefresh, { passive: true })
     syncPointerListener()
     document.addEventListener('visibilitychange', onVisibilityChange)
     if (reducedMotionQuery && typeof reducedMotionQuery.addEventListener === 'function') {
