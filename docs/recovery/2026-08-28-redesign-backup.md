@@ -19,6 +19,14 @@ This immutable recovery copy was created before the fluid-particle theme redesig
 
 Each hash was identical between the source and this recovery copy.
 
+## Content and shortcut evidence
+
+- All 8 files under `source/_posts` were compared individually with SHA-256; every source/backup pair matched, with 0 missing and 0 mismatched files.
+- `desktop-shortcuts.json` in the backup root records each original shortcut's target, arguments, working directory, and window style before consolidation.
+- `BoBo一键更新.lnk` SHA-256: `5CAC15A586EC7CC022E2F436458C658BBFA4A97F800B43A284C14729096AAA18`.
+- `Posts.lnk` SHA-256: `0211D9122AC146DDDA30649643F6178D97C7290CB0E8FA082FC029035C9C195A`.
+- The recorded update shortcut contains the retired `git push --force origin master` workflow. It is evidence only and must not be executed during verification or recovery.
+
 ## Recovery procedure
 
 1. Stop Hexo and close terminals using the project.
