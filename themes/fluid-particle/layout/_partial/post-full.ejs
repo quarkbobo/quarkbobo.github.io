@@ -17,11 +17,30 @@ const uniqueHeadingId = preferredId => {
   articleHeadingIds.add(candidate)
   return candidate
 }
-const meaningfulHeadingText = contents => strip_html(String(contents)
+const escapeAttribute = value => String(value)
+  .replace(/&/g, '&amp;')
+  .replace(/"/g, '&quot;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+const rawTextElementPattern = /<(script|style|textarea|pre|code)\b[^>]*>[\s\S]*?<\/\1\s*>/gi
+const shieldRawTextElements = value => {
+  const source = String(value || '')
+  const protectedElements = []
+  let marker = 'FLUIDRAWTEXTTOKEN'
+  while (source.includes(marker)) marker += 'X'
+  const html = source.replace(rawTextElementPattern, element => `${marker}${protectedElements.push(element) - 1}END`)
+  const tokenPattern = new RegExp(`${marker}(\\d+)END`, 'g')
+  return {
+    html,
+    restore: candidate => String(candidate).replace(tokenPattern, (token, index) => protectedElements[Number(index)] ?? token)
+  }
+}
+const shieldedArticle = shieldRawTextElements(post.content)
+const meaningfulHeadingText = contents => strip_html(shieldedArticle.restore(String(contents))
   .replace(/<a\b[^>]*class=(?:"[^"]*\bheader-anchor\b[^"]*"|'[^']*\bheader-anchor\b[^']*')[^>]*>[\s\S]*?<\/a>/gi, ''))
   .replace(/\s+/g, ' ')
   .trim()
-let articleContent = String(post.content || '').replace(/<h([1-6])(\b[^>]*)>([\s\S]*?)<\/h\1>/gi, (heading, authoredLevel, attributes, contents) => {
+let articleContent = shieldedArticle.html.replace(/<h([1-6])(\b[^>]*)>([\s\S]*?)<\/h\1>/gi, (heading, authoredLevel, attributes, contents) => {
   headingIndex++
   const normalizedLevel = Math.min(Math.max(2, Number(authoredLevel)), previousHeadingLevel + 1)
   previousHeadingLevel = normalizedLevel
@@ -39,16 +58,22 @@ let articleContent = String(post.content || '').replace(/<h([1-6])(\b[^>]*)>([\s
   }
 
   const headingId = uniqueHeadingId(preferredId)
-  if (!meaningfulHeadingText(normalizedContents)) {
-    normalizedContents = `<span class="heading-fallback">图示 ${headingIndex}</span>${normalizedContents}`
+  let headingLabel = meaningfulHeadingText(normalizedContents)
+  if (!headingLabel) {
+    headingLabel = `图示 ${headingIndex}`
+    normalizedContents = `<span class="heading-fallback">${headingLabel}</span>${normalizedContents}`
   }
-  normalizedContents = normalizedContents.replace(/<a\b([^>]*)>/gi, (anchor, anchorAttributes) => {
+  normalizedContents = normalizedContents.replace(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi, (anchor, anchorAttributes, anchorContents) => {
     if (!/\bclass=(?:"[^"]*\bheader-anchor\b[^"]*"|'[^']*\bheader-anchor\b[^']*')/i.test(anchorAttributes)) return anchor
     const hrefPattern = /\s+href=(?:"[^"]*"|'[^']*'|[^\s>]+)/i
-    const linkedAttributes = hrefPattern.test(anchorAttributes)
+    let linkedAttributes = hrefPattern.test(anchorAttributes)
       ? anchorAttributes.replace(hrefPattern, ` href="#${headingId}"`)
       : `${anchorAttributes} href="#${headingId}"`
-    return `<a${linkedAttributes}>`
+    const anchorText = strip_html(shieldedArticle.restore(anchorContents)).replace(/\s+/g, ' ').trim()
+    if (anchorText === '#' && !/\s+aria-label(?:\s*=|\s|$)/i.test(linkedAttributes)) {
+      linkedAttributes += ` aria-label="${escapeAttribute(`章节链接：${headingLabel}`)}"`
+    }
+    return `<a${linkedAttributes}>${anchorContents}</a>`
   })
   normalizedAttributes += ` id="${headingId}"`
   return `<h${normalizedLevel}${normalizedAttributes}>${normalizedContents}</h${normalizedLevel}>`
@@ -61,9 +86,20 @@ articleContent = articleContent.replace(/<img\b[^>]*>/gi, image => {
   const closing = image.endsWith('/>') ? '/>' : '>'
   return `${image.slice(0, -closing.length).trimEnd()} ${additions.join(' ')}${closing}`
 })
+articleContent = shieldedArticle.restore(articleContent)
 const outline = toc(articleContent, { min_depth: 2, max_depth: 3, list_number: false })
 %>
 <div class="article-layout content-shell">
+  <% if (outline && outline.trim()) { %>
+    <details class="article-toc-disclosure" aria-label="文章目录">
+      <summary>文章目录</summary>
+      <%- outline %>
+    </details>
+    <aside class="article-toc" aria-label="文章目录">
+      <p>文章目录</p>
+      <%- outline %>
+    </aside>
+  <% } %>
   <article class="article-shell">
     <header class="article-header">
       <p class="section-kicker">ARCHIVE ENTRY</p>
@@ -72,10 +108,4 @@ const outline = toc(articleContent, { min_depth: 2, max_depth: 3, list_number: f
     </header>
     <div class="article-body"><%- articleContent %></div>
   </article>
-  <% if (outline && outline.trim()) { %>
-    <aside class="article-toc" aria-label="文章目录">
-      <p>文章目录</p>
-      <%- outline %>
-    </aside>
-  <% } %>
 </div>

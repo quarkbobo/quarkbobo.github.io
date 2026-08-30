@@ -46,6 +46,14 @@ body::before {
   pointer-events: none;
 }
 
+body.is-inner::before {
+  background:
+    radial-gradient(circle, rgba(234, 251, 255, 0.16) 0 1px, transparent 1.4px) 0 0 / 6.5rem 6.5rem,
+    radial-gradient(circle, rgba(103, 234, 255, 0.1) 0 0.75px, transparent 1.2px) 2.4rem 1.8rem / 9rem 9rem,
+    linear-gradient(180deg, transparent, rgba(7, 16, 30, 0.34));
+  animation: none;
+}
+
 a {
   color: inherit;
   text-decoration-thickness: 0.08em;
@@ -317,6 +325,29 @@ a {
 
 .post-card h3 a {
   text-decoration: none;
+}
+
+.post-card__categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post-card__categories a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--archive-blue-grey);
+  font: 0.7rem/1 var(--font-data);
+  letter-spacing: 0.06em;
+  text-decoration: none;
+}
+
+.post-card__categories a:hover {
+  color: var(--signal-cyan);
 }
 
 .post-card:hover h3 a {

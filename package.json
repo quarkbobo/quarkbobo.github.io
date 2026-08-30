@@ -6,7 +6,10 @@
     "build": "hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
-    "server": "hexo server"
+    "server": "hexo server",
+    "test": "npm run test:fresh",
+    "test:fresh": "npm run clean && npm run build && npm run test:node",
+    "test:node": "node --test test/*.test.cjs"
   },
   "hexo": {
     "version": "8.1.1"

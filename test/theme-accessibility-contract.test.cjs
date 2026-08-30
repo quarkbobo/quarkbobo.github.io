@@ -121,10 +121,13 @@ test('generated long-form article headings and TOC form one complete navigation 
 
   for (const heading of headings) {
     assert.match(heading[2], /\bid="[^"]+"/i, `h${heading[1]} has no stable id`)
-    const permalink = heading[3].match(/<a\b([^>]*)class="[^"]*\bheader-anchor\b[^"]*"([^>]*)>/i)
+    const permalink = heading[3].match(/<a\b([^>]*)class="[^"]*\bheader-anchor\b[^"]*"([^>]*)>([\s\S]*?)<\/a>/i)
     if (permalink) {
       const href = `${permalink[1]} ${permalink[2]}`.match(/\bhref="([^"]+)"/i)?.[1]
       assert.match(href || '', /^#.+/, `h${heading[1]} permalink has no fragment destination`)
+      if (textContent(permalink[3]) === '#') {
+        assert.match(`${permalink[1]} ${permalink[2]}`, /\baria-label="[^"]+"/i, `h${heading[1]} glyph permalink has no accessible name`)
+      }
     }
   }
 
@@ -153,6 +156,22 @@ test('generated long-form article headings and TOC form one complete navigation 
   assert.ok(imageTocLink, 'image-only heading is reachable from the TOC')
   assert.notEqual(textContent(imageTocLink[3]), '', 'image-only heading receives a readable fallback label')
   assert.notEqual(textContent(imageTocLink[3]), '#', 'image-only heading is not labelled by the permalink glyph')
+})
+
+test('generated article TOC is a native disclosure before the article body', () => {
+  // Moving the TOC after the article makes it effectively unreachable at 320px; a custom div is not keyboard-native.
+  const output = built(path.join('技术教程', 'How-to-create-a-website', 'index.html'))
+  const layoutStart = output.indexOf('<div class="article-layout content-shell">')
+  const tocStart = output.indexOf('<details class="article-toc-disclosure"', layoutStart)
+  const desktopTocStart = output.indexOf('<aside class="article-toc"', layoutStart)
+  const articleStart = output.indexOf('<article class="article-shell">', layoutStart)
+
+  assert.ok(layoutStart >= 0, 'article layout is rendered')
+  assert.ok(tocStart > layoutStart, 'article TOC is rendered as details')
+  assert.ok(articleStart > tocStart, 'article TOC precedes the article in DOM order')
+  assert.match(output.slice(tocStart, articleStart), /<summary>\s*文章目录\s*<\/summary>/)
+  assert.doesNotMatch(output.slice(tocStart, articleStart), /<details\b[^>]*\bopen(?:\s|>)/)
+  assert.ok(desktopTocStart > layoutStart, 'desktop sticky TOC remains rendered')
 })
 
 test('generated long-form article images use lazy decoding defaults', () => {
@@ -202,22 +221,14 @@ test('article normalization transfers only direct Hexo wrapper IDs', () => {
   assert.match(headings[2][2], /class="header-anchor"[^>]*href="#article-section-3"|href="#article-section-3"[^>]*class="header-anchor"/)
 })
 
-test('standalone generated routes infer a meaningful non-empty page h1', () => {
-  // Leaving titleless HTML pages with an empty h1 makes their main landmark unnamed.
-  const routes = [
-    ['2048/index.html', '2048'],
-    ['snake/index.html', 'snake'],
-    ['国际象棋/index.html', '国际象棋'],
-    ['image_transformer/index.html', 'image transformer']
-  ]
+test('the authored 2048 fragment receives one meaningful themed page heading', () => {
+  // Full standalone documents bypass the theme; only the authored fragment needs the theme to supply its page h1.
+  const output = built('2048/index.html')
+  const main = output.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1]
+  const h1s = [...(main || '').matchAll(/<h1\b[^>]*>([\s\S]*?)<\/h1>/gi)]
 
-  for (const [route, expectedTitle] of routes) {
-    const output = built(route)
-    const main = output.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1]
-    const h1s = [...(main || '').matchAll(/<h1\b[^>]*>([\s\S]*?)<\/h1>/gi)]
-    assert.equal(h1s.length, 1, route)
-    assert.equal(h1s[0][1].replace(/<[^>]+>/g, '').trim(), expectedTitle, route)
-  }
+  assert.equal(h1s.length, 1)
+  assert.equal(h1s[0][1].replace(/<[^>]+>/g, '').trim(), '2048')
 })
 
 test('generated site script keeps menu visibility and aria-expanded in sync', () => {

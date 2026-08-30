@@ -30,7 +30,7 @@ function readProbeResult (html) {
   return JSON.parse(decodeHtml(encoded))
 }
 
-function dumpWithChrome (fixturePath, { reducedMotion = false } = {}) {
+function dumpWithChrome (fixturePath, { reducedMotion = false, viewport } = {}) {
   assert.ok(chromePath, `Chrome or Edge is installed (${chromeCandidates.join(', ')})`)
   const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fluid-theme-chrome-'))
   try {
@@ -44,6 +44,7 @@ function dumpWithChrome (fixturePath, { reducedMotion = false } = {}) {
       '--dump-dom'
     ]
     if (reducedMotion) args.push('--force-prefers-reduced-motion=reduce')
+    if (viewport) args.push(`--window-size=${viewport.width},${viewport.height}`)
     args.push(new URL(`file:///${fixturePath.replace(/\\/g, '/')}`).href)
     const result = childProcess.spawnSync(chromePath, args, {
       encoding: 'utf8',
@@ -225,6 +226,84 @@ function runArticleNavigationProbe () {
   }
 }
 
+function runArticleDisclosureProbe (viewport) {
+  const fixtureName = `.theme-article-disclosure-${process.pid}-${viewport.width}.html`
+  const fixturePath = path.join(publicRoot, fixtureName)
+  const contentWidthConstraint = viewport.width < 500
+    ? `<style>body { width: ${viewport.width}px; }</style>`
+    : ''
+  const fixture = `<!doctype html>
+    <html lang="zh-CN">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/post.css">
+        ${contentWidthConstraint}
+      </head>
+      <body class="is-inner">
+        <main id="main-content">
+          <div class="article-layout content-shell">
+            <details class="article-toc-disclosure" aria-label="文章目录">
+              <summary>文章目录</summary>
+              <ol class="toc"><li><a class="toc-link" href="#section">章节</a></li></ol>
+            </details>
+            <aside class="article-toc" aria-label="文章目录">
+              <p>文章目录</p>
+              <ol class="toc"><li><a class="toc-link" href="#section">章节</a></li></ol>
+            </aside>
+            <article class="article-shell">
+              <header class="article-header"><h1>Fixture article</h1></header>
+              <div class="article-body"><h2 id="section">章节</h2><p>正文</p></div>
+            </article>
+          </div>
+        </main>
+        <pre id="probe-result"></pre>
+        <script>
+          addEventListener('load', function () {
+            const disclosure = document.querySelector('.article-toc-disclosure')
+            const desktopToc = document.querySelector('.article-toc')
+            const article = document.querySelector('.article-shell')
+            const disclosureRect = disclosure.getBoundingClientRect()
+            const desktopRect = desktopToc.getBoundingClientRect()
+            const articleRect = article.getBoundingClientRect()
+            const stars = getComputedStyle(document.body, '::before')
+            document.getElementById('probe-result').textContent = JSON.stringify({
+              viewportWidth: document.documentElement.clientWidth,
+              contentWidth: document.body.getBoundingClientRect().width,
+              noHorizontalOverflow: document.body.scrollWidth <= ${viewport.width},
+              disclosure: {
+                display: getComputedStyle(disclosure).display,
+                open: disclosure.open,
+                top: disclosureRect.top
+              },
+              desktopToc: {
+                display: getComputedStyle(desktopToc).display,
+                position: getComputedStyle(desktopToc).position,
+                left: desktopRect.left
+              },
+              article: {
+                top: articleRect.top,
+                left: articleRect.left
+              },
+              innerStars: {
+                backgroundImage: stars.backgroundImage,
+                animationName: stars.animationName
+              }
+            })
+          })
+        </script>
+      </body>
+    </html>`
+
+  fs.writeFileSync(fixturePath, fixture)
+  try {
+    return readProbeResult(dumpWithChrome(fixturePath, { viewport }))
+  } finally {
+    fs.rmSync(fixturePath, { force: true })
+  }
+}
+
 let cachedNormalProbe
 const normalChromeProbe = () => cachedNormalProbe || (cachedNormalProbe = runChromeProbe())
 
@@ -300,4 +379,26 @@ test('generated TOC anchors navigate to their unique heading in Chrome', () => {
   assert.equal(probe.targetCount, 1)
   assert.notEqual(probe.label, '')
   assert.notEqual(probe.label, '#')
+})
+
+test('article TOC is collapsed before the article at 320px and stays a visible sticky sidebar on desktop', () => {
+  // CSS-only reordering or a non-native toggle would fail either the DOM-sized mobile result or the desktop sidebar result.
+  const mobile = runArticleDisclosureProbe({ width: 320, height: 740 })
+  // Headless Chrome enforces a ~500 CSS-pixel minimum window even when --window-size requests 320;
+  // constrain the real layout containing block to 320px while requiring the narrow-screen media query.
+  assert.ok(mobile.viewportWidth <= 900, mobile.viewportWidth)
+  assert.equal(mobile.contentWidth, 320)
+  assert.equal(mobile.noHorizontalOverflow, true)
+  assert.notEqual(mobile.disclosure.display, 'none')
+  assert.equal(mobile.disclosure.open, false)
+  assert.ok(mobile.disclosure.top < mobile.article.top, `${mobile.disclosure.top} !< ${mobile.article.top}`)
+  assert.equal(mobile.desktopToc.display, 'none')
+
+  const desktop = runArticleDisclosureProbe({ width: 1200, height: 800 })
+  assert.equal(desktop.disclosure.display, 'none')
+  assert.notEqual(desktop.desktopToc.display, 'none')
+  assert.equal(desktop.desktopToc.position, 'sticky')
+  assert.ok(desktop.article.left < desktop.desktopToc.left, `${desktop.article.left} !< ${desktop.desktopToc.left}`)
+  assert.match(desktop.innerStars.backgroundImage, /radial-gradient/i)
+  assert.equal(desktop.innerStars.animationName, 'none')
 })

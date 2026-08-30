@@ -33,7 +33,7 @@ const homeDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN', ho
         <% }) %>
       </div>
     <% } else { %>
-      <p class="empty-state">档案中还没有记录</p>
+      <p class="empty-state">档案中还没有记录。<a href="<%= url_for('/') %>">返回首页</a></p>
     <% } %>
   </section>
 
