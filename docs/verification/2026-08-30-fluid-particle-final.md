@@ -1,14 +1,15 @@
 # Fluid-particle final verification — 2026-08-30
 
-This record captures the fresh, post-review verification of commit `096ec3fa6a8004ea2dd386cfd61d781c2f7bb7bb` before integration into `master`.
+This record captures the fresh, post-review verification of commit `3d6af44aecb6e786a5656a155af9cf370791c973` before integration into `master`.
 
 ## Build and behavior
 
 - `npm test` completed a clean Hexo build and then the full Node/Chrome suite.
 - Hexo generated 76 files.
-- Node/Chrome tests: 76 passed, 0 failed, 0 skipped.
+- Node/Chrome tests: 90 passed, 0 failed, 0 skipped.
 - `test/quark-blog-tools.test.ps1`: PASS under Windows PowerShell 5.1.
 - The five complete standalone applications (`snake`, `国际象棋`, `中国象棋`, `image_transformer`, and `COCKY ZHOU`) matched their generated HTML byte-for-byte with SHA-256.
+- All 16 current article images received their verified intrinsic width and height from the offline theme cache; no build-time network access is required.
 - The feature worktree remained clean after verification.
 - The main checkout status was identical before and after verification; its two user-owned untracked August source files were not staged, changed, moved, or deleted.
 
@@ -23,12 +24,14 @@ The visible in-app browser loaded the final local Hexo server. Each viewport had
 
 The client and scroll widths matched at every viewport, so no horizontal overflow was present. The 320px and 1920px renderings were also visually inspected after the final fixes.
 
+At 320px, the long tutorial's table of contents was closed by default, appeared before the article, and exposed 44px summary and link targets. All 15 images on that page had numeric intrinsic dimensions.
+
 ## Foreground particle performance
 
 The browser was made visible, reloaded at 1920×1080, and left in the foreground for 20.5 seconds. `window.__fluidParticleMetrics.snapshot()` reported:
 
-- FPS: 136.9
-- Average frame time: 7.31ms
+- FPS: 136.2
+- Average frame time: 7.34ms
 - Frames over 24ms: 0%
 - Particle count: 320
 - Layer counts: 269 dust / 42 glint / 9 streak
