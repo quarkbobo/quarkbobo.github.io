@@ -195,15 +195,27 @@
 
     const reducedMotion = typeof root.matchMedia === 'function' &&
       root.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const coarsePointer = typeof root.matchMedia === 'function' &&
-      root.matchMedia('(pointer: coarse)').matches
-    const isMobile = coarsePointer || (Number.isFinite(root.innerWidth) && root.innerWidth < 768)
-    const counts = isMobile ? MOBILE_COUNTS : DESKTOP_COUNTS
-    const qualityLayerCounts = counts.map(layerCountsFor)
-    const reducedCount = Math.min(isMobile ? 24 : 36, counts[2])
-    const reducedLayerCounts = layerCountsFor(reducedCount)
-    const allocationCheckpoints = [reducedCount, counts[0], counts[1], counts[2]]
-    const allocationQuotas = [reducedLayerCounts].concat(qualityLayerCounts)
+    function mobileViewport () {
+      const coarsePointer = typeof root.matchMedia === 'function' &&
+        root.matchMedia('(pointer: coarse)').matches
+      return coarsePointer || (Number.isFinite(root.innerWidth) && root.innerWidth < 768)
+    }
+
+    const desktopQualityLayerCounts = DESKTOP_COUNTS.map(layerCountsFor)
+    const mobileQualityLayerCounts = MOBILE_COUNTS.map(layerCountsFor)
+    const desktopReducedCount = 36
+    const mobileReducedCount = 24
+    const desktopReducedLayerCounts = layerCountsFor(desktopReducedCount)
+    const mobileReducedLayerCounts = layerCountsFor(mobileReducedCount)
+    const allocationCheckpoints = [mobileReducedCount, desktopReducedCount]
+      .concat(MOBILE_COUNTS, DESKTOP_COUNTS)
+      .sort(function (left, right) { return left - right })
+    const allocationQuotas = allocationCheckpoints.map(layerCountsFor)
+    let isMobile = mobileViewport()
+    let counts = isMobile ? MOBILE_COUNTS : DESKTOP_COUNTS
+    let qualityLayerCounts = isMobile ? mobileQualityLayerCounts : desktopQualityLayerCounts
+    let reducedCount = isMobile ? mobileReducedCount : desktopReducedCount
+    let reducedLayerCounts = isMobile ? mobileReducedLayerCounts : desktopReducedLayerCounts
     const buckets = [[], [], [], [], [], []]
     const pointer = { x: 0, y: 0 }
     const pointerTarget = { x: 0, y: 0 }
@@ -233,6 +245,7 @@
     let trailWindowStart = 0
     let trailWindowCount = 0
     let qualityState = { level: 2, frameTimes: [] }
+    let pointerListenerAttached = false
 
     function snapshot () {
       const averageFrameMs = metrics.frameCount ? metrics.frameSum / metrics.frameCount : 0
@@ -263,9 +276,37 @@
       metrics.frameCursor = (cursor + 1) % METRIC_WINDOW
     }
 
+    function syncPointerListener () {
+      const shouldListen = !isMobile
+      if (shouldListen === pointerListenerAttached) return
+      pointer.x = 0
+      pointer.y = 0
+      pointerTarget.x = 0
+      pointerTarget.y = 0
+      if (shouldListen) root.addEventListener('pointermove', onPointerMove, { passive: true })
+      else root.removeEventListener('pointermove', onPointerMove)
+      pointerListenerAttached = shouldListen
+    }
+
+    function syncViewportPolicy () {
+      const nextMobile = mobileViewport()
+      if (nextMobile === isMobile) return
+      isMobile = nextMobile
+      counts = isMobile ? MOBILE_COUNTS : DESKTOP_COUNTS
+      qualityLayerCounts = isMobile ? mobileQualityLayerCounts : desktopQualityLayerCounts
+      reducedCount = isMobile ? mobileReducedCount : desktopReducedCount
+      reducedLayerCounts = isMobile ? mobileReducedLayerCounts : desktopReducedLayerCounts
+      syncPointerListener()
+      if (initialized) {
+        metrics.particleCount = reducedMotion ? reducedCount : counts[metrics.qualityLevel]
+        metrics.layerCounts = reducedMotion ? reducedLayerCounts : qualityLayerCounts[metrics.qualityLevel]
+      }
+    }
+
     function resizeNow () {
       resizeFrameId = 0
       if (destroyed) return
+      syncViewportPolicy()
       const width = Math.max(1, canvas.clientWidth || 1)
       const height = Math.max(1, canvas.clientHeight || 1)
       const cap = isMobile || metrics.qualityLevel === 0 ? 1.25 : 1.5
@@ -468,14 +509,15 @@
       }
       idleId = 0
       root.removeEventListener('resize', queueResize)
-      if (!isMobile) root.removeEventListener('pointermove', onPointerMove)
+      if (pointerListenerAttached) root.removeEventListener('pointermove', onPointerMove)
+      pointerListenerAttached = false
       document.removeEventListener('visibilitychange', onVisibilityChange)
       metrics.particleCount = 0
       metrics.layerCounts = EMPTY_LAYER_COUNTS
     }
 
     root.addEventListener('resize', queueResize)
-    if (!isMobile) root.addEventListener('pointermove', onPointerMove, { passive: true })
+    syncPointerListener()
     document.addEventListener('visibilitychange', onVisibilityChange)
     scheduleIdle()
 

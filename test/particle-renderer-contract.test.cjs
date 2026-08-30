@@ -96,7 +96,7 @@ function createHarness (options = {}) {
 
   function makeContext () {
     const context = {
-      clearRect () { state.drawFrames.push({ trailSegments: 0 }) },
+      clearRect () { state.drawFrames.push({ trailSegments: 0, maxPointerMagnitude: 0 }) },
       setTransform () {},
       beginPath () {},
       moveTo () {},
@@ -131,7 +131,9 @@ function createHarness (options = {}) {
       style: {},
       parentElement: scene,
       classList: new FakeClassList(),
-      getBoundingClientRect: () => ({ left: 0, top: 0, width, height }),
+      getBoundingClientRect () {
+        return { left: 0, top: 0, width: this.clientWidth, height: this.clientHeight }
+      },
       getContext: () => canvasOptions.contextAvailable === false || options.contextAvailable === false ? null : context,
       _context: context,
       _scene: scene
@@ -202,6 +204,17 @@ function createHarness (options = {}) {
       nextQuality (qualityState, frameMs) {
         state.qualityFrameMs.push(frameMs)
         return realCore.nextQuality(qualityState, frameMs)
+      }
+    }
+  }
+  if (options.recordPointer) {
+    const realCore = window.FluidParticleCore
+    window.FluidParticleCore = {
+      ...realCore,
+      positionParticle (particle, phase, viewport, pointer) {
+        const frame = state.drawFrames[state.drawFrames.length - 1]
+        if (frame) frame.maxPointerMagnitude = Math.max(frame.maxPointerMagnitude, Math.hypot(pointer.x, pointer.y))
+        return realCore.positionParticle(particle, phase, viewport, pointer)
       }
     }
   }
@@ -390,6 +403,143 @@ test('DPR is capped, coarse pointers use the mobile cap, and resize work is coal
     desktopLifecycle.destroy()
     mobileLifecycle.destroy()
   })
+})
+
+test('desktop to mobile resize applies mobile rendering and zeroes pointer displacement', () => {
+  // Keeping the mount-time desktop policy would overdraw the narrow viewport and retain pointer bending.
+  const harness = createHarness({ dpr: 3, width: 1280, height: 720, recordPointer: true })
+  const canvas = harness.makeCanvas()
+  const lifecycle = harness.renderer.mount(canvas)
+  harness.flushIdle()
+
+  harness.window.dispatch('pointermove', { clientX: 1280, clientY: 720 })
+  harness.flushRaf(100)
+  harness.flushRaf(116)
+  assert.ok(harness.state.drawFrames.at(-1).maxPointerMagnitude > 0)
+
+  lifecycle.stop()
+  harness.window.innerWidth = 390
+  canvas.clientWidth = 390
+  canvas.clientHeight = 700
+  harness.window.dispatch('resize')
+  assert.equal(harness.pendingRafs(), 1)
+  harness.flushRaf(200)
+
+  const mobile = lifecycle.snapshot()
+  assert.equal(mobile.particleCount, 160)
+  assert.equal(mobile.layerCounts.dust, 134)
+  assert.equal(mobile.layerCounts.glint, 21)
+  assert.equal(mobile.layerCounts.streak, 5)
+  assert.equal(mobile.dpr, 1.25)
+  assert.equal(canvas.width, 488)
+  assert.equal(harness.window.listenerCount('pointermove'), 0)
+
+  const mobileFrameStart = harness.state.drawFrames.length
+  harness.window.dispatch('pointermove', { clientX: 390, clientY: 700 })
+  lifecycle.start()
+  harness.flushRaf(216)
+  harness.flushRaf(232)
+  const mobileFrames = harness.state.drawFrames.slice(mobileFrameStart)
+  assert.ok(mobileFrames.length >= 2)
+  assert.ok(mobileFrames.every(frame => frame.maxPointerMagnitude === 0))
+  lifecycle.destroy()
+})
+
+test('mobile to desktop resize restores desktop rendering and pointer displacement', () => {
+  // Keeping the mount-time mobile pool would leave a widened viewport sparse and permanently non-interactive.
+  const harness = createHarness({ dpr: 3, width: 390, height: 700, recordPointer: true })
+  const canvas = harness.makeCanvas()
+  const lifecycle = harness.renderer.mount(canvas)
+  harness.flushIdle()
+  lifecycle.stop()
+
+  harness.window.innerWidth = 1280
+  canvas.clientWidth = 1280
+  canvas.clientHeight = 720
+  harness.window.dispatch('resize')
+  assert.equal(harness.pendingRafs(), 1)
+  harness.flushRaf(100)
+
+  const desktop = lifecycle.snapshot()
+  assert.equal(desktop.particleCount, 320)
+  assert.equal(desktop.layerCounts.dust, 269)
+  assert.equal(desktop.layerCounts.glint, 42)
+  assert.equal(desktop.layerCounts.streak, 9)
+  assert.equal(desktop.dpr, 1.5)
+  assert.equal(canvas.width, 1920)
+  assert.equal(harness.window.listenerCount('pointermove'), 1)
+
+  harness.window.dispatch('pointermove', { clientX: 1280, clientY: 720 })
+  lifecycle.start()
+  harness.flushRaf(116)
+  harness.flushRaf(132)
+  assert.ok(harness.state.drawFrames.at(-1).maxPointerMagnitude > 0)
+  lifecycle.destroy()
+})
+
+test('repeated breakpoint crossings keep one pointer listener and destroy removes it', () => {
+  // Attaching on every desktop resize would accumulate handlers and make pointer displacement multiply over time.
+  const harness = createHarness({ dpr: 3, width: 1280, height: 720 })
+  const canvas = harness.makeCanvas()
+  const lifecycle = harness.renderer.mount(canvas)
+  harness.flushIdle()
+  lifecycle.stop()
+
+  let timestamp = 100
+  for (const width of [390, 1280, 390, 1280, 390, 1280]) {
+    harness.window.innerWidth = width
+    canvas.clientWidth = width
+    harness.window.dispatch('resize')
+    assert.equal(harness.pendingRafs(), 1)
+    harness.flushRaf(timestamp)
+    timestamp += 16
+    assert.equal(harness.window.listenerCount('pointermove'), width < 768 ? 0 : 1)
+  }
+
+  lifecycle.destroy()
+  assert.equal(harness.window.listenerCount('pointermove'), 0)
+  assert.equal(harness.pendingRafs(), 0)
+})
+
+test('breakpoint resize preserves the current quality level and switches its policy budget', () => {
+  // Hard-coding only the high-quality 160/320 budgets would break adaptive level 1 after a resize.
+  const harness = createHarness({ dpr: 3, width: 1280, height: 720 })
+  const canvas = harness.makeCanvas()
+  const lifecycle = harness.renderer.mount(canvas)
+  harness.flushIdle()
+
+  let timestamp = 100
+  harness.flushRaf(timestamp)
+  for (let frame = 0; frame < 120; frame++) {
+    timestamp += 20
+    harness.flushRaf(timestamp)
+  }
+  assert.equal(lifecycle.snapshot().qualityLevel, 1)
+  assert.equal(lifecycle.snapshot().particleCount, 210)
+  lifecycle.stop()
+
+  harness.window.innerWidth = 390
+  canvas.clientWidth = 390
+  harness.window.dispatch('resize')
+  harness.flushRaf(timestamp + 16)
+  const mobile = lifecycle.snapshot()
+  assert.equal(mobile.qualityLevel, 1)
+  assert.equal(mobile.particleCount, 110)
+  assert.equal(mobile.layerCounts.dust, 93)
+  assert.equal(mobile.layerCounts.glint, 14)
+  assert.equal(mobile.layerCounts.streak, 3)
+
+  harness.window.innerWidth = 1280
+  canvas.clientWidth = 1280
+  harness.window.dispatch('resize')
+  harness.flushRaf(timestamp + 32)
+  const desktop = lifecycle.snapshot()
+  assert.equal(desktop.qualityLevel, 1)
+  assert.equal(desktop.particleCount, 210)
+  assert.equal(desktop.layerCounts.dust, 177)
+  assert.equal(desktop.layerCounts.glint, 27)
+  assert.equal(desktop.layerCounts.streak, 6)
+  lifecycle.destroy()
 })
 
 test('raw RAF time drives metrics and quality while motion is clamped to 50ms', () => {
