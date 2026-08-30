@@ -4,6 +4,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 const ejs = require('ejs')
 const { DomUtils, parseDocument } = require('htmlparser2')
+const parse5 = require('parse5')
 
 const themeRoot = path.resolve(__dirname, '..', 'themes', 'fluid-particle')
 const hexoToc = require(path.resolve(__dirname, '..', 'node_modules', 'hexo', 'dist', 'plugins', 'helper', 'toc.js'))
@@ -35,6 +36,31 @@ const decodeHtmlAttribute = value => String(value)
   .replace(/&amp;/g, '&')
   .replace(/&lt;/g, '<')
   .replace(/&gt;/g, '>')
+
+const parsedElements = root => {
+  const elements = []
+  const visit = node => {
+    if (node.tagName) elements.push(node)
+    for (const child of node.childNodes || []) visit(child)
+  }
+  visit(root)
+  return elements
+}
+
+const parsedAttribute = (element, name) => element.attrs
+  ?.find(attribute => attribute.name === name)?.value
+const parsedHasClass = (element, className) => String(parsedAttribute(element, 'class') || '')
+  .split(/\s+/)
+  .includes(className)
+const parsedText = element => {
+  let value = ''
+  const visit = node => {
+    if (node.nodeName === '#text') value += node.value
+    for (const child of node.childNodes || []) visit(child)
+  }
+  visit(element)
+  return value
+}
 
 test('article heading and image normalization leaves raw-text containers byte-for-byte intact', () => {
   // Removing the raw-text boundary would rewrite HTML-looking strings in executable or preformatted content.
@@ -237,6 +263,105 @@ test('authored heading ids cannot inject attributes and still match every genera
     expectedIds
   )
   assert.deepEqual(eventAttributes, [])
+})
+
+test('quoted greater-than signs in headings and permalinks stay attribute data in a real HTML parser', () => {
+  // Stopping an opening tag at a quoted > promotes the rest of an id or href into live elements and event handlers.
+  const expectedIds = [
+    'safe><img src=x onerror=alert(1)>',
+    "double><svg onload=alert(2)> 'quoted'",
+    'article-section-3'
+  ]
+  const output = renderPostFull([
+    '<h2 id=\'safe><img src=x onerror=alert(1)>\' data-note="2 > 1" data-mixed=\'say "yes" > now\'>Single quoted body<a class="header-anchor" href="#old-single">#</a></h2>',
+    '<h3 id="double><svg onload=alert(2)> \'quoted\'" data-note=\'3 > 2 and "mixed"\'>Double quoted body<a class=\'header-anchor\' href="#old-double">#</a></h3>',
+    '<h3 data-note="still > data">Permalink body<a class="header-anchor" data-note=\'mixed "quote" > marker\' href=\'safe><img src=x onerror=alert(7)>\'>#</a></h3>'
+  ].join('\n'), hexoToc)
+  const document = parse5.parse(output)
+  const elements = parsedElements(document)
+  const articleBody = elements.find(element => element.tagName === 'div' && parsedHasClass(element, 'article-body'))
+  const bodyElements = parsedElements(articleBody).slice(1)
+  const headings = bodyElements.filter(element => /^h[1-6]$/.test(element.tagName))
+  const permalinks = bodyElements.filter(element => element.tagName === 'a' && parsedHasClass(element, 'header-anchor'))
+  const tocLinks = elements.filter(element => element.tagName === 'a' && parsedHasClass(element, 'toc-link'))
+  const eventAttributes = elements.flatMap(element => (element.attrs || [])
+    .map(attribute => attribute.name)
+    .filter(attribute => /^on/i.test(attribute)))
+
+  assert.deepEqual(bodyElements.map(element => element.tagName), ['h2', 'a', 'h3', 'a', 'h3', 'a'])
+  assert.equal(elements.some(element => element.tagName === 'img' || element.tagName === 'svg'), false)
+  assert.deepEqual(eventAttributes, [])
+  assert.deepEqual(headings.map(heading => parsedAttribute(heading, 'id')), expectedIds)
+  assert.deepEqual(headings.map(heading => parsedText(heading)), [
+    'Single quoted body#',
+    'Double quoted body#',
+    'Permalink body#'
+  ])
+  assert.deepEqual(headings.map(heading => parsedAttribute(heading, 'data-note')), [
+    '2 > 1',
+    '3 > 2 and "mixed"',
+    'still > data'
+  ])
+  assert.deepEqual(permalinks.map(link => parsedAttribute(link, 'href')), expectedIds.map(id => `#${id}`))
+  assert.deepEqual(permalinks.map(link => parsedAttribute(link, 'data-note')), [undefined, undefined, 'mixed "quote" > marker'])
+  assert.deepEqual(
+    [...new Set(tocLinks.map(link => decodeURIComponent(parsedAttribute(link, 'href').slice(1))))],
+    expectedIds
+  )
+})
+
+test('direct heading wrapper ids cross quoted data and malformed openings remain untouched', () => {
+  // Treating the first > as the wrapper boundary loses legal attributes or steals an id from malformed markup.
+  const malformedHeading = '<h2 id=\'unterminated>Unclosed heading</h2>'
+  const malformedWrapper = '<span id=\'unterminated title="a>b">Unclosed wrapper</span>'
+  const output = renderPostFull([
+    '<h2 data-case="valid"><span title="a>b" data-note=\'say "yes" > now\' id="wrapper>target">Wrapped body</span><a class="header-anchor" href="#old">#</a></h2>',
+    `<h2 data-case="malformed">${malformedWrapper}</h2>`
+  ].join('\n'))
+  const malformedHeadingOutput = renderPostFull(malformedHeading)
+  const document = parse5.parse(output)
+  const elements = parsedElements(document)
+  const validHeading = elements.find(element => element.tagName === 'h2' && parsedAttribute(element, 'data-case') === 'valid')
+  const validWrapper = parsedElements(validHeading).find(element => element.tagName === 'span')
+  const validPermalink = parsedElements(validHeading)
+    .find(element => element.tagName === 'a' && parsedHasClass(element, 'header-anchor'))
+
+  assert.equal(parsedAttribute(validHeading, 'id'), 'wrapper>target')
+  assert.equal(parsedAttribute(validWrapper, 'id'), undefined)
+  assert.equal(parsedAttribute(validWrapper, 'title'), 'a>b')
+  assert.equal(parsedAttribute(validWrapper, 'data-note'), 'say "yes" > now')
+  assert.equal(parsedAttribute(validPermalink, 'href'), '#wrapper>target')
+  assert.equal(output.includes(malformedWrapper), true)
+  assert.equal(malformedHeadingOutput.includes(malformedHeading), true)
+})
+
+test('normalizers ignore heading and image strings inside outer quoted attributes', () => {
+  // Searching for target substrings without global tag context promotes inert title text into live attack elements.
+  const inertValues = [
+    "<h2 id='safe'>Heading</h2><img src=x onerror=alert(8)>",
+    '<img src=x><img src=y onerror=alert(9)>'
+  ]
+  const inertComment = '<!-- <h2 id="comment-heading">Comment heading</h2><img src=z onerror=alert(10)> -->'
+  const output = renderPostFull([
+    ...inertValues.map((value, index) => (
+      `<div data-case="outer-${index + 1}" title="${value}">Outer ${index + 1}</div>`
+    )),
+    inertComment
+  ].join('\n'))
+  const document = parse5.parse(output)
+  const elements = parsedElements(document)
+  const articleBody = elements.find(element => element.tagName === 'div' && parsedHasClass(element, 'article-body'))
+  const bodyElements = parsedElements(articleBody).slice(1)
+  const outerElements = bodyElements.filter(element => /^outer-/.test(parsedAttribute(element, 'data-case') || ''))
+  const eventAttributes = bodyElements.flatMap(element => (element.attrs || [])
+    .map(attribute => attribute.name)
+    .filter(attribute => /^on/i.test(attribute)))
+
+  assert.deepEqual(bodyElements.map(element => element.tagName), ['div', 'div'])
+  assert.deepEqual(outerElements.map(element => parsedAttribute(element, 'title')), inertValues)
+  assert.deepEqual(outerElements.map(element => parsedText(element)), ['Outer 1', 'Outer 2'])
+  assert.deepEqual(eventAttributes, [])
+  assert.equal(output.includes(inertComment), true)
 })
 
 test('post cards render real category links when the post has categories', () => {

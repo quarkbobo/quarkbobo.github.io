@@ -7,8 +7,6 @@ const articleTitle = String(post.title || '').trim() || routeTitle.replace(/[-_]
 let previousHeadingLevel = 1
 let headingIndex = 0
 const articleHeadingIds = new Set()
-const idAttributePattern = /\s+id(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/i
-const directWrapperIdPattern = /^(\s*<(?:span|a)\b[^>]*?)\s+id(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?([^>]*>)/i
 const uniqueHeadingId = preferredId => {
   const base = String(preferredId || '').trim() || `article-section-${headingIndex}`
   let candidate = base
@@ -28,44 +26,225 @@ const decodeHtmlEntities = value => String(value).replace(
     return String.fromCodePoint(codePoint)
   }
 )
+const readOpeningTag = (source, start) => {
+  if (source[start] !== '<' || source[start + 1] === '/') return null
+  let cursor = start + 1
+  const nameStart = cursor
+  while (cursor < source.length && /[a-z0-9:-]/i.test(source[cursor])) cursor++
+  if (cursor === nameStart || (cursor < source.length && !/[\s/>]/.test(source[cursor]))) return null
+
+  const name = source.slice(nameStart, cursor)
+  const attributesStart = cursor
+  let quote = ''
+  while (cursor < source.length) {
+    const character = source[cursor]
+    if (quote) {
+      if (character === quote) quote = ''
+    } else if (character === '"' || character === "'") {
+      quote = character
+    } else if (character === '>') {
+      return {
+        start,
+        end: cursor + 1,
+        name,
+        tagName: name.toLowerCase(),
+        attributes: source.slice(attributesStart, cursor)
+      }
+    }
+    cursor++
+  }
+  return {
+    start,
+    end: source.length,
+    name,
+    tagName: name.toLowerCase(),
+    attributes: source.slice(attributesStart),
+    malformed: true
+  }
+}
+const readTagAttributes = source => {
+  const attributes = []
+  let cursor = 0
+  while (cursor < source.length) {
+    while (cursor < source.length && /\s/.test(source[cursor])) cursor++
+    if (cursor >= source.length) break
+    if (source[cursor] === '/' && source.slice(cursor + 1).trim() === '') break
+
+    const start = cursor
+    while (cursor < source.length && !/[\s=/>]/.test(source[cursor])) cursor++
+    if (cursor === start) {
+      cursor++
+      continue
+    }
+    const name = source.slice(start, cursor)
+    while (cursor < source.length && /\s/.test(source[cursor])) cursor++
+
+    let value = null
+    if (source[cursor] === '=') {
+      cursor++
+      while (cursor < source.length && /\s/.test(source[cursor])) cursor++
+      const quote = source[cursor] === '"' || source[cursor] === "'" ? source[cursor++] : ''
+      const valueStart = cursor
+      if (quote) {
+        while (cursor < source.length && source[cursor] !== quote) cursor++
+        if (source[cursor] !== quote) return null
+        value = source.slice(valueStart, cursor)
+        cursor++
+      } else {
+        while (cursor < source.length && !/\s/.test(source[cursor])) cursor++
+        value = source.slice(valueStart, cursor)
+      }
+    }
+    attributes.push({ start, end: cursor, name: name.toLowerCase(), value })
+  }
+  return attributes
+}
+const findAttribute = (attributes, name) => attributes.find(attribute => attribute.name === name)
+const removeAttributes = (source, attributes, name) => attributes
+  .filter(attribute => attribute.name === name)
+  .sort((left, right) => right.start - left.start)
+  .reduce((value, attribute) => value.slice(0, attribute.start) + value.slice(attribute.end), source)
+const appendAttribute = (source, name, value) => {
+  let insertion = source.length
+  while (insertion > 0 && /\s/.test(source[insertion - 1])) insertion--
+  if (source[insertion - 1] === '/') insertion--
+  const serialized = ` ${name}="${escapeAttribute(value)}"`
+  return source.slice(0, insertion) + serialized + source.slice(insertion)
+}
+const setAttribute = (source, attributes, name, value) => appendAttribute(
+  removeAttributes(source, attributes, name),
+  name,
+  value
+)
+const readClosingTag = (source, start) => {
+  if (source[start] !== '<' || source[start + 1] !== '/') return null
+  let cursor = start + 2
+  const nameStart = cursor
+  while (cursor < source.length && /[a-z0-9:-]/i.test(source[cursor])) cursor++
+  if (cursor === nameStart || (cursor < source.length && !/[\s>]/.test(source[cursor]))) return null
+  const name = source.slice(nameStart, cursor)
+  while (cursor < source.length && /\s/.test(source[cursor])) cursor++
+  if (source[cursor] !== '>') return null
+  return { type: 'closing', start, end: cursor + 1, name, tagName: name.toLowerCase() }
+}
+const readDelimitedMarkup = (source, start, prefix, suffix, type) => {
+  if (!source.startsWith(prefix, start)) return null
+  const closing = source.indexOf(suffix, start + prefix.length)
+  return {
+    type,
+    start,
+    end: closing === -1 ? source.length : closing + suffix.length,
+    malformed: closing === -1
+  }
+}
+const readDeclaration = (source, start) => {
+  if (source[start] !== '<' || (source[start + 1] !== '!' && source[start + 1] !== '?')) return null
+  let cursor = start + 2
+  let quote = ''
+  while (cursor < source.length) {
+    const character = source[cursor]
+    if (quote) {
+      if (character === quote) quote = ''
+    } else if (character === '"' || character === "'") {
+      quote = character
+    } else if (character === '>') {
+      return { type: 'declaration', start, end: cursor + 1 }
+    }
+    cursor++
+  }
+  return { type: 'declaration', start, end: source.length, malformed: true }
+}
+const readMarkupToken = (source, start) => {
+  const comment = readDelimitedMarkup(source, start, '<!--', '-->', 'comment')
+  if (comment) return comment
+  const cdata = readDelimitedMarkup(source, start, '<![CDATA[', ']]>', 'declaration')
+  if (cdata) return cdata
+  const closing = readClosingTag(source, start)
+  if (closing) return closing
+  const opening = readOpeningTag(source, start)
+  if (opening) return { type: 'opening', ...opening }
+  return readDeclaration(source, start)
+}
+const nextMarkupToken = (source, start) => {
+  let cursor = source.indexOf('<', start)
+  while (cursor !== -1) {
+    const token = readMarkupToken(source, cursor)
+    if (token) return token
+    cursor = source.indexOf('<', cursor + 1)
+  }
+  return null
+}
+const findClosingTag = (source, start, tagName) => {
+  let token = nextMarkupToken(source, start)
+  while (token) {
+    if (token.type === 'closing' && token.tagName === tagName) return token
+    if (token.malformed) return null
+    token = nextMarkupToken(source, token.end)
+  }
+  return null
+}
+const transformElements = (value, acceptedNames, transform) => {
+  const source = String(value || '')
+  const names = new Set(acceptedNames)
+  let output = ''
+  let copiedThrough = 0
+  let scanFrom = 0
+  while (scanFrom < source.length) {
+    const opening = nextMarkupToken(source, scanFrom)
+    if (!opening) break
+    if (opening.type !== 'opening' || !names.has(opening.tagName) || opening.malformed) {
+      scanFrom = opening.end
+      continue
+    }
+    const closing = findClosingTag(source, opening.end, opening.tagName)
+    if (!closing) {
+      scanFrom = opening.end
+      continue
+    }
+    const element = source.slice(opening.start, closing.end)
+    const transformed = transform({
+      opening,
+      closing,
+      attributes: readTagAttributes(opening.attributes),
+      contents: source.slice(opening.end, closing.start),
+      element
+    })
+    output += source.slice(copiedThrough, opening.start) + (transformed === null ? element : transformed)
+    copiedThrough = closing.end
+    scanFrom = closing.end
+  }
+  return output + source.slice(copiedThrough)
+}
+const transformOpeningTags = (value, acceptedNames, transform) => {
+  const source = String(value || '')
+  const names = new Set(acceptedNames)
+  let output = ''
+  let copiedThrough = 0
+  let scanFrom = 0
+  while (scanFrom < source.length) {
+    const opening = nextMarkupToken(source, scanFrom)
+    if (!opening) break
+    if (opening.type !== 'opening' || !names.has(opening.tagName) || opening.malformed) {
+      scanFrom = opening.end
+      continue
+    }
+    const transformed = transform({
+      opening,
+      attributes: readTagAttributes(opening.attributes),
+      element: source.slice(opening.start, opening.end)
+    })
+    output += source.slice(copiedThrough, opening.start) + (transformed === null
+      ? source.slice(opening.start, opening.end)
+      : transformed)
+    copiedThrough = opening.end
+    scanFrom = opening.end
+  }
+  return output + source.slice(copiedThrough)
+}
 const configuredImageDimensions = typeof theme !== 'undefined' && theme &&
   theme.image_dimensions && typeof theme.image_dimensions === 'object'
   ? theme.image_dimensions
   : {}
-const readImageAttributes = image => {
-  const attributes = new Map()
-  let cursor = image.match(/^<img\b/i)?.[0].length || 0
-  while (cursor < image.length) {
-    while (/\s/.test(image[cursor])) cursor++
-    if (image[cursor] === '>' || (image[cursor] === '/' && image[cursor + 1] === '>')) break
-
-    const nameStart = cursor
-    while (cursor < image.length && !/[\s=/>]/.test(image[cursor])) cursor++
-    const name = image.slice(nameStart, cursor).toLowerCase()
-    if (!name) {
-      cursor++
-      continue
-    }
-
-    while (/\s/.test(image[cursor])) cursor++
-    let value = null
-    if (image[cursor] === '=') {
-      cursor++
-      while (/\s/.test(image[cursor])) cursor++
-      const quote = image[cursor] === '"' || image[cursor] === "'" ? image[cursor++] : ''
-      const valueStart = cursor
-      if (quote) {
-        while (cursor < image.length && image[cursor] !== quote) cursor++
-      } else {
-        while (cursor < image.length && !/[\s>]/.test(image[cursor])) cursor++
-      }
-      value = image.slice(valueStart, cursor)
-      if (quote && image[cursor] === quote) cursor++
-    }
-    if (!attributes.has(name)) attributes.set(name, value)
-  }
-  return attributes
-}
 const dimensionsForImage = attributes => {
   if (!attributes.has('src') || attributes.get('src') === null) return null
   const source = decodeHtmlEntities(attributes.get('src'))
@@ -75,20 +254,22 @@ const dimensionsForImage = attributes => {
     !Number.isInteger(dimensions.height) || dimensions.height <= 0) return null
   return dimensions
 }
-const imageElementPattern = /<img\b(?:[^>"']|"[^"]*"|'[^']*')*>/gi
 const escapeAttribute = value => String(value)
   .replace(/&/g, '&amp;')
   .replace(/"/g, '&quot;')
   .replace(/'/g, '&#39;')
   .replace(/</g, '&lt;')
   .replace(/>/g, '&gt;')
-const rawTextElementPattern = /<(script|style|textarea|pre|code)\b[^>]*>[\s\S]*?<\/\1\s*>/gi
 const shieldRawTextElements = value => {
   const source = String(value || '')
   const protectedElements = []
   let marker = 'FLUIDRAWTEXTTOKEN'
   while (source.includes(marker)) marker += 'X'
-  const html = source.replace(rawTextElementPattern, element => `${marker}${protectedElements.push(element) - 1}END`)
+  const html = transformElements(
+    source,
+    ['script', 'style', 'textarea', 'pre', 'code'],
+    ({ element }) => `${marker}${protectedElements.push(element) - 1}END`
+  )
   const tokenPattern = new RegExp(`${marker}(\\d+)END`, 'g')
   return {
     html,
@@ -100,24 +281,67 @@ const shieldRawTextElements = value => {
   }
 }
 const shieldedArticle = shieldRawTextElements(post.content)
-const meaningfulHeadingText = contents => strip_html(shieldedArticle.restore(String(contents))
-  .replace(/<a\b[^>]*class=(?:"[^"]*\bheader-anchor\b[^"]*"|'[^']*\bheader-anchor\b[^']*')[^>]*>[\s\S]*?<\/a>/gi, ''))
+const isHeaderAnchor = attributes => {
+  if (!attributes) return false
+  const classAttribute = findAttribute(attributes, 'class')
+  return String(classAttribute?.value || '').split(/\s+/).includes('header-anchor')
+}
+const withoutHeaderAnchors = contents => transformElements(contents, ['a'], ({ attributes, element }) => (
+  isHeaderAnchor(attributes) ? '' : element
+))
+const meaningfulHeadingText = contents => strip_html(shieldedArticle.restore(withoutHeaderAnchors(contents)))
   .replace(/\s+/g, ' ')
   .trim()
-let articleContent = shieldedArticle.html.replace(/<h([1-6])(\b[^>]*)>([\s\S]*?)<\/h\1>/gi, (heading, authoredLevel, attributes, contents) => {
+const normalizeHeaderAnchors = (contents, headingId, headingLabel) => transformElements(
+  contents,
+  ['a'],
+  ({ opening, attributes, contents: anchorContents, element }) => {
+    if (!isHeaderAnchor(attributes)) return element
+    let linkedAttributes = setAttribute(opening.attributes, attributes, 'href', `#${headingId}`)
+    const anchorText = strip_html(shieldedArticle.restore(anchorContents)).replace(/\s+/g, ' ').trim()
+    if (anchorText === '#' && !findAttribute(attributes, 'aria-label')) {
+      linkedAttributes = appendAttribute(
+        linkedAttributes,
+        'aria-label',
+        `章节链接：${decodeHtmlEntities(headingLabel)}`
+      )
+    }
+    return `<${opening.name}${linkedAttributes}>${anchorContents}</${opening.name}>`
+  }
+)
+let articleContent = transformElements(shieldedArticle.html, ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], ({
+  opening,
+  attributes,
+  contents,
+  element
+}) => {
+  if (!attributes) return element
   headingIndex++
-  const normalizedLevel = Math.min(Math.max(2, Number(authoredLevel)), previousHeadingLevel + 1)
+  const authoredLevel = Number(opening.tagName.slice(1))
+  const normalizedLevel = Math.min(Math.max(2, authoredLevel), previousHeadingLevel + 1)
   previousHeadingLevel = normalizedLevel
-  const authoredHeadingId = attributes.match(idAttributePattern)
-  let normalizedAttributes = attributes.replace(idAttributePattern, '')
+  const authoredHeadingId = findAttribute(attributes, 'id')
+  let normalizedAttributes = removeAttributes(opening.attributes, attributes, 'id')
   let normalizedContents = contents
-  let preferredId = authoredHeadingId && (authoredHeadingId[1] || authoredHeadingId[2] || authoredHeadingId[3])
+  let preferredId = authoredHeadingId?.value
 
   if (!preferredId) {
-    const directWrapperId = normalizedContents.match(directWrapperIdPattern)
-    if (directWrapperId) {
-      preferredId = directWrapperId[2] || directWrapperId[3] || directWrapperId[4]
-      normalizedContents = normalizedContents.replace(directWrapperIdPattern, '$1$5')
+    let wrapperStart = 0
+    while (wrapperStart < normalizedContents.length && /\s/.test(normalizedContents[wrapperStart])) wrapperStart++
+    const directWrapper = readOpeningTag(normalizedContents, wrapperStart)
+    if (directWrapper && (directWrapper.tagName === 'span' || directWrapper.tagName === 'a')) {
+      const wrapperAttributes = readTagAttributes(directWrapper.attributes)
+      const wrapperId = wrapperAttributes && findAttribute(wrapperAttributes, 'id')
+      if (wrapperId?.value) {
+        preferredId = wrapperId.value
+        const wrapperOpening = `<${directWrapper.name}${removeAttributes(
+          directWrapper.attributes,
+          wrapperAttributes,
+          'id'
+        )}>`
+        normalizedContents = normalizedContents.slice(0, wrapperStart) + wrapperOpening +
+          normalizedContents.slice(directWrapper.end)
+      }
     }
   }
 
@@ -127,37 +351,31 @@ let articleContent = shieldedArticle.html.replace(/<h([1-6])(\b[^>]*)>([\s\S]*?)
     headingLabel = `图示 ${headingIndex}`
     normalizedContents = `<span class="heading-fallback">${headingLabel}</span>${normalizedContents}`
   }
-  normalizedContents = normalizedContents.replace(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi, (anchor, anchorAttributes, anchorContents) => {
-    if (!/\bclass=(?:"[^"]*\bheader-anchor\b[^"]*"|'[^']*\bheader-anchor\b[^']*')/i.test(anchorAttributes)) return anchor
-    const hrefPattern = /\s+href=(?:"[^"]*"|'[^']*'|[^\s>]+)/i
-    let linkedAttributes = hrefPattern.test(anchorAttributes)
-      ? anchorAttributes.replace(hrefPattern, ` href="${escapeAttribute(`#${headingId}`)}"`)
-      : `${anchorAttributes} href="${escapeAttribute(`#${headingId}`)}"`
-    const anchorText = strip_html(shieldedArticle.restore(anchorContents)).replace(/\s+/g, ' ').trim()
-    if (anchorText === '#' && !/\s+aria-label(?:\s*=|\s|$)/i.test(linkedAttributes)) {
-      linkedAttributes += ` aria-label="${escapeAttribute(`章节链接：${decodeHtmlEntities(headingLabel)}`)}"`
-    }
-    return `<a${linkedAttributes}>${anchorContents}</a>`
-  })
-  normalizedAttributes += ` id="${escapeAttribute(headingId)}"`
+  normalizedContents = normalizeHeaderAnchors(normalizedContents, headingId, headingLabel)
+  normalizedAttributes = appendAttribute(normalizedAttributes, 'id', headingId)
   return `<h${normalizedLevel}${normalizedAttributes}>${normalizedContents}</h${normalizedLevel}>`
 })
-articleContent = articleContent.replace(imageElementPattern, image => {
-  const additions = []
-  const attributes = readImageAttributes(image)
-  const dimensions = dimensionsForImage(attributes)
-  if (dimensions && !attributes.has('width') && !attributes.has('height')) {
-    additions.push(`width="${dimensions.width}"`, `height="${dimensions.height}"`)
+articleContent = transformOpeningTags(articleContent, ['img'], ({ opening, attributes, element }) => {
+  if (!attributes) return element
+  const indexedAttributes = new Map()
+  for (const attribute of attributes) {
+    if (!indexedAttributes.has(attribute.name)) indexedAttributes.set(attribute.name, attribute.value)
   }
-  if (!attributes.has('loading')) additions.push('loading="lazy"')
-  if (!attributes.has('decoding')) additions.push('decoding="async"')
-  if (!additions.length) return image
-  const closing = image.endsWith('/>') ? '/>' : '>'
-  return `${image.slice(0, -closing.length).trimEnd()} ${additions.join(' ')}${closing}`
+  const dimensions = dimensionsForImage(indexedAttributes)
+  let normalizedAttributes = opening.attributes
+  if (dimensions && !indexedAttributes.has('width') && !indexedAttributes.has('height')) {
+    normalizedAttributes = appendAttribute(normalizedAttributes, 'width', dimensions.width)
+    normalizedAttributes = appendAttribute(normalizedAttributes, 'height', dimensions.height)
+  }
+  if (!indexedAttributes.has('loading')) normalizedAttributes = appendAttribute(normalizedAttributes, 'loading', 'lazy')
+  if (!indexedAttributes.has('decoding')) normalizedAttributes = appendAttribute(normalizedAttributes, 'decoding', 'async')
+  if (normalizedAttributes === opening.attributes) return element
+  return `<${opening.name}${normalizedAttributes}>`
 })
-const articleOutlineContent = articleContent.replace(
-  /<h([1-6])\b[^>]*>[\s\S]*?<\/h\1>/gi,
-  heading => shieldedArticle.restoreInlineCodeText(heading)
+const articleOutlineContent = transformElements(
+  articleContent,
+  ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+  ({ element }) => shieldedArticle.restoreInlineCodeText(element)
 )
 const outline = toc(articleOutlineContent, { min_depth: 2, max_depth: 3, list_number: false })
 articleContent = shieldedArticle.restore(articleContent)
