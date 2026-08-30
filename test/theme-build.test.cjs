@@ -32,6 +32,28 @@ test('archive and taxonomy routes render their semantic collection surfaces', ()
   assert.match(html('index.html'), /<nav[^>]*aria-label="主要导航"/)
 })
 
+test('every internal primary navigation link resolves to generated output', () => {
+  const output = html('index.html')
+  const navigation = output.match(/<nav\b[^>]*aria-label="主要导航"[^>]*>([\s\S]*?)<\/nav>/)
+  assert.ok(navigation, 'primary navigation is present')
+
+  const hrefs = [...navigation[1].matchAll(/<a\b[^>]*href="([^"]+)"/g)]
+    .map(match => match[1])
+    .filter(href => href.startsWith('/'))
+
+  assert.ok(hrefs.length, 'primary navigation has internal links')
+
+  for (const href of hrefs) {
+    const pathname = decodeURIComponent(new URL(href, 'https://example.test').pathname)
+    const relative = pathname.replace(/^\/+/, '')
+    const target = pathname.endsWith('/')
+      ? path.join(root, relative, 'index.html')
+      : path.join(root, relative)
+
+    assert.ok(fs.existsSync(target), `${href} -> ${path.relative(root, target)}`)
+  }
+})
+
 test('existing games, tools, and downloads keep their generated routes', () => {
   for (const route of [
     '2048/index.html',

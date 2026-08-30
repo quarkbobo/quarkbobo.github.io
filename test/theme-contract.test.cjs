@@ -29,7 +29,7 @@ test('fluid-particle is selected and declares its home-menu contract', () => {
       归档: '/archives/',
       分类: '/categories/',
       标签: '/tags/',
-      关于: '/About-me/'
+      关于: '/关于我/About-me/'
     }
   })
 })
