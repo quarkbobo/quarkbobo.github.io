@@ -57,7 +57,50 @@
   right: clamp(-3rem, -1vw, 0rem);
   width: clamp(21rem, 40vw, 35rem);
   aspect-ratio: 1;
+  --saturn-equator-angle: -10deg;
   transform: translateY(-50%) rotate(-2deg);
+}
+
+.saturn-prominences {
+  position: absolute;
+  z-index: 1;
+  top: 4%;
+  left: 8%;
+  width: 84%;
+  height: 80%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.saturn-prominence {
+  --prominence-origin: 0% 50%;
+  transform-box: fill-box;
+  transform-origin: var(--prominence-origin);
+}
+
+.saturn-prominence--crown { --prominence-origin: 50% 100%; }
+.saturn-prominence--upper-east { --prominence-origin: 0% 80%; }
+.saturn-prominence--east { --prominence-origin: 0% 50%; }
+.saturn-prominence--lower-east { --prominence-origin: 0% 0%; }
+.saturn-prominence--lower { --prominence-origin: 100% 0%; }
+
+.prominence-glow,
+.prominence-core {
+  fill: none;
+  stroke: url(#prominence-energy);
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.prominence-glow {
+  stroke-width: 4.8;
+  opacity: 0.2;
+  filter: drop-shadow(0 0 0.55rem rgba(103, 234, 255, 0.5));
+}
+
+.prominence-core {
+  stroke-width: 1.15;
+  opacity: 0.82;
 }
 
 .saturn-halo {
@@ -113,11 +156,10 @@
     rgba(7, 16, 30, 0.44) 88% 100%
   );
   filter: blur(0.35px);
-  transform: rotate(-1.5deg);
+  transform: rotate(var(--saturn-equator-angle));
 }
 
-.saturn-bands::before,
-.saturn-bands::after {
+.saturn-bands::before {
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -136,8 +178,17 @@
   animation-play-state: paused;
 }
 
-.saturn-bands::after {
-  background: linear-gradient(90deg, rgba(1, 2, 8, 0.46), transparent 24% 70%, rgba(1, 2, 8, 0.54));
+.saturn-flares {
+  position: absolute;
+  z-index: 2;
+  inset: -10%;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse 18% 5% at 70% 25%, rgba(234, 251, 255, 0.9), rgba(103, 234, 255, 0.34) 35%, transparent 72%),
+    radial-gradient(ellipse 15% 4% at 48% 58%, rgba(234, 251, 255, 0.72), rgba(149, 104, 255, 0.28) 42%, transparent 74%),
+    radial-gradient(ellipse 22% 5% at 82% 74%, rgba(103, 234, 255, 0.58), transparent 72%);
+  mix-blend-mode: screen;
+  transform: rotate(var(--saturn-equator-angle));
 }
 
 .saturn-light {
@@ -147,7 +198,8 @@
   border-radius: inherit;
   background:
     radial-gradient(ellipse at 26% 34%, rgba(234, 251, 255, 0.12), transparent 34%),
-    radial-gradient(ellipse at 24% 42%, transparent 0 27%, rgba(1, 2, 8, 0.18) 56%, rgba(1, 2, 8, 0.92) 100%);
+    radial-gradient(ellipse at 24% 42%, transparent 0 27%, rgba(1, 2, 8, 0.18) 56%, rgba(1, 2, 8, 0.92) 100%),
+    linear-gradient(90deg, rgba(1, 2, 8, 0.46), transparent 24% 70%, rgba(1, 2, 8, 0.54));
 }
 
 .saturn-ring {
@@ -159,7 +211,7 @@
   border-right-color: rgba(149, 104, 255, 0.64);
   border-left-color: rgba(234, 251, 255, 0.34);
   border-radius: 50%;
-  transform: rotate(-10deg);
+  transform: rotate(var(--saturn-equator-angle));
   filter: drop-shadow(0 0 0.72rem rgba(103, 234, 255, 0.24));
 }
 
