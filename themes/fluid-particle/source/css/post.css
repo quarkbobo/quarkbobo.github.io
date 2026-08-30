@@ -246,4 +246,10 @@
   .article-toc-disclosure > .toc {
     padding-block: 1rem;
   }
+
+  .article-toc-disclosure .toc-link {
+    display: flex;
+    min-block-size: 44px;
+    align-items: center;
+  }
 }

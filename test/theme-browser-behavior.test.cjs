@@ -268,14 +268,24 @@ function runArticleDisclosureProbe (viewport) {
             const desktopRect = desktopToc.getBoundingClientRect()
             const articleRect = article.getBoundingClientRect()
             const stars = getComputedStyle(document.body, '::before')
+            const initiallyOpen = disclosure.open
+            disclosure.open = true
+            const disclosureLink = disclosure.querySelector('.toc-link')
+            const disclosureLinkStyle = getComputedStyle(disclosureLink)
+            const disclosureLinkTarget = {
+              minBlockSize: disclosureLinkStyle.minBlockSize,
+              height: disclosureLink.getBoundingClientRect().height
+            }
+            disclosure.open = initiallyOpen
             document.getElementById('probe-result').textContent = JSON.stringify({
               viewportWidth: document.documentElement.clientWidth,
               contentWidth: document.body.getBoundingClientRect().width,
               noHorizontalOverflow: document.body.scrollWidth <= ${viewport.width},
               disclosure: {
                 display: getComputedStyle(disclosure).display,
-                open: disclosure.open,
-                top: disclosureRect.top
+                open: initiallyOpen,
+                top: disclosureRect.top,
+                linkTarget: disclosureLinkTarget
               },
               desktopToc: {
                 display: getComputedStyle(desktopToc).display,
@@ -392,6 +402,8 @@ test('article TOC is collapsed before the article at 320px and stays a visible s
   assert.notEqual(mobile.disclosure.display, 'none')
   assert.equal(mobile.disclosure.open, false)
   assert.ok(mobile.disclosure.top < mobile.article.top, `${mobile.disclosure.top} !< ${mobile.article.top}`)
+  assert.equal(mobile.disclosure.linkTarget.minBlockSize, '44px')
+  assert.ok(mobile.disclosure.linkTarget.height >= 44, mobile.disclosure.linkTarget.height)
   assert.equal(mobile.desktopToc.display, 'none')
 
   const desktop = runArticleDisclosureProbe({ width: 1200, height: 800 })

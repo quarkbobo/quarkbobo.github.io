@@ -31,6 +31,7 @@ const decodeHtmlEntities = value => String(value).replace(
 const escapeAttribute = value => String(value)
   .replace(/&/g, '&amp;')
   .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;')
   .replace(/</g, '&lt;')
   .replace(/>/g, '&gt;')
 const rawTextElementPattern = /<(script|style|textarea|pre|code)\b[^>]*>[\s\S]*?<\/\1\s*>/gi
@@ -43,7 +44,11 @@ const shieldRawTextElements = value => {
   const tokenPattern = new RegExp(`${marker}(\\d+)END`, 'g')
   return {
     html,
-    restore: candidate => String(candidate).replace(tokenPattern, (token, index) => protectedElements[Number(index)] ?? token)
+    restore: candidate => String(candidate).replace(tokenPattern, (token, index) => protectedElements[Number(index)] ?? token),
+    restoreInlineCodeText: candidate => String(candidate).replace(tokenPattern, (token, index) => {
+      const element = protectedElements[Number(index)]
+      return /^<code\b/i.test(element || '') ? strip_html(element) : token
+    })
   }
 }
 const shieldedArticle = shieldRawTextElements(post.content)
@@ -68,7 +73,7 @@ let articleContent = shieldedArticle.html.replace(/<h([1-6])(\b[^>]*)>([\s\S]*?)
     }
   }
 
-  const headingId = uniqueHeadingId(preferredId)
+  const headingId = uniqueHeadingId(decodeHtmlEntities(preferredId || ''))
   let headingLabel = meaningfulHeadingText(normalizedContents)
   if (!headingLabel) {
     headingLabel = `图示 ${headingIndex}`
@@ -78,15 +83,15 @@ let articleContent = shieldedArticle.html.replace(/<h([1-6])(\b[^>]*)>([\s\S]*?)
     if (!/\bclass=(?:"[^"]*\bheader-anchor\b[^"]*"|'[^']*\bheader-anchor\b[^']*')/i.test(anchorAttributes)) return anchor
     const hrefPattern = /\s+href=(?:"[^"]*"|'[^']*'|[^\s>]+)/i
     let linkedAttributes = hrefPattern.test(anchorAttributes)
-      ? anchorAttributes.replace(hrefPattern, ` href="#${headingId}"`)
-      : `${anchorAttributes} href="#${headingId}"`
+      ? anchorAttributes.replace(hrefPattern, ` href="${escapeAttribute(`#${headingId}`)}"`)
+      : `${anchorAttributes} href="${escapeAttribute(`#${headingId}`)}"`
     const anchorText = strip_html(shieldedArticle.restore(anchorContents)).replace(/\s+/g, ' ').trim()
     if (anchorText === '#' && !/\s+aria-label(?:\s*=|\s|$)/i.test(linkedAttributes)) {
       linkedAttributes += ` aria-label="${escapeAttribute(`章节链接：${decodeHtmlEntities(headingLabel)}`)}"`
     }
     return `<a${linkedAttributes}>${anchorContents}</a>`
   })
-  normalizedAttributes += ` id="${headingId}"`
+  normalizedAttributes += ` id="${escapeAttribute(headingId)}"`
   return `<h${normalizedLevel}${normalizedAttributes}>${normalizedContents}</h${normalizedLevel}>`
 })
 articleContent = articleContent.replace(/<img\b[^>]*>/gi, image => {
@@ -97,7 +102,11 @@ articleContent = articleContent.replace(/<img\b[^>]*>/gi, image => {
   const closing = image.endsWith('/>') ? '/>' : '>'
   return `${image.slice(0, -closing.length).trimEnd()} ${additions.join(' ')}${closing}`
 })
-const outline = toc(articleContent, { min_depth: 2, max_depth: 3, list_number: false })
+const articleOutlineContent = articleContent.replace(
+  /<h([1-6])\b[^>]*>[\s\S]*?<\/h\1>/gi,
+  heading => shieldedArticle.restoreInlineCodeText(heading)
+)
+const outline = toc(articleOutlineContent, { min_depth: 2, max_depth: 3, list_number: false })
 articleContent = shieldedArticle.restore(articleContent)
 %>
 <div class="article-layout content-shell">

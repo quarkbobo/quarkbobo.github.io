@@ -3,8 +3,10 @@ const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
 const ejs = require('ejs')
+const { DomUtils, parseDocument } = require('htmlparser2')
 
 const themeRoot = path.resolve(__dirname, '..', 'themes', 'fluid-particle')
+const hexoToc = require(path.resolve(__dirname, '..', 'node_modules', 'hexo', 'dist', 'plugins', 'helper', 'toc.js'))
 const template = relative => fs.readFileSync(path.join(themeRoot, 'layout', relative), 'utf8')
 const stripHtml = html => String(html).replace(/<[^>]+>/g, '')
 
@@ -83,6 +85,27 @@ test('raw-text protection remains active while the article outline is derived', 
   for (const fragment of protectedFragments) assert.equal(output.includes(fragment), true, fragment)
 })
 
+test('article outline keeps inline code text without exposing headings from raw blocks', () => {
+  // Treating inline code like a block-level raw container leaks its protection token into the real Hexo outline.
+  const protectedFragments = [
+    '<script>const literal = "<h2>Script fake heading</h2>";</script>',
+    '<pre><h2>Pre fake heading</h2></pre>'
+  ]
+  const inlineCode = '<code data-command="test">npm test</code>'
+  const output = renderPostFull(
+    [...protectedFragments, `<h2>Use ${inlineCode}</h2>`].join('\n'),
+    hexoToc
+  )
+  const outline = output.match(/<details\b[^>]*class="article-toc-disclosure"[^>]*>([\s\S]*?)<\/details>/i)?.[1]
+
+  assert.ok(outline, 'the real Hexo toc renders an outline')
+  assert.match(outline, /<span class="toc-text">Use npm test<\/span>/)
+  assert.doesNotMatch(outline, /FLUIDRAWTEXTTOKEN/)
+  assert.doesNotMatch(outline, /(?:Script|Pre) fake heading/)
+  for (const fragment of protectedFragments) assert.equal(output.includes(fragment), true, fragment)
+  assert.equal(output.includes(inlineCode), true, 'the authored inline code remains byte-for-byte intact')
+})
+
 test('glyph permalinks decode heading entities once and expose distinct browser-readable names', () => {
   // Escaping already-encoded heading HTML turns &amp; into a literal "&amp;" instead of the visible ampersand.
   const output = renderPostFull([
@@ -102,6 +125,34 @@ test('glyph permalinks decode heading entities once and expose distinct browser-
   ])
   assert.notEqual(htmlValues[0], htmlValues[1], 'different headings keep different accessible context')
   assert.doesNotMatch(output, /&amp;amp;/)
+})
+
+test('authored heading ids cannot inject attributes and still match every generated anchor', () => {
+  // Re-serializing a single-quoted id inside double quotes lets an embedded quote create an event attribute.
+  const expectedIds = [
+    'safe" onmouseover="alert(1)',
+    "safe' onclick='alert(2)"
+  ]
+  const output = renderPostFull([
+    '<h2 id=\'safe" onmouseover="alert(1)\'>Single quoted<a class="header-anchor" href="#old-single">#</a></h2>',
+    '<h2 id="safe\' onclick=\'alert(2)">Double quoted<a class="header-anchor" href="#old-double">#</a></h2>'
+  ].join('\n'), hexoToc)
+  const document = parseDocument(output)
+  const headings = DomUtils.findAll(element => element.name === 'h2', document.children)
+  const permalinks = DomUtils.findAll(element => element.name === 'a' &&
+    String(element.attribs?.class || '').split(/\s+/).includes('header-anchor'), document.children)
+  const tocLinks = DomUtils.findAll(element => element.name === 'a' &&
+    String(element.attribs?.class || '').split(/\s+/).includes('toc-link'), document.children)
+  const eventAttributes = [...headings, ...permalinks, ...tocLinks]
+    .flatMap(element => Object.keys(element.attribs || {}).filter(attribute => /^on/i.test(attribute)))
+
+  assert.deepEqual(headings.map(heading => heading.attribs.id), expectedIds)
+  assert.deepEqual(permalinks.map(link => link.attribs.href.slice(1)), expectedIds)
+  assert.deepEqual(
+    [...new Set(tocLinks.map(link => decodeURIComponent(link.attribs.href.slice(1))))],
+    expectedIds
+  )
+  assert.deepEqual(eventAttributes, [])
 })
 
 test('post cards render real category links when the post has categories', () => {
