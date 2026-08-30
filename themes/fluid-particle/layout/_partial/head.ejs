@@ -6,5 +6,10 @@
   <title><%= page.title ? page.title + ' · ' + config.title : config.title %></title>
   <%- css('css/main.css') %>
   <%- css('css/post.css') %>
+  <% if (page.path === 'index.html' || page.path === '/') { %>
+    <%- css('css/space-scene.css') %>
+    <script src="<%= url_for('/js/particle-core.js') %>" defer></script>
+    <script src="<%= url_for('/js/particle-flow.js') %>" defer></script>
+  <% } %>
   <script src="<%= url_for('/js/site.js') %>" defer></script>
 </head>

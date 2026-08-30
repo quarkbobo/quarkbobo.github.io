@@ -1,0 +1,207 @@
+.home-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.home-hero__copy {
+  z-index: 3;
+}
+
+.hero-scene {
+  pointer-events: none;
+}
+
+.space-scene {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.space-scene::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background:
+    radial-gradient(circle at 7% 72%, rgba(234, 251, 255, 0.72) 0 0.06rem, transparent 0.09rem),
+    radial-gradient(circle at 16% 38%, rgba(103, 234, 255, 0.5) 0 0.05rem, transparent 0.09rem),
+    radial-gradient(circle at 32% 83%, rgba(149, 104, 255, 0.62) 0 0.06rem, transparent 0.1rem),
+    radial-gradient(circle at 46% 23%, rgba(234, 251, 255, 0.56) 0 0.05rem, transparent 0.08rem),
+    radial-gradient(circle at 58% 68%, rgba(103, 234, 255, 0.42) 0 0.05rem, transparent 0.09rem),
+    radial-gradient(circle at 72% 13%, rgba(234, 251, 255, 0.68) 0 0.06rem, transparent 0.1rem),
+    radial-gradient(circle at 84% 78%, rgba(149, 104, 255, 0.5) 0 0.06rem, transparent 0.1rem),
+    radial-gradient(circle at 94% 34%, rgba(234, 251, 255, 0.46) 0 0.05rem, transparent 0.09rem);
+  content: "";
+  opacity: 0.72;
+}
+
+#particle-flow {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.88;
+}
+
+.particle-fallback #particle-flow {
+  display: none;
+}
+
+.saturn-system {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: clamp(-3rem, -1vw, 0rem);
+  width: clamp(21rem, 40vw, 35rem);
+  aspect-ratio: 1;
+  transform: translateY(-50%) rotate(-2deg);
+}
+
+.saturn-halo {
+  position: absolute;
+  z-index: 0;
+  top: 16%;
+  left: 19%;
+  width: 62%;
+  aspect-ratio: 43 / 38;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(103, 234, 255, 0.24), rgba(149, 104, 255, 0.12) 38%, transparent 72%);
+  filter: blur(1.8rem);
+  transform: scale(1.28);
+}
+
+.saturn {
+  position: absolute;
+  z-index: 2;
+  top: 16%;
+  left: 19%;
+  width: 62%;
+  aspect-ratio: 43 / 38;
+  overflow: hidden;
+  border: 1px solid rgba(234, 251, 255, 0.24);
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 29% 22%, rgba(234, 251, 255, 0.82), transparent 13%),
+    radial-gradient(ellipse at 34% 38%, rgba(103, 234, 255, 0.54), transparent 39%),
+    linear-gradient(180deg, rgba(149, 104, 255, 0.82), rgba(7, 16, 30, 0.94));
+  box-shadow:
+    inset 1.1rem -0.4rem 2.8rem rgba(1, 2, 8, 0.62),
+    inset -1.4rem -0.8rem 2.4rem rgba(1, 2, 8, 0.84),
+    0 0 2.6rem rgba(103, 234, 255, 0.16);
+}
+
+.saturn-bands {
+  position: absolute;
+  inset: -3% -7%;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    transparent 0 6%,
+    rgba(103, 234, 255, 0.24) 8% 10%,
+    rgba(149, 104, 255, 0.15) 13% 18%,
+    rgba(234, 251, 255, 0.18) 21% 22%,
+    rgba(7, 16, 30, 0.3) 27% 32%,
+    rgba(103, 234, 255, 0.28) 35% 38%,
+    rgba(149, 104, 255, 0.3) 42% 49%,
+    rgba(234, 251, 255, 0.2) 52% 54%,
+    rgba(7, 16, 30, 0.36) 58% 65%,
+    rgba(103, 234, 255, 0.22) 69% 72%,
+    rgba(149, 104, 255, 0.32) 77% 83%,
+    rgba(7, 16, 30, 0.44) 88% 100%
+  );
+  filter: blur(0.35px);
+  transform: rotate(-1.5deg);
+}
+
+.saturn-bands::before,
+.saturn-bands::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  content: "";
+}
+
+.saturn-bands::before {
+  background:
+    radial-gradient(ellipse 48% 3% at 30% 28%, rgba(234, 251, 255, 0.5), transparent 72%),
+    radial-gradient(ellipse 62% 4% at 63% 47%, rgba(103, 234, 255, 0.34), transparent 76%),
+    radial-gradient(ellipse 50% 3% at 40% 69%, rgba(149, 104, 255, 0.4), transparent 74%);
+  animation: saturn-latitude-drift 22s ease-in-out infinite alternate;
+}
+
+.saturn-bands::after {
+  background: linear-gradient(90deg, rgba(1, 2, 8, 0.46), transparent 24% 70%, rgba(1, 2, 8, 0.54));
+}
+
+.saturn-light {
+  position: absolute;
+  z-index: 3;
+  inset: -1px;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse at 26% 34%, rgba(234, 251, 255, 0.12), transparent 34%),
+    radial-gradient(ellipse at 24% 42%, transparent 0 27%, rgba(1, 2, 8, 0.18) 56%, rgba(1, 2, 8, 0.92) 100%);
+}
+
+.saturn-ring {
+  position: absolute;
+  left: -8%;
+  width: 116%;
+  height: 24%;
+  border: clamp(0.22rem, 0.62vw, 0.42rem) solid rgba(103, 234, 255, 0.55);
+  border-right-color: rgba(149, 104, 255, 0.64);
+  border-left-color: rgba(234, 251, 255, 0.34);
+  border-radius: 50%;
+  transform: rotate(-10deg);
+  filter: drop-shadow(0 0 0.72rem rgba(103, 234, 255, 0.24));
+}
+
+.saturn-ring--back {
+  z-index: 1;
+  top: 40%;
+  clip-path: inset(0 0 49% 0);
+  opacity: 0.66;
+}
+
+.saturn-ring--front {
+  z-index: 3;
+  top: 40%;
+  clip-path: inset(51% 0 0 0);
+}
+
+@keyframes saturn-latitude-drift {
+  from {
+    transform: translate3d(-2.5%, 0.2%, 0);
+  }
+
+  to {
+    transform: translate3d(2.5%, -0.2%, 0);
+  }
+}
+
+@media (max-width: 760px) {
+  .home-hero__copy {
+    max-width: min(92%, 33rem);
+  }
+
+  .saturn-system {
+    top: auto;
+    right: clamp(-8rem, -18vw, -3.5rem);
+    bottom: -2rem;
+    width: clamp(19rem, 86vw, 28rem);
+    transform: none;
+  }
+
+  #particle-flow {
+    opacity: 0.68;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .saturn-bands::before {
+    animation: none;
+  }
+}
