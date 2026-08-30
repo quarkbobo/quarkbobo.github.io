@@ -1,15 +1,16 @@
 # Fluid-particle final verification — 2026-08-30
 
-This record captures the fresh, post-review verification of commit `3d6af44aecb6e786a5656a155af9cf370791c973` before integration into `master`.
+This record captures the fresh, post-review verification of commit `0aeda1b62968555c897cae7c3f2f54c63b36f97a` before integration into `master`.
 
 ## Build and behavior
 
 - `npm test` completed a clean Hexo build and then the full Node/Chrome suite.
 - Hexo generated 76 files.
-- Node/Chrome tests: 90 passed, 0 failed, 0 skipped.
+- Node/Chrome tests: 93 passed, 0 failed, 0 skipped.
 - `test/quark-blog-tools.test.ps1`: PASS under Windows PowerShell 5.1.
 - The five complete standalone applications (`snake`, `国际象棋`, `中国象棋`, `image_transformer`, and `COCKY ZHOU`) matched their generated HTML byte-for-byte with SHA-256.
 - All 16 current article images received their verified intrinsic width and height from the offline theme cache; no build-time network access is required.
+- Article heading, permalink, table-of-contents, raw-text and image normalization use a quote-aware sequential tokenizer; regression payloads cannot promote inert attribute text into executable elements or event attributes.
 - The feature worktree remained clean after verification.
 - The main checkout status was identical before and after verification; its two user-owned untracked August source files were not staged, changed, moved, or deleted.
 
