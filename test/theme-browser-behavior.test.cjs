@@ -69,6 +69,9 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
         h2 { scroll-margin-top: 0 !important; }
         .motion-toggle { min-height: 0 !important; touch-action: auto !important; }
         .post-card { transition: all 1s linear !important; }
+        .post-card h3 a, .archive-list a { display: inline !important; min-block-size: 0 !important; }
+        .post-card__categories a { display: flex !important; width: 100% !important; }
+        .post-grid, .archive-list li { display: block !important; }
         .skip-link:focus { transform: translateY(0) !important; }
         #main-content:focus { outline: none !important; }
         .motion-paused .saturn-bands::before { animation-play-state: running !important; }
@@ -95,7 +98,14 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
         <main id="main-content" tabindex="-1">
           <h2 id="probe-heading">Probe heading</h2>
           <button class="motion-toggle" id="probe-control" type="button">Pause</button>
-          <article class="post-card"><h3><a href="#probe-heading">Probe card</a></h3></article>
+          <div class="post-grid" id="probe-grid">
+            <article class="post-card" id="probe-card">
+              <h3><a id="probe-card-title" href="#probe-heading">A</a></h3>
+              <ul class="post-card__categories"><li><a id="probe-category" href="#probe-heading">分类</a></li></ul>
+            </article>
+            <article class="post-card"><h3><a href="#probe-heading">Second card</a></h3></article>
+          </div>
+          <ol class="archive-list"><li id="probe-archive-row"><time>2026</time><a id="probe-archive-link" href="#probe-heading">B</a></li></ol>
           <div id="space-scene" class="space-scene"><div class="saturn-bands"></div></div>
         </main>
         <pre id="probe-result"></pre>
@@ -104,6 +114,11 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
             const heading = document.getElementById('probe-heading')
             const control = document.getElementById('probe-control')
             const card = document.querySelector('.post-card')
+            const grid = document.getElementById('probe-grid')
+            const cardTitle = document.getElementById('probe-card-title')
+            const category = document.getElementById('probe-category')
+            const archiveRow = document.getElementById('probe-archive-row')
+            const archiveLink = document.getElementById('probe-archive-link')
             const main = document.getElementById('main-content')
             const scene = document.getElementById('space-scene')
             const skipLink = document.querySelector('.skip-link')
@@ -135,6 +150,13 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
             control.focus()
             const controlStyle = getComputedStyle(control)
             const cardStyle = getComputedStyle(card)
+            const cardTitleStyle = getComputedStyle(cardTitle)
+            const categoryStyle = getComputedStyle(category)
+            const archiveLinkStyle = getComputedStyle(archiveLink)
+            const cardRect = card.getBoundingClientRect()
+            const cardTitleRect = cardTitle.getBoundingClientRect()
+            const categoryRect = category.getBoundingClientRect()
+            const archiveLinkRect = archiveLink.getBoundingClientRect()
             const bandsBefore = getComputedStyle(bands, '::before')
             const bodyStyle = getComputedStyle(document.body)
             const headerStyle = getComputedStyle(document.querySelector('.site-header'))
@@ -166,6 +188,31 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                 contentVisibility: cardStyle.contentVisibility,
                 transitionProperty: cardStyle.transitionProperty,
                 transitionDuration: cardStyle.transitionDuration
+              },
+              entryTargets: {
+                cardTitle: {
+                  display: cardTitleStyle.display,
+                  minBlockSize: cardTitleStyle.minBlockSize,
+                  width: cardTitleRect.width,
+                  height: cardTitleRect.height
+                },
+                archive: {
+                  display: archiveLinkStyle.display,
+                  minBlockSize: archiveLinkStyle.minBlockSize,
+                  width: archiveLinkRect.width,
+                  height: archiveLinkRect.height
+                }
+              },
+              collectionLayout: {
+                postGridDisplay: getComputedStyle(grid).display,
+                archiveRowDisplay: getComputedStyle(archiveRow).display,
+                cardWidth: cardRect.width,
+                category: {
+                  display: categoryStyle.display,
+                  minBlockSize: categoryStyle.minBlockSize,
+                  width: categoryRect.width,
+                  height: categoryRect.height
+                }
               },
               saturnAnimationName: bandsBefore.animationName,
               saturnMotion: { pausedAnimationPlayState, runningAnimationPlayState },
@@ -340,6 +387,27 @@ test('built theme exposes accessible interaction and compositor-friendly renderi
     assert.ok(properties.every(property => ['opacity', 'transform'].includes(property)), properties.join(', '))
   }
   assert.deepEqual(probe.safeAreaResolved, { bodyLeft: '0px', bodyRight: '0px', headerTop: '0px' })
+})
+
+test('article entry links meet touch target size without changing card, category, or archive layout', () => {
+  // Inline title/archive anchors are too small, while a broad card selector would stretch category links.
+  const probe = normalChromeProbe()
+
+  for (const [name, target] of Object.entries(probe.entryTargets)) {
+    assert.equal(target.display, 'flex', `${name} display`)
+    assert.equal(target.minBlockSize, '44px', `${name} min-block-size`)
+    assert.ok(target.width >= 44, `${name} width ${target.width}`)
+    assert.ok(target.height >= 44, `${name} height ${target.height}`)
+  }
+  assert.equal(probe.collectionLayout.postGridDisplay, 'grid')
+  assert.equal(probe.collectionLayout.archiveRowDisplay, 'grid')
+  assert.equal(probe.collectionLayout.category.display, 'inline-flex')
+  assert.equal(probe.collectionLayout.category.minBlockSize, '44px')
+  assert.ok(probe.collectionLayout.category.height >= 44, probe.collectionLayout.category.height)
+  assert.ok(
+    probe.collectionLayout.category.width < probe.collectionLayout.cardWidth,
+    `${probe.collectionLayout.category.width} !< ${probe.collectionLayout.cardWidth}`
+  )
 })
 
 test('skip link stays hidden for pointer-like focus and reveals for keyboard-like focus in Chrome', () => {

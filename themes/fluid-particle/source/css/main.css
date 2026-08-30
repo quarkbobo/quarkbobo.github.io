@@ -327,6 +327,13 @@ a {
   text-decoration: none;
 }
 
+.post-card h3 a,
+.archive-list a {
+  display: flex;
+  min-block-size: 44px;
+  align-items: center;
+}
+
 .post-card__categories {
   display: flex;
   flex-wrap: wrap;

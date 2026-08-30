@@ -4,9 +4,14 @@ const fs = require('node:fs')
 const path = require('node:path')
 const vm = require('node:vm')
 const ejs = require('ejs')
+const yaml = require('js-yaml')
 
 const publicRoot = path.resolve(__dirname, '..', 'public')
 const built = relative => fs.readFileSync(path.join(publicRoot, relative), 'utf8')
+const imageDimensions = yaml.load(fs.readFileSync(
+  path.resolve(__dirname, '..', 'themes', 'fluid-particle', '_config.yml'),
+  'utf8'
+)).image_dimensions || {}
 
 const decodeHtml = value => value
   .replace(/&#x([0-9a-f]+);/gi, (_, digits) => String.fromCodePoint(Number.parseInt(digits, 16)))
@@ -17,6 +22,32 @@ const decodeHtml = value => value
   .replace(/&gt;/g, '>')
 
 const textContent = html => decodeHtml(html.replace(/<[^>]+>/g, '')).trim()
+
+const htmlAttribute = (attributes, name) => {
+  const match = String(attributes).match(new RegExp(
+    `(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`,
+    'i'
+  ))
+  return match ? decodeHtml(match[1] ?? match[2] ?? match[3]) : undefined
+}
+
+const generatedArticleImages = (directory = publicRoot) => {
+  const images = []
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const absolute = path.join(directory, entry.name)
+    if (entry.isDirectory()) {
+      images.push(...generatedArticleImages(absolute))
+      continue
+    }
+    if (!entry.isFile() || path.extname(entry.name).toLowerCase() !== '.html') continue
+    const output = fs.readFileSync(absolute, 'utf8')
+    const body = output.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<\/article>/)?.[1]
+    if (!body) continue
+    const route = path.relative(publicRoot, absolute)
+    images.push(...[...body.matchAll(/<img\b([^>]*)>/gi)].map(match => ({ route, attributes: match[1] })))
+  }
+  return images
+}
 
 class ClassList {
   constructor () {
@@ -185,6 +216,30 @@ test('generated long-form article images use lazy decoding defaults', () => {
   for (const image of images) {
     assert.match(image[1], /\bloading="lazy"/i)
     assert.match(image[1], /\bdecoding="async"/i)
+  }
+})
+
+test('all generated article images reserve their verified intrinsic dimensions', () => {
+  // Omitting the offline cache lookup causes layout shifts on every image-heavy article load.
+  const images = generatedArticleImages()
+  const missingDimensions = images.filter(image =>
+    htmlAttribute(image.attributes, 'width') === undefined ||
+    htmlAttribute(image.attributes, 'height') === undefined
+  )
+  const generatedSources = images.map(image => htmlAttribute(image.attributes, 'src'))
+
+  assert.deepEqual([...new Set(generatedSources)].sort(), Object.keys(imageDimensions).sort())
+  assert.equal(
+    missingDimensions.length,
+    0,
+    `${missingDimensions.length}/${images.length} generated article images are missing intrinsic dimensions`
+  )
+  for (const { route, attributes } of images) {
+    const source = htmlAttribute(attributes, 'src')
+    const expected = imageDimensions[source]
+    assert.ok(expected, `${route} has unexpected article image ${source}`)
+    assert.equal(htmlAttribute(attributes, 'width'), String(expected.width), `${route} ${source} width`)
+    assert.equal(htmlAttribute(attributes, 'height'), String(expected.height), `${route} ${source} height`)
   }
 })
 

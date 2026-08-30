@@ -10,9 +10,10 @@ const hexoToc = require(path.resolve(__dirname, '..', 'node_modules', 'hexo', 'd
 const template = relative => fs.readFileSync(path.join(themeRoot, 'layout', relative), 'utf8')
 const stripHtml = html => String(html).replace(/<[^>]+>/g, '')
 
-function renderPostFull (content, tocHelper = () => '') {
+function renderPostFull (content, tocHelper = () => '', theme = {}) {
   return ejs.render(template(path.join('_partial', 'post-full.ejs')), {
     config: { language: 'zh-CN', title: 'Fixture site' },
+    theme,
     post: {
       path: 'fixture/index.html',
       title: 'Fixture article',
@@ -23,6 +24,11 @@ function renderPostFull (content, tocHelper = () => '') {
     date_xml: value => String(value)
   })
 }
+
+const renderedImages = output => DomUtils.findAll(
+  element => element.name === 'img',
+  parseDocument(output).children
+)
 
 const decodeHtmlAttribute = value => String(value)
   .replace(/&quot;/g, '"')
@@ -48,6 +54,84 @@ test('article heading and image normalization leaves raw-text containers byte-fo
   }
   assert.match(output, /<h2\b[^>]*data-real="true"[^>]*id="article-section-1"[^>]*>/i)
   assert.match(output, /<img\b[^>]*data-real="true"[^>]*loading="lazy"[^>]*decoding="async"[^>]*>/i)
+})
+
+test('article images receive cached intrinsic dimensions only from their true source', () => {
+  // Matching data-src, guessing unknown images, or replacing authored values would corrupt the rendered image contract.
+  const cachedSource = 'https://example.test/cached.png?alpha=1&beta=2'
+  const output = renderPostFull([
+    `<img data-case="cached" data-src="https://example.test/placeholder.png" src="https://example.test/cached.png?alpha=1&amp;beta=2">`,
+    `<img data-case="authored" src="${cachedSource}" width="901" height="701" loading="eager" decoding="sync">`,
+    `<img data-case="partial" src="${cachedSource}" width="333">`,
+    `<img data-case="data-only" data-src="${cachedSource}">`,
+    `<img data-case="unknown" data-src="${cachedSource}" src="https://example.test/unknown.png">`,
+    `<img data-case="quoted-noise-hit" alt='preview src="https://example.test/unknown.png" width="9" height="9"' src="https://example.test/cached.png?alpha=1&amp;beta=2">`,
+    `<img data-case="quoted-noise-miss" alt='preview src="${cachedSource}"' src="https://example.test/unknown.png">`,
+    `<img data-case="quoted-greater-than" alt="2 > 1" src="${cachedSource}">`
+  ].join('\n'), () => '', {
+    image_dimensions: {
+      [cachedSource]: { width: 640, height: 480 }
+    }
+  })
+  const images = new Map(renderedImages(output).map(image => [image.attribs['data-case'], image.attribs]))
+  const imageTags = new Map(
+    [...output.matchAll(/<img\b[^>]*\bdata-case="([^"]+)"[^>]*>/gi)].map(match => [match[1], match[0]])
+  )
+  const attributeCount = (imageCase, attribute) => [
+    ...imageTags.get(imageCase).matchAll(new RegExp(`(?:^|\\s)${attribute}\\s*=`, 'gi'))
+  ].length
+
+  assert.deepEqual(
+    { width: images.get('cached').width, height: images.get('cached').height },
+    { width: '640', height: '480' }
+  )
+  assert.deepEqual(
+    {
+      width: images.get('authored').width,
+      height: images.get('authored').height,
+      loading: images.get('authored').loading,
+      decoding: images.get('authored').decoding
+    },
+    { width: '901', height: '701', loading: 'eager', decoding: 'sync' }
+  )
+  assert.deepEqual(
+    { width: images.get('partial').width, height: images.get('partial').height },
+    { width: '333', height: undefined }
+  )
+  for (const imageCase of ['data-only', 'unknown']) {
+    assert.equal(images.get(imageCase).width, undefined, `${imageCase} width`)
+    assert.equal(images.get(imageCase).height, undefined, `${imageCase} height`)
+  }
+  assert.deepEqual(
+    { width: images.get('quoted-noise-hit').width, height: images.get('quoted-noise-hit').height },
+    { width: '640', height: '480' }
+  )
+  assert.equal(images.get('quoted-noise-miss').width, undefined, 'quoted-noise-miss width')
+  assert.equal(images.get('quoted-noise-miss').height, undefined, 'quoted-noise-miss height')
+  assert.deepEqual(
+    {
+      alt: images.get('quoted-greater-than').alt,
+      width: images.get('quoted-greater-than').width,
+      height: images.get('quoted-greater-than').height
+    },
+    { alt: '2 > 1', width: '640', height: '480' }
+  )
+  assert.deepEqual(
+    Object.fromEntries(['cached', 'authored', 'partial', 'data-only', 'unknown'].map(imageCase => [
+      imageCase,
+      {
+        width: attributeCount(imageCase, 'width'),
+        height: attributeCount(imageCase, 'height')
+      }
+    ])),
+    {
+      cached: { width: 1, height: 1 },
+      authored: { width: 1, height: 1 },
+      partial: { width: 1, height: 0 },
+      'data-only': { width: 0, height: 0 },
+      unknown: { width: 0, height: 0 }
+    }
+  )
 })
 
 test('glyph-only heading permalinks expose the heading name to assistive technology', () => {

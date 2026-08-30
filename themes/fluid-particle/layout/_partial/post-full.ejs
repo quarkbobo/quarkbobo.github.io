@@ -28,6 +28,54 @@ const decodeHtmlEntities = value => String(value).replace(
     return String.fromCodePoint(codePoint)
   }
 )
+const configuredImageDimensions = typeof theme !== 'undefined' && theme &&
+  theme.image_dimensions && typeof theme.image_dimensions === 'object'
+  ? theme.image_dimensions
+  : {}
+const readImageAttributes = image => {
+  const attributes = new Map()
+  let cursor = image.match(/^<img\b/i)?.[0].length || 0
+  while (cursor < image.length) {
+    while (/\s/.test(image[cursor])) cursor++
+    if (image[cursor] === '>' || (image[cursor] === '/' && image[cursor + 1] === '>')) break
+
+    const nameStart = cursor
+    while (cursor < image.length && !/[\s=/>]/.test(image[cursor])) cursor++
+    const name = image.slice(nameStart, cursor).toLowerCase()
+    if (!name) {
+      cursor++
+      continue
+    }
+
+    while (/\s/.test(image[cursor])) cursor++
+    let value = null
+    if (image[cursor] === '=') {
+      cursor++
+      while (/\s/.test(image[cursor])) cursor++
+      const quote = image[cursor] === '"' || image[cursor] === "'" ? image[cursor++] : ''
+      const valueStart = cursor
+      if (quote) {
+        while (cursor < image.length && image[cursor] !== quote) cursor++
+      } else {
+        while (cursor < image.length && !/[\s>]/.test(image[cursor])) cursor++
+      }
+      value = image.slice(valueStart, cursor)
+      if (quote && image[cursor] === quote) cursor++
+    }
+    if (!attributes.has(name)) attributes.set(name, value)
+  }
+  return attributes
+}
+const dimensionsForImage = attributes => {
+  if (!attributes.has('src') || attributes.get('src') === null) return null
+  const source = decodeHtmlEntities(attributes.get('src'))
+  if (!Object.prototype.hasOwnProperty.call(configuredImageDimensions, source)) return null
+  const dimensions = configuredImageDimensions[source]
+  if (!dimensions || !Number.isInteger(dimensions.width) || dimensions.width <= 0 ||
+    !Number.isInteger(dimensions.height) || dimensions.height <= 0) return null
+  return dimensions
+}
+const imageElementPattern = /<img\b(?:[^>"']|"[^"]*"|'[^']*')*>/gi
 const escapeAttribute = value => String(value)
   .replace(/&/g, '&amp;')
   .replace(/"/g, '&quot;')
@@ -94,10 +142,15 @@ let articleContent = shieldedArticle.html.replace(/<h([1-6])(\b[^>]*)>([\s\S]*?)
   normalizedAttributes += ` id="${escapeAttribute(headingId)}"`
   return `<h${normalizedLevel}${normalizedAttributes}>${normalizedContents}</h${normalizedLevel}>`
 })
-articleContent = articleContent.replace(/<img\b[^>]*>/gi, image => {
+articleContent = articleContent.replace(imageElementPattern, image => {
   const additions = []
-  if (!/\bloading\s*=/i.test(image)) additions.push('loading="lazy"')
-  if (!/\bdecoding\s*=/i.test(image)) additions.push('decoding="async"')
+  const attributes = readImageAttributes(image)
+  const dimensions = dimensionsForImage(attributes)
+  if (dimensions && !attributes.has('width') && !attributes.has('height')) {
+    additions.push(`width="${dimensions.width}"`, `height="${dimensions.height}"`)
+  }
+  if (!attributes.has('loading')) additions.push('loading="lazy"')
+  if (!attributes.has('decoding')) additions.push('decoding="async"')
   if (!additions.length) return image
   const closing = image.endsWith('/>') ? '/>' : '>'
   return `${image.slice(0, -closing.length).trimEnd()} ${additions.join(' ')}${closing}`
