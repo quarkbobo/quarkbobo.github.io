@@ -11,6 +11,7 @@
 
   const MAX_DELTA_MS = 50
   const METRIC_WINDOW = 120
+  const LONG_FRAME_MS = 24
   const DESKTOP_COUNTS = [120, 210, 320]
   const MOBILE_COUNTS = [70, 110, 160]
   const LAYER_RATIOS = [0.84, 0.13, 0.03]
@@ -25,6 +26,9 @@
   const EMPTY_LAYER_COUNTS = Object.freeze({ dust: 0, glint: 0, streak: 0 })
   let spriteCache = null
   let activeSnapshot = emptySnapshot
+  const metricsApi = Object.freeze({
+    snapshot: function () { return activeSnapshot() }
+  })
 
   function round (value, places) {
     const scale = Math.pow(10, places)
@@ -47,7 +51,7 @@
     Object.defineProperty(root, '__fluidParticleMetrics', {
       configurable: false,
       enumerable: false,
-      get: function () { return activeSnapshot() }
+      get: function () { return metricsApi }
     })
   }
 
@@ -253,7 +257,7 @@
         metrics.frameCount++
       }
       frameSamples[cursor] = deltaMs
-      longSamples[cursor] = deltaMs > 20 ? 1 : 0
+      longSamples[cursor] = deltaMs > LONG_FRAME_MS ? 1 : 0
       metrics.frameSum += deltaMs
       metrics.longCount += longSamples[cursor]
       metrics.frameCursor = (cursor + 1) % METRIC_WINDOW
@@ -369,10 +373,12 @@
 
       if (rawDeltaMs) {
         recordFrame(rawDeltaMs)
+        const previousQualityLevel = metrics.qualityLevel
         qualityState = core.nextQuality(qualityState, rawDeltaMs)
         metrics.qualityLevel = qualityState.level
         metrics.particleCount = counts[qualityState.level]
         metrics.layerCounts = qualityLayerCounts[qualityState.level]
+        if (previousQualityLevel !== qualityState.level && qualityState.level === 0) resizeNow()
       }
 
       updateTrailGate(motionDeltaMs)

@@ -270,6 +270,8 @@ test('mount defers initialization and exposes a frozen read-only metrics snapsho
   assert.ok(Object.isFrozen(snapshot))
   assert.ok(Object.isFrozen(snapshot.layerCounts))
   assert.ok(Object.isFrozen(harness.window.__fluidParticleMetrics))
+  assert.equal(typeof harness.window.__fluidParticleMetrics.snapshot, 'function')
+  assert.deepEqual(harness.window.__fluidParticleMetrics.snapshot(), snapshot)
 
   const descriptor = Object.getOwnPropertyDescriptor(harness.window, '__fluidParticleMetrics')
   assert.equal(typeof descriptor.get, 'function')
@@ -371,6 +373,23 @@ test('DPR is capped, coarse pointers use the mobile cap, and resize work is coal
     assert.equal(harness.window.listenerCount('pointermove'), 0)
     lifecycle.destroy()
   })
+
+  await t.test('narrow viewport disables pointer input and cuts the high-quality budget in half', () => {
+    const desktop = createHarness({ dpr: 3, width: 1000, height: 700 })
+    const desktopLifecycle = desktop.renderer.mount(desktop.makeCanvas())
+    desktop.flushIdle()
+
+    const mobile = createHarness({ dpr: 3, width: 320, height: 740 })
+    const mobileLifecycle = mobile.renderer.mount(mobile.makeCanvas())
+    mobile.flushIdle()
+
+    assert.equal(mobileLifecycle.snapshot().dpr, 1.25)
+    assert.equal(mobile.window.listenerCount('pointermove'), 0)
+    assert.ok(mobileLifecycle.snapshot().particleCount <= desktopLifecycle.snapshot().particleCount * 0.55)
+    assert.equal(mobileLifecycle.snapshot().particleCount, 160)
+    desktopLifecycle.destroy()
+    mobileLifecycle.destroy()
+  })
 })
 
 test('raw RAF time drives metrics and quality while motion is clamped to 50ms', () => {
@@ -389,10 +408,26 @@ test('raw RAF time drives metrics and quality while motion is clamped to 50ms', 
   lifecycle.destroy()
 })
 
+test('long-frame metrics count only frames slower than 24ms', () => {
+  // Counting 22ms frames would report a different threshold from the foreground performance contract.
+  const harness = createHarness()
+  const lifecycle = harness.renderer.mount(harness.makeCanvas())
+  harness.flushIdle()
+  harness.flushRaf(100)
+  harness.flushRaf(122)
+
+  assert.equal(lifecycle.snapshot().longFramePercent, 0)
+
+  harness.flushRaf(147)
+  assert.equal(lifecycle.snapshot().longFramePercent, 50)
+  lifecycle.destroy()
+})
+
 test('every desktop quality level keeps an approximately 84/13/3 layer quota', () => {
   // Filtering one finite random sample by index would leave high and lower budgets with biased streak ratios.
   const harness = createHarness()
-  const lifecycle = harness.renderer.mount(harness.makeCanvas())
+  const canvas = harness.makeCanvas()
+  const lifecycle = harness.renderer.mount(canvas)
   harness.flushIdle()
   assert.equal(lifecycle.snapshot().qualityLevel, 2)
   assertLayerQuota(lifecycle.snapshot())
@@ -413,6 +448,8 @@ test('every desktop quality level keeps an approximately 84/13/3 layer quota', (
   }
   assert.equal(lifecycle.snapshot().qualityLevel, 0)
   assert.equal(lifecycle.snapshot().particleCount, 120)
+  assert.equal(lifecycle.snapshot().dpr, 1.25)
+  assert.equal(canvas.width, 1250)
   assertLayerQuota(lifecycle.snapshot())
   lifecycle.destroy()
 })
@@ -494,4 +531,41 @@ test('requestIdleCallback falls back to a deferred timer', () => {
   assert.equal(lifecycle.snapshot().particleCount, 320)
   assert.equal(harness.pendingRafs(), 1)
   lifecycle.destroy()
+})
+
+test('destroy cancels initialization and coalesced resize work before it runs', async t => {
+  // A callback that outlives the renderer can allocate particles or resize a detached Canvas.
+  await t.test('pending idle callback', () => {
+    const harness = createHarness()
+    const lifecycle = harness.renderer.mount(harness.makeCanvas())
+
+    assert.equal(harness.state.idles.size, 1)
+    lifecycle.destroy()
+    assert.equal(harness.state.idles.size, 0)
+    harness.flushIdle()
+    assert.equal(lifecycle.snapshot().particleCount, 0)
+  })
+
+  await t.test('pending timer fallback', () => {
+    const harness = createHarness({ hasIdleCallback: false })
+    const lifecycle = harness.renderer.mount(harness.makeCanvas())
+
+    assert.equal(harness.state.timers.size, 1)
+    lifecycle.destroy()
+    assert.equal(harness.state.timers.size, 0)
+    harness.flushTimers()
+    assert.equal(lifecycle.snapshot().particleCount, 0)
+  })
+
+  await t.test('pending resize frame', () => {
+    const harness = createHarness()
+    const lifecycle = harness.renderer.mount(harness.makeCanvas())
+    harness.flushIdle()
+    lifecycle.stop()
+    harness.window.dispatch('resize')
+
+    assert.equal(harness.pendingRafs(), 1)
+    lifecycle.destroy()
+    assert.equal(harness.pendingRafs(), 0)
+  })
 })
