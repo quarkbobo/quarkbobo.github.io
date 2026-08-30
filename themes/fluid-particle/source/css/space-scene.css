@@ -281,6 +281,18 @@
     transform: none;
   }
 
+  .saturn-prominences {
+    top: 7%;
+    left: 10%;
+    width: 80%;
+    height: 74%;
+    transform: translateY(-4rem);
+  }
+
+  .saturn-prominence {
+    --prominence-scale: 1.045;
+  }
+
   #particle-flow {
     opacity: 0.68;
   }

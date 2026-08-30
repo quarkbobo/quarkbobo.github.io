@@ -397,6 +397,54 @@ function runArticleDisclosureProbe (viewport) {
   }
 }
 
+function runStellarCompositionProbe (viewport) {
+  const generatedHome = fs.readFileSync(path.join(publicRoot, 'index.html'), 'utf8')
+  const fixtureName = `.theme-stellar-composition-${process.pid}-${viewport.width}.html`
+  const fixturePath = path.join(publicRoot, fixtureName)
+  const acceptanceWidth = viewport.width
+  const viewportHeight = viewport.height
+  const contentWidthConstraint = viewport.width === 320
+    ? `<style>body { width: ${viewport.width}px; }</style>`
+    : ''
+  const probeScript = `<pre id="probe-result"></pre>
+    <script>
+      addEventListener('load', function () {
+        const scene = document.getElementById('space-scene')
+        const prominenceGroups = Array.from(document.querySelectorAll('.saturn-prominence'))
+        const rectanglesIntersect = function (first, second) {
+          return first.left < second.right && first.right > second.left &&
+            first.top < second.bottom && first.bottom > second.top
+        }
+
+        scene.classList.add('motion-paused')
+        document.getElementById('probe-result').textContent = JSON.stringify({
+          noHorizontalOverflow: document.body.scrollWidth <= ${acceptanceWidth},
+          visibleProminenceGroups: prominenceGroups.filter(function (group) {
+            const rect = group.getBoundingClientRect()
+            return rect.width > 0 && rect.height > 0 && rect.right > 0 && rect.bottom > 0 &&
+              rect.left < ${acceptanceWidth} && rect.top < ${viewportHeight}
+          }).length,
+          copyIntersections: prominenceGroups.filter(function (group) {
+            return rectanglesIntersect(
+              group.getBoundingClientRect(),
+              document.querySelector('.home-hero__copy').getBoundingClientRect()
+            )
+          }).map(function (group) { return group.getAttribute('class') }),
+          ringAngle: getComputedStyle(document.querySelector('.saturn-ring')).getPropertyValue('--saturn-equator-angle').trim(),
+          bandsAngle: getComputedStyle(document.querySelector('.saturn-bands')).getPropertyValue('--saturn-equator-angle').trim()
+        })
+      })
+    </script>`
+
+  const offlineHome = generatedHome.replace(/\b(href|src)="\//g, '$1="')
+  fs.writeFileSync(fixturePath, offlineHome.replace('</head>', `${contentWidthConstraint}</head>`).replace('</body>', `${probeScript}</body>`))
+  try {
+    return readProbeResult(dumpWithChrome(fixturePath, { viewport }))
+  } finally {
+    fs.rmSync(fixturePath, { force: true })
+  }
+}
+
 let cachedNormalProbe
 const normalChromeProbe = () => cachedNormalProbe || (cachedNormalProbe = runChromeProbe())
 
@@ -528,4 +576,17 @@ test('article TOC is collapsed before the article at 320px and stays a visible s
   assert.ok(desktop.article.left < desktop.desktopToc.left, `${desktop.article.left} !< ${desktop.desktopToc.left}`)
   assert.match(desktop.innerStars.backgroundImage, /radial-gradient/i)
   assert.equal(desktop.innerStars.animationName, 'none')
+})
+
+test('stellar prominences stay visible, clear of hero copy, and aligned without horizontal overflow', () => {
+  // Moving the prominence field inward or breaking its shared angle would overlap copy or desynchronize the composition.
+  for (const viewport of [{ width: 1440, height: 900 }, { width: 320, height: 740 }]) {
+    const probe = runStellarCompositionProbe(viewport)
+
+    assert.equal(probe.noHorizontalOverflow, true, `${viewport.width}px horizontal overflow`)
+    assert.deepEqual(probe.copyIntersections, [], `${viewport.width}px copy intersections`)
+    assert.ok(probe.visibleProminenceGroups >= 2, `${viewport.width}px visible groups: ${probe.visibleProminenceGroups}`)
+    assert.equal(probe.ringAngle, '-10deg', `${viewport.width}px ring angle`)
+    assert.equal(probe.bandsAngle, '-10deg', `${viewport.width}px bands angle`)
+  }
 })
