@@ -506,6 +506,7 @@
     }
 
     function stop () {
+      if (destroyed) return
       requestedRunning = false
       lastTimestamp = 0
       if (animationFrameId) root.cancelAnimationFrame(animationFrameId)
@@ -520,8 +521,8 @@
 
     function destroy () {
       if (destroyed) return
-      destroyed = true
       stop()
+      destroyed = true
       if (resizeFrameId) root.cancelAnimationFrame(resizeFrameId)
       resizeFrameId = 0
       if (idleId) {

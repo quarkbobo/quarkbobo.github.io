@@ -368,6 +368,40 @@ test('app initialization reuses one renderer and one listener per global event t
   third.destroy()
 })
 
+test('destroyed lifecycle handles cannot mutate a newly mounted scene', () => {
+  // A stale handle must not pause the shared button while the replacement renderer keeps animating.
+  const harness = createHarness()
+  const canvas = harness.makeCanvas()
+  const control = new FakeControl()
+  const oldLifecycle = harness.renderer.mount(canvas, { motionToggle: control })
+  harness.flushIdle()
+  oldLifecycle.destroy()
+
+  const destroyedSnapshot = oldLifecycle.snapshot()
+  const newLifecycle = harness.renderer.mount(canvas, { motionToggle: control })
+  harness.flushIdle()
+  const assertNewSceneIsRunning = () => {
+    assert.equal(harness.pendingRafs(), 1)
+    assert.equal(control.getAttribute('aria-pressed'), 'false')
+    assert.equal(control.textContent, '暂停背景动态')
+    assert.equal(canvas._scene.classList.contains('motion-paused'), false)
+    assert.equal(control.listenerCount('click'), 1)
+    assert.equal(harness.window.listenerCount('resize'), 1)
+    assert.equal(harness.document.listenerCount('visibilitychange'), 1)
+  }
+
+  assertNewSceneIsRunning()
+  oldLifecycle.stop()
+  assertNewSceneIsRunning()
+  oldLifecycle.start()
+  assertNewSceneIsRunning()
+  oldLifecycle.destroy()
+  assertNewSceneIsRunning()
+  assert.deepEqual(oldLifecycle.snapshot(), destroyedSnapshot)
+
+  newLifecycle.destroy()
+})
+
 test('mount falls back without Canvas, the particle core, or animation frames', async t => {
   // Any missing required API must hide only the Canvas while preserving the CSS Saturn scene.
   const cases = [

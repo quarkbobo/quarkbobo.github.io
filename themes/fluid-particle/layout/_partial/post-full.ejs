@@ -5,10 +5,52 @@ const articleDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN',
 const routeTitle = String(post.path || '').replace(/\/?index\.html$/i, '').split('/').filter(Boolean).pop() || ''
 const articleTitle = String(post.title || '').trim() || routeTitle.replace(/[-_]+/g, ' ') || config.title
 let previousHeadingLevel = 1
+let headingIndex = 0
+const articleHeadingIds = new Set()
+const idAttributePattern = /\s+id(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/i
+const uniqueHeadingId = preferredId => {
+  const base = String(preferredId || '').trim() || `article-section-${headingIndex}`
+  let candidate = base
+  let suffix = 2
+  while (articleHeadingIds.has(candidate)) candidate = `${base}-${suffix++}`
+  articleHeadingIds.add(candidate)
+  return candidate
+}
+const meaningfulHeadingText = contents => strip_html(String(contents)
+  .replace(/<a\b[^>]*class=(?:"[^"]*\bheader-anchor\b[^"]*"|'[^']*\bheader-anchor\b[^']*')[^>]*>[\s\S]*?<\/a>/gi, ''))
+  .replace(/\s+/g, ' ')
+  .trim()
 let articleContent = String(post.content || '').replace(/<h([1-6])(\b[^>]*)>([\s\S]*?)<\/h\1>/gi, (heading, authoredLevel, attributes, contents) => {
+  headingIndex++
   const normalizedLevel = Math.min(Math.max(2, Number(authoredLevel)), previousHeadingLevel + 1)
   previousHeadingLevel = normalizedLevel
-  return `<h${normalizedLevel}${attributes}>${contents}</h${normalizedLevel}>`
+  const authoredHeadingId = attributes.match(idAttributePattern)
+  let normalizedAttributes = attributes.replace(idAttributePattern, '')
+  let normalizedContents = contents.replace(/\s+id(?:\s*=\s*(?:""|''))(?=[\s>])/gi, '')
+  let preferredId = authoredHeadingId && (authoredHeadingId[1] || authoredHeadingId[2] || authoredHeadingId[3])
+
+  if (!preferredId) {
+    const nestedId = normalizedContents.match(idAttributePattern)
+    if (nestedId) {
+      preferredId = nestedId[1] || nestedId[2] || nestedId[3]
+      normalizedContents = normalizedContents.replace(idAttributePattern, '')
+    }
+  }
+
+  const headingId = uniqueHeadingId(preferredId)
+  if (!meaningfulHeadingText(normalizedContents)) {
+    normalizedContents = `<span class="heading-fallback">图示 ${headingIndex}</span>${normalizedContents}`
+  }
+  normalizedContents = normalizedContents.replace(/<a\b([^>]*)>/gi, (anchor, anchorAttributes) => {
+    if (!/\bclass=(?:"[^"]*\bheader-anchor\b[^"]*"|'[^']*\bheader-anchor\b[^']*')/i.test(anchorAttributes)) return anchor
+    const hrefPattern = /\s+href=(?:"[^"]*"|'[^']*'|[^\s>]+)/i
+    const linkedAttributes = hrefPattern.test(anchorAttributes)
+      ? anchorAttributes.replace(hrefPattern, ` href="#${headingId}"`)
+      : `${anchorAttributes} href="#${headingId}"`
+    return `<a${linkedAttributes}>`
+  })
+  normalizedAttributes += ` id="${headingId}"`
+  return `<h${normalizedLevel}${normalizedAttributes}>${normalizedContents}</h${normalizedLevel}>`
 })
 articleContent = articleContent.replace(/<img\b[^>]*>/gi, image => {
   const additions = []

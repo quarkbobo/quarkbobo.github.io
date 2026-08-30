@@ -7,6 +7,16 @@ const vm = require('node:vm')
 const publicRoot = path.resolve(__dirname, '..', 'public')
 const built = relative => fs.readFileSync(path.join(publicRoot, relative), 'utf8')
 
+const decodeHtml = value => value
+  .replace(/&#x([0-9a-f]+);/gi, (_, digits) => String.fromCodePoint(Number.parseInt(digits, 16)))
+  .replace(/&#([0-9]+);/g, (_, digits) => String.fromCodePoint(Number.parseInt(digits, 10)))
+  .replace(/&amp;/g, '&')
+  .replace(/&quot;/g, '"')
+  .replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>')
+
+const textContent = html => decodeHtml(html.replace(/<[^>]+>/g, '')).trim()
+
 class ClassList {
   constructor () {
     this.values = new Set()
@@ -89,20 +99,67 @@ test('generated dates use the configured Chinese locale instead of a fixed numer
   assert.equal(firstTime?.[1], '2026年8月19日')
 })
 
-test('generated long-form articles keep one h1, sequential headings, and lazy image defaults', () => {
-  // Passing authored HTML through unchanged can duplicate the page h1, jump levels, and eagerly load every image.
+test('generated long-form article headings and TOC form one complete navigation graph', () => {
+  // IDs on nested spans leave Hexo's TOC anchors without destinations, especially for image-only headings.
   const output = built(path.join('技术教程', 'How-to-create-a-website', 'index.html'))
   const body = output.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<\/article>/)?.[1]
+  const toc = output.match(/<aside class="article-toc"[\s\S]*?(<ol class="toc">[\s\S]*?<\/ol>)\s*<\/aside>/)?.[1]
 
   assert.ok(body, 'article body is rendered')
-  assert.doesNotMatch(body, /<h1\b/i)
-  const levels = [...body.matchAll(/<h([1-6])\b/gi)].map(match => Number(match[1]))
+  assert.ok(toc, 'article TOC is rendered')
+  assert.equal([...output.matchAll(/<h1\b/gi)].length, 1, 'the page has one h1')
+
+  const headings = [...body.matchAll(/<h([1-6])\b([^>]*)>([\s\S]*?)<\/h\1>/gi)]
+  assert.ok(headings.length >= 30, `expected the long article, saw ${headings.length} headings`)
+  const levels = headings.map(match => Number(match[1]))
   let previous = 1
   for (const level of levels) {
     assert.ok(level <= previous + 1, `heading jumped from h${previous} to h${level}`)
     previous = level
   }
 
+  for (const heading of headings) {
+    assert.match(heading[2], /\bid="[^"]+"/i, `h${heading[1]} has no stable id`)
+    const permalink = heading[3].match(/<a\b([^>]*)class="[^"]*\bheader-anchor\b[^"]*"([^>]*)>/i)
+    if (permalink) {
+      const href = `${permalink[1]} ${permalink[2]}`.match(/\bhref="([^"]+)"/i)?.[1]
+      assert.match(href || '', /^#.+/, `h${heading[1]} permalink has no fragment destination`)
+    }
+  }
+
+  const allIds = [...output.matchAll(/\bid="([^"]*)"/gi)].map(match => decodeHtml(match[1]))
+  assert.ok(allIds.every(Boolean), 'every generated id is non-empty')
+  assert.equal(new Set(allIds).size, allIds.length, 'generated ids are globally unique')
+
+  const tocLinks = [...toc.matchAll(/<a\b([^>]*)class="toc-link"([^>]*)>([\s\S]*?)<\/a>/gi)]
+  assert.ok(tocLinks.length >= 30, `expected a populated TOC, saw ${tocLinks.length} links`)
+  for (const link of tocLinks) {
+    const attributes = `${link[1]} ${link[2]}`
+    const href = attributes.match(/\bhref="([^"]+)"/i)?.[1]
+    assert.match(href || '', /^#.+/, 'TOC link has no fragment destination')
+    const target = decodeURIComponent(decodeHtml(href.slice(1)))
+    assert.equal(allIds.filter(id => id === target).length, 1, `TOC target #${target} is not unique`)
+    assert.notEqual(textContent(link[3]), '', `TOC target #${target} has an empty label`)
+    assert.notEqual(textContent(link[3]), '#', `TOC target #${target} only exposes a permalink glyph`)
+  }
+
+  const imageOnlyHeading = headings.find(heading => /1762306910706-ca8e09e3-4bdc-4887-babc-c72ff376e94e\.png/i.test(heading[3]))
+  assert.ok(imageOnlyHeading, 'fixture includes the authored image-only heading')
+  const imageHeadingId = decodeHtml(imageOnlyHeading[2].match(/\bid="([^"]+)"/i)?.[1] || '')
+  const imageTocLink = tocLinks.find(link => decodeURIComponent(decodeHtml(
+    (`${link[1]} ${link[2]}`.match(/\bhref="([^"]+)"/i)?.[1] || '#').slice(1)
+  )) === imageHeadingId)
+  assert.ok(imageTocLink, 'image-only heading is reachable from the TOC')
+  assert.notEqual(textContent(imageTocLink[3]), '', 'image-only heading receives a readable fallback label')
+  assert.notEqual(textContent(imageTocLink[3]), '#', 'image-only heading is not labelled by the permalink glyph')
+})
+
+test('generated long-form article images use lazy decoding defaults', () => {
+  // Passing authored images through unchanged would eagerly decode the whole image-heavy article.
+  const output = built(path.join('技术教程', 'How-to-create-a-website', 'index.html'))
+  const body = output.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<\/article>/)?.[1]
+
+  assert.ok(body, 'article body is rendered')
   const images = [...body.matchAll(/<img\b([^>]*)>/gi)]
   assert.ok(images.length >= 10, `expected the image-heavy article, saw ${images.length} images`)
   for (const image of images) {
