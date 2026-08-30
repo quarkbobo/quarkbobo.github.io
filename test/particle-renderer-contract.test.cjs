@@ -6,7 +6,21 @@ const vm = require('node:vm')
 
 const root = path.resolve(__dirname, '..')
 const built = relative => fs.readFileSync(path.join(root, 'public', relative), 'utf8')
-const metricKeys = ['averageFrameMs', 'dpr', 'fps', 'longFramePercent', 'particleCount', 'qualityLevel']
+const metricKeys = ['averageFrameMs', 'dpr', 'fps', 'layerCounts', 'longFramePercent', 'particleCount', 'qualityLevel']
+const layerRatios = { dust: 0.84, glint: 0.13, streak: 0.03 }
+
+const assertLayerQuota = snapshot => {
+  const { layerCounts, particleCount } = snapshot
+  assert.ok(Object.isFrozen(layerCounts))
+  assert.deepEqual(Object.keys(layerCounts).sort(), ['dust', 'glint', 'streak'])
+  assert.equal(layerCounts.dust + layerCounts.glint + layerCounts.streak, particleCount)
+  for (const [layer, ratio] of Object.entries(layerRatios)) {
+    assert.ok(
+      Math.abs(layerCounts[layer] - particleCount * ratio) <= 1,
+      `${particleCount} ${layer}: ${layerCounts[layer]}`
+    )
+  }
+}
 
 const occurrences = (value, needle) => {
   let count = 0
@@ -73,18 +87,23 @@ function createHarness (options = {}) {
     drawImageCount: 0,
     shadowBlurWrites: 0,
     documentQueries: 0,
-    elapsedSeconds: []
+    elapsedSeconds: [],
+    qualityFrameMs: [],
+    drawFrames: []
   }
   const window = new FakeEventTarget()
   const document = new FakeEventTarget()
 
   function makeContext () {
     const context = {
-      clearRect () {},
+      clearRect () { state.drawFrames.push({ trailSegments: 0 }) },
       setTransform () {},
       beginPath () {},
       moveTo () {},
-      lineTo () {},
+      lineTo () {
+        const frame = state.drawFrames[state.drawFrames.length - 1]
+        if (frame) frame.trailSegments++
+      },
       stroke () {},
       fillRect () {},
       drawImage () { state.drawImageCount++ },
@@ -179,6 +198,10 @@ function createHarness (options = {}) {
       advancePhase (phase, elapsedSeconds, lifetimeSeconds) {
         state.elapsedSeconds.push(elapsedSeconds)
         return realCore.advancePhase(phase, elapsedSeconds, lifetimeSeconds)
+      },
+      nextQuality (qualityState, frameMs) {
+        state.qualityFrameMs.push(frameMs)
+        return realCore.nextQuality(qualityState, frameMs)
       }
     }
   }
@@ -245,6 +268,7 @@ test('mount defers initialization and exposes a frozen read-only metrics snapsho
   assert.equal(snapshot.particleCount, 320)
   assert.equal(snapshot.qualityLevel, 2)
   assert.ok(Object.isFrozen(snapshot))
+  assert.ok(Object.isFrozen(snapshot.layerCounts))
   assert.ok(Object.isFrozen(harness.window.__fluidParticleMetrics))
 
   const descriptor = Object.getOwnPropertyDescriptor(harness.window, '__fluidParticleMetrics')
@@ -349,29 +373,76 @@ test('DPR is capped, coarse pointers use the mobile cap, and resize work is coal
   })
 })
 
-test('delta is clamped to 50ms and quality levels map to particle counts', () => {
-  // A long foreground frame must not jump the flow, and sustained slowness must lower the real draw budget.
+test('raw RAF time drives metrics and quality while motion is clamped to 50ms', () => {
+  // Passing the clamped delta to metrics or quality would hide a real 200ms foreground stall.
   const harness = createHarness({ recordElapsed: true })
   const lifecycle = harness.renderer.mount(harness.makeCanvas())
   harness.flushIdle()
   harness.flushRaf(100)
-  harness.flushRaf(2100)
-  assert.ok(Math.max(...harness.state.elapsedSeconds) <= 0.0500000001)
+  harness.flushRaf(300)
 
-  let timestamp = 2100
+  assert.ok(Math.max(...harness.state.elapsedSeconds) <= 0.0500000001)
+  assert.deepEqual(harness.state.qualityFrameMs, [200])
+  assert.equal(lifecycle.snapshot().averageFrameMs, 200)
+  assert.equal(lifecycle.snapshot().fps, 5)
+  assert.equal(lifecycle.snapshot().longFramePercent, 100)
+  lifecycle.destroy()
+})
+
+test('every desktop quality level keeps an approximately 84/13/3 layer quota', () => {
+  // Filtering one finite random sample by index would leave high and lower budgets with biased streak ratios.
+  const harness = createHarness()
+  const lifecycle = harness.renderer.mount(harness.makeCanvas())
+  harness.flushIdle()
+  assert.equal(lifecycle.snapshot().qualityLevel, 2)
+  assertLayerQuota(lifecycle.snapshot())
+
+  let timestamp = 100
+  harness.flushRaf(timestamp)
   for (let frame = 0; frame < 120; frame++) {
     timestamp += 20
     harness.flushRaf(timestamp)
   }
   assert.equal(lifecycle.snapshot().qualityLevel, 1)
   assert.equal(lifecycle.snapshot().particleCount, 210)
+  assertLayerQuota(lifecycle.snapshot())
 
   for (let frame = 0; frame < 120; frame++) {
-    timestamp += 15
+    timestamp += 20
     harness.flushRaf(timestamp)
   }
-  assert.equal(lifecycle.snapshot().qualityLevel, 2)
-  assert.equal(lifecycle.snapshot().particleCount, 320)
+  assert.equal(lifecycle.snapshot().qualityLevel, 0)
+  assert.equal(lifecycle.snapshot().particleCount, 120)
+  assertLayerQuota(lifecycle.snapshot())
+  lifecycle.destroy()
+})
+
+test('streak trails have deterministic quiet intervals and sparse burst frames', () => {
+  // Drawing every streak line on every frame would turn the rare high-energy layer into constant visual noise.
+  const harness = createHarness()
+  const lifecycle = harness.renderer.mount(harness.makeCanvas())
+  harness.flushIdle()
+
+  let timestamp = 100
+  harness.flushRaf(timestamp)
+  for (let frame = 0; frame < 520; frame++) {
+    timestamp += 16
+    harness.flushRaf(timestamp)
+  }
+
+  const frames = harness.state.drawFrames.slice(1)
+  const trailCounts = frames.map(frame => frame.trailSegments)
+  let quietRun = 0
+  let longestQuietRun = 0
+  for (const count of trailCounts) {
+    quietRun = count === 0 ? quietRun + 1 : 0
+    longestQuietRun = Math.max(longestQuietRun, quietRun)
+  }
+
+  assert.ok(trailCounts.some(count => count > 0), 'a complete cycle includes a trail burst')
+  assert.ok(longestQuietRun >= 60, `longest quiet run: ${longestQuietRun}`)
+  assert.ok(Math.max(...trailCounts) <= 2, `max simultaneous trails: ${Math.max(...trailCounts)}`)
+  assert.ok(Math.max(...trailCounts) < lifecycle.snapshot().layerCounts.streak)
   lifecycle.destroy()
 })
 
