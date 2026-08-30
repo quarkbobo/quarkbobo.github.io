@@ -388,6 +388,10 @@ foreach ($failureCase in $failureCases) {
 }
 
 Reset-PublishFixture
+$script:StatusOutput = @('## master')
+$script:UnstagedStatOutput = @()
+$script:InitialCachedNameStatusOutput = @()
+$script:InitialCachedStatOutput = @()
 $script:FinalCachedNameStatusOutput = @()
 $script:FinalCachedStatOutput = @()
 $script:ConfirmationAnswers.Enqueue('P')
