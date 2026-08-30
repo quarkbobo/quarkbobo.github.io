@@ -74,15 +74,20 @@
 
 .saturn-prominence {
   --prominence-origin: 0% 50%;
+  --prominence-shift-x: 1%;
+  --prominence-shift-y: -2%;
+  --prominence-scale: 1.08;
   transform-box: fill-box;
   transform-origin: var(--prominence-origin);
+  animation: saturn-prominence-breathe 9s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
-.saturn-prominence--crown { --prominence-origin: 50% 100%; }
-.saturn-prominence--upper-east { --prominence-origin: 0% 80%; }
-.saturn-prominence--east { --prominence-origin: 0% 50%; }
-.saturn-prominence--lower-east { --prominence-origin: 0% 0%; }
-.saturn-prominence--lower { --prominence-origin: 100% 0%; }
+.saturn-prominence--crown { --prominence-origin: 50% 100%; --prominence-shift-x: 0%; --prominence-shift-y: -2%; --prominence-scale: 1.09; animation-duration: 10.8s; animation-delay: -4.2s; }
+.saturn-prominence--upper-east { --prominence-origin: 0% 80%; --prominence-shift-x: 1.5%; --prominence-shift-y: -1.5%; --prominence-scale: 1.11; animation-duration: 7.6s; animation-delay: -2.8s; }
+.saturn-prominence--east { --prominence-origin: 0% 50%; --prominence-shift-x: 2%; --prominence-shift-y: 0%; --prominence-scale: 1.12; animation-duration: 11.6s; animation-delay: -7.1s; }
+.saturn-prominence--lower-east { --prominence-origin: 0% 0%; --prominence-shift-x: 1.5%; --prominence-shift-y: 1.5%; --prominence-scale: 1.1; animation-duration: 8.4s; animation-delay: -5.3s; }
+.saturn-prominence--lower { --prominence-origin: 100% 0%; --prominence-shift-x: 0%; --prominence-shift-y: 1.5%; --prominence-scale: 1.07; animation-duration: 9.7s; animation-delay: -1.7s; }
 
 .prominence-glow,
 .prominence-core {
@@ -138,44 +143,45 @@
 
 .saturn-bands {
   position: absolute;
-  inset: -3% -7%;
-  border-radius: inherit;
-  background: linear-gradient(
-    180deg,
-    transparent 0 6%,
-    rgba(103, 234, 255, 0.24) 8% 10%,
-    rgba(149, 104, 255, 0.15) 13% 18%,
-    rgba(234, 251, 255, 0.18) 21% 22%,
-    rgba(7, 16, 30, 0.3) 27% 32%,
-    rgba(103, 234, 255, 0.28) 35% 38%,
-    rgba(149, 104, 255, 0.3) 42% 49%,
-    rgba(234, 251, 255, 0.2) 52% 54%,
-    rgba(7, 16, 30, 0.36) 58% 65%,
-    rgba(103, 234, 255, 0.22) 69% 72%,
-    rgba(149, 104, 255, 0.32) 77% 83%,
-    rgba(7, 16, 30, 0.44) 88% 100%
-  );
-  filter: blur(0.35px);
-  transform: rotate(var(--saturn-equator-angle));
+  inset: -14% -22%;
+  overflow: hidden;
+  border-radius: 45%;
+  transform: rotate(var(--saturn-equator-angle)) scale(1.08);
+  transform-origin: center;
 }
 
-.saturn-bands::before {
+.saturn-bands::before,
+.saturn-bands::after {
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 200%;
   content: "";
+  background-repeat: repeat-x;
+  background-size: 50% 100%;
 }
 
 .saturn-bands::before {
-  background:
-    radial-gradient(ellipse 48% 3% at 30% 28%, rgba(234, 251, 255, 0.5), transparent 72%),
-    radial-gradient(ellipse 62% 4% at 63% 47%, rgba(103, 234, 255, 0.34), transparent 76%),
-    radial-gradient(ellipse 50% 3% at 40% 69%, rgba(149, 104, 255, 0.4), transparent 74%);
-  animation: saturn-latitude-drift 22s ease-in-out infinite alternate;
+  background-image:
+    radial-gradient(ellipse 11% 4% at 17% 29%, rgba(234, 251, 255, 0.62), transparent 72%),
+    radial-gradient(ellipse 15% 5% at 36% 49%, rgba(103, 234, 255, 0.46), transparent 74%),
+    radial-gradient(ellipse 12% 4% at 27% 70%, rgba(149, 104, 255, 0.54), transparent 75%),
+    repeating-linear-gradient(180deg, transparent 0 7%, rgba(103, 234, 255, 0.18) 8% 10%, transparent 11% 17%, rgba(149, 104, 255, 0.2) 18% 22%, transparent 23% 31%);
+  mix-blend-mode: screen;
+  animation: saturn-gas-rotation 26s linear infinite;
+  will-change: transform;
 }
 
-.motion-paused .saturn-bands::before {
-  animation-play-state: paused;
+.saturn-bands::after {
+  background-image:
+    radial-gradient(ellipse 10% 6% at 32% 53%, transparent 0 36%, rgba(234, 251, 255, 0.52) 43% 52%, rgba(149, 104, 255, 0.3) 58%, transparent 71%),
+    repeating-linear-gradient(174deg, transparent 0 8%, rgba(103, 234, 255, 0.2) 8.5% 9.3%, transparent 10% 16%, rgba(149, 104, 255, 0.24) 16.5% 17.3%, transparent 18% 27%);
+  mix-blend-mode: screen;
+  opacity: 0.72;
+  animation: saturn-magnetic-rotation 42s linear infinite;
+  animation-delay: -17s;
+  will-change: transform;
 }
 
 .saturn-flares {
@@ -189,6 +195,8 @@
     radial-gradient(ellipse 22% 5% at 82% 74%, rgba(103, 234, 255, 0.58), transparent 72%);
   mix-blend-mode: screen;
   transform: rotate(var(--saturn-equator-angle));
+  animation: saturn-flare-transit 13s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 .saturn-light {
@@ -228,14 +236,36 @@
   clip-path: inset(51% 0 0 0);
 }
 
-@keyframes saturn-latitude-drift {
-  from {
-    transform: translate3d(-2.5%, 0.2%, 0);
-  }
+@keyframes saturn-gas-rotation {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
 
-  to {
-    transform: translate3d(2.5%, -0.2%, 0);
-  }
+@keyframes saturn-magnetic-rotation {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes saturn-prominence-breathe {
+  0%, 100% { opacity: 0.68; transform: translate3d(0, 0, 0) scale(1); }
+  52% { opacity: 1; transform: translate3d(var(--prominence-shift-x), var(--prominence-shift-y), 0) scale(var(--prominence-scale)); }
+}
+
+@keyframes saturn-flare-transit {
+  0%, 100% { opacity: 0.44; transform: rotate(var(--saturn-equator-angle)) translate3d(-7%, 0, 0); }
+  45% { opacity: 0.88; transform: rotate(var(--saturn-equator-angle)) translate3d(4%, 0, 0); }
+  72% { opacity: 0.58; transform: rotate(var(--saturn-equator-angle)) translate3d(9%, 0, 0); }
+}
+
+.motion-paused .saturn-bands::before,
+.motion-paused .saturn-bands::after,
+.motion-paused .saturn-flares,
+.motion-paused .saturn-prominence,
+.particle-fallback .saturn-bands::before,
+.particle-fallback .saturn-bands::after,
+.particle-fallback .saturn-flares,
+.particle-fallback .saturn-prominence {
+  animation-play-state: paused;
 }
 
 @media (max-width: 760px) {
@@ -257,7 +287,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .saturn-bands::before {
+  .saturn-bands::before,
+  .saturn-bands::after,
+  .saturn-flares,
+  .saturn-prominence {
     animation: none;
   }
 }

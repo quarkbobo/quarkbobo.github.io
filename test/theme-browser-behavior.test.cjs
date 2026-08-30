@@ -74,7 +74,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
         .post-grid, .archive-list li { display: block !important; }
         .skip-link:focus { transform: translateY(0) !important; }
         #main-content:focus { outline: none !important; }
-        .motion-paused .saturn-bands::before { animation-play-state: running !important; }
+        .motion-paused .saturn-bands::before, .motion-paused .saturn-bands::after, .motion-paused .saturn-flares, .motion-paused .saturn-prominence { animation-play-state: running !important; }
         @media (prefers-reduced-motion: reduce) {
           .motion-toggle { display: inline-flex !important; }
           .saturn-bands::before { animation: saturn-latitude-drift 22s infinite !important; }
@@ -97,7 +97,20 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
         <header class="site-header"></header>
         <main id="main-content" tabindex="-1">
           <h2 id="probe-heading">Probe heading</h2>
-          <button class="motion-toggle" id="probe-control" type="button">Pause</button>
+          <section class="home-hero" id="probe-hero">
+            <button class="motion-toggle" id="motion-toggle" type="button">Pause</button>
+            <div id="space-scene" class="space-scene">
+              <div class="saturn-system">
+                <div class="saturn-ring saturn-ring--back"></div>
+                <svg class="saturn-prominences" viewBox="0 0 100 100" aria-hidden="true">
+                  <g class="saturn-prominence saturn-prominence--crown"><path d="M 40 20 L 50 10" /></g>
+                  <g class="saturn-prominence saturn-prominence--east"><path d="M 70 40 L 90 45" /></g>
+                </svg>
+                <div class="saturn"><div class="saturn-bands"></div><div class="saturn-flares"></div></div>
+                <div class="saturn-ring saturn-ring--front"></div>
+              </div>
+            </div>
+          </section>
           <div class="post-grid" id="probe-grid">
             <article class="post-card" id="probe-card">
               <h3><a id="probe-card-title" href="#probe-heading">A</a></h3>
@@ -106,13 +119,12 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
             <article class="post-card"><h3><a href="#probe-heading">Second card</a></h3></article>
           </div>
           <ol class="archive-list"><li id="probe-archive-row"><time>2026</time><a id="probe-archive-link" href="#probe-heading">B</a></li></ol>
-          <div id="space-scene" class="space-scene"><div class="saturn-bands"></div></div>
         </main>
         <pre id="probe-result"></pre>
         <script>
           addEventListener('load', function () {
             const heading = document.getElementById('probe-heading')
-            const control = document.getElementById('probe-control')
+            const control = document.getElementById('motion-toggle')
             const card = document.querySelector('.post-card')
             const grid = document.getElementById('probe-grid')
             const cardTitle = document.getElementById('probe-card-title')
@@ -143,10 +155,28 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
               outlineWidth: mainFocusStyle.outlineWidth,
               outlineOffset: mainFocusStyle.outlineOffset
             }
+            const flares = document.querySelector('.saturn-flares')
+            const prominences = Array.from(document.querySelectorAll('.saturn-prominence'))
+            const ring = document.querySelector('.saturn-ring')
+            const animatedStyles = [
+              getComputedStyle(bands, '::before'),
+              getComputedStyle(bands, '::after'),
+              getComputedStyle(flares),
+              ...prominences.map(node => getComputedStyle(node))
+            ]
+            const animationSnapshot = function () {
+              return animatedStyles.map(function (style) {
+                return { name: style.animationName, playState: style.animationPlayState }
+              })
+            }
             scene.classList.add('motion-paused')
-            const pausedAnimationPlayState = getComputedStyle(bands, '::before').animationPlayState
+            const pausedAnimations = animationSnapshot()
             scene.classList.remove('motion-paused')
-            const runningAnimationPlayState = getComputedStyle(bands, '::before').animationPlayState
+            const runningAnimations = animationSnapshot()
+            scene.classList.add('particle-fallback')
+            const fallbackAnimations = animationSnapshot()
+            const fallbackControlDisplay = getComputedStyle(control).display
+            scene.classList.remove('particle-fallback')
             control.focus()
             const controlStyle = getComputedStyle(control)
             const cardStyle = getComputedStyle(card)
@@ -215,7 +245,13 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                 }
               },
               saturnAnimationName: bandsBefore.animationName,
-              saturnMotion: { pausedAnimationPlayState, runningAnimationPlayState },
+              saturnMotion: { pausedAnimations, runningAnimations, fallbackAnimations },
+              fallbackControlDisplay,
+              equatorAngles: {
+                ring: getComputedStyle(ring).getPropertyValue('--saturn-equator-angle').trim(),
+                bands: getComputedStyle(bands).getPropertyValue('--saturn-equator-angle').trim()
+              },
+              prominenceTransformBoxes: prominences.map(node => getComputedStyle(node).transformBox),
               animationProperties,
               scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior,
               safeAreaResolved: {
@@ -381,8 +417,8 @@ test('built theme exposes accessible interaction and compositor-friendly renderi
   assert.equal(probe.card.contentVisibility, 'auto')
   assert.deepEqual(probe.card.transitionProperty.split(',').map(value => value.trim()), ['transform'])
   assert.notEqual(probe.card.transitionProperty, 'all')
-  assert.equal(probe.saturnAnimationName, 'saturn-latitude-drift')
-  assert.ok(probe.animationProperties.length >= 1, 'Chrome exposes the Saturn CSS animation')
+  assert.equal(probe.saturnAnimationName, 'saturn-gas-rotation')
+  assert.ok(probe.animationProperties.length >= 4, 'Chrome exposes the Saturn CSS animations')
   for (const properties of probe.animationProperties) {
     assert.ok(properties.every(property => ['opacity', 'transform'].includes(property)), properties.join(', '))
   }
@@ -430,12 +466,23 @@ test('main landmark retains its visible keyboard focus replacement in Chrome', (
   assert.equal(probe.mainFocus.outlineOffset, '4px')
 })
 
-test('motion-paused scene state pauses and releases the Saturn CSS animation in Chrome', () => {
-  // A renderer-only pause would leave the 22-second Saturn drift running behind the paused Canvas.
+test('motion controls pause every star animation and preserve shared geometry in Chrome', () => {
+  // A renderer-only pause or local angle override would leave visual motion running or desynchronize the ring and surface.
   const probe = normalChromeProbe()
 
-  assert.equal(probe.saturnMotion.pausedAnimationPlayState, 'paused')
-  assert.equal(probe.saturnMotion.runningAnimationPlayState, 'running')
+  assert.deepEqual(probe.saturnMotion.pausedAnimations.map(animation => animation.playState), ['paused', 'paused', 'paused', 'paused', 'paused'])
+  assert.deepEqual(probe.saturnMotion.runningAnimations.map(animation => animation.playState), ['running', 'running', 'running', 'running', 'running'])
+  assert.deepEqual(probe.saturnMotion.fallbackAnimations.map(animation => animation.playState), ['paused', 'paused', 'paused', 'paused', 'paused'])
+  assert.deepEqual(probe.saturnMotion.runningAnimations.map(animation => animation.name), [
+    'saturn-gas-rotation',
+    'saturn-magnetic-rotation',
+    'saturn-flare-transit',
+    'saturn-prominence-breathe',
+    'saturn-prominence-breathe'
+  ])
+  assert.equal(probe.fallbackControlDisplay, 'none')
+  assert.deepEqual(probe.equatorAngles, { ring: '-10deg', bands: '-10deg' })
+  assert.deepEqual(probe.prominenceTransformBoxes, ['fill-box', 'fill-box'])
 })
 
 test('built theme removes continuous motion in Chrome reduced-motion mode', () => {
@@ -443,7 +490,7 @@ test('built theme removes continuous motion in Chrome reduced-motion mode', () =
   const probe = runChromeProbe({ reducedMotion: true })
 
   assert.equal(probe.control.display, 'none')
-  assert.equal(probe.saturnAnimationName, 'none')
+  assert.deepEqual(probe.saturnMotion.runningAnimations.map(animation => animation.name), ['none', 'none', 'none', 'none', 'none'])
   assert.equal(probe.animationProperties.length, 0)
   assert.equal(probe.scrollBehavior, 'auto')
 })

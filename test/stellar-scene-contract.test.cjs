@@ -34,6 +34,51 @@ test('ring and surface share one equatorial angle and animated SVG groups use lo
   assert.match(css, /\.saturn-prominence\s*\{[^}]*transform-box:\s*fill-box;[^}]*transform-origin:\s*var\(--prominence-origin\);/s)
 })
 
+test('stellar motion uses one-way compositor animations and supplies fallback controls', () => {
+  const css = sceneCss()
+  const animationNames = [
+    'saturn-gas-rotation',
+    'saturn-magnetic-rotation',
+    'saturn-flare-transit',
+    'saturn-prominence-breathe'
+  ]
+
+  for (const name of animationNames) {
+    const keyframes = css.match(new RegExp(`@keyframes\\s+${name}\\s*\\{([\\s\\S]*?)\\n\\}`, 'm'))?.[1]
+    assert.ok(keyframes, `${name} keyframes exist`)
+    assert.doesNotMatch(keyframes, /\b(background-position|filter|box-shadow)\s*:/)
+    assert.match(keyframes, /\b(transform|opacity)\s*:/)
+  }
+
+  for (const [target, animation] of [
+    ['.saturn-bands::before', 'saturn-gas-rotation'],
+    ['.saturn-bands::after', 'saturn-magnetic-rotation']
+  ]) {
+    const selector = target.replace(/[:.]/g, '\\$&')
+    const rules = [...css.matchAll(new RegExp(`${selector}\\s*\\{([^}]*)\\}`, 'g'))].map(match => match[1])
+    const animationRule = rules.find(rule => rule.includes(`animation: ${animation}`))
+    assert.ok(animationRule, `${target} animation rule exists`)
+    assert.match(animationRule, new RegExp(`animation:\\s*${animation}\\s+\\d+(?:\\.\\d+)?s\\s+linear\\s+infinite;`))
+    assert.doesNotMatch(animationRule, /\balternate\b/)
+  }
+
+  const pausedTargets = [
+    '.saturn-bands::before',
+    '.saturn-bands::after',
+    '.saturn-flares',
+    '.saturn-prominence'
+  ]
+  for (const state of ['.motion-paused', '.particle-fallback']) {
+    for (const target of pausedTargets) {
+      const selector = `${state} ${target}`
+      assert.match(css, new RegExp(selector.replace(/[:.]/g, '\\$&')))
+    }
+  }
+  assert.match(css, /\.motion-paused[\s\S]*?\.particle-fallback[\s\S]*?animation-play-state:\s*paused;/)
+  assert.doesNotMatch(css, /saturn-(?:gas|magnetic|flare|prominence)[\s\S]{0,100}\balternate\b/)
+  assert.match(read('themes/fluid-particle/source/css/main.css'), /\.home-hero:has\(\.particle-fallback\) \.motion-toggle\s*\{\s*display:\s*none;\s*\}/)
+})
+
 test('particle renderer and Canvas visual contract stay unchanged', () => {
   assert.equal(hash('themes/fluid-particle/source/js/particle-core.js'), 'A16D193E8874DF1248532458B3114AC0393B746431EF2559C5A2A2035B5F11E0')
   assert.equal(hash('themes/fluid-particle/source/js/particle-flow.js'), '45982BE65E5F465C730DEA7E3E1FCC8FCBC93F6B9C238B346C11F028FD116D2A')

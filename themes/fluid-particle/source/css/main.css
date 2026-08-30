@@ -263,6 +263,10 @@ a {
   color: var(--signal-cyan);
 }
 
+.home-hero:has(.particle-fallback) .motion-toggle {
+  display: none;
+}
+
 .hero-scene {
   min-width: 0;
   min-height: clamp(21rem, 52vw, 42rem);
