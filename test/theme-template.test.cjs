@@ -8,7 +8,7 @@ const themeRoot = path.resolve(__dirname, '..', 'themes', 'fluid-particle')
 const template = relative => fs.readFileSync(path.join(themeRoot, 'layout', relative), 'utf8')
 const stripHtml = html => String(html).replace(/<[^>]+>/g, '')
 
-function renderPostFull (content) {
+function renderPostFull (content, tocHelper = () => '') {
   return ejs.render(template(path.join('_partial', 'post-full.ejs')), {
     config: { language: 'zh-CN', title: 'Fixture site' },
     post: {
@@ -17,10 +17,16 @@ function renderPostFull (content) {
       content
     },
     strip_html: stripHtml,
-    toc: () => '',
+    toc: tocHelper,
     date_xml: value => String(value)
   })
 }
+
+const decodeHtmlAttribute = value => String(value)
+  .replace(/&quot;/g, '"')
+  .replace(/&amp;/g, '&')
+  .replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>')
 
 test('article heading and image normalization leaves raw-text containers byte-for-byte intact', () => {
   // Removing the raw-text boundary would rewrite HTML-looking strings in executable or preformatted content.
@@ -49,6 +55,53 @@ test('glyph-only heading permalinks expose the heading name to assistive technol
 
   assert.ok(permalink, 'the authored permalink remains present')
   assert.match(`${permalink[1]} ${permalink[2]}`, /aria-label="章节链接：Named section"/)
+})
+
+test('raw-text protection remains active while the article outline is derived', () => {
+  // Restoring raw containers before toc() lets literal heading examples become fake navigation entries.
+  const protectedFragments = [
+    '<script>const literal = "<h2>Script fake heading</h2>";</script>',
+    '<style>.sample::before { content: "<h2>Style fake heading</h2>"; }</style>',
+    '<textarea><h2>Textarea fake heading</h2></textarea>',
+    '<pre><h2>Pre fake heading</h2></pre>',
+    '<code><h2>Code fake heading</h2></code>'
+  ]
+  const equivalentToc = html => {
+    const labels = [...String(html).matchAll(/<h[23]\b[^>]*>([\s\S]*?)<\/h[23]>/gi)]
+      .map(match => stripHtml(match[1]).trim())
+    return `<ol class="toc">${labels.map(label => `<li>${label}</li>`).join('')}</ol>`
+  }
+  const output = renderPostFull(
+    [...protectedFragments, '<h2>Real outline heading</h2>'].join('\n'),
+    equivalentToc
+  )
+  const outline = output.match(/<details\b[^>]*class="article-toc-disclosure"[^>]*>([\s\S]*?)<\/details>/i)?.[1]
+
+  assert.ok(outline, 'the equivalent toc renders an outline')
+  assert.match(outline, /Real outline heading/)
+  assert.doesNotMatch(outline, /(?:Script|Style|Textarea|Pre|Code) fake heading/)
+  for (const fragment of protectedFragments) assert.equal(output.includes(fragment), true, fragment)
+})
+
+test('glyph permalinks decode heading entities once and expose distinct browser-readable names', () => {
+  // Escaping already-encoded heading HTML turns &amp; into a literal "&amp;" instead of the visible ampersand.
+  const output = renderPostFull([
+    '<h2>API / R&amp;D<a class="header-anchor" href="#old-api">#</a></h2>',
+    '<h2>Ops &#x2F; QA &amp; &quot;Ship&quot;<a class="header-anchor" href="#old-ops">#</a></h2>'
+  ].join(''))
+  const htmlValues = [...output.matchAll(/<a\b([^>]*)class="[^"]*\bheader-anchor\b[^"]*"([^>]*)>#<\/a>/gi)]
+    .map(permalink => `${permalink[1]} ${permalink[2]}`.match(/\baria-label="([^"]+)"/i)?.[1])
+
+  assert.deepEqual(htmlValues, [
+    '章节链接：API / R&amp;D',
+    '章节链接：Ops / QA &amp; &quot;Ship&quot;'
+  ])
+  assert.deepEqual(htmlValues.map(decodeHtmlAttribute), [
+    '章节链接：API / R&D',
+    '章节链接：Ops / QA & "Ship"'
+  ])
+  assert.notEqual(htmlValues[0], htmlValues[1], 'different headings keep different accessible context')
+  assert.doesNotMatch(output, /&amp;amp;/)
 })
 
 test('post cards render real category links when the post has categories', () => {

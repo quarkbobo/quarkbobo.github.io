@@ -98,6 +98,42 @@ const assertGlintGrouping = (pool, particleCount, expectedGlints) => {
   }
 }
 
+const screenDistance = (left, right) => Math.hypot(left.x - right.x, left.y - right.y)
+
+const assertGlintScreenGeometry = (pool, draws, particleCount, viewport) => {
+  const active = pool.filter(particle => particle.index < particleCount)
+  const groups = glintGroups(active)
+  const maximumGroupSpan = Math.min(viewport.width, viewport.height) * 0.07
+  let renderedGroupCount = 0
+
+  for (const [groupIndex, group] of groups.entries()) {
+    const rendered = group.map(particle => draws.get(particle.index))
+    if (rendered.every(draw => !draw)) continue
+    assert.equal(rendered.every(Boolean), true, `${viewport.label} group is fully rendered`)
+    renderedGroupCount++
+    let minimumCenterDistance = Infinity
+    let groupSpan = 0
+    for (let left = 0; left < rendered.length; left++) {
+      for (let right = left + 1; right < rendered.length; right++) {
+        const distance = screenDistance(rendered[left], rendered[right])
+        const minimumVisibleSeparation = (rendered[left].size + rendered[right].size) * 0.42
+        minimumCenterDistance = Math.min(minimumCenterDistance, distance)
+        groupSpan = Math.max(groupSpan, distance)
+        assert.ok(
+          distance >= minimumVisibleSeparation,
+          `${viewport.label} group ${groupIndex} centers ${distance.toFixed(2)}px for ${minimumVisibleSeparation.toFixed(2)}px sprites`
+        )
+      }
+    }
+    assert.ok(Number.isFinite(minimumCenterDistance), `${viewport.label} group has a center-distance sample`)
+    assert.ok(
+      groupSpan <= maximumGroupSpan,
+      `${viewport.label} group ${groupIndex} spans ${groupSpan.toFixed(2)}px (max ${maximumGroupSpan.toFixed(2)}px)`
+    )
+  }
+  assert.ok(renderedGroupCount > 0, `${viewport.label} renders at least one complete glint group`)
+}
+
 const occurrences = (value, needle) => {
   let count = 0
   let cursor = 0
@@ -229,7 +265,13 @@ function createHarness (options = {}) {
   function makeContext () {
     const context = {
       clearRect () {
-        state.drawFrames.push({ trailSegments: 0, maxPointerMagnitude: 0, particles: new Map() })
+        state.drawFrames.push({
+          trailSegments: 0,
+          maxPointerMagnitude: 0,
+          particles: new Map(),
+          draws: new Map(),
+          positionedParticleIndex: -1
+        })
       },
       setTransform () {},
       beginPath () {},
@@ -240,7 +282,17 @@ function createHarness (options = {}) {
       },
       stroke () {},
       fillRect () {},
-      drawImage () { state.drawImageCount++ },
+      drawImage (sprite, left, top, width, height) {
+        state.drawImageCount++
+        const frame = state.drawFrames[state.drawFrames.length - 1]
+        if (frame && options.recordParticles && frame.positionedParticleIndex >= 0) {
+          frame.draws.set(frame.positionedParticleIndex, {
+            x: left + width / 2,
+            y: top + height / 2,
+            size: Math.max(width, height)
+          })
+        }
+      },
       createRadialGradient () {
         state.gradientCount++
         return { addColorStop () {} }
@@ -350,7 +402,10 @@ function createHarness (options = {}) {
         if (frame && options.recordPointer) {
           frame.maxPointerMagnitude = Math.max(frame.maxPointerMagnitude, Math.hypot(pointer.x, pointer.y))
         }
-        if (frame && options.recordParticles) frame.particles.set(particle.index, particle)
+        if (frame && options.recordParticles) {
+          frame.particles.set(particle.index, particle)
+          frame.positionedParticleIndex = particle.index
+        }
         if (options.recordPositionOutputs) {
           state.positionCalls++
           if (output) state.positionOutputs.add(output)
@@ -622,6 +677,50 @@ test('live reduced-motion changes switch immediately and preserve requested and 
   assert.equal(harness.state.drawFrames.length, drawsAfterDestroy)
 })
 
+test('a paused resize repaints one static frame without restarting animation', () => {
+  // Resizing the backing store clears the visible canvas, so a stopped renderer must repaint without scheduling motion.
+  const harness = createHarness({ width: 1280, height: 720 })
+  const canvas = harness.makeCanvas()
+  const lifecycle = harness.renderer.mount(canvas)
+  harness.flushIdle()
+  harness.flushRaf(100)
+  lifecycle.stop()
+
+  const clearsBeforeResize = harness.state.drawFrames.length
+  const drawsBeforeResize = harness.state.drawImageCount
+  canvas.clientWidth = 1200
+  canvas.clientHeight = 760
+  harness.window.innerWidth = 1200
+  harness.window.dispatch('resize')
+  assert.equal(harness.pendingRafs(), 1, 'resize work is queued once')
+  harness.flushRaf(116)
+
+  assert.ok(harness.state.drawFrames.length > clearsBeforeResize, 'resize clears then repaints a frame')
+  assert.ok(harness.state.drawImageCount > drawsBeforeResize, 'particles redraw after the clear')
+  assert.equal(harness.pendingRafs(), 0, 'the paused renderer stays stopped')
+  lifecycle.destroy()
+})
+
+test('paused reduced-motion restoration repaints one static frame without restarting animation', () => {
+  // Leaving reduced motion changes the particle budget; while explicitly stopped it still needs one replacement frame.
+  const harness = createHarness()
+  const lifecycle = harness.renderer.mount(harness.makeCanvas())
+  harness.flushIdle()
+  harness.flushRaf(100)
+  lifecycle.stop()
+  harness.motionQuery.setMatches(true)
+
+  const clearsBeforeRestore = harness.state.drawFrames.length
+  const drawsBeforeRestore = harness.state.drawImageCount
+  harness.motionQuery.setMatches(false)
+
+  assert.ok(harness.state.drawFrames.length > clearsBeforeRestore, 'restoration clears then repaints a frame')
+  assert.ok(harness.state.drawImageCount > drawsBeforeRestore, 'restored-budget particles redraw after the clear')
+  assert.equal(harness.pendingRafs(), 0, 'the paused renderer stays stopped')
+  assert.equal(lifecycle.snapshot().particleCount, 320)
+  lifecycle.destroy()
+})
+
 test('DPR is capped, coarse pointers use the mobile cap, and resize work is coalesced', async t => {
   // Unbounded backing stores or one resize frame per event would cause avoidable memory and layout work.
   await t.test('desktop cap and coalesced resize', () => {
@@ -880,31 +979,47 @@ test('every desktop quality level keeps an approximately 84/13/3 layer quota', (
   lifecycle.destroy()
 })
 
-test('every supported particle budget contains deterministic dispersed glint groups of two to four', () => {
-  // Independent 13% glints would satisfy quotas but leave singleton motion instead of travelling companions.
-  const capture = () => {
-    const harness = createHarness({ recordParticles: true })
-    const lifecycle = harness.renderer.mount(harness.makeCanvas(), { seed: 0x12345678 })
+test('every supported particle prefix keeps deterministic two-to-four glint groups with readable screen geometry', () => {
+  // Metadata-only phase checks miss sprites that overlap or split across opposite ends when member phases wrap.
+  const capture = viewport => {
+    const harness = createHarness({ recordParticles: true, width: viewport.width, height: viewport.height })
+    const lifecycle = harness.renderer.mount(harness.makeCanvas())
     harness.flushIdle()
-    harness.flushRaf(100)
-    const frame = harness.state.drawFrames.at(-1)
-    const pool = [...frame.particles.values()]
-      .sort((left, right) => left.index - right.index)
-      .map(particle => ({
-        index: particle.index,
-        layer: particle.layer,
-        band: particle.band,
-        phase: particle.phase,
-        lifetime: particle.lifetime
-      }))
+    const frames = []
+    for (let frameIndex = 0; frameIndex < 120; frameIndex++) {
+      harness.flushRaf(100 + frameIndex * 16)
+      const frame = harness.state.drawFrames.at(-1)
+      frames.push({
+        pool: [...frame.particles.values()]
+          .sort((left, right) => left.index - right.index)
+          .map(particle => ({
+            index: particle.index,
+            layer: particle.layer,
+            band: particle.band,
+            phase: particle.phase,
+            lifetime: particle.lifetime,
+            size: particle.size,
+            jitter: particle.jitter,
+            wave: particle.wave
+          })),
+        draws: new Map(frame.draws)
+      })
+    }
     lifecycle.destroy()
-    return pool
+    return frames
   }
 
-  const first = capture()
-  const second = capture()
+  const desktopViewport = { label: '1280x720 desktop/320', width: 1280, height: 720 }
+  const mobileViewport = { label: '390x700 mobile/160', width: 390, height: 700 }
+  const first = capture(desktopViewport)
+  const second = capture(desktopViewport)
+  const mobile = capture(mobileViewport)
   assert.deepEqual(first, second)
-  assert.equal(first.length, 320)
+  assert.equal(first[0].pool.length, 320)
+  assert.equal(mobile[0].pool.length, 160)
+  assert.equal(first[0].pool.every(particle =>
+    Number.isFinite(particle.size) && Number.isFinite(particle.jitter) && Number.isFinite(particle.wave)
+  ), true, 'screen geometry retains the generated size, jitter, and wave inputs')
 
   const budgets = [
     [24, 3],
@@ -917,7 +1032,17 @@ test('every supported particle budget contains deterministic dispersed glint gro
     [320, 42]
   ]
   for (const [particleCount, expectedGlints] of budgets) {
-    assertGlintGrouping(first, particleCount, expectedGlints)
+    assertGlintGrouping(first[0].pool, particleCount, expectedGlints)
+  }
+  for (let frameIndex = 0; frameIndex < first.length; frameIndex++) {
+    assertGlintScreenGeometry(mobile[frameIndex].pool, mobile[frameIndex].draws, 160, {
+      ...mobileViewport,
+      label: `${mobileViewport.label} frame ${frameIndex}`
+    })
+    assertGlintScreenGeometry(first[frameIndex].pool, first[frameIndex].draws, 320, {
+      ...desktopViewport,
+      label: `${desktopViewport.label} frame ${frameIndex}`
+    })
   }
 })
 

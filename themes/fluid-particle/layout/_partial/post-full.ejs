@@ -17,6 +17,17 @@ const uniqueHeadingId = preferredId => {
   articleHeadingIds.add(candidate)
   return candidate
 }
+const namedHtmlEntities = Object.freeze({ amp: '&', quot: '"', lt: '<', gt: '>', apos: "'" })
+const decodeHtmlEntities = value => String(value).replace(
+  /&(?:#(\d+)|#x([0-9a-f]+)|(amp|quot|lt|gt|apos));/gi,
+  (entity, decimal, hexadecimal, named) => {
+    if (named) return namedHtmlEntities[named.toLowerCase()]
+    const codePoint = Number.parseInt(decimal || hexadecimal, decimal ? 10 : 16)
+    if (!Number.isInteger(codePoint) || codePoint < 0 || codePoint > 0x10FFFF ||
+      (codePoint >= 0xD800 && codePoint <= 0xDFFF)) return entity
+    return String.fromCodePoint(codePoint)
+  }
+)
 const escapeAttribute = value => String(value)
   .replace(/&/g, '&amp;')
   .replace(/"/g, '&quot;')
@@ -71,7 +82,7 @@ let articleContent = shieldedArticle.html.replace(/<h([1-6])(\b[^>]*)>([\s\S]*?)
       : `${anchorAttributes} href="#${headingId}"`
     const anchorText = strip_html(shieldedArticle.restore(anchorContents)).replace(/\s+/g, ' ').trim()
     if (anchorText === '#' && !/\s+aria-label(?:\s*=|\s|$)/i.test(linkedAttributes)) {
-      linkedAttributes += ` aria-label="${escapeAttribute(`章节链接：${headingLabel}`)}"`
+      linkedAttributes += ` aria-label="${escapeAttribute(`章节链接：${decodeHtmlEntities(headingLabel)}`)}"`
     }
     return `<a${linkedAttributes}>${anchorContents}</a>`
   })
@@ -86,8 +97,8 @@ articleContent = articleContent.replace(/<img\b[^>]*>/gi, image => {
   const closing = image.endsWith('/>') ? '/>' : '>'
   return `${image.slice(0, -closing.length).trimEnd()} ${additions.join(' ')}${closing}`
 })
-articleContent = shieldedArticle.restore(articleContent)
 const outline = toc(articleContent, { min_depth: 2, max_depth: 3, list_number: false })
+articleContent = shieldedArticle.restore(articleContent)
 %>
 <div class="article-layout content-shell">
   <% if (outline && outline.trim()) { %>

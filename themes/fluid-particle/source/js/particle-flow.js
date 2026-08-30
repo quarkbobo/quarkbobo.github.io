@@ -23,8 +23,8 @@
   const STREAK_BURST_DURATION_MS = 1200
   const STREAK_ROTATE_MS = 180
   const STREAK_TRAIL_LIMIT = 2
-  const GLINT_PHASE_SPACING = 0.006
   const GLINT_GROUP_PHASE_STEP = 0.3819660112501051
+  const GLINT_FORMATION_GAP = 0.46
   const EMPTY_LAYER_COUNTS = Object.freeze({ dust: 0, glint: 0, streak: 0 })
   let spriteCache = null
   let mountedLifecycle = null
@@ -137,14 +137,28 @@
       if (remaining - groupSize === 1) groupSize += groupSize < 4 ? 1 : -1
       const centerPhase = (0.083 + groupIndex * GLINT_GROUP_PHASE_STEP) % 1
       const lifetime = glints[cursor].lifetime
+      const jitter = glints[cursor].jitter
+      const wave = glints[cursor].wave
       const band = groupIndex % 3
+      const formationPositions = [0]
+
+      for (let member = 1; member < groupSize; member++) {
+        const previousSize = Math.max(1.2, glints[cursor + member - 1].size * LAYER_SCALE[2])
+        const memberSize = Math.max(1.2, glints[cursor + member].size * LAYER_SCALE[2])
+        formationPositions.push(
+          formationPositions[member - 1] + (previousSize + memberSize) * GLINT_FORMATION_GAP
+        )
+      }
+      const formationCenter = (formationPositions[0] + formationPositions[groupSize - 1]) / 2
 
       for (let member = 0; member < groupSize; member++) {
         const particle = glints[cursor + member]
-        const phaseOffset = (member - (groupSize - 1) / 2) * GLINT_PHASE_SPACING
         particle.band = band
-        particle.phase = (centerPhase + phaseOffset + 1) % 1
+        particle.phase = centerPhase
         particle.lifetime = lifetime
+        particle.jitter = jitter
+        particle.wave = wave
+        particle.formationOffset = formationPositions[member] - formationCenter
       }
       cursor += groupSize
       groupIndex++
@@ -371,7 +385,7 @@
       canvas.width = Math.round(width * dpr)
       canvas.height = Math.round(height * dpr)
       context.setTransform(dpr, 0, 0, dpr, 0, 0)
-      if (reducedMotion && initialized) drawParticles(0)
+      if (initialized && (reducedMotion || !requestedRunning)) drawParticles(0)
     }
 
     function queueResize () {
@@ -399,6 +413,10 @@
         if (particle.index >= activeCount) continue
         if (deltaSeconds) particle.phase = core.advancePhase(particle.phase, deltaSeconds, particle.lifetime)
         const position = core.positionParticle(particle, particle.phase, viewport, pointer, positionOutput)
+        if (particle.layer === 'glint' && particle.formationOffset) {
+          position.x += particle.formationOffset * Math.SQRT1_2
+          position.y += particle.formationOffset * Math.SQRT1_2
+        }
         const fade = core.edgeFade(particle.phase)
         if (fade <= 0.001) continue
         const pulse = particle.layer === 'dust'
