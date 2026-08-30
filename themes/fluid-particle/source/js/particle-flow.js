@@ -23,6 +23,8 @@
   const STREAK_BURST_DURATION_MS = 1200
   const STREAK_ROTATE_MS = 180
   const STREAK_TRAIL_LIMIT = 2
+  const GLINT_PHASE_SPACING = 0.006
+  const GLINT_GROUP_PHASE_STEP = 0.3819660112501051
   const EMPTY_LAYER_COUNTS = Object.freeze({ dust: 0, glint: 0, streak: 0 })
   let spriteCache = null
   let mountedLifecycle = null
@@ -124,11 +126,38 @@
     return Object.freeze({ dust: counts[0], glint: counts[1], streak: counts[2] })
   }
 
+  function groupGlints (segment, firstGroupIndex) {
+    const glints = segment.filter(function (particle) { return particle.layer === 'glint' })
+    let cursor = 0
+    let groupIndex = firstGroupIndex
+
+    while (cursor < glints.length) {
+      const remaining = glints.length - cursor
+      let groupSize = Math.min(remaining, 2 + groupIndex % 3)
+      if (remaining - groupSize === 1) groupSize += groupSize < 4 ? 1 : -1
+      const centerPhase = (0.083 + groupIndex * GLINT_GROUP_PHASE_STEP) % 1
+      const lifetime = glints[cursor].lifetime
+      const band = groupIndex % 3
+
+      for (let member = 0; member < groupSize; member++) {
+        const particle = glints[cursor + member]
+        const phaseOffset = (member - (groupSize - 1) / 2) * GLINT_PHASE_SPACING
+        particle.band = band
+        particle.phase = (centerPhase + phaseOffset + 1) % 1
+        particle.lifetime = lifetime
+      }
+      cursor += groupSize
+      groupIndex++
+    }
+    return groupIndex
+  }
+
   function createQuotaParticles (core, rng, checkpoints, quotas) {
     const particles = []
     let previousTotal = 0
     let previousQuota = EMPTY_LAYER_COUNTS
     let candidateIndex = 0
+    let glintGroupIndex = 0
 
     for (let checkpointIndex = 0; checkpointIndex < checkpoints.length; checkpointIndex++) {
       const targetTotal = checkpoints[checkpointIndex]
@@ -149,6 +178,8 @@
           segment.push(candidate)
         }
       }
+
+      glintGroupIndex = groupGlints(segment, glintGroupIndex)
 
       for (let index = segment.length - 1; index > 0; index--) {
         const swapIndex = Math.floor(rng() * (index + 1))
@@ -195,8 +226,10 @@
     }
     if (!sprites) return noopLifecycle(canvas)
 
-    const reducedMotion = typeof root.matchMedia === 'function' &&
-      root.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reducedMotionQuery = typeof root.matchMedia === 'function'
+      ? root.matchMedia('(prefers-reduced-motion: reduce)')
+      : null
+    let reducedMotion = Boolean(reducedMotionQuery && reducedMotionQuery.matches)
     function mobileViewport () {
       const coarsePointer = typeof root.matchMedia === 'function' &&
         root.matchMedia('(pointer: coarse)').matches
@@ -222,6 +255,8 @@
     const pointer = { x: 0, y: 0 }
     const pointerTarget = { x: 0, y: 0 }
     const viewport = { width: 1, height: 1 }
+    const positionOutput = { x: 0, y: 0 }
+    const trailOutput = { x: 0, y: 0 }
     const frameSamples = new Float64Array(METRIC_WINDOW)
     const longSamples = new Uint8Array(METRIC_WINDOW)
     const metrics = {
@@ -248,6 +283,10 @@
     let trailWindowCount = 0
     let qualityState = { level: 2, frameTimes: [] }
     let pointerListenerAttached = false
+    let pointerClientX = 0
+    let pointerClientY = 0
+    let pointerUpdatePending = false
+    let motionQueryListenerMode = ''
     const motionToggle = config.motionToggle
     const motionScene = canvas.parentElement
 
@@ -287,9 +326,23 @@
       pointer.y = 0
       pointerTarget.x = 0
       pointerTarget.y = 0
+      pointerUpdatePending = false
       if (shouldListen) root.addEventListener('pointermove', onPointerMove, { passive: true })
       else root.removeEventListener('pointermove', onPointerMove)
       pointerListenerAttached = shouldListen
+    }
+
+    function syncParticleBudget () {
+      if (!initialized) return
+      if (reducedMotion) {
+        metrics.qualityLevel = 0
+        metrics.particleCount = reducedCount
+        metrics.layerCounts = reducedLayerCounts
+      } else {
+        metrics.qualityLevel = qualityState.level
+        metrics.particleCount = counts[qualityState.level]
+        metrics.layerCounts = qualityLayerCounts[qualityState.level]
+      }
     }
 
     function syncViewportPolicy () {
@@ -301,10 +354,7 @@
       reducedCount = isMobile ? mobileReducedCount : desktopReducedCount
       reducedLayerCounts = isMobile ? mobileReducedLayerCounts : desktopReducedLayerCounts
       syncPointerListener()
-      if (initialized) {
-        metrics.particleCount = reducedMotion ? reducedCount : counts[metrics.qualityLevel]
-        metrics.layerCounts = reducedMotion ? reducedLayerCounts : qualityLayerCounts[metrics.qualityLevel]
-      }
+      syncParticleBudget()
     }
 
     function resizeNow () {
@@ -348,7 +398,7 @@
         const particle = bucket[index]
         if (particle.index >= activeCount) continue
         if (deltaSeconds) particle.phase = core.advancePhase(particle.phase, deltaSeconds, particle.lifetime)
-        const position = core.positionParticle(particle, particle.phase, viewport, pointer)
+        const position = core.positionParticle(particle, particle.phase, viewport, pointer, positionOutput)
         const fade = core.edgeFade(particle.phase)
         if (fade <= 0.001) continue
         const pulse = particle.layer === 'dust'
@@ -360,7 +410,7 @@
           ? (particle.streakSlot - trailWindowStart + metrics.layerCounts.streak) % metrics.layerCounts.streak
           : STREAK_TRAIL_LIMIT
         if (isStreak && streakOffset < trailWindowCount && particle.phase > 0.055) {
-          const trail = core.positionParticle(particle, particle.phase - 0.035, viewport, pointer)
+          const trail = core.positionParticle(particle, particle.phase - 0.035, viewport, pointer, trailOutput)
           context.moveTo(trail.x, trail.y)
           context.lineTo(position.x, position.y)
           trailSegments++
@@ -428,6 +478,7 @@
       }
 
       updateTrailGate(motionDeltaMs)
+      syncPointerTarget()
       const easing = motionDeltaMs ? Math.min(1, motionDeltaMs / 180) : 0
       pointer.x += (pointerTarget.x - pointer.x) * easing
       pointer.y += (pointerTarget.y - pointer.y) * easing
@@ -448,17 +499,11 @@
         if (particle.layer === 'streak') particle.streakSlot = streakSlot++
         buckets[layerOffset + colorOffset].push(particle)
       }
-      metrics.qualityLevel = reducedMotion ? 0 : 2
-      metrics.particleCount = reducedMotion ? reducedCount : counts[2]
-      metrics.layerCounts = reducedMotion ? reducedLayerCounts : qualityLayerCounts[2]
       initialized = true
+      syncParticleBudget()
       resizeNow()
 
-      if (reducedMotion) {
-        drawParticles(0)
-      } else {
-        scheduleFrame()
-      }
+      if (!reducedMotion) scheduleFrame()
     }
 
     function scheduleIdle () {
@@ -472,10 +517,18 @@
     }
 
     function onPointerMove (event) {
+      pointerClientX = Number.isFinite(event.clientX) ? event.clientX : 0
+      pointerClientY = Number.isFinite(event.clientY) ? event.clientY : 0
+      pointerUpdatePending = true
+    }
+
+    function syncPointerTarget () {
+      if (!pointerUpdatePending) return
+      pointerUpdatePending = false
       const bounds = canvas.getBoundingClientRect()
       if (!bounds.width || !bounds.height) return
-      pointerTarget.x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 16
-      pointerTarget.y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 16
+      pointerTarget.x = ((pointerClientX - bounds.left) / bounds.width - 0.5) * 16
+      pointerTarget.y = ((pointerClientY - bounds.top) / bounds.height - 0.5) * 16
     }
 
     function onVisibilityChange () {
@@ -486,6 +539,25 @@
       } else {
         scheduleFrame()
       }
+    }
+
+    function onReducedMotionChange (event) {
+      if (destroyed) return
+      const nextReducedMotion = Boolean(event && typeof event.matches === 'boolean'
+        ? event.matches
+        : reducedMotionQuery && reducedMotionQuery.matches)
+      if (nextReducedMotion === reducedMotion) return
+      reducedMotion = nextReducedMotion
+      lastTimestamp = 0
+      if (animationFrameId) root.cancelAnimationFrame(animationFrameId)
+      animationFrameId = 0
+      if (!initialized) return
+
+      syncParticleBudget()
+      if (resizeFrameId) root.cancelAnimationFrame(resizeFrameId)
+      resizeFrameId = 0
+      resizeNow()
+      if (!reducedMotion) scheduleFrame()
     }
 
     function syncMotionControl (paused) {
@@ -534,6 +606,12 @@
       if (pointerListenerAttached) root.removeEventListener('pointermove', onPointerMove)
       pointerListenerAttached = false
       document.removeEventListener('visibilitychange', onVisibilityChange)
+      if (motionQueryListenerMode === 'event') {
+        reducedMotionQuery.removeEventListener('change', onReducedMotionChange)
+      } else if (motionQueryListenerMode === 'legacy') {
+        reducedMotionQuery.removeListener(onReducedMotionChange)
+      }
+      motionQueryListenerMode = ''
       if (motionToggle && typeof motionToggle.removeEventListener === 'function') {
         motionToggle.removeEventListener('click', onMotionToggle)
       }
@@ -545,6 +623,13 @@
     root.addEventListener('resize', queueResize)
     syncPointerListener()
     document.addEventListener('visibilitychange', onVisibilityChange)
+    if (reducedMotionQuery && typeof reducedMotionQuery.addEventListener === 'function') {
+      reducedMotionQuery.addEventListener('change', onReducedMotionChange)
+      motionQueryListenerMode = 'event'
+    } else if (reducedMotionQuery && typeof reducedMotionQuery.addListener === 'function') {
+      reducedMotionQuery.addListener(onReducedMotionChange)
+      motionQueryListenerMode = 'legacy'
+    }
     if (motionToggle && typeof motionToggle.addEventListener === 'function') {
       syncMotionControl(false)
       motionToggle.addEventListener('click', onMotionToggle)

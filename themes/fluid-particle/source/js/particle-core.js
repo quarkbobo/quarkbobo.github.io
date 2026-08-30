@@ -65,29 +65,24 @@
       t * t * t * d
   }
 
-  function clampedPointer (pointer) {
-    const x = pointer && Number.isFinite(pointer.x) ? pointer.x : 0
-    const y = pointer && Number.isFinite(pointer.y) ? pointer.y : 0
-    const magnitude = Math.hypot(x, y)
-    const scale = magnitude > POINTER_LIMIT ? POINTER_LIMIT / magnitude : 1
-    return { x: x * scale, y: y * scale }
-  }
-
-  function positionParticle (particle, progress, viewport, pointer) {
+  function positionParticle (particle, progress, viewport, pointer, output) {
     const band = ORBIT_BANDS[particle.band] || ORBIT_BANDS[0]
     const t = Math.max(0, Math.min(1, progress))
-    const pointerOffset = clampedPointer(pointer)
+    const pointerX = pointer && Number.isFinite(pointer.x) ? pointer.x : 0
+    const pointerY = pointer && Number.isFinite(pointer.y) ? pointer.y : 0
+    const pointerMagnitude = Math.hypot(pointerX, pointerY)
+    const pointerScale = pointerMagnitude > POINTER_LIMIT ? POINTER_LIMIT / pointerMagnitude : 1
     const pointerInfluence = 4 * t * (1 - t)
     const jitter = Number.isFinite(particle.jitter) ? particle.jitter : 0
     const wave = Number.isFinite(particle.wave) ? particle.wave : 0
+    const position = output || {}
 
-    return {
-      x: cubicBezier(band[0][0], band[1][0], band[2][0], band[3][0], t) * viewport.width +
-        pointerOffset.x * pointerInfluence,
-      y: cubicBezier(band[0][1], band[1][1], band[2][1], band[3][1], t) * viewport.height +
-        Math.sin(t * TAU + wave) * jitter * viewport.height +
-        pointerOffset.y * pointerInfluence
-    }
+    position.x = cubicBezier(band[0][0], band[1][0], band[2][0], band[3][0], t) * viewport.width +
+      pointerX * pointerScale * pointerInfluence
+    position.y = cubicBezier(band[0][1], band[1][1], band[2][1], band[3][1], t) * viewport.height +
+      Math.sin(t * TAU + wave) * jitter * viewport.height +
+      pointerY * pointerScale * pointerInfluence
+    return position
   }
 
   function advancePhase (phase, elapsedSeconds, lifetimeSeconds) {

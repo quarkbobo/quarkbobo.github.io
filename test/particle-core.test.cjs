@@ -99,6 +99,20 @@ test('pointer displacement is clamped to eight pixels', () => {
   assert.ok(moved.x > base.x && moved.y > base.y)
 })
 
+test('particle positioning reuses a caller-provided output point', () => {
+  // Ignoring the reusable output would allocate a new position for every particle on every frame.
+  const particle = { band: 2, jitter: 0.01, wave: 0.75 }
+  const viewport = { width: 1280, height: 592 }
+  const pointer = { x: 12, y: -4 }
+  const expected = Core.positionParticle(particle, 0.42, viewport, pointer)
+  const output = { x: Number.NaN, y: Number.NaN }
+
+  const actual = Core.positionParticle(particle, 0.42, viewport, pointer, output)
+
+  assert.equal(actual, output)
+  assertPointNear(actual, expected, 'reused output')
+})
+
 test('edge fade prevents respawn flashes', () => {
   assert.equal(Core.edgeFade(0), 0)
   assert.equal(Core.edgeFade(1), 0)

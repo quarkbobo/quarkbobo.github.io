@@ -6,6 +6,7 @@ const vm = require('node:vm')
 
 const root = path.resolve(__dirname, '..')
 const built = relative => fs.readFileSync(path.join(root, 'public', relative), 'utf8')
+const themeAsset = relative => fs.readFileSync(path.join(root, 'themes', 'fluid-particle', 'source', relative), 'utf8')
 const metricKeys = ['averageFrameMs', 'dpr', 'fps', 'layerCounts', 'longFramePercent', 'particleCount', 'qualityLevel']
 const layerRatios = { dust: 0.84, glint: 0.13, streak: 0.03 }
 
@@ -19,6 +20,81 @@ const assertLayerQuota = snapshot => {
       Math.abs(layerCounts[layer] - particleCount * ratio) <= 1,
       `${particleCount} ${layer}: ${layerCounts[layer]}`
     )
+  }
+}
+
+const circularDistance = (left, right) => {
+  const distance = Math.abs(left - right) % 1
+  return Math.min(distance, 1 - distance)
+}
+
+const circularCenter = particles => {
+  const vector = particles.reduce((sum, particle) => {
+    const angle = particle.phase * Math.PI * 2
+    sum.x += Math.cos(angle)
+    sum.y += Math.sin(angle)
+    return sum
+  }, { x: 0, y: 0 })
+  const angle = Math.atan2(vector.y, vector.x) / (Math.PI * 2)
+  return angle < 0 ? angle + 1 : angle
+}
+
+const glintGroups = particles => {
+  const glints = particles.filter(particle => particle.layer === 'glint')
+  const pending = new Set(glints.map((_, index) => index))
+  const groups = []
+
+  while (pending.size) {
+    const first = pending.values().next().value
+    pending.delete(first)
+    const queue = [first]
+    const component = []
+    while (queue.length) {
+      const currentIndex = queue.pop()
+      const current = glints[currentIndex]
+      component.push(current)
+      for (const candidateIndex of [...pending]) {
+        const candidate = glints[candidateIndex]
+        const companions = current.band === candidate.band &&
+          circularDistance(current.phase, candidate.phase) <= 0.025 &&
+          Math.abs(current.lifetime - candidate.lifetime) <= 0.15
+        if (companions) {
+          pending.delete(candidateIndex)
+          queue.push(candidateIndex)
+        }
+      }
+    }
+    groups.push(component)
+  }
+  return groups
+}
+
+const assertGlintGrouping = (pool, particleCount, expectedGlints) => {
+  const active = pool.filter(particle => particle.index < particleCount)
+  const glints = active.filter(particle => particle.layer === 'glint')
+  const groups = glintGroups(active)
+  assert.equal(glints.length, expectedGlints, `${particleCount} particle glint quota`)
+  assert.ok(groups.length >= 1, `${particleCount} particle groups`)
+
+  for (const group of groups) {
+    assert.ok(group.length >= 2 && group.length <= 4, `${particleCount} group size ${group.length}`)
+    assert.equal(new Set(group.map(particle => particle.band)).size, 1, `${particleCount} group orbit`)
+    for (let left = 0; left < group.length; left++) {
+      for (let right = left + 1; right < group.length; right++) {
+        assert.ok(circularDistance(group[left].phase, group[right].phase) <= 0.025, `${particleCount} group phase`)
+        assert.ok(Math.abs(group[left].lifetime - group[right].lifetime) <= 0.15, `${particleCount} group lifetime`)
+      }
+    }
+  }
+
+  for (let left = 0; left < groups.length; left++) {
+    for (let right = left + 1; right < groups.length; right++) {
+      if (groups[left][0].band !== groups[right][0].band) continue
+      assert.ok(
+        circularDistance(circularCenter(groups[left]), circularCenter(groups[right])) >= 0.04,
+        `${particleCount} groups share phase space`
+      )
+    }
   }
 }
 
@@ -59,6 +135,29 @@ class FakeEventTarget {
 
   listenerOptions (type) {
     return (this.listeners.get(type) || []).map(listener => listener.options)
+  }
+}
+
+class FakeMediaQueryList extends FakeEventTarget {
+  constructor (media, matches) {
+    super()
+    this.media = media
+    this.matches = Boolean(matches)
+  }
+
+  setMatches (matches) {
+    const next = Boolean(matches)
+    if (next === this.matches) return
+    this.matches = next
+    this.dispatch('change', { matches: next, media: this.media })
+  }
+
+  addListener (handler) {
+    this.addEventListener('change', handler)
+  }
+
+  removeListener (handler) {
+    this.removeEventListener('change', handler)
   }
 }
 
@@ -116,6 +215,10 @@ function createHarness (options = {}) {
     drawImageCount: 0,
     shadowBlurWrites: 0,
     documentQueries: 0,
+    boundsReads: 0,
+    positionCalls: 0,
+    positionCallsWithoutOutput: 0,
+    positionOutputs: new Set(),
     elapsedSeconds: [],
     qualityFrameMs: [],
     drawFrames: []
@@ -125,7 +228,9 @@ function createHarness (options = {}) {
 
   function makeContext () {
     const context = {
-      clearRect () { state.drawFrames.push({ trailSegments: 0, maxPointerMagnitude: 0 }) },
+      clearRect () {
+        state.drawFrames.push({ trailSegments: 0, maxPointerMagnitude: 0, particles: new Map() })
+      },
       setTransform () {},
       beginPath () {},
       moveTo () {},
@@ -161,6 +266,7 @@ function createHarness (options = {}) {
       parentElement: scene,
       classList: new FakeClassList(),
       getBoundingClientRect () {
+        state.boundsReads++
         return { left: 0, top: 0, width: this.clientWidth, height: this.clientHeight }
       },
       getContext: () => canvasOptions.contextAvailable === false || options.contextAvailable === false ? null : context,
@@ -187,11 +293,14 @@ function createHarness (options = {}) {
   window.document = document
   window.devicePixelRatio = options.dpr || 2
   window.innerWidth = options.width || 1000
-  window.matchMedia = query => ({
-    matches: query.includes('prefers-reduced-motion')
-      ? Boolean(options.reducedMotion)
-      : query.includes('pointer: coarse') && Boolean(options.coarsePointer)
-  })
+  const motionQuery = new FakeMediaQueryList(
+    '(prefers-reduced-motion: reduce)',
+    options.reducedMotion
+  )
+  const coarsePointerQuery = new FakeMediaQueryList('(pointer: coarse)', options.coarsePointer)
+  window.matchMedia = query => query.includes('prefers-reduced-motion')
+    ? motionQuery
+    : coarsePointerQuery
   window.performance = { now: () => 0 }
   window.setTimeout = callback => {
     const id = state.nextId++
@@ -220,36 +329,42 @@ function createHarness (options = {}) {
   const guardedMath = Object.create(Math)
   guardedMath.random = () => { throw new Error('Math.random used by renderer') }
   const context = vm.createContext({ window, document, console, Math: guardedMath })
-  vm.runInContext(built('js/particle-core.js'), context, { filename: 'public/js/particle-core.js' })
+  vm.runInContext(themeAsset(path.join('js', 'particle-core.js')), context, {
+    filename: 'themes/fluid-particle/source/js/particle-core.js'
+  })
 
-  if (options.recordElapsed) {
+  if (options.recordElapsed || options.recordPointer || options.recordParticles || options.recordPositionOutputs) {
     const realCore = window.FluidParticleCore
     window.FluidParticleCore = {
       ...realCore,
       advancePhase (phase, elapsedSeconds, lifetimeSeconds) {
-        state.elapsedSeconds.push(elapsedSeconds)
+        if (options.recordElapsed) state.elapsedSeconds.push(elapsedSeconds)
         return realCore.advancePhase(phase, elapsedSeconds, lifetimeSeconds)
       },
       nextQuality (qualityState, frameMs) {
-        state.qualityFrameMs.push(frameMs)
+        if (options.recordElapsed) state.qualityFrameMs.push(frameMs)
         return realCore.nextQuality(qualityState, frameMs)
-      }
-    }
-  }
-  if (options.recordPointer) {
-    const realCore = window.FluidParticleCore
-    window.FluidParticleCore = {
-      ...realCore,
-      positionParticle (particle, phase, viewport, pointer) {
+      },
+      positionParticle (particle, phase, viewport, pointer, output) {
         const frame = state.drawFrames[state.drawFrames.length - 1]
-        if (frame) frame.maxPointerMagnitude = Math.max(frame.maxPointerMagnitude, Math.hypot(pointer.x, pointer.y))
-        return realCore.positionParticle(particle, phase, viewport, pointer)
+        if (frame && options.recordPointer) {
+          frame.maxPointerMagnitude = Math.max(frame.maxPointerMagnitude, Math.hypot(pointer.x, pointer.y))
+        }
+        if (frame && options.recordParticles) frame.particles.set(particle.index, particle)
+        if (options.recordPositionOutputs) {
+          state.positionCalls++
+          if (output) state.positionOutputs.add(output)
+          else state.positionCallsWithoutOutput++
+        }
+        return realCore.positionParticle(particle, phase, viewport, pointer, output)
       }
     }
   }
   if (options.missingCore) delete window.FluidParticleCore
 
-  vm.runInContext(built('js/particle-flow.js'), context, { filename: 'public/js/particle-flow.js' })
+  vm.runInContext(themeAsset(path.join('js', 'particle-flow.js')), context, {
+    filename: 'themes/fluid-particle/source/js/particle-flow.js'
+  })
 
   const flushIdle = () => {
     const callbacks = [...state.idles.values()]
@@ -271,6 +386,7 @@ function createHarness (options = {}) {
   return {
     window,
     document,
+    motionQuery,
     renderer: window.FluidParticleRenderer,
     state,
     makeCanvas,
@@ -460,6 +576,50 @@ test('reduced motion draws a fixed particle field without starting animation', (
   lifecycle.start()
   assert.equal(harness.pendingRafs(), 0)
   lifecycle.destroy()
+})
+
+test('live reduced-motion changes switch immediately and preserve requested and visible running state', () => {
+  // Keeping only the mount-time media-query value would animate after the preference changes or restart while paused/hidden.
+  const harness = createHarness()
+  const lifecycle = harness.renderer.mount(harness.makeCanvas())
+  harness.flushIdle()
+
+  assert.equal(harness.motionQuery.listenerCount('change'), 1)
+  assert.equal(harness.pendingRafs(), 1)
+  const drawsBeforeReduce = harness.state.drawFrames.length
+  harness.motionQuery.setMatches(true)
+  assert.equal(harness.pendingRafs(), 0)
+  assert.equal(lifecycle.snapshot().particleCount, 36)
+  assert.equal(lifecycle.snapshot().qualityLevel, 0)
+  assert.ok(harness.state.drawFrames.length > drawsBeforeReduce, 'static field draws immediately')
+
+  harness.motionQuery.setMatches(false)
+  assert.equal(lifecycle.snapshot().particleCount, 320)
+  assert.equal(lifecycle.snapshot().qualityLevel, 2)
+  assert.equal(harness.pendingRafs(), 1)
+
+  lifecycle.stop()
+  harness.motionQuery.setMatches(true)
+  harness.motionQuery.setMatches(false)
+  assert.equal(harness.pendingRafs(), 0, 'an explicit stop survives preference restoration')
+  lifecycle.start()
+  assert.equal(harness.pendingRafs(), 1)
+
+  harness.document.hidden = true
+  harness.document.dispatch('visibilitychange')
+  harness.motionQuery.setMatches(true)
+  harness.motionQuery.setMatches(false)
+  assert.equal(harness.pendingRafs(), 0, 'a hidden document does not restart')
+  harness.document.hidden = false
+  harness.document.dispatch('visibilitychange')
+  assert.equal(harness.pendingRafs(), 1)
+
+  lifecycle.destroy()
+  assert.equal(harness.motionQuery.listenerCount('change'), 0)
+  const drawsAfterDestroy = harness.state.drawFrames.length
+  harness.motionQuery.setMatches(true)
+  assert.equal(harness.pendingRafs(), 0)
+  assert.equal(harness.state.drawFrames.length, drawsAfterDestroy)
 })
 
 test('DPR is capped, coarse pointers use the mobile cap, and resize work is coalesced', async t => {
@@ -720,6 +880,47 @@ test('every desktop quality level keeps an approximately 84/13/3 layer quota', (
   lifecycle.destroy()
 })
 
+test('every supported particle budget contains deterministic dispersed glint groups of two to four', () => {
+  // Independent 13% glints would satisfy quotas but leave singleton motion instead of travelling companions.
+  const capture = () => {
+    const harness = createHarness({ recordParticles: true })
+    const lifecycle = harness.renderer.mount(harness.makeCanvas(), { seed: 0x12345678 })
+    harness.flushIdle()
+    harness.flushRaf(100)
+    const frame = harness.state.drawFrames.at(-1)
+    const pool = [...frame.particles.values()]
+      .sort((left, right) => left.index - right.index)
+      .map(particle => ({
+        index: particle.index,
+        layer: particle.layer,
+        band: particle.band,
+        phase: particle.phase,
+        lifetime: particle.lifetime
+      }))
+    lifecycle.destroy()
+    return pool
+  }
+
+  const first = capture()
+  const second = capture()
+  assert.deepEqual(first, second)
+  assert.equal(first.length, 320)
+
+  const budgets = [
+    [24, 3],
+    [36, 5],
+    [70, 9],
+    [110, 14],
+    [120, 16],
+    [160, 21],
+    [210, 27],
+    [320, 42]
+  ]
+  for (const [particleCount, expectedGlints] of budgets) {
+    assertGlintGrouping(first, particleCount, expectedGlints)
+  }
+})
+
 test('streak trails have deterministic quiet intervals and sparse burst frames', () => {
   // Drawing every streak line on every frame would turn the rare high-energy layer into constant visual noise.
   const harness = createHarness()
@@ -784,6 +985,40 @@ test('the hot loop reuses sprites and destroy removes every owned listener and c
   assert.equal(harness.window.listenerCount('resize'), 0)
   assert.equal(harness.document.listenerCount('visibilitychange'), 0)
   assert.equal(harness.pendingRafs(), 0)
+})
+
+test('pointer events coalesce layout reads and the hot loop reuses two position outputs', () => {
+  // Reading bounds per pointer event or omitting scratch outputs would scale allocations/layout with input and particle count.
+  const harness = createHarness({ recordPointer: true, recordPositionOutputs: true })
+  const lifecycle = harness.renderer.mount(harness.makeCanvas())
+  harness.flushIdle()
+  const initialBoundsReads = harness.state.boundsReads
+
+  for (let index = 0; index < 20; index++) {
+    harness.window.dispatch('pointermove', { clientX: 800 + index, clientY: 500 + index })
+  }
+  assert.equal(harness.state.boundsReads, initialBoundsReads, 'pointer handler performs no layout read')
+  harness.flushRaf(100)
+  assert.equal(harness.state.boundsReads, initialBoundsReads + 1, 'one rendered frame resolves one bound')
+
+  for (let index = 0; index < 10; index++) {
+    harness.window.dispatch('pointermove', { clientX: 900 + index, clientY: 550 + index })
+  }
+  assert.equal(harness.state.boundsReads, initialBoundsReads + 1)
+  harness.flushRaf(116)
+  assert.equal(harness.state.boundsReads, initialBoundsReads + 2)
+  assert.ok(harness.state.drawFrames.at(-1).maxPointerMagnitude > 0)
+
+  let timestamp = 116
+  for (let frame = 0; frame < 92; frame++) {
+    timestamp += 50
+    harness.flushRaf(timestamp)
+  }
+
+  assert.ok(harness.state.positionCalls > lifecycle.snapshot().particleCount)
+  assert.equal(harness.state.positionCallsWithoutOutput, 0)
+  assert.equal(harness.state.positionOutputs.size, 2)
+  lifecycle.destroy()
 })
 
 test('requestIdleCallback falls back to a deferred timer', () => {
