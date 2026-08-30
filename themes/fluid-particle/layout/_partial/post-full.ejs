@@ -8,6 +8,7 @@ let previousHeadingLevel = 1
 let headingIndex = 0
 const articleHeadingIds = new Set()
 const idAttributePattern = /\s+id(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/i
+const directWrapperIdPattern = /^(\s*<(?:span|a)\b[^>]*?)\s+id(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?([^>]*>)/i
 const uniqueHeadingId = preferredId => {
   const base = String(preferredId || '').trim() || `article-section-${headingIndex}`
   let candidate = base
@@ -26,14 +27,14 @@ let articleContent = String(post.content || '').replace(/<h([1-6])(\b[^>]*)>([\s
   previousHeadingLevel = normalizedLevel
   const authoredHeadingId = attributes.match(idAttributePattern)
   let normalizedAttributes = attributes.replace(idAttributePattern, '')
-  let normalizedContents = contents.replace(/\s+id(?:\s*=\s*(?:""|''))(?=[\s>])/gi, '')
+  let normalizedContents = contents
   let preferredId = authoredHeadingId && (authoredHeadingId[1] || authoredHeadingId[2] || authoredHeadingId[3])
 
   if (!preferredId) {
-    const nestedId = normalizedContents.match(idAttributePattern)
-    if (nestedId) {
-      preferredId = nestedId[1] || nestedId[2] || nestedId[3]
-      normalizedContents = normalizedContents.replace(idAttributePattern, '')
+    const directWrapperId = normalizedContents.match(directWrapperIdPattern)
+    if (directWrapperId) {
+      preferredId = directWrapperId[2] || directWrapperId[3] || directWrapperId[4]
+      normalizedContents = normalizedContents.replace(directWrapperIdPattern, '$1$5')
     }
   }
 

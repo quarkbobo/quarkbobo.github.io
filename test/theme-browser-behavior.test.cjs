@@ -68,6 +68,9 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
         h2 { scroll-margin-top: 0 !important; }
         .motion-toggle { min-height: 0 !important; touch-action: auto !important; }
         .post-card { transition: all 1s linear !important; }
+        .skip-link:focus { transform: translateY(0) !important; }
+        #main-content:focus { outline: none !important; }
+        .motion-paused .saturn-bands::before { animation-play-state: running !important; }
         @media (prefers-reduced-motion: reduce) {
           .motion-toggle { display: inline-flex !important; }
           .saturn-bands::before { animation: saturn-latitude-drift 22s infinite !important; }
@@ -86,12 +89,13 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
         ${mutation}
       </head>
       <body>
+        <a class="skip-link" href="#main-content">Skip to content</a>
         <header class="site-header"></header>
         <main id="main-content" tabindex="-1">
           <h2 id="probe-heading">Probe heading</h2>
           <button class="motion-toggle" id="probe-control" type="button">Pause</button>
           <article class="post-card"><h3><a href="#probe-heading">Probe card</a></h3></article>
-          <div id="space-scene"><div class="saturn-bands"></div></div>
+          <div id="space-scene" class="space-scene"><div class="saturn-bands"></div></div>
         </main>
         <pre id="probe-result"></pre>
         <script>
@@ -99,23 +103,54 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
             const heading = document.getElementById('probe-heading')
             const control = document.getElementById('probe-control')
             const card = document.querySelector('.post-card')
+            const main = document.getElementById('main-content')
+            const scene = document.getElementById('space-scene')
+            const skipLink = document.querySelector('.skip-link')
             const bands = document.querySelector('.saturn-bands')
+
+            skipLink.focus({ focusVisible: false })
+            const pointerLikeSkip = {
+              focusVisible: skipLink.matches(':focus-visible'),
+              top: skipLink.getBoundingClientRect().top
+            }
+            skipLink.blur()
+            skipLink.focus({ focusVisible: true })
+            const keyboardLikeSkip = {
+              focusVisible: skipLink.matches(':focus-visible'),
+              top: skipLink.getBoundingClientRect().top
+            }
+            main.focus({ focusVisible: true })
+            const mainFocusStyle = getComputedStyle(main)
+            const mainFocus = {
+              focusVisible: main.matches(':focus-visible'),
+              outlineStyle: mainFocusStyle.outlineStyle,
+              outlineWidth: mainFocusStyle.outlineWidth,
+              outlineOffset: mainFocusStyle.outlineOffset
+            }
+            scene.classList.add('motion-paused')
+            const pausedAnimationPlayState = getComputedStyle(bands, '::before').animationPlayState
+            scene.classList.remove('motion-paused')
+            const runningAnimationPlayState = getComputedStyle(bands, '::before').animationPlayState
             control.focus()
             const controlStyle = getComputedStyle(control)
             const cardStyle = getComputedStyle(card)
             const bandsBefore = getComputedStyle(bands, '::before')
             const bodyStyle = getComputedStyle(document.body)
             const headerStyle = getComputedStyle(document.querySelector('.site-header'))
-            const animationProperties = document.getAnimations().map(function (animation) {
-              const metadata = new Set(['offset', 'computedOffset', 'easing', 'composite'])
-              return Array.from(new Set(animation.effect.getKeyframes().flatMap(function (frame) {
-                return Object.keys(frame).filter(function (property) { return !metadata.has(property) })
-              }))).sort()
-            })
+            const animationProperties = document.getAnimations()
+              .filter(function (animation) { return animation.constructor.name === 'CSSAnimation' })
+              .map(function (animation) {
+                const metadata = new Set(['offset', 'computedOffset', 'easing', 'composite'])
+                return Array.from(new Set(animation.effect.getKeyframes().flatMap(function (frame) {
+                  return Object.keys(frame).filter(function (property) { return !metadata.has(property) })
+                }))).sort()
+              })
             document.getElementById('probe-result').textContent = JSON.stringify({
               colorScheme: getComputedStyle(document.documentElement).colorScheme,
               themeColor: document.querySelector('meta[name="theme-color"]').content,
               scrollMarginTop: getComputedStyle(heading).scrollMarginTop,
+              skipFocus: { pointerLike: pointerLikeSkip, keyboardLike: keyboardLikeSkip },
+              mainFocus,
               control: {
                 minHeight: controlStyle.minHeight,
                 height: controlStyle.height,
@@ -132,6 +167,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                 transitionDuration: cardStyle.transitionDuration
               },
               saturnAnimationName: bandsBefore.animationName,
+              saturnMotion: { pausedAnimationPlayState, runningAnimationPlayState },
               animationProperties,
               scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior,
               safeAreaResolved: {
@@ -156,7 +192,8 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
 function runArticleNavigationProbe () {
   const articleDirectory = path.join(publicRoot, '技术教程', 'How-to-create-a-website')
   const article = fs.readFileSync(path.join(articleDirectory, 'index.html'), 'utf8')
-  const fixturePath = path.join(articleDirectory, `.toc-browser-probe-${process.pid}.html`)
+  const fixtureDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'fluid-theme-toc-'))
+  const fixturePath = path.join(fixtureDirectory, 'article.html')
   const probeScript = `<pre id="probe-result"></pre>
     <script>
       addEventListener('DOMContentLoaded', function () {
@@ -184,13 +221,16 @@ function runArticleNavigationProbe () {
   try {
     return readProbeResult(dumpWithChrome(fixturePath))
   } finally {
-    fs.rmSync(fixturePath, { force: true })
+    fs.rmSync(fixtureDirectory, { recursive: true, force: true })
   }
 }
 
+let cachedNormalProbe
+const normalChromeProbe = () => cachedNormalProbe || (cachedNormalProbe = runChromeProbe())
+
 test('built theme exposes accessible interaction and compositor-friendly rendering in Chrome', () => {
   // Removing the CSS behavior would shrink the target, erase focus, break anchor offsets, or animate layout/paint properties.
-  const probe = runChromeProbe()
+  const probe = normalChromeProbe()
 
   assert.equal(probe.colorScheme, 'dark')
   assert.equal(probe.themeColor, '#010208')
@@ -211,6 +251,34 @@ test('built theme exposes accessible interaction and compositor-friendly renderi
     assert.ok(properties.every(property => ['opacity', 'transform'].includes(property)), properties.join(', '))
   }
   assert.deepEqual(probe.safeAreaResolved, { bodyLeft: '0px', bodyRight: '0px', headerTop: '0px' })
+})
+
+test('skip link stays hidden for pointer-like focus and reveals for keyboard-like focus in Chrome', () => {
+  // Replacing :focus-visible with :focus would make a pointer-like focus jump the skip link into view.
+  const probe = normalChromeProbe()
+
+  assert.equal(probe.skipFocus.pointerLike.focusVisible, false)
+  assert.ok(probe.skipFocus.pointerLike.top < 0, probe.skipFocus.pointerLike.top)
+  assert.equal(probe.skipFocus.keyboardLike.focusVisible, true)
+  assert.ok(probe.skipFocus.keyboardLike.top >= 0, probe.skipFocus.keyboardLike.top)
+})
+
+test('main landmark retains its visible keyboard focus replacement in Chrome', () => {
+  // Restoring the old #main-content:focus outline suppression would erase the skip target focus indicator.
+  const probe = normalChromeProbe()
+
+  assert.equal(probe.mainFocus.focusVisible, true)
+  assert.equal(probe.mainFocus.outlineStyle, 'solid')
+  assert.equal(probe.mainFocus.outlineWidth, '2px')
+  assert.equal(probe.mainFocus.outlineOffset, '4px')
+})
+
+test('motion-paused scene state pauses and releases the Saturn CSS animation in Chrome', () => {
+  // A renderer-only pause would leave the 22-second Saturn drift running behind the paused Canvas.
+  const probe = normalChromeProbe()
+
+  assert.equal(probe.saturnMotion.pausedAnimationPlayState, 'paused')
+  assert.equal(probe.saturnMotion.runningAnimationPlayState, 'running')
 })
 
 test('built theme removes continuous motion in Chrome reduced-motion mode', () => {

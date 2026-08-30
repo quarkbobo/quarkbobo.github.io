@@ -3,6 +3,7 @@ const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
 const vm = require('node:vm')
+const ejs = require('ejs')
 
 const publicRoot = path.resolve(__dirname, '..', 'public')
 const built = relative => fs.readFileSync(path.join(publicRoot, relative), 'utf8')
@@ -166,6 +167,39 @@ test('generated long-form article images use lazy decoding defaults', () => {
     assert.match(image[1], /\bloading="lazy"/i)
     assert.match(image[1], /\bdecoding="async"/i)
   }
+})
+
+test('article normalization transfers only direct Hexo wrapper IDs', () => {
+  // Matching any descendant ID would steal authored deep-link targets from nested article content.
+  const template = fs.readFileSync(path.resolve(__dirname, '..', 'themes', 'fluid-particle', 'layout', '_partial', 'post-full.ejs'), 'utf8')
+  const output = ejs.render(template, {
+    config: { language: 'zh-CN', title: 'Fixture site' },
+    post: {
+      path: 'fixture/index.html',
+      title: 'Fixture article',
+      content: [
+        '<h2 data-origin="span"><span class="title" id="direct-span">Direct span</span><a href="#direct-span" class="header-anchor">#</a></h2>',
+        '<h2 data-origin="anchor"><a class="title" id="direct-anchor" href="#source">Direct anchor</a><a href="#direct-anchor" class="header-anchor">#</a></h2>',
+        '<h2 data-origin="deep"><span class="title"><em id="deep-authored">Deep authored target</em></span><a href="#deep-authored" class="header-anchor">#</a></h2>'
+      ].join('')
+    },
+    strip_html: html => html.replace(/<[^>]+>/g, ''),
+    toc: () => '',
+    date_xml: value => String(value)
+  })
+  const headings = [...output.matchAll(/<h2\b([^>]*)>([\s\S]*?)<\/h2>/gi)]
+
+  assert.equal(headings.length, 3)
+  assert.match(headings[0][1], /data-origin="span"/)
+  assert.match(headings[0][1], /id="direct-span"/)
+  assert.doesNotMatch(headings[0][2], /id="direct-span"/)
+  assert.match(headings[1][1], /data-origin="anchor"/)
+  assert.match(headings[1][1], /id="direct-anchor"/)
+  assert.doesNotMatch(headings[1][2], /id="direct-anchor"/)
+  assert.match(headings[2][1], /data-origin="deep"/)
+  assert.match(headings[2][1], /id="article-section-3"/)
+  assert.match(headings[2][2], /<em id="deep-authored">Deep authored target<\/em>/)
+  assert.match(headings[2][2], /class="header-anchor"[^>]*href="#article-section-3"|href="#article-section-3"[^>]*class="header-anchor"/)
 })
 
 test('standalone generated routes infer a meaningful non-empty page h1', () => {
