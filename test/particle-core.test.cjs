@@ -6,6 +6,10 @@ const vm = require('node:vm')
 
 const corePath = path.resolve(__dirname, '../themes/fluid-particle/source/js/particle-core.js')
 const Core = require(corePath)
+const assertPointNear = (actual, expected, label) => {
+  assert.ok(Math.abs(actual.x - expected.x) < 1e-9, `${label} x: ${actual.x}`)
+  assert.ok(Math.abs(actual.y - expected.y) < 1e-9, `${label} y: ${actual.y}`)
+}
 
 test('seeded particle creation is deterministic and respects layer ratios', () => {
   const make = () => {
@@ -35,10 +39,20 @@ test('seeded particle creation is deterministic and respects layer ratios', () =
   }
 })
 
-test('cubicBezier evaluates a hand-checked cubic curve', () => {
-  assert.equal(Core.cubicBezier(0, 0, 0, 8, 0), 0)
-  assert.equal(Core.cubicBezier(0, 0, 0, 8, 0.5), 1)
-  assert.equal(Core.cubicBezier(0, 0, 0, 8, 1), 8)
+test('layer cutoffs assign exact boundary rolls to the intended layer', () => {
+  const particleForRoll = roll => {
+    let call = 0
+    return Core.createParticle(0, () => call++ === 0 ? roll : 0.5)
+  }
+
+  assert.equal(particleForRoll(0.839999).layer, 'dust')
+  assert.equal(particleForRoll(0.84).layer, 'glint')
+  assert.equal(particleForRoll(0.969999).layer, 'glint')
+  assert.equal(particleForRoll(0.97).layer, 'streak')
+})
+
+test('cubicBezier includes all four control-point terms', () => {
+  assert.equal(Core.cubicBezier(2, 4, 8, 16, 0.25), 3.90625)
 })
 
 test('delta-time phase advance is frame-rate independent', () => {
@@ -50,14 +64,28 @@ test('delta-time phase advance is frame-rate independent', () => {
 })
 
 test('all orbit bands move from lower-left toward the Saturn region', () => {
-  for (const band of [0, 1, 2]) {
-    const particle = { band, jitter: 0, wave: 0 }
-    const start = Core.positionParticle(particle, 0.05, { width: 1280, height: 592 }, { x: 0, y: 0 })
-    const middle = Core.positionParticle(particle, 0.5, { width: 1280, height: 592 }, { x: 0, y: 0 })
-    const end = Core.positionParticle(particle, 0.95, { width: 1280, height: 592 }, { x: 0, y: 0 })
+  const viewport = { width: 1280, height: 592 }
+  const fixtures = [
+    { band: 0, start: { x: -102.4, y: 556.48 }, middle: { x: 526.4, y: 418.84 }, end: { x: 1164.8, y: 130.24 } },
+    { band: 1, start: { x: -76.8, y: 520.96 }, middle: { x: 561.6, y: 387.02 }, end: { x: 1190.4, y: 106.56 } },
+    { band: 2, start: { x: -51.2, y: 574.24 }, middle: { x: 596.8, y: 441.78 }, end: { x: 1216, y: 153.92 } }
+  ]
 
-    assert.ok(end.x > middle.x && middle.x > start.x, `band ${band} x direction`)
-    assert.ok(end.y < middle.y && middle.y < start.y, `band ${band} y direction`)
+  for (const fixture of fixtures) {
+    const { band, start, middle, end } = fixture
+    const particle = { band, jitter: 0, wave: 0 }
+    assertPointNear(Core.positionParticle(particle, 0, viewport, { x: 0, y: 0 }), start, `band ${band} start`)
+    assertPointNear(Core.positionParticle(particle, 0.5, viewport, { x: 0, y: 0 }), middle, `band ${band} middle`)
+    assertPointNear(Core.positionParticle(particle, 1, viewport, { x: 0, y: 0 }), end, `band ${band} end`)
+
+    const positions = Array.from({ length: 101 }, (_, index) =>
+      Core.positionParticle(particle, index / 100, viewport, { x: 0, y: 0 }))
+    for (let index = 1; index < positions.length; index++) {
+      assert.ok(positions[index].x > positions[index - 1].x, `band ${band} x at sample ${index}`)
+      assert.ok(positions[index].y < positions[index - 1].y, `band ${band} y at sample ${index}`)
+      assert.ok(positions[index].x >= start.x && positions[index].x <= end.x, `band ${band} x envelope`)
+      assert.ok(positions[index].y <= start.y && positions[index].y >= end.y, `band ${band} y envelope`)
+    }
   }
 })
 
