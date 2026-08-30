@@ -21,8 +21,13 @@ html {
   scroll-behavior: smooth;
 }
 
+:where(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: 2rem;
+}
+
 body {
   margin: 0;
+  padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
   background:
     radial-gradient(circle at 78% 8%, rgba(149, 104, 255, 0.08), transparent 30rem),
     radial-gradient(circle at 12% 30%, rgba(103, 234, 255, 0.05), transparent 26rem),
@@ -49,7 +54,8 @@ a {
 
 button,
 a {
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(103, 234, 255, 0.16);
+  touch-action: manipulation;
 }
 
 :focus-visible {
@@ -75,7 +81,7 @@ a {
   font-size: 0.8rem;
 }
 
-.skip-link:focus {
+.skip-link:focus-visible {
   transform: translateY(0);
 }
 
@@ -85,6 +91,7 @@ a {
   border-bottom: 1px solid rgba(141, 160, 183, 0.18);
   background: rgba(1, 2, 8, 0.74);
   backdrop-filter: blur(16px);
+  padding-top: env(safe-area-inset-top);
 }
 
 .site-header__inner,
@@ -144,10 +151,6 @@ a {
   border: 1px solid rgba(141, 160, 183, 0.38);
   background: transparent;
   cursor: pointer;
-}
-
-#main-content:focus {
-  outline: none;
 }
 
 .home-hero {
@@ -210,12 +213,23 @@ a {
   font-size: clamp(1rem, 1.8vw, 1.2rem);
 }
 
-.hero-entry {
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.hero-entry,
+.motion-toggle {
   display: inline-flex;
   min-height: 44px;
   align-items: center;
+}
+
+.hero-entry {
   gap: 0.8rem;
-  margin-top: 2.5rem;
   color: var(--ice-white);
   font-family: var(--font-data);
   font-size: 0.78rem;
@@ -224,6 +238,20 @@ a {
 }
 
 .hero-entry span {
+  color: var(--signal-cyan);
+}
+
+.motion-toggle {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--archive-blue-grey);
+  cursor: pointer;
+  font: 0.72rem/1 var(--font-data);
+}
+
+.motion-toggle:hover,
+.motion-toggle[aria-pressed="true"] {
   color: var(--signal-cyan);
 }
 
@@ -266,7 +294,7 @@ a {
   border-bottom: 1px solid rgba(141, 160, 183, 0.25);
   content-visibility: auto;
   contain-intrinsic-size: auto 19rem;
-  transition: box-shadow 180ms ease, transform 180ms ease;
+  transition: transform 180ms ease;
 }
 
 .post-card:nth-child(odd) {
@@ -289,7 +317,6 @@ a {
 
 .post-card h3 a {
   text-decoration: none;
-  transition: color 180ms ease;
 }
 
 .post-card:hover h3 a {
@@ -434,6 +461,7 @@ a {
 
 .site-footer {
   border-top: 1px solid rgba(141, 160, 183, 0.18);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .site-footer__inner {
@@ -544,5 +572,9 @@ a {
   *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .motion-toggle {
+    display: none;
   }
 }

@@ -1,4 +1,9 @@
-<% const archivePosts = posts && typeof posts.toArray === 'function' ? posts.toArray() : Array.from(posts || []) %>
+<%
+const archivePosts = posts && typeof posts.toArray === 'function' ? posts.toArray() : Array.from(posts || [])
+const archiveDateOptions = { year: 'numeric', month: 'long', day: 'numeric' }
+if (config.timezone) archiveDateOptions.timeZone = config.timezone
+const archiveDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN', archiveDateOptions)
+%>
 <section class="archive-shell content-shell" aria-labelledby="archive-title">
   <p class="section-kicker">DEEP SPACE ARCHIVE</p>
   <h1 id="archive-title"><%= title %></h1>
@@ -6,7 +11,7 @@
     <% if (archivePosts.length) { %>
       <% archivePosts.forEach(post => { %>
         <li>
-          <time datetime="<%= date_xml(post.date) %>"><%= date(post.date, 'YYYY-MM-DD') %></time>
+          <time datetime="<%= date_xml(post.date) %>"><%= archiveDateFormatter.format(new Date(post.date)) %></time>
           <a href="<%= url_for(post.path) %>"><%= post.title %></a>
         </li>
       <% }) %>

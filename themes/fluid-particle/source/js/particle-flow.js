@@ -25,6 +25,7 @@
   const STREAK_TRAIL_LIMIT = 2
   const EMPTY_LAYER_COUNTS = Object.freeze({ dust: 0, glint: 0, streak: 0 })
   let spriteCache = null
+  let mountedLifecycle = null
   let activeSnapshot = emptySnapshot
   const metricsApi = Object.freeze({
     snapshot: function () { return activeSnapshot() }
@@ -167,6 +168,7 @@
   }
 
   function mount (canvas, options) {
+    if (mountedLifecycle) return mountedLifecycle
     const config = options || {}
     const document = root && root.document
     const core = root && root.FluidParticleCore
@@ -246,6 +248,8 @@
     let trailWindowCount = 0
     let qualityState = { level: 2, frameTimes: [] }
     let pointerListenerAttached = false
+    const motionToggle = config.motionToggle
+    const motionScene = canvas.parentElement
 
     function snapshot () {
       const averageFrameMs = metrics.frameCount ? metrics.frameSum / metrics.frameCount : 0
@@ -419,7 +423,8 @@
         metrics.qualityLevel = qualityState.level
         metrics.particleCount = counts[qualityState.level]
         metrics.layerCounts = qualityLayerCounts[qualityState.level]
-        if (previousQualityLevel !== qualityState.level && qualityState.level === 0) resizeNow()
+        if (previousQualityLevel !== qualityState.level &&
+          (previousQualityLevel === 0 || qualityState.level === 0)) resizeNow()
       }
 
       updateTrailGate(motionDeltaMs)
@@ -483,10 +488,20 @@
       }
     }
 
+    function syncMotionControl (paused) {
+      if (!motionToggle) return
+      motionToggle.setAttribute('aria-pressed', String(paused))
+      motionToggle.textContent = paused ? '继续背景动态' : '暂停背景动态'
+      if (motionScene && motionScene.classList && typeof motionScene.classList.toggle === 'function') {
+        motionScene.classList.toggle('motion-paused', paused)
+      }
+    }
+
     function start () {
       if (destroyed) return
       requestedRunning = true
       lastTimestamp = 0
+      syncMotionControl(false)
       scheduleFrame()
     }
 
@@ -495,6 +510,12 @@
       lastTimestamp = 0
       if (animationFrameId) root.cancelAnimationFrame(animationFrameId)
       animationFrameId = 0
+      syncMotionControl(true)
+    }
+
+    function onMotionToggle () {
+      if (requestedRunning) stop()
+      else start()
     }
 
     function destroy () {
@@ -512,22 +533,33 @@
       if (pointerListenerAttached) root.removeEventListener('pointermove', onPointerMove)
       pointerListenerAttached = false
       document.removeEventListener('visibilitychange', onVisibilityChange)
+      if (motionToggle && typeof motionToggle.removeEventListener === 'function') {
+        motionToggle.removeEventListener('click', onMotionToggle)
+      }
       metrics.particleCount = 0
       metrics.layerCounts = EMPTY_LAYER_COUNTS
+      if (mountedLifecycle === lifecycle) mountedLifecycle = null
     }
 
     root.addEventListener('resize', queueResize)
     syncPointerListener()
     document.addEventListener('visibilitychange', onVisibilityChange)
+    if (motionToggle && typeof motionToggle.addEventListener === 'function') {
+      syncMotionControl(false)
+      motionToggle.addEventListener('click', onMotionToggle)
+    }
     scheduleIdle()
 
-    return { start, stop, destroy, snapshot }
+    const lifecycle = { start, stop, destroy, snapshot }
+    mountedLifecycle = lifecycle
+    return lifecycle
   }
 
   const api = { mount }
   if (root && root.document && typeof root.document.getElementById === 'function') {
     const canvas = root.document.getElementById('particle-flow')
-    if (canvas) mount(canvas)
+    const motionToggle = root.document.getElementById('motion-toggle')
+    if (canvas) mount(canvas, { motionToggle })
   }
   return api
 })

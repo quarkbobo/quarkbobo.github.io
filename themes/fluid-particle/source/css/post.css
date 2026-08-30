@@ -198,7 +198,6 @@
 
   .article-toc {
     position: static;
-    grid-row: 1;
     max-height: none;
     padding-bottom: 2rem;
     border-bottom: 1px solid rgba(141, 160, 183, 0.25);

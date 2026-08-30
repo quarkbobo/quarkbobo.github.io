@@ -132,6 +132,10 @@
   animation: saturn-latitude-drift 22s ease-in-out infinite alternate;
 }
 
+.motion-paused .saturn-bands::before {
+  animation-play-state: paused;
+}
+
 .saturn-bands::after {
   background: linear-gradient(90deg, rgba(1, 2, 8, 0.46), transparent 24% 70%, rgba(1, 2, 8, 0.54));
 }

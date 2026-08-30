@@ -67,6 +67,68 @@ test('generated navigation exposes a skip target and a controlled collapsed menu
   assert.match(`${nav?.[1]} ${nav?.[2]}`, /aria-label="主要导航"/)
 })
 
+test('generated home exposes a keyboard-native control for the continuous background motion', () => {
+  // Removing the control would leave the persistent Canvas and Saturn motion with no pause path.
+  const output = built('index.html')
+  const control = output.match(/<button\b([^>]*)id="motion-toggle"([^>]*)>([\s\S]*?)<\/button>/)
+
+  assert.ok(control, 'background motion control is rendered')
+  const attributes = `${control[1]} ${control[2]}`
+  assert.match(attributes, /type="button"/)
+  assert.match(attributes, /aria-pressed="false"/)
+  assert.match(attributes, /aria-controls="space-scene"/)
+  assert.match(control[3], /暂停背景动态/)
+  assert.match(output, /id="space-scene"[^>]*aria-hidden="true"/)
+})
+
+test('generated dates use the configured Chinese locale instead of a fixed numeric pattern', () => {
+  // Reverting to YYYY-MM-DD would ignore the site's declared zh-CN locale.
+  const output = built('index.html')
+  const firstTime = output.match(/<time\b[^>]*datetime="2026-08-18T16:00:00\.000Z"[^>]*>([^<]+)<\/time>/)
+
+  assert.equal(firstTime?.[1], '2026年8月19日')
+})
+
+test('generated long-form articles keep one h1, sequential headings, and lazy image defaults', () => {
+  // Passing authored HTML through unchanged can duplicate the page h1, jump levels, and eagerly load every image.
+  const output = built(path.join('技术教程', 'How-to-create-a-website', 'index.html'))
+  const body = output.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<\/article>/)?.[1]
+
+  assert.ok(body, 'article body is rendered')
+  assert.doesNotMatch(body, /<h1\b/i)
+  const levels = [...body.matchAll(/<h([1-6])\b/gi)].map(match => Number(match[1]))
+  let previous = 1
+  for (const level of levels) {
+    assert.ok(level <= previous + 1, `heading jumped from h${previous} to h${level}`)
+    previous = level
+  }
+
+  const images = [...body.matchAll(/<img\b([^>]*)>/gi)]
+  assert.ok(images.length >= 10, `expected the image-heavy article, saw ${images.length} images`)
+  for (const image of images) {
+    assert.match(image[1], /\bloading="lazy"/i)
+    assert.match(image[1], /\bdecoding="async"/i)
+  }
+})
+
+test('standalone generated routes infer a meaningful non-empty page h1', () => {
+  // Leaving titleless HTML pages with an empty h1 makes their main landmark unnamed.
+  const routes = [
+    ['2048/index.html', '2048'],
+    ['snake/index.html', 'snake'],
+    ['国际象棋/index.html', '国际象棋'],
+    ['image_transformer/index.html', 'image transformer']
+  ]
+
+  for (const [route, expectedTitle] of routes) {
+    const output = built(route)
+    const main = output.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1]
+    const h1s = [...(main || '').matchAll(/<h1\b[^>]*>([\s\S]*?)<\/h1>/gi)]
+    assert.equal(h1s.length, 1, route)
+    assert.equal(h1s[0][1].replace(/<[^>]+>/g, '').trim(), expectedTitle, route)
+  }
+})
+
 test('generated site script keeps menu visibility and aria-expanded in sync', () => {
   // A visual-only toggle would leave assistive technology reporting the opposite state.
   const root = new Element()

@@ -1,4 +1,9 @@
-<% const homePosts = posts && typeof posts.toArray === 'function' ? posts.toArray() : Array.from(posts || []) %>
+<%
+const homePosts = posts && typeof posts.toArray === 'function' ? posts.toArray() : Array.from(posts || [])
+const homeDateOptions = { year: 'numeric', month: 'long', day: 'numeric' }
+if (config.timezone) homeDateOptions.timeZone = config.timezone
+const homeDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN', homeDateOptions)
+%>
 <div class="home-shell" data-fluid-home>
   <section class="home-hero" aria-labelledby="home-title">
     <div class="home-hero__copy">
@@ -6,7 +11,10 @@
       <p class="site-name"><%= config.title %></p>
       <h1 id="home-title"><%= theme.hero.title %></h1>
       <p class="hero-description"><%= theme.hero.description %></p>
-      <a class="hero-entry" href="#latest-posts">进入最新记录 <span aria-hidden="true">↓</span></a>
+      <div class="hero-actions">
+        <a class="hero-entry" href="#latest-posts">进入最新记录 <span aria-hidden="true">↓</span></a>
+        <button id="motion-toggle" class="motion-toggle" type="button" aria-pressed="false" aria-controls="space-scene">暂停背景动态</button>
+      </div>
     </div>
     <div class="hero-scene" data-fluid-scene aria-hidden="true">
       <%- partial('_partial/space-scene') %>
@@ -21,7 +29,7 @@
     <% if (homePosts.length) { %>
       <div class="post-grid">
         <% homePosts.slice(0, 10).forEach(post => { %>
-          <%- partial('_partial/post-card', { post }) %>
+          <%- partial('_partial/post-card', { post, dateFormatter: homeDateFormatter }) %>
         <% }) %>
       </div>
     <% } else { %>

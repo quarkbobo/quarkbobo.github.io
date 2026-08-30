@@ -71,8 +71,37 @@ class FakeClassList {
     for (const token of tokens) this.values.add(token)
   }
 
+  remove (...tokens) {
+    for (const token of tokens) this.values.delete(token)
+  }
+
+  toggle (token, force) {
+    if (force) this.values.add(token)
+    else this.values.delete(token)
+    return Boolean(force)
+  }
+
   contains (token) {
     return this.values.has(token)
+  }
+}
+
+class FakeControl extends FakeEventTarget {
+  constructor () {
+    super()
+    this.attributes = new Map([
+      ['aria-pressed', 'false'],
+      ['aria-controls', 'space-scene']
+    ])
+    this.textContent = '暂停背景动态'
+  }
+
+  getAttribute (name) {
+    return this.attributes.get(name) ?? null
+  }
+
+  setAttribute (name, value) {
+    this.attributes.set(name, value)
   }
 }
 
@@ -292,6 +321,51 @@ test('mount defers initialization and exposes a frozen read-only metrics snapsho
   assert.equal(descriptor.configurable, false)
   assert.equal(Reflect.set(harness.window, '__fluidParticleMetrics', {}), false)
   lifecycle.destroy()
+})
+
+test('motion control pauses and resumes both the renderer state and its visible label', () => {
+  // A label-only toggle would leave the continuous Canvas running or report the wrong pressed state.
+  const harness = createHarness()
+  const canvas = harness.makeCanvas()
+  const control = new FakeControl()
+  const lifecycle = harness.renderer.mount(canvas, { motionToggle: control })
+  harness.flushIdle()
+
+  assert.equal(control.listenerCount('click'), 1)
+  assert.equal(harness.pendingRafs(), 1)
+  control.dispatch('click')
+  assert.equal(control.getAttribute('aria-pressed'), 'true')
+  assert.equal(control.textContent, '继续背景动态')
+  assert.equal(canvas._scene.classList.contains('motion-paused'), true)
+  assert.equal(harness.pendingRafs(), 0)
+
+  control.dispatch('click')
+  assert.equal(control.getAttribute('aria-pressed'), 'false')
+  assert.equal(control.textContent, '暂停背景动态')
+  assert.equal(canvas._scene.classList.contains('motion-paused'), false)
+  assert.equal(harness.pendingRafs(), 1)
+
+  lifecycle.destroy()
+  assert.equal(control.listenerCount('click'), 0)
+})
+
+test('app initialization reuses one renderer and one listener per global event type', () => {
+  // Mounting twice must not duplicate window/document work for the single app-wide scene.
+  const harness = createHarness()
+  const first = harness.renderer.mount(harness.makeCanvas())
+  const second = harness.renderer.mount(harness.makeCanvas())
+
+  assert.equal(second, first)
+  assert.equal(harness.window.listenerCount('resize'), 1)
+  assert.equal(harness.window.listenerCount('pointermove'), 1)
+  assert.equal(harness.document.listenerCount('visibilitychange'), 1)
+  first.destroy()
+
+  const third = harness.renderer.mount(harness.makeCanvas())
+  assert.notEqual(third, first)
+  assert.equal(harness.window.listenerCount('resize'), 1)
+  assert.equal(harness.document.listenerCount('visibilitychange'), 1)
+  third.destroy()
 })
 
 test('mount falls back without Canvas, the particle core, or animation frames', async t => {
@@ -601,6 +675,14 @@ test('every desktop quality level keeps an approximately 84/13/3 layer quota', (
   assert.equal(lifecycle.snapshot().dpr, 1.25)
   assert.equal(canvas.width, 1250)
   assertLayerQuota(lifecycle.snapshot())
+
+  for (let frame = 0; frame < 120; frame++) {
+    timestamp += 15
+    harness.flushRaf(timestamp)
+  }
+  assert.equal(lifecycle.snapshot().qualityLevel, 1)
+  assert.equal(lifecycle.snapshot().dpr, 1.5)
+  assert.equal(canvas.width, 1500)
   lifecycle.destroy()
 })
 

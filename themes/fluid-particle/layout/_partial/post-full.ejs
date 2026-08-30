@@ -1,12 +1,33 @@
-<% const outline = toc(post.content || '', { min_depth: 2, max_depth: 3, list_number: false }) %>
+<%
+const articleDateOptions = { year: 'numeric', month: 'long', day: 'numeric' }
+if (config.timezone) articleDateOptions.timeZone = config.timezone
+const articleDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN', articleDateOptions)
+const routeTitle = String(post.path || '').replace(/\/?index\.html$/i, '').split('/').filter(Boolean).pop() || ''
+const articleTitle = String(post.title || '').trim() || routeTitle.replace(/[-_]+/g, ' ') || config.title
+let previousHeadingLevel = 1
+let articleContent = String(post.content || '').replace(/<h([1-6])(\b[^>]*)>([\s\S]*?)<\/h\1>/gi, (heading, authoredLevel, attributes, contents) => {
+  const normalizedLevel = Math.min(Math.max(2, Number(authoredLevel)), previousHeadingLevel + 1)
+  previousHeadingLevel = normalizedLevel
+  return `<h${normalizedLevel}${attributes}>${contents}</h${normalizedLevel}>`
+})
+articleContent = articleContent.replace(/<img\b[^>]*>/gi, image => {
+  const additions = []
+  if (!/\bloading\s*=/i.test(image)) additions.push('loading="lazy"')
+  if (!/\bdecoding\s*=/i.test(image)) additions.push('decoding="async"')
+  if (!additions.length) return image
+  const closing = image.endsWith('/>') ? '/>' : '>'
+  return `${image.slice(0, -closing.length).trimEnd()} ${additions.join(' ')}${closing}`
+})
+const outline = toc(articleContent, { min_depth: 2, max_depth: 3, list_number: false })
+%>
 <div class="article-layout content-shell">
   <article class="article-shell">
     <header class="article-header">
       <p class="section-kicker">ARCHIVE ENTRY</p>
-      <h1><%= post.title %></h1>
-      <% if (post.date) { %><time datetime="<%= date_xml(post.date) %>"><%= date(post.date, 'YYYY-MM-DD') %></time><% } %>
+      <h1><%= articleTitle %></h1>
+      <% if (post.date) { %><time datetime="<%= date_xml(post.date) %>"><%= articleDateFormatter.format(new Date(post.date)) %></time><% } %>
     </header>
-    <div class="article-body"><%- post.content || '' %></div>
+    <div class="article-body"><%- articleContent %></div>
   </article>
   <% if (outline && outline.trim()) { %>
     <aside class="article-toc" aria-label="文章目录">
