@@ -135,7 +135,9 @@ function createHarness (options = {}) {
   if (!options.noResizeObserver) window.ResizeObserver = class extends FakeObserver {
     constructor (callback) { super(callback, state.resizeObservers) }
   }
-  const source = fs.readFileSync(path.resolve(__dirname, '../themes/fluid-particle/source/js/planet-surface.js'), 'utf8')
+  const source = typeof options.surfaceSource === 'string'
+    ? options.surfaceSource
+    : fs.readFileSync(path.resolve(__dirname, '../themes/fluid-particle/source/js/planet-surface.js'), 'utf8')
   class TrackedFloat64Array extends Float64Array {
     constructor (...args) {
       super(...args)
@@ -360,6 +362,84 @@ test('destroyed stale idle and timer initialization callbacks cannot revive a li
     assert.equal(lifecycle.snapshot().initialized, false, name)
     assert.equal(harness.state.outputPutCount, 0, name)
   }
+})
+
+test('a stale idle initializer cannot revive a failed fallback lifecycle', () => {
+  const surfacePath = path.resolve(__dirname, '../themes/fluid-particle/source/js/planet-surface.js')
+  const guardedSource = fs.readFileSync(surfacePath, 'utf8')
+  const runScenario = surfaceSource => {
+    const baseCore = require('../themes/fluid-particle/source/js/planet-core.js')
+    let renderCalls = 0
+    const harness = createHarness({
+      textureWidth: 64,
+      textureHeight: 32,
+      surfaceSource,
+      core: {
+        ...baseCore,
+        renderProjectedFrame (...args) {
+          renderCalls++
+          if (renderCalls === 2) throw new Error('one-shot animation render failure')
+          return baseCore.renderProjectedFrame(...args)
+        }
+      }
+    })
+    const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+    const staleInitializer = [...harness.state.idles.values()][0]
+    assert.equal(typeof staleInitializer, 'function')
+    harness.flushIdle()
+    assert.equal(lifecycle.snapshot().initialized, true)
+    harness.flushRaf(0)
+    harness.flushRaf(50)
+    const before = lifecycle.snapshot()
+    const outputBefore = harness.state.outputPutCount
+    const rafsBefore = harness.pendingRafs()
+    staleInitializer({ didTimeout: false, timeRemaining: () => 50 })
+    return {
+      before,
+      after: lifecycle.snapshot(),
+      outputBefore,
+      outputAfter: harness.state.outputPutCount,
+      rafsBefore,
+      rafsAfter: harness.pendingRafs(),
+      ready: harness.scene.classList.contains('planet-ready'),
+      fallbackClass: harness.scene.classList.contains('planet-fallback'),
+      listeners: [
+        harness.document.listenerCount('visibilitychange'),
+        harness.motionQuery.listenerCount('change'),
+        harness.mobileQuery.listenerCount('change')
+      ],
+      observers: [
+        ...harness.state.mutationObservers,
+        ...harness.state.intersectionObservers,
+        ...harness.state.resizeObservers
+      ]
+    }
+  }
+  const assertFallbackIsInert = outcome => {
+    assert.equal(outcome.before.fallback, true, 'one-shot animation failure enters fallback')
+    assert.equal(outcome.before.initialized, false, 'failure clears initialized before stale initializer runs')
+    assert.equal(outcome.after.fallback, true, 'stale initializer must leave fallback true')
+    assert.equal(outcome.after.initialized, false, 'stale initializer must leave initialized false')
+    assert.deepEqual(outcome.after, outcome.before, 'stale initializer must not change the fallback snapshot')
+    assert.equal(outcome.outputAfter, outcome.outputBefore, 'stale initializer must not produce output')
+    assert.equal(outcome.ready, false, 'stale initializer must not restore the ready class')
+    assert.equal(outcome.fallbackClass, true, 'stale initializer keeps the fallback class')
+    assert.equal(outcome.rafsAfter, outcome.rafsBefore, 'stale initializer must not schedule animation')
+    assert.deepEqual(outcome.listeners, [0, 0, 0], 'failure cleanup removes owned listeners before stale initializer runs')
+    assert.ok(outcome.observers.every(observer => observer.disconnected), 'failure cleanup disconnects owned observers before stale initializer runs')
+  }
+
+  assertFallbackIsInert(runScenario(guardedSource))
+
+  const unguardedSource = guardedSource.replace(
+    /(function initialize \(\) \{\s+idleId = 0\s+)if \(destroyed \|\| fallback\) return/,
+    '$1if (destroyed) return'
+  )
+  assert.notEqual(unguardedSource, guardedSource, 'the in-memory mutation removes initialize fallback protection')
+  assert.throws(
+    () => assertFallbackIsInert(runScenario(unguardedSource)),
+    /stale initializer must leave fallback true/
+  )
 })
 
 test('planet metrics are a read-only frozen diagnostics API', () => {
@@ -826,6 +906,9 @@ test('hot redraw helpers avoid allocating or querying DOM', () => {
   const render = source.slice(source.indexOf('function renderFrame'), source.indexOf('function onMutation'))
   const draw = source.slice(source.indexOf('function drawCurrentFrame'), source.indexOf('function rebuildProjection'))
   const record = source.slice(source.indexOf('function recordCompletedDraw'), source.indexOf('function drawCurrentFrame'))
+  assert.ok(render.length > 0, 'renderFrame source slice is non-empty')
+  assert.ok(draw.length > 0, 'drawCurrentFrame source slice is non-empty')
+  assert.ok(record.length > 0, 'recordCompletedDraw source slice is non-empty')
   for (const forbidden of ['new ', 'createElement', 'createImageData', 'getContext', 'getComputedStyle', 'querySelector', 'setTimeout']) {
     assert.equal(render.includes(forbidden), false, `renderFrame contains ${forbidden}`)
     assert.equal(draw.includes(forbidden), false, `drawCurrentFrame contains ${forbidden}`)
@@ -834,6 +917,7 @@ test('hot redraw helpers avoid allocating or querying DOM', () => {
   assert.equal(/=\s*\[/.test(render) || /=\s*\[/.test(draw) || /=\s*\[/.test(record), false)
   assert.equal(/=\s*\{/.test(render) || /=\s*\{/.test(draw) || /=\s*\{/.test(record), false)
   assert.equal(render.includes('computeCurrentBacking'), false, 'renderFrame delegates policy allocation only to rebuildProjection')
+  assert.equal(render.includes('computeBackingSize'), false, 'renderFrame never calls the allocating backing-size policy directly')
 
   const harness = createHarness({ textureWidth: 64, textureHeight: 32 })
   const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
