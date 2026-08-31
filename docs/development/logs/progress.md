@@ -25,9 +25,9 @@
   - `task_plan.md`（创建）
   - `findings.md`（创建）
   - `progress.md`（创建）
-  - `docs/superpowers/specs/2026-08-28-quark-deep-space-blog-design.md`（创建并提交）
-  - `docs/superpowers/plans/2026-08-28-fluid-particle-theme.md`（创建并提交）
-  - `docs/superpowers/plans/2026-08-28-quark-blog-tools.md`（创建并提交）
+  - `docs/development/specs/2026-08-28-quark-deep-space-blog-design.md`（创建并提交）
+  - `docs/development/plans/2026-08-28-fluid-particle-theme.md`（创建并提交）
+  - `docs/development/plans/2026-08-28-quark-blog-tools.md`（创建并提交）
 
 ### Phase 2: 备份与实施计划
 - **Status:** pending
@@ -114,12 +114,12 @@
 - 用户批准视觉结构：移除日珥/耀斑，采用真实球面 Canvas、固定光照和宽暗尘埃环。
 - 用户批准运动与性能：无缝预生成纹理、约 70 秒慢速转动、固定光照、完整暂停/reduced-motion/静态降级。
 - 用户批准响应式与验收设计，并澄清继续使用方案 C。
-- 已写入 `docs/superpowers/specs/2026-08-31-realistic-canvas-ringed-planet-design.md`，待自检与提交。
+- 已写入 `docs/development/specs/2026-08-31-realistic-canvas-ringed-planet-design.md`，待自检与提交。
 - 规格自检发现并修正 5 项歧义：星环外径/厚度、纬度差速算法、DPR/尺寸与质量滞回公式、多个暂停原因的组合语义、显式完成条件。
 - 最终复审补齐未取模基准相位跨 `2π` 的连续性规则与 `760/768px` 唯一布局合同；复审确认无新矛盾。
 - 设计规格已作为独立提交 `4093a71` 提交；当前等待用户复核书面规格，尚未进入实施计划或代码修改。
 - 用户已确认书面规格；Phase 6 完成，开始使用 `writing-plans` 编写逐任务 TDD 实施计划。
-- 已完成 `docs/superpowers/plans/2026-08-31-realistic-canvas-ringed-planet.md`：8 个实施任务覆盖确定性纹理、球面映射、静态美术、Canvas 生命周期、自适应性能、四视口浏览器合同、前台视觉/性能验收与最终审查。
+- 已完成 `docs/development/plans/2026-08-31-realistic-canvas-ringed-planet.md`：8 个实施任务覆盖确定性纹理、球面映射、静态美术、Canvas 生命周期、自适应性能、四视口浏览器合同、前台视觉/性能验收与最终审查。
 - 计划自检通过：2225 行、132 个成对代码围栏、无 TODO/TBD/占位符、`git diff --cached --check` 无错误；基线 `npm run test:node` 为 99/99 通过。
 - 独立双轴复审发现并推动修复：20 秒性能区间证据、质量档 FPS 更新、验证报告时序、纹理接缝、前后星环数量、发布工具保护及淡入过渡测试；最终复审确认无提交级阻塞。
 - 实施计划已作为独立提交 `91bc91e` 提交；网站生产代码尚未修改，等待用户选择执行方式。
@@ -149,3 +149,11 @@
 - Task 6 scoped rereview 1 确认原三项 P2 已解决，仅剩 `finish()` 可能掩盖非零 transition delay；进入 test-only fix round 2，增加 `0s` delay 合同与隔离 mutation。
 - Task 6 test-only fix round 2 提交 `b059e12`：computed transition delay 必须为 `0s`，独立 30 秒 delay mutation 仅击中该断言；Chrome 11/11、fresh 155/155，进入最终 scoped rereview。
 - Task 6 最终 scoped rereview 2 PASS：锁定 `b059e12`，Chrome 11/11、fresh 155/155，受保护粒子脚本未变化；开始 Task 7 的四视口可见截图、动态连续性和前台 20 秒性能验收。
+
+## Session: 2026-08-31 — 仓库目录整理实施
+- Task 1 完成并提交 `61fed9d`：在移除仓库内 `tarot-reigns/` 前，22 个文件的相对路径、字节数和 SHA-256 与桌面 `C:/Users/Lenovo/Desktop/TarotReigns` 副本完全一致；迁移前后 `npm run test:fresh` 均为 157/157，路由/源码清单未变。
+- Task 2 完成并提交 `687ff36`：9 份开发规格、计划和验收记录通过 `git mv` 迁至 `docs/development/`；`docs/recovery/` 未变，旧空目录已移除，仍有效的导航路径已复核。
+- Task 3 完成并提交 `b9196f3`：移除五个已批准的遗留文件及未使用的 Landscape/Stylus 直接依赖；两个 `npm explain` 按预期无匹配项，`npm run build`、工作区与暂存 diff 检查均通过。
+- Task 3 的实施报告曾被错误跟踪，修正提交 `029de22` 已取消跟踪；报告继续作为本地忽略的 SDD 证据保留，历史提交未改写。
+- Task 4 完成并提交 `c66b2c9`：12 个 `source/files/backup/` 下载文件保持原名；新 ignore 规则由 `git check-ignore --no-index` 验证；`npm run clean` 后 `public/`、`db.json` 均不存在，而 `node_modules/` 保留。
+- Task 5 正在归档本三份根目录日志；完成后，Task 6 的 fresh 测试、PowerShell 工具合同、路由/源码哈希复核及最终验收记录是唯一剩余阶段。

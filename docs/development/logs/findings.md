@@ -134,3 +134,10 @@
 - `source/files/backup/` 当前恰有 12 个受保留下载文件；结构合同可记录精确文件名，防止整理误删或改 URL。
 - 用户为本轮目录清理选择测试策略 A：不增加永久的目录布局/源码文本 change-detector 测试；用 `git check-ignore --no-index`、`npm explain`、真实 Hexo 构建与工具测试、路由和源码 SHA-256 清单作为证据。
 - 隔离执行要求所有仓库源路径从 `git rev-parse --show-toplevel` 解析，不能硬编码主检出目录；主目录 `.worktrees/` 在实现期间含活动工作树，只能在集成并移除工作树后验证为空再删除。
+
+## 2026-08-31 仓库目录清理实施证据
+- Task 1 提交 `61fed9d`：`tarot-reigns/` 的 22 个文件在迁到 `C:/Users/Lenovo/Desktop/TarotReigns` 前完成逐路径、字节数和 SHA-256 核对；移除外部 Python 缓存后，迁移前后 `npm run test:fresh` 均为 157/157，路由和源码清单不变。
+- Task 2 提交 `687ff36`：9 份历史规格、计划和验收记录以 `git mv` 归入 `docs/development/`；保留 `docs/recovery/`，删除空的旧文档目录，并复核仍有效的导航引用。
+- Task 3 提交 `b9196f3`，修正提交 `029de22`：仅移除批准的遗留配置和 Landscape/Stylus 直接依赖；两个 `npm explain` 按预期找不到依赖，`npm run build` 与 diff 检查通过。实施报告曾意外进入索引，已取消跟踪并作为忽略的 SDD 证据保留，未改写历史。
+- Task 4 提交 `c66b2c9`：`source/files/backup/` 的 12 个下载文件清单已保护；`.gitignore` 的 Windows、本地工具与 Python 缓存规则经 `git check-ignore --no-index` 验证；`npm run clean` 后 `public/` 和 `db.json` 不存在、`node_modules/` 保留。
+- Task 5 将归档三份根目录日志并保留上述历史；之后仅剩 Task 6 的完整 fresh 测试、PowerShell 工具合同、路由/源码哈希与最终验收记录。
