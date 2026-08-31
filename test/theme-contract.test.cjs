@@ -122,6 +122,7 @@ test('fluid-particle provides every renderer entry point and stylesheet', () => 
     'layout/archive.ejs',
     'layout/category.ejs',
     'layout/tag.ejs',
+    'source/js/planet-core.js',
     'source/css/main.css'
   ]) {
     assert.ok(fs.existsSync(path.join(root, 'themes/fluid-particle', file)), file)
