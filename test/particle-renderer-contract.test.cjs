@@ -476,11 +476,19 @@ test('the generated home owns the approved particle and planet canvases while in
   assert.equal(occurrences(home, '<canvas'), 2)
   assert.equal(occurrences(home, '<script src="/js/particle-core.js" defer></script>'), 1)
   assert.equal(occurrences(home, '<script src="/js/particle-flow.js" defer></script>'), 1)
+  assert.equal(occurrences(home, '<script src="/js/planet-core.js" defer></script>'), 1)
+  assert.equal(occurrences(home, '<script src="/js/planet-surface.js" defer></script>'), 1)
   assert.equal(occurrences(home, '<link rel="stylesheet" href="/css/space-scene.css">'), 1)
   assert.equal(occurrences(post, '<canvas'), 0)
   assert.equal(occurrences(post, 'space-scene.css'), 0)
   assert.equal(occurrences(post, 'particle-core.js'), 0)
   assert.equal(occurrences(post, 'particle-flow.js'), 0)
+  assert.equal(occurrences(post, 'planet-core.js'), 0)
+  assert.equal(occurrences(post, 'planet-surface.js'), 0)
+  const sceneScriptOrder = ['particle-core.js', 'particle-flow.js', 'planet-core.js', 'planet-surface.js']
+    .map(name => home.indexOf(`/js/${name}`))
+  assert.ok(sceneScriptOrder.every(index => index >= 0))
+  assert.deepEqual(sceneScriptOrder, [...sceneScriptOrder].sort((left, right) => left - right))
 })
 
 test('mount defers initialization and exposes a frozen read-only metrics snapshot', () => {
