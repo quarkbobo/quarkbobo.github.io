@@ -15,6 +15,7 @@ const chromeCandidates = [
   'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
 ].filter(Boolean)
 const chromePath = chromeCandidates.find(candidate => fs.existsSync(candidate))
+const WINDOWS_HEADLESS_OUTER_FRAME_WIDTH = 22
 
 function decodeHtml (value) {
   return value
@@ -44,10 +45,15 @@ function dumpWithChrome (fixturePath, { reducedMotion = false, viewport } = {}) 
       '--dump-dom'
     ]
     if (reducedMotion) args.push('--force-prefers-reduced-motion=reduce')
-    // On this Windows headless build the outer window is 22px wider than its
-    // layout viewport. Keep the probe's CSS viewport at the requested
-    // acceptance width so the 768px desktop breakpoint is exercised exactly.
-    if (viewport) args.push(`--window-size=${viewport.width + 22},${viewport.height}`)
+    if (viewport) {
+      // This Windows headless build makes the CSS viewport 22px narrower than
+      // the requested outer desktop window. The probes below hard-fail unless
+      // the measured CSS viewport exactly matches their requested desktop size.
+      const outerWidth = viewport.width >= 768
+        ? viewport.width + WINDOWS_HEADLESS_OUTER_FRAME_WIDTH
+        : viewport.width
+      args.push(`--window-size=${outerWidth},${viewport.height}`)
+    }
     args.push(new URL(`file:///${fixturePath.replace(/\\/g, '/')}`).href)
     const result = childProcess.spawnSync(chromePath, args, {
       encoding: 'utf8',
@@ -292,6 +298,9 @@ function runArticleDisclosureProbe (viewport) {
   const contentWidthConstraint = viewport.width < 500
     ? `<style>body { width: ${viewport.width}px; }</style>`
     : ''
+  const desktopViewportConstraint = viewport.width >= 768
+    ? '<style>html { overflow-y: hidden; }</style>'
+    : ''
   const fixture = `<!doctype html>
     <html lang="zh-CN">
       <head>
@@ -300,6 +309,7 @@ function runArticleDisclosureProbe (viewport) {
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/post.css">
         ${contentWidthConstraint}
+        ${desktopViewportConstraint}
       </head>
       <body class="is-inner">
         <main id="main-content">
@@ -338,9 +348,10 @@ function runArticleDisclosureProbe (viewport) {
             }
             disclosure.open = initiallyOpen
             document.getElementById('probe-result').textContent = JSON.stringify({
-              viewportWidth: document.documentElement.clientWidth,
+              viewportWidths: { inner: innerWidth, client: document.documentElement.clientWidth },
               contentWidth: document.body.getBoundingClientRect().width,
               noHorizontalOverflow: document.body.scrollWidth <= ${viewport.width},
+              mobilePolicy: matchMedia('(max-width: 760px)').matches,
               disclosure: {
                 display: getComputedStyle(disclosure).display,
                 open: initiallyOpen,
@@ -382,6 +393,9 @@ function runPlanetCompositionProbe (viewport) {
   const viewportHeight = viewport.height
   const contentWidthConstraint = viewport.width === 320
     ? `<style>body { width: ${viewport.width}px; }</style>`
+    : ''
+  const desktopViewportConstraint = viewport.width >= 768
+    ? '<style>html { overflow-y: hidden; }</style>'
     : ''
   const probeScript = `<pre id="probe-result"></pre>
     <script>
@@ -469,13 +483,14 @@ function runPlanetCompositionProbe (viewport) {
           surfaceAngle: getComputedStyle(surface).getPropertyValue('--planet-equator-angle').trim(),
           mobilePolicy: matchMedia('(max-width: 760px)').matches,
           layoutMode: getComputedStyle(system).getPropertyValue('--planet-layout-mode').trim(),
-          viewportWidths: { inner: innerWidth, client: document.documentElement.clientWidth }
+          viewportWidths: { inner: innerWidth, client: document.documentElement.clientWidth },
+          bodyWidth: document.body.getBoundingClientRect().width
         })
       })
     </script>`
 
   const offlineHome = generatedHome.replace(/\b(href|src)="\//g, '$1="')
-  fs.writeFileSync(fixturePath, offlineHome.replace('</head>', `${contentWidthConstraint}</head>`).replace('</body>', `${probeScript}</body>`))
+  fs.writeFileSync(fixturePath, offlineHome.replace('</head>', `${contentWidthConstraint}${desktopViewportConstraint}</head>`).replace('</body>', `${probeScript}</body>`))
   try {
     return readProbeResult(dumpWithChrome(fixturePath, { viewport }))
   } finally {
@@ -580,10 +595,12 @@ test('generated TOC anchors navigate to their unique heading in Chrome', () => {
 test('article TOC is collapsed before the article at 320px and stays a visible sticky sidebar on desktop', () => {
   // CSS-only reordering or a non-native toggle would fail either the DOM-sized mobile result or the desktop sidebar result.
   const mobile = runArticleDisclosureProbe({ width: 320, height: 740 })
-  // Headless Chrome enforces a ~500 CSS-pixel minimum window even when --window-size requests 320;
-  // constrain the real layout containing block to 320px while requiring the narrow-screen media query.
-  assert.ok(mobile.viewportWidth <= 900, mobile.viewportWidth)
+  // Headless Chrome enforces a ~500 CSS-pixel minimum window even when --window-size requests 320.
+  // Keep that deliberate workaround separate from desktop exact-size acceptance.
+  assert.ok(mobile.viewportWidths.inner <= 760, `requested=320, measured inner=${mobile.viewportWidths.inner}, client=${mobile.viewportWidths.client}`)
+  assert.ok(mobile.viewportWidths.client <= 760, `requested=320, measured inner=${mobile.viewportWidths.inner}, client=${mobile.viewportWidths.client}`)
   assert.equal(mobile.contentWidth, 320)
+  assert.equal(mobile.mobilePolicy, true)
   assert.equal(mobile.noHorizontalOverflow, true)
   assert.notEqual(mobile.disclosure.display, 'none')
   assert.equal(mobile.disclosure.open, false)
@@ -593,6 +610,8 @@ test('article TOC is collapsed before the article at 320px and stays a visible s
   assert.equal(mobile.desktopToc.display, 'none')
 
   const desktop = runArticleDisclosureProbe({ width: 1200, height: 800 })
+  assert.equal(desktop.viewportWidths.inner, 1200, `requested=1200, measured inner=${desktop.viewportWidths.inner}, client=${desktop.viewportWidths.client}`)
+  assert.equal(desktop.viewportWidths.client, 1200, `requested=1200, measured inner=${desktop.viewportWidths.inner}, client=${desktop.viewportWidths.client}`)
   assert.equal(desktop.disclosure.display, 'none')
   assert.notEqual(desktop.desktopToc.display, 'none')
   assert.equal(desktop.desktopToc.position, 'sticky')
@@ -609,6 +628,14 @@ test('planet and dust ring keep approved geometry clear of copy at every accepta
     { width: 320, height: 740 }
   ]) {
     const probe = runPlanetCompositionProbe(viewport)
+    if (viewport.width >= 768) {
+      assert.equal(probe.viewportWidths.inner, viewport.width, `requested=${viewport.width}, measured inner=${probe.viewportWidths.inner}, client=${probe.viewportWidths.client}`)
+      assert.equal(probe.viewportWidths.client, viewport.width, `requested=${viewport.width}, measured inner=${probe.viewportWidths.inner}, client=${probe.viewportWidths.client}`)
+    } else {
+      assert.equal(probe.bodyWidth, 320)
+      assert.ok(probe.viewportWidths.inner <= 760, `requested=320, measured inner=${probe.viewportWidths.inner}, client=${probe.viewportWidths.client}`)
+      assert.ok(probe.viewportWidths.client <= 760, `requested=320, measured inner=${probe.viewportWidths.inner}, client=${probe.viewportWidths.client}`)
+    }
     assert.equal(probe.noHorizontalOverflow, true, `${viewport.width}px overflow`)
     assert.deepEqual(probe.canvasIds, ['particle-flow', 'planet-surface'])
     assert.equal(probe.copyContentRects.filter(rect => rect.kind === 'text').length >= 4, true, `${viewport.width}px visible copy text`)
