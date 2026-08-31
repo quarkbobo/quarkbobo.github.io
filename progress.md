@@ -93,6 +93,8 @@
 - 计划预检完成：定位全部旧文档路径引用，并记录 `source/files/backup/` 的 12 个精确文件名作为保护合同。
 - 实施计划第一次写入因补丁代码块缺少行前缀而被 `apply_patch` 完整拒绝，未产生部分文件；改为由脚本逐行构造同一补丁后成功创建计划。
 - 实施计划已写入 `docs/development/plans/2026-08-31-quarkbobo-repository-cleanup.md`，拆为 6 个可独立验证任务；规格覆盖、占位符、路径一致性和格式自检通过。
+- 用户选择目录清理测试策略 A：不新增永久目录结构测试，改用真实构建、Git/npm 行为与前后清单/哈希审计；实施计划已据此重写。
+- 执行预检进一步修正隔离工作树兼容性：Tarot 源从当前 Git 顶层解析；空 `.worktrees/` 容器延后到集成并移除工作树后安全清理。
 
 ### Error log
 - PowerShell `Get-Item` 在枚举受跟踪的 `desktop.ini` 时返回找不到项目，但 Git 与顶层枚举均能看到该路径；后续不再依赖该调用判定文件存在，改以 Git 索引和 `Get-ChildItem -Force` 为证据。

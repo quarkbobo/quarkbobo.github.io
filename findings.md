@@ -132,3 +132,5 @@
 - 仓库中没有任何 `.styl` 源文件；`hexo-theme-landscape` 和 `hexo-renderer-stylus` 均只是根项目直接依赖，没有其他包引用，适合成对移除并更新 lockfile。
 - 文档迁移后的路径引用主要集中在根 `progress.md`、两份历史实施计划和本次清理规格；实施时更新仍需导航的链接，保留本清理规格中的“旧路径 → 新路径”迁移说明。
 - `source/files/backup/` 当前恰有 12 个受保留下载文件；结构合同可记录精确文件名，防止整理误删或改 URL。
+- 用户为本轮目录清理选择测试策略 A：不增加永久的目录布局/源码文本 change-detector 测试；用 `git check-ignore --no-index`、`npm explain`、真实 Hexo 构建与工具测试、路由和源码 SHA-256 清单作为证据。
+- 隔离执行要求所有仓库源路径从 `git rev-parse --show-toplevel` 解析，不能硬编码主检出目录；主目录 `.worktrees/` 在实现期间含活动工作树，只能在集成并移除工作树后验证为空再删除。

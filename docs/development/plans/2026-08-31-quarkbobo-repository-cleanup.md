@@ -4,51 +4,49 @@
 
 **Goal:** Turn Quarkbobo into a focused Hexo blog repository by safely extracting the unrelated Tarot Reigns project, archiving development records, removing verified legacy files and dependencies, and preserving every published route and download.
 
-**Architecture:** Keep the runtime boundaries source/, themes/fluid-particle/, tools/, and test/ unchanged. Treat the external Tarot migration as a copy-and-verify transaction, express lasting repository rules in one Node structure contract, use Git renames for documents, and finish with fresh Hexo/browser tests plus route and source manifests.
+**Architecture:** Keep source/, themes/fluid-particle/, tools/, test/, and scaffolds/ at stable paths. Treat the Tarot extraction as a copy-and-verify transaction, use Git renames for documentation, and verify cleanup through real Git/npm/Hexo/PowerShell behavior plus route and SHA-256 manifests rather than permanent source-text or directory change-detector tests.
 
-**Tech Stack:** Windows PowerShell 5+, Git, Node.js built-in test runner, npm, Hexo 8.1.1, SHA-256.
+**Tech Stack:** Windows PowerShell 5+, Git, Node.js, npm, Hexo 8.1.1, SHA-256.
 
 ## Global Constraints
 
-- Do not modify the visual design, particle renderer, planet renderer, authored posts, games, images, questionnaires, or downloads.
-- Keep source/files/backup/ and all 12 existing public file names unchanged.
+- Do not modify visual design, particle/planet renderers, authored posts, games, images, questionnaires, or downloads.
+- Keep source/files/backup/ and all 12 public file names unchanged.
 - Keep source/, themes/fluid-particle/, tools/, test/, and scaffolds/ at their current paths.
-- Keep node_modules/ so the local preview shortcut remains immediately usable.
-- Do not change the fixed paths used by tools/quark-blog-tools.ps1 or the desktop shortcut.
+- Keep node_modules/ so the preview shortcut remains immediately usable.
+- Do not change fixed paths used by tools/quark-blog-tools.ps1 or the desktop shortcut.
 - Do not push to any remote.
-- Validate every absolute target before a recursive copy, move, or delete.
-- Preserve the user-owned planning log edits already present in the main checkout.
-- Use apply_patch for hand-edited repository files; Git renames and generated lockfile rewrites may use their native tools.
-- Stop before deleting the repository copy of Tarot Reigns if its external copy differs by path, size, or SHA-256.
+- Validate every absolute target before recursive copy, move, or delete.
+- Preserve user-owned planning log edits already committed on master.
+- Use apply_patch for hand-edited repository files; Git renames and npm lockfile rewrites may use native tools.
+- Stop before deleting the repository Tarot copy if the external copy differs by path, size, or SHA-256.
+- User-approved test-policy exception: configuration and filesystem cleanup use explicit pre/post audits and real behavior verification; do not add a permanent test that merely greps source text or asserts a chosen directory layout.
 
 ---
 
 ## File Map
 
-- Create test/repository-structure.test.cjs: permanent repository-boundary contract.
-- Create C:/Users/Lenovo/Desktop/TarotReigns/.gitignore: standalone Python cache rules.
-- Create docs/development/verification/2026-08-31-repository-cleanup.md: final evidence.
-- Move docs/superpowers/specs/*.md to docs/development/specs/.
-- Move docs/superpowers/plans/*.md to docs/development/plans/.
-- Move docs/verification/*.md to docs/development/verification/.
-- Move task_plan.md, findings.md, and progress.md to docs/development/logs/ only after implementation work is complete.
-- Modify .gitignore, package.json, and package-lock.json.
-- Delete tarot-reigns/, desktop.ini, .codebuddy/settings.local.json, _config.landscape.yml, render.yaml, and themes/.gitkeep after their safety conditions pass.
+- Create outside repository: C:/Users/Lenovo/Desktop/TarotReigns/.gitignore.
+- Create: docs/development/verification/2026-08-31-repository-cleanup.md.
+- Move: docs/superpowers/specs/*.md to docs/development/specs/.
+- Move: docs/superpowers/plans/*.md to docs/development/plans/.
+- Move: docs/verification/*.md to docs/development/verification/.
+- Move after implementation: task_plan.md, findings.md, progress.md to docs/development/logs/.
+- Modify: .gitignore, package.json, package-lock.json.
+- Delete after safety checks: tarot-reigns/, desktop.ini, .codebuddy/settings.local.json, _config.landscape.yml, render.yaml, themes/.gitkeep.
+- Remove ignored generated state after verification: public/ and db.json. Remove the main checkout's empty .worktrees/ container only after the isolated worktree has been integrated and removed.
 
 ### Task 1: Extract Tarot Reigns with a verified transaction
 
 **Files:**
-- Create: test/repository-structure.test.cjs
 - Create outside repository: C:/Users/Lenovo/Desktop/TarotReigns/.gitignore
 - Delete after verification: tarot-reigns/
 
 **Interfaces:**
-- Consumes: repository root C:/Users/Lenovo/Desktop/Quarkbobo; destination must not exist.
-- Produces: verified standalone Tarot project and repoRoot, exists(relativePath), read(relativePath) test helpers.
+- Consumes: repository source tarot-reigns/ and an absent desktop target.
+- Produces: verified standalone Tarot project and three temp manifests used by Task 6.
 
-- [ ] **Step 1: Capture clean source and generated-route baselines**
-
-Run:
+- [ ] **Step 1: Run baseline suite and capture routes/source manifests**
 
 ~~~powershell
 npm run test:fresh
@@ -77,39 +75,22 @@ Get-ChildItem -File -Recurse -LiteralPath $sourceRoot |
   Set-Content -LiteralPath $sourceBaseline -Encoding UTF8
 ~~~
 
-Expected: fresh suite passes and both temp manifests exist.
+Expected: suite passes and both manifests exist.
 
-- [ ] **Step 2: Write the failing boundary test**
-
-Create test/repository-structure.test.cjs:
-
-~~~js
-'use strict'
-
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const fs = require('node:fs')
-const path = require('node:path')
-
-const repoRoot = path.resolve(__dirname, '..')
-const exists = relativePath => fs.existsSync(path.join(repoRoot, relativePath))
-const read = relativePath => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8')
-
-test('the unrelated Tarot Reigns project is not bundled inside the blog repository', () => {
-  assert.equal(exists('tarot-reigns'), false)
-})
-~~~
-
-- [ ] **Step 3: Run RED**
-
-Run: node --test test/repository-structure.test.cjs
-
-Expected: FAIL because tarot-reigns/ still exists.
-
-- [ ] **Step 4: Copy and verify every original Tarot file**
+- [ ] **Step 2: Record the expected pre-clean state**
 
 ~~~powershell
-$repoRoot = (Resolve-Path -LiteralPath 'C:/Users/Lenovo/Desktop/Quarkbobo').Path
+if (-not (Test-Path -LiteralPath 'tarot-reigns')) { throw 'Expected repository Tarot project is missing.' }
+if (Test-Path -LiteralPath 'C:/Users/Lenovo/Desktop/TarotReigns') { throw 'Desktop target already exists.' }
+git -c core.quotePath=false ls-files tarot-reigns
+~~~
+
+Expected: Git lists the Tarot files and the desktop target is absent.
+
+- [ ] **Step 3: Copy and verify every source file**
+
+~~~powershell
+$repoRoot = (Resolve-Path -LiteralPath ((git rev-parse --show-toplevel).Trim())).Path
 $source = (Resolve-Path -LiteralPath (Join-Path $repoRoot 'tarot-reigns')).Path
 $target = [System.IO.Path]::GetFullPath('C:/Users/Lenovo/Desktop/TarotReigns')
 $desktopRoot = (Resolve-Path -LiteralPath 'C:/Users/Lenovo/Desktop').Path
@@ -136,9 +117,7 @@ $afterRows = @($after | ForEach-Object { "$($_.Path)|$($_.Bytes)|$($_.SHA256)" }
 if (@(Compare-Object $beforeRows $afterRows).Count -ne 0) { throw 'Tarot copy verification failed; keep repository source.' }
 ~~~
 
-- [ ] **Step 5: Remove only verified caches, add external ignore rules, then remove repository copy**
-
-Validate every cache target before removal:
+- [ ] **Step 4: Remove verified caches from the external target and add ignore rules**
 
 ~~~powershell
 $target = (Resolve-Path -LiteralPath 'C:/Users/Lenovo/Desktop/TarotReigns').Path
@@ -160,56 +139,37 @@ __pycache__/
 .venv/
 ~~~
 
-Then run: git rm -r -- tarot-reigns
-
-- [ ] **Step 6: Run GREEN and commit**
+- [ ] **Step 5: Remove the verified repository copy, verify post-state, and commit**
 
 ~~~powershell
-node --test test/repository-structure.test.cjs
-if ($LASTEXITCODE -ne 0) { throw 'Tarot structure test failed.' }
+git rm -r -- tarot-reigns
+if (Test-Path -LiteralPath 'tarot-reigns') { throw 'Repository Tarot directory remains.' }
+if (-not (Test-Path -LiteralPath 'C:/Users/Lenovo/Desktop/TarotReigns')) { throw 'External Tarot target is missing.' }
 git diff --check
 if ($LASTEXITCODE -ne 0) { throw 'Diff check failed.' }
-git add -- test/repository-structure.test.cjs
 git commit -m "refactor: extract tarot project from blog"
 ~~~
 
 ### Task 2: Consolidate retained development documentation
 
 **Files:**
-- Modify: test/repository-structure.test.cjs
 - Move: docs/superpowers/specs/*.md to docs/development/specs/
 - Move: docs/superpowers/plans/*.md to docs/development/plans/
 - Move: docs/verification/*.md to docs/development/verification/
-- Modify after move: docs/development/plans/2026-08-30-high-energy-ringed-star.md
-- Modify after move: docs/development/plans/2026-08-31-realistic-canvas-ringed-planet.md
+- Modify after move: two historical implementation plans with active path references.
 
 **Interfaces:**
-- Consumes: exists(relativePath) from Task 1.
-- Produces: one development-document hierarchy; docs/recovery/ stays unchanged.
+- Produces: docs/development/{specs,plans,verification}; docs/recovery/ remains unchanged.
 
-- [ ] **Step 1: Append the failing layout test**
+- [ ] **Step 1: Record expected pre-move state**
 
-~~~js
-test('development records use one hierarchy while recovery stays separate', () => {
-  for (const directory of [
-    'docs/development/specs',
-    'docs/development/plans',
-    'docs/development/verification',
-    'docs/recovery'
-  ]) assert.equal(exists(directory), true, directory)
-
-  assert.equal(exists('docs/superpowers'), false)
-  assert.equal(exists('docs/verification'), false)
-})
+~~~powershell
+foreach ($path in @('docs/superpowers/specs','docs/superpowers/plans','docs/verification','docs/recovery')) {
+  if (-not (Test-Path -LiteralPath $path)) { throw "Expected path missing: $path" }
+}
 ~~~
 
-- [ ] **Step 2: Run RED**
-
-Run: node --test test/repository-structure.test.cjs
-
-Expected: FAIL because both old document roots still exist.
-
-- [ ] **Step 3: Move documents with Git history**
+- [ ] **Step 2: Move documents using Git**
 
 ~~~powershell
 New-Item -ItemType Directory -Force -Path 'docs/development/specs','docs/development/plans','docs/development/verification' | Out-Null
@@ -218,153 +178,103 @@ Get-ChildItem -File -LiteralPath 'docs/superpowers/plans' | ForEach-Object { git
 Get-ChildItem -File -LiteralPath 'docs/verification' | ForEach-Object { git mv -- $_.FullName 'docs/development/verification/' }
 ~~~
 
-- [ ] **Step 4: Update active navigational references**
-
-With apply_patch:
+- [ ] **Step 3: Update active references with apply_patch**
 
 - In docs/development/plans/2026-08-30-high-energy-ringed-star.md, replace docs/verification/ with docs/development/verification/.
 - In docs/development/plans/2026-08-31-realistic-canvas-ringed-planet.md, replace docs/superpowers/specs/ with docs/development/specs/ and docs/verification/ with docs/development/verification/.
-- Do not change the explicit old-to-new mapping in the cleanup design specification.
+- Keep the cleanup design's explicit old-to-new migration mapping unchanged.
 
-Verify:
+- [ ] **Step 4: Verify post-state and commit**
 
 ~~~powershell
+foreach ($path in @('docs/development/specs','docs/development/plans','docs/development/verification','docs/recovery')) {
+  if (-not (Test-Path -LiteralPath $path)) { throw "Target path missing: $path" }
+}
+foreach ($path in @('docs/superpowers','docs/verification')) {
+  if (Test-Path -LiteralPath $path) { throw "Legacy path remains: $path" }
+}
 rg -n "docs/(superpowers|verification)/" docs/development/plans/2026-08-30-high-energy-ringed-star.md docs/development/plans/2026-08-31-realistic-canvas-ringed-planet.md
-~~~
-
-Expected: no matches.
-
-- [ ] **Step 5: Run GREEN and commit**
-
-~~~powershell
-node --test test/repository-structure.test.cjs
-if ($LASTEXITCODE -ne 0) { throw 'Documentation structure test failed.' }
+if ($LASTEXITCODE -eq 0) { throw 'Active plan references still use old paths.' }
 git diff --check
 if ($LASTEXITCODE -ne 0) { throw 'Diff check failed.' }
-git add -- docs test/repository-structure.test.cjs
+git add -- docs
 git commit -m "docs: consolidate development records"
 ~~~
 
-### Task 3: Remove verified legacy files and dependencies
+### Task 3: Remove verified legacy files and unused dependencies
 
 **Files:**
-- Modify: test/repository-structure.test.cjs
-- Modify: package.json
-- Modify: package-lock.json
-- Delete: .codebuddy/settings.local.json
-- Delete: _config.landscape.yml
-- Delete: desktop.ini
-- Delete: render.yaml
-- Delete: themes/.gitkeep
+- Modify: package.json, package-lock.json
+- Delete: .codebuddy/settings.local.json, _config.landscape.yml, desktop.ini, render.yaml, themes/.gitkeep
 
 **Interfaces:**
-- Consumes: exists(relativePath) and read(relativePath).
-- Produces: one active Hexo theme dependency set with no broken deployment descriptor.
+- Produces: one active Hexo theme dependency set and no broken deployment descriptor.
 
-- [ ] **Step 1: Append the failing legacy-surface test**
-
-~~~js
-test('obsolete theme, deployment, editor, and placeholder artifacts are absent', () => {
-  for (const relativePath of [
-    '.codebuddy',
-    '_config.landscape.yml',
-    'desktop.ini',
-    'render.yaml',
-    'themes/.gitkeep'
-  ]) assert.equal(exists(relativePath), false, relativePath)
-
-  const packageJson = JSON.parse(read('package.json'))
-  assert.equal(packageJson.dependencies['hexo-theme-landscape'], undefined)
-  assert.equal(packageJson.dependencies['hexo-renderer-stylus'], undefined)
-})
-~~~
-
-- [ ] **Step 2: Run RED**
-
-Run: node --test test/repository-structure.test.cjs
-
-Expected: FAIL on the tracked files and both dependencies.
-
-- [ ] **Step 3: Delete only approved tracked files**
-
-Use apply_patch to delete the five paths listed above. Inspect:
+- [ ] **Step 1: Record expected obsolete state**
 
 ~~~powershell
-git status --short -- .codebuddy _config.landscape.yml desktop.ini render.yaml themes/.gitkeep
+foreach ($path in @('.codebuddy/settings.local.json','_config.landscape.yml','desktop.ini','render.yaml','themes/.gitkeep')) {
+  git ls-files --error-unmatch -- $path
+  if ($LASTEXITCODE -ne 0) { throw "Expected tracked path missing: $path" }
+}
+npm explain hexo-theme-landscape
+if ($LASTEXITCODE -ne 0) { throw 'Expected Landscape dependency missing.' }
+npm explain hexo-renderer-stylus
+if ($LASTEXITCODE -ne 0) { throw 'Expected Stylus dependency missing.' }
 ~~~
 
-- [ ] **Step 4: Remove unused packages through npm**
+- [ ] **Step 2: Delete only approved tracked files**
+
+Use apply_patch for the five approved paths. Confirm Git shows only their deletions before continuing.
+
+- [ ] **Step 3: Remove unused packages through npm**
 
 ~~~powershell
 npm uninstall hexo-theme-landscape hexo-renderer-stylus --save
 if ($LASTEXITCODE -ne 0) { throw 'npm dependency removal failed.' }
-npm explain hexo-theme-landscape
-if ($LASTEXITCODE -eq 0) { throw 'Landscape package is still installed.' }
-npm explain hexo-renderer-stylus
-if ($LASTEXITCODE -eq 0) { throw 'Stylus renderer is still installed.' }
 ~~~
 
-- [ ] **Step 5: Run GREEN, build, and commit**
+- [ ] **Step 4: Verify real behavior and commit**
 
 ~~~powershell
-node --test test/repository-structure.test.cjs
-if ($LASTEXITCODE -ne 0) { throw 'Legacy surface test failed.' }
+npm explain hexo-theme-landscape
+if ($LASTEXITCODE -eq 0) { throw 'Landscape package remains.' }
+npm explain hexo-renderer-stylus
+if ($LASTEXITCODE -eq 0) { throw 'Stylus renderer remains.' }
 npm run build
-if ($LASTEXITCODE -ne 0) { throw 'Build failed after dependency removal.' }
+if ($LASTEXITCODE -ne 0) { throw 'Hexo build failed.' }
 git diff --check
 if ($LASTEXITCODE -ne 0) { throw 'Diff check failed.' }
-git add -A -- package.json package-lock.json test/repository-structure.test.cjs .codebuddy _config.landscape.yml desktop.ini render.yaml themes/.gitkeep
+git add -A -- package.json package-lock.json .codebuddy _config.landscape.yml desktop.ini render.yaml themes/.gitkeep
 git commit -m "chore: remove obsolete blog scaffolding"
 ~~~
 
-### Task 4: Protect downloads and ignore local-only artifacts
+### Task 4: Protect downloads, ignore local artifacts, and clean generated state
 
 **Files:**
-- Modify: test/repository-structure.test.cjs
 - Modify: .gitignore
-- Remove ignored generated state: public/, db.json, .worktrees/
+- Remove ignored state during implementation: public/, db.json
 
 **Interfaces:**
-- Consumes: exists(relativePath), read(relativePath), fs, path.
-- Produces: exact 12-file download contract and durable ignore rules.
+- Produces: behaviorally verified ignore rules while preserving the exact 12 download names.
 
-- [ ] **Step 1: Append failing ignore rule and passing download tests**
+- [ ] **Step 1: Verify retained downloads and expected missing ignore behavior**
 
-~~~js
-test('local Windows, editor, and Python artifacts stay ignored', () => {
-  const lines = new Set(read('.gitignore').split(/\r?\n/))
-  for (const pattern of ['desktop.ini', '.codebuddy/', '__pycache__/', '*.py[cod]']) {
-    assert.equal(lines.has(pattern), true, pattern)
-  }
-})
+~~~powershell
+$expected = @(
+  '1月_new_questions.txt','1月_new_questions.xlsx',
+  '1月学生政治理论学习月测（自测）_final.txt','1月学生政治理论学习月测（自测）_final.xlsx',
+  '202603.xlsx','202603new_questions(1).txt','202604new_questions.txt','202604new_questions.xlsx',
+  '2月学生政治理论学习月测（自测）.txt','2月学生政治理论学习月测（自测）.xlsx','5.txt','5.xlsx'
+) | Sort-Object
+$actual = @(Get-ChildItem -File -LiteralPath 'source/files/backup' | Select-Object -ExpandProperty Name | Sort-Object)
+if (@(Compare-Object $expected $actual).Count -ne 0) { throw 'Backup download names changed before cleanup.' }
 
-test('all approved backup downloads keep their exact public names', () => {
-  const expected = [
-    '1月_new_questions.txt',
-    '1月_new_questions.xlsx',
-    '1月学生政治理论学习月测（自测）_final.txt',
-    '1月学生政治理论学习月测（自测）_final.xlsx',
-    '202603.xlsx',
-    '202603new_questions(1).txt',
-    '202604new_questions.txt',
-    '202604new_questions.xlsx',
-    '2月学生政治理论学习月测（自测）.txt',
-    '2月学生政治理论学习月测（自测）.xlsx',
-    '5.txt',
-    '5.xlsx'
-  ]
-  const actual = fs.readdirSync(path.join(repoRoot, 'source/files/backup')).sort()
-  assert.deepEqual(actual, expected.sort())
-})
+git check-ignore --no-index -- desktop.ini .codebuddy/settings.local.json sample/__pycache__/x.pyc
+if ($LASTEXITCODE -eq 0) { throw 'New ignore behavior already exists; inspect before editing.' }
 ~~~
 
-- [ ] **Step 2: Run RED**
-
-Run: node --test test/repository-structure.test.cjs
-
-Expected: download test PASS; ignore rule test FAIL.
-
-- [ ] **Step 3: Add exact rules with apply_patch**
+- [ ] **Step 2: Add exact ignore rules with apply_patch**
 
 ~~~gitignore
 desktop.ini
@@ -373,72 +283,56 @@ __pycache__/
 *.py[cod]
 ~~~
 
-- [ ] **Step 4: Clean generated state with exact target checks**
+- [ ] **Step 3: Verify ignore behavior**
+
+~~~powershell
+git check-ignore --no-index -v -- desktop.ini .codebuddy/settings.local.json sample/__pycache__/x.pyc
+if ($LASTEXITCODE -ne 0) { throw 'Ignore rules are inactive.' }
+~~~
+
+- [ ] **Step 4: Clean exact generated paths**
 
 ~~~powershell
 npm run clean
 if ($LASTEXITCODE -ne 0) { throw 'Hexo clean failed.' }
 
-$repoRoot = (Resolve-Path -LiteralPath 'C:/Users/Lenovo/Desktop/Quarkbobo').Path
-$candidate = Join-Path $repoRoot '.worktrees'
-if (Test-Path -LiteralPath $candidate) {
-  $target = (Resolve-Path -LiteralPath $candidate).Path
-  $expected = [System.IO.Path]::GetFullPath((Join-Path $repoRoot '.worktrees'))
-  if (-not $target.Equals($expected, [System.StringComparison]::OrdinalIgnoreCase)) { throw "Unsafe target: $target" }
-  if (@(Get-ChildItem -Force -LiteralPath $target).Count -ne 0) { throw '.worktrees is not empty.' }
-  Remove-Item -LiteralPath $target
-}
+if (Test-Path -LiteralPath 'public') { throw 'public remains after clean.' }
+if (Test-Path -LiteralPath 'db.json') { throw 'db.json remains after clean.' }
+if (-not (Test-Path -LiteralPath 'node_modules')) { throw 'node_modules was removed.' }
 ~~~
 
-Expected: public/, db.json, and empty .worktrees/ are absent; node_modules/ remains.
+The main checkout's `.worktrees/` directory still contains the active isolated worktree at this point. Validate and remove that container only after branch integration and `git worktree remove`, during the finishing step.
 
-- [ ] **Step 5: Run GREEN and commit**
+- [ ] **Step 5: Commit**
 
 ~~~powershell
-node --test test/repository-structure.test.cjs
-if ($LASTEXITCODE -ne 0) { throw 'Boundary tests failed.' }
-git check-ignore -v -- desktop.ini .codebuddy/settings.local.json sample/__pycache__/x.pyc
-if ($LASTEXITCODE -ne 0) { throw 'Ignore rules are inactive.' }
 git diff --check
 if ($LASTEXITCODE -ne 0) { throw 'Diff check failed.' }
-git add -- .gitignore test/repository-structure.test.cjs
-git commit -m "test: protect clean repository boundaries"
+git add -- .gitignore
+git commit -m "chore: ignore local repository artifacts"
 ~~~
 
 ### Task 5: Archive completed root planning logs
 
 **Files:**
-- Modify: test/repository-structure.test.cjs
-- Move: task_plan.md to docs/development/logs/task_plan.md
-- Move: findings.md to docs/development/logs/findings.md
-- Move: progress.md to docs/development/logs/progress.md
+- Move: task_plan.md, findings.md, progress.md to docs/development/logs/
 
 **Interfaces:**
-- Consumes: exists(relativePath).
-- Produces: clean repository root and retained planning history.
+- Produces: a clean repository root and retained planning history.
 
-- [ ] **Step 1: Update all three logs before archival**
+- [ ] **Step 1: Update all logs before archival**
 
-Use apply_patch to record Tasks 1-4, their commits, tests, errors, and one remaining phase: final verification.
+Use apply_patch to record Tasks 1-4, their commits, checks, errors, and final verification as the only remaining phase.
 
-- [ ] **Step 2: Append the failing archival test**
+- [ ] **Step 2: Record expected root state**
 
-~~~js
-test('completed planning logs are archived outside the repository root', () => {
-  for (const name of ['task_plan.md', 'findings.md', 'progress.md']) {
-    assert.equal(exists(name), false, name)
-    assert.equal(exists(path.join('docs/development/logs', name)), true, name)
-  }
-})
+~~~powershell
+foreach ($name in @('task_plan.md','findings.md','progress.md')) {
+  if (-not (Test-Path -LiteralPath $name)) { throw "Root log missing before archival: $name" }
+}
 ~~~
 
-- [ ] **Step 3: Run RED**
-
-Run: node --test test/repository-structure.test.cjs
-
-Expected: FAIL because the three logs remain at root.
-
-- [ ] **Step 4: Move logs with history and update retained paths**
+- [ ] **Step 3: Move logs and update navigational paths**
 
 ~~~powershell
 New-Item -ItemType Directory -Force -Path 'docs/development/logs' | Out-Null
@@ -451,16 +345,18 @@ With apply_patch in docs/development/logs/progress.md:
 
 - Replace docs/superpowers/specs/ with docs/development/specs/.
 - Replace docs/superpowers/plans/ with docs/development/plans/.
-- Keep historical commit IDs and recovery paths unchanged.
+- Keep commit IDs and recovery paths unchanged.
 
-- [ ] **Step 5: Run GREEN and commit**
+- [ ] **Step 4: Verify post-state and commit**
 
 ~~~powershell
-node --test test/repository-structure.test.cjs
-if ($LASTEXITCODE -ne 0) { throw 'Log archival test failed.' }
+foreach ($name in @('task_plan.md','findings.md','progress.md')) {
+  if (Test-Path -LiteralPath $name) { throw "Root log remains: $name" }
+  if (-not (Test-Path -LiteralPath (Join-Path 'docs/development/logs' $name))) { throw "Archived log missing: $name" }
+}
 git diff --check
 if ($LASTEXITCODE -ne 0) { throw 'Diff check failed.' }
-git add -- docs/development/logs test/repository-structure.test.cjs
+git add -- docs/development/logs
 git commit -m "docs: archive completed project logs"
 ~~~
 
@@ -468,13 +364,13 @@ git commit -m "docs: archive completed project logs"
 
 **Files:**
 - Create: docs/development/verification/2026-08-31-repository-cleanup.md
-- Verify unchanged: source/, themes/fluid-particle/, tools/quark-blog-tools.ps1, generated routes, external TarotReigns/.
+- Verify unchanged: source/, theme production files, tools, routes, external TarotReigns/.
 
 **Interfaces:**
-- Consumes: the three Task 1 temp manifests.
-- Produces: final verification record and clean generated-output state.
+- Consumes: Task 1 temp manifests.
+- Produces: final evidence and clean generated-output state.
 
-- [ ] **Step 1: Run full fresh tests and the PowerShell tool contract**
+- [ ] **Step 1: Run full fresh tests and PowerShell tool contract**
 
 ~~~powershell
 npm run test:fresh
@@ -483,14 +379,12 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File test/quark-blog-tools.te
 if ($LASTEXITCODE -ne 0) { throw 'Quark blog tools test failed.' }
 ~~~
 
-Expected: all Node/Chrome tests pass and PowerShell prints PASS: quark-blog-tools contract.
-
-- [ ] **Step 2: Compare routes and authored source to Task 1 baselines**
+- [ ] **Step 2: Compare generated routes and source against baselines**
 
 ~~~powershell
 $routeBaseline = Join-Path ([System.IO.Path]::GetTempPath()) 'quarkbobo-route-baseline.txt'
 $sourceBaseline = Join-Path ([System.IO.Path]::GetTempPath()) 'quarkbobo-source-baseline.json'
-if (-not (Test-Path $routeBaseline) -or -not (Test-Path $sourceBaseline)) { throw 'Cleanup baselines are missing.' }
+if (-not (Test-Path $routeBaseline) -or -not (Test-Path $sourceBaseline)) { throw 'Baselines are missing.' }
 
 $publicRoot = (Resolve-Path -LiteralPath 'public').Path
 $currentRoutes = @(Get-ChildItem -File -Recurse -LiteralPath $publicRoot |
@@ -533,17 +427,9 @@ $afterRows = @($after | ForEach-Object { "$($_.Path)|$($_.Bytes)|$($_.SHA256)" }
 if (@(Compare-Object $beforeRows $afterRows).Count -ne 0) { throw 'External Tarot project changed.' }
 ~~~
 
-- [ ] **Step 4: Create final verification record**
+- [ ] **Step 4: Create verification record**
 
-Create docs/development/verification/2026-08-31-repository-cleanup.md with:
-
-- tested branch and commit;
-- exact Node test count and PowerShell result;
-- route/source/Tarot manifest comparison results;
-- removed dependencies and files;
-- retained 12 download names;
-- confirmation that content, theme production files, tools, and remote state stayed in scope;
-- recovery path from docs/recovery/2026-08-28-redesign-backup.md.
+Create docs/development/verification/2026-08-31-repository-cleanup.md with branch/commit, exact test count, PowerShell result, manifest comparisons, removed items, retained downloads, and recovery path.
 
 - [ ] **Step 5: Final clean, diff audit, and commit**
 
@@ -564,4 +450,4 @@ git commit -m "docs: verify repository cleanup"
 git status --short
 ~~~
 
-Expected: final status is clean, generated output is absent, node_modules/ remains, and no push has occurred.
+Expected: status clean, generated output absent, node_modules/ retained, no push.
