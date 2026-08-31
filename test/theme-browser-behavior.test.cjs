@@ -68,30 +68,50 @@ function dumpWithChrome (fixturePath, { reducedMotion = false, viewport, virtual
   }
 }
 
+function accessibilityMutationStyle (mode) {
+  if (mode !== '1') return ''
+  return `<style>
+    h2 { scroll-margin-top: 0 !important; }
+    .motion-toggle { min-height: 0 !important; touch-action: auto !important; }
+    .post-card { transition: all 1s linear !important; }
+    .post-card h3 a, .archive-list a { display: inline !important; min-block-size: 0 !important; }
+    .post-card__categories a { display: flex !important; width: 100% !important; }
+    .post-grid, .archive-list li { display: block !important; }
+    .skip-link:focus { transform: translateY(0) !important; }
+    #main-content:focus { outline: none !important; }
+    @media (prefers-reduced-motion: reduce) {
+      .motion-toggle { display: inline-flex !important; }
+    }
+  </style>`
+}
+
+function planetMutationStyle (mode) {
+  const rules = {
+    '1': `
+      .saturn-ring { width: 80% !important; height: 12% !important; }
+      #planet-surface { animation: forbidden-planet-pulse 0.2s linear infinite !important; }
+      @keyframes forbidden-planet-pulse { from { opacity: 0.2; } to { opacity: 1; } }
+      @media (max-width: 760px) { .saturn-system { --planet-layout-mode: desktop !important; } }
+    `,
+    'planet-animation': `
+      #planet-surface { animation: forbidden-planet-pulse 0.2s linear infinite !important; }
+      @keyframes forbidden-planet-pulse { from { opacity: 0.2; } to { opacity: 1; } }
+    `,
+    'planet-ring': '.saturn-ring { width: 80% !important; height: 12% !important; }',
+    'planet-mobile': '@media (max-width: 760px) { .saturn-system { --planet-layout-mode: desktop !important; } }',
+    'planet-transition-long': '#planet-surface { transition: opacity 30s linear !important; }',
+    'planet-transition-invalid': '#planet-surface { transition: transform 0.2s ease-out !important; }'
+  }[mode]
+  return rules ? `<style>${rules}</style>` : ''
+}
+
 function runChromeProbe ({ reducedMotion = false } = {}) {
   const generatedHome = fs.readFileSync(path.join(publicRoot, 'index.html'), 'utf8')
   const themeColor = generatedHome.match(/<meta\b[^>]*name="theme-color"[^>]*content="([^"]+)"/i)?.[1]
   assert.ok(themeColor, 'generated home exposes a theme color')
 
-  const mutation = process.env.FLUID_STYLE_PROBE_MUTATION === '1'
-    ? `<style>
-        h2 { scroll-margin-top: 0 !important; }
-        .motion-toggle { min-height: 0 !important; touch-action: auto !important; }
-        .post-card { transition: all 1s linear !important; }
-        .post-card h3 a, .archive-list a { display: inline !important; min-block-size: 0 !important; }
-        .post-card__categories a { display: flex !important; width: 100% !important; }
-        .post-grid, .archive-list li { display: block !important; }
-        .skip-link:focus { transform: translateY(0) !important; }
-        #main-content:focus { outline: none !important; }
-        .saturn-ring { width: 80% !important; height: 12% !important; }
-        #planet-surface { animation: forbidden-planet-pulse 0.2s linear infinite !important; }
-        @keyframes forbidden-planet-pulse { from { opacity: 0.2; } to { opacity: 1; } }
-        @media (max-width: 760px) { .saturn-system { --planet-layout-mode: desktop !important; } }
-        @media (prefers-reduced-motion: reduce) {
-          .motion-toggle { display: inline-flex !important; }
-        }
-      </style>`
-    : ''
+  const mutationMode = process.env.FLUID_STYLE_PROBE_MUTATION
+  const mutation = accessibilityMutationStyle(mutationMode) + planetMutationStyle(mutationMode)
   const fixtureName = `.theme-browser-probe-${process.pid}-${reducedMotion ? 'reduce' : 'normal'}.html`
   const fixturePath = path.join(publicRoot, fixtureName)
   const fixture = `<!doctype html>
@@ -101,7 +121,6 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
         <meta name="theme-color" content="${themeColor}">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/space-scene.css">
-        <style>#planet-surface { transition: none !important; }</style>
         ${mutation}
       </head>
       <body>
@@ -192,6 +211,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
             }
             const writeProbeResult = function (motion) {
               const sceneAnimations = cssSceneAnimations()
+              const surfaceStyle = getComputedStyle(surface)
               document.getElementById('probe-result').textContent = JSON.stringify({
                 colorScheme: getComputedStyle(document.documentElement).colorScheme,
                 themeColor: document.querySelector('meta[name="theme-color"]').content,
@@ -240,7 +260,12 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                 },
                 planetPresentation: {
                   sceneAnimations,
-                  surfaceOpacity: getComputedStyle(surface).opacity,
+                  surfaceOpacity: surfaceStyle.opacity,
+                  transition: {
+                    property: surfaceStyle.transitionProperty,
+                    duration: surfaceStyle.transitionDuration,
+                    timingFunction: surfaceStyle.transitionTimingFunction
+                  },
                   equatorAngles: {
                     ring: getComputedStyle(ring).getPropertyValue('--saturn-equator-angle').trim(),
                     surface: getComputedStyle(surface).getPropertyValue('--planet-equator-angle').trim()
@@ -260,34 +285,44 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
               if (snapshot?.initialized || performance.now() >= deadline) return done(snapshot)
               setTimeout(function () { waitForPlanet(deadline, done) }, 25)
             }
+            const settleSurfaceFade = function () {
+              surface.getAnimations().forEach(function (animation) {
+                if (animation.constructor.name === 'CSSTransition') animation.finish()
+              })
+            }
             waitForPlanet(performance.now() + 1500, function (initial) {
-              if (${reducedMotion}) {
-                writeProbeResult({ initial, sceneAnimations: cssSceneAnimations().length })
-                return
-              }
-              scene.classList.add('motion-paused')
               setTimeout(function () {
-                const paused = window.__planetSurfaceMetrics.snapshot()
-                scene.classList.add('particle-fallback')
-                scene.classList.remove('motion-paused')
+                settleSurfaceFade()
+                if (${reducedMotion}) {
+                  writeProbeResult({ initial, sceneAnimations: cssSceneAnimations().length })
+                  return
+                }
+                scene.classList.add('motion-paused')
                 setTimeout(function () {
-                  const particleFallback = window.__planetSurfaceMetrics.snapshot()
-                  const particleFallbackControlDisplay = getComputedStyle(control).display
-                  scene.classList.remove('particle-fallback')
+                  const paused = window.__planetSurfaceMetrics.snapshot()
+                  scene.classList.add('particle-fallback')
+                  scene.classList.remove('motion-paused')
                   setTimeout(function () {
-                    const resumed = window.__planetSurfaceMetrics.snapshot()
-                    writeProbeResult({
-                      initial,
-                      paused,
-                      particleFallback,
-                      resumed,
-                      ownFallback: scene.classList.contains('planet-fallback'),
-                      particleFallbackControlDisplay,
-                      sceneAnimations: cssSceneAnimations().length
-                    })
-                  }, 250)
+                    const particleFallback = window.__planetSurfaceMetrics.snapshot()
+                    const particleFallbackControlDisplay = getComputedStyle(control).display
+                    const particleFallbackOwnFallback = scene.classList.contains('planet-fallback')
+                    scene.classList.remove('particle-fallback')
+                    setTimeout(function () {
+                      const resumed = window.__planetSurfaceMetrics.snapshot()
+                      writeProbeResult({
+                        initial,
+                        paused,
+                        particleFallback,
+                        resumed,
+                        particleFallbackOwnFallback,
+                        ownFallback: scene.classList.contains('planet-fallback'),
+                        particleFallbackControlDisplay,
+                        sceneAnimations: cssSceneAnimations().length
+                      })
+                    }, 250)
+                  }, 50)
                 }, 50)
-              }, 50)
+              }, 250)
             })
           })
         </script>
@@ -443,14 +478,7 @@ function runPlanetCompositionProbe (viewport) {
   const desktopViewportConstraint = viewport.width >= 768
     ? '<style>html { overflow-y: hidden; }</style>'
     : ''
-  const mutation = process.env.FLUID_STYLE_PROBE_MUTATION === '1'
-    ? `<style>
-        .saturn-ring { width: 80% !important; height: 12% !important; }
-        #planet-surface { animation: forbidden-planet-pulse 0.2s linear infinite !important; }
-        @keyframes forbidden-planet-pulse { from { opacity: 0.2; } to { opacity: 1; } }
-        @media (max-width: 760px) { .saturn-system { --planet-layout-mode: desktop !important; } }
-      </style>`
-    : ''
+  const mutation = planetMutationStyle(process.env.FLUID_STYLE_PROBE_MUTATION)
   const probeScript = `<pre id="probe-result"></pre>
     <script>
       addEventListener('load', function () {
@@ -593,6 +621,9 @@ test('built theme exposes accessible interaction and compositor-friendly renderi
   assert.notEqual(probe.card.transitionProperty, 'all')
   assert.deepEqual(probe.planetPresentation.sceneAnimations, [])
   assert.equal(probe.planetPresentation.surfaceOpacity, '1')
+  assert.equal(probe.planetPresentation.transition.property, 'opacity')
+  assert.equal(probe.planetPresentation.transition.duration, '0.2s')
+  assert.equal(probe.planetPresentation.transition.timingFunction, 'ease-out')
   assert.deepEqual(probe.planetPresentation.equatorAngles, { ring: '-10deg', surface: '-10deg' })
   assert.deepEqual(probe.safeAreaResolved, { bodyLeft: '0px', bodyRight: '0px', headerTop: '0px' })
 })
@@ -646,6 +677,7 @@ test('planet Canvas initializes, obeys shared pause states, and resumes without 
   assert.equal(probe.paused.running, false)
   assert.equal(probe.particleFallback.running, false)
   assert.equal(probe.resumed.running, true)
+  assert.equal(probe.particleFallbackOwnFallback, false)
   assert.equal(probe.ownFallback, false)
   assert.equal(probe.particleFallbackControlDisplay, 'none')
   assert.equal(probe.sceneAnimations, 0)
