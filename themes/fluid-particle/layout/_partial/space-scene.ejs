@@ -2,38 +2,9 @@
   <div class="saturn-system">
     <div class="saturn-halo"></div>
     <div class="saturn-ring saturn-ring--back"></div>
-    <svg class="saturn-prominences" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-      <defs>
-        <linearGradient id="prominence-energy" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#67eaff" />
-          <stop offset="0.52" stop-color="#9568ff" />
-          <stop offset="1" stop-color="#eafbff" />
-        </linearGradient>
-      </defs>
-      <g class="saturn-prominence saturn-prominence--crown">
-        <path class="prominence-glow" d="M54 17 C58 1 75 2 78 20" />
-        <path class="prominence-core" d="M54 17 C58 1 75 2 78 20" />
-      </g>
-      <g class="saturn-prominence saturn-prominence--upper-east">
-        <path class="prominence-glow" d="M73 20 C93 0 105 17 88 34" />
-        <path class="prominence-core" d="M73 20 C93 0 105 17 88 34" />
-      </g>
-      <g class="saturn-prominence saturn-prominence--east">
-        <path class="prominence-glow" d="M87 34 C112 22 116 59 88 63" />
-        <path class="prominence-core" d="M87 34 C112 22 116 59 88 63" />
-      </g>
-      <g class="saturn-prominence saturn-prominence--lower-east">
-        <path class="prominence-glow" d="M84 68 C105 78 92 101 67 82" />
-        <path class="prominence-core" d="M84 68 C105 78 92 101 67 82" />
-      </g>
-      <g class="saturn-prominence saturn-prominence--lower">
-        <path class="prominence-glow" d="M62 82 C58 96 43 99 38 84" />
-        <path class="prominence-core" d="M62 82 C58 96 43 99 38 84" />
-      </g>
-    </svg>
     <div class="saturn">
-      <div class="saturn-bands"></div>
-      <div class="saturn-flares"></div>
+      <div class="planet-static-surface"></div>
+      <canvas id="planet-surface" aria-hidden="true"></canvas>
       <div class="saturn-light"></div>
     </div>
     <div class="saturn-ring saturn-ring--front"></div>

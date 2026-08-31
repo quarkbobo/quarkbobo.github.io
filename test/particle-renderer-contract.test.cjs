@@ -468,18 +468,19 @@ function createHarness (options = {}) {
   }
 }
 
-test('the generated home owns one particle canvas and inner pages load no scene assets', () => {
-  // Duplicating the scene or leaking it onto a post would violate the one-canvas, home-only boundary.
+test('the generated home owns the approved particle and planet canvases while inner pages load no scene assets', () => {
   const home = built('index.html')
   const post = built(path.join('个人博客', 'Hello-World', 'index.html'))
-
   assert.equal(occurrences(home, 'id="particle-flow"'), 1)
+  assert.equal(occurrences(home, 'id="planet-surface"'), 1)
+  assert.equal(occurrences(home, '<canvas'), 2)
   assert.equal(occurrences(home, '<script src="/js/particle-core.js" defer></script>'), 1)
   assert.equal(occurrences(home, '<script src="/js/particle-flow.js" defer></script>'), 1)
   assert.equal(occurrences(home, '<link rel="stylesheet" href="/css/space-scene.css">'), 1)
-  assert.equal(occurrences(post, 'particle-flow'), 0)
+  assert.equal(occurrences(post, '<canvas'), 0)
   assert.equal(occurrences(post, 'space-scene.css'), 0)
   assert.equal(occurrences(post, 'particle-core.js'), 0)
+  assert.equal(occurrences(post, 'particle-flow.js'), 0)
 })
 
 test('mount defers initialization and exposes a frozen read-only metrics snapshot', () => {

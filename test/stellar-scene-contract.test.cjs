@@ -10,73 +10,41 @@ const hash = relative => crypto.createHash('sha256').update(read(relative).repla
 const sceneTemplate = () => read('themes/fluid-particle/layout/_partial/space-scene.ejs')
 const sceneCss = () => read('themes/fluid-particle/source/css/space-scene.css')
 
-test('ringed star exposes five distinct double-stroked prominence events and clipped surface flares', () => {
+test('realistic planet has one static fallback and one surface canvas with no stellar effects', () => {
   const template = sceneTemplate()
-  const groups = [...template.matchAll(/<g\b[^>]*class="[^"]*\bsaturn-prominence\b[^"]*"[^>]*>([\s\S]*?)<\/g>/g)]
-  assert.equal(groups.length, 5)
-  assert.equal(new Set([...template.matchAll(/saturn-prominence--([\w-]+)/g)].map(match => match[1])).size, 5)
-  for (const group of groups) {
-    assert.match(group[1], /class="prominence-glow"/)
-    assert.match(group[1], /class="prominence-core"/)
-  }
-  assert.match(template, /<svg\b[^>]*class="saturn-prominences"[^>]*aria-hidden="true"/)
-  assert.match(template, /<div class="saturn-flares"><\/div>/)
-  assert.ok(template.indexOf('saturn-ring--back') < template.indexOf('saturn-prominences'))
-  assert.ok(template.indexOf('saturn-prominences') < template.indexOf('<div class="saturn">'))
+  const css = sceneCss()
+  assert.equal((template.match(/id="planet-surface"/g) || []).length, 1)
+  assert.equal((template.match(/class="planet-static-surface"/g) || []).length, 1)
+  assert.equal((template.match(/class="saturn-ring saturn-ring--back"/g) || []).length, 1)
+  assert.equal((template.match(/class="saturn-ring saturn-ring--front"/g) || []).length, 1)
+  assert.doesNotMatch(template, /saturn-prominence|saturn-flares|<svg\b/i)
+  assert.doesNotMatch(`${template}\n${css}`, /https?:\/\/|data:image|url\(/i)
+  assert.ok(template.indexOf('saturn-ring--back') >= 0)
+  assert.ok(template.indexOf('saturn-ring--back') < template.indexOf('<div class="saturn">'))
+  assert.ok(template.indexOf('planet-static-surface') < template.indexOf('id="planet-surface"'))
+  assert.ok(template.indexOf('id="planet-surface"') < template.indexOf('saturn-light'))
   assert.ok(template.indexOf('saturn-light') < template.indexOf('saturn-ring--front'))
 })
 
-test('ring and surface share one equatorial angle and animated SVG groups use local transform geometry', () => {
+test('dust ring and Canvas surface share the one minus-ten-degree equator', () => {
   const css = sceneCss()
   assert.match(css, /\.saturn-system\s*\{[^}]*--saturn-equator-angle:\s*-10deg;/s)
+  assert.match(css, /\.saturn-system\s*\{[^}]*transform:\s*translateY\(-50%\);/s)
+  assert.doesNotMatch(css.match(/\.saturn-system\s*\{([^}]*)\}/s)?.[1] || '', /rotate\(/)
   assert.match(css, /\.saturn-ring\s*\{[^}]*transform:\s*rotate\(var\(--saturn-equator-angle\)\);/s)
-  assert.match(css, /\.saturn-bands\s*\{[^}]*transform:\s*rotate\(var\(--saturn-equator-angle\)\)/s)
-  assert.match(css, /\.saturn-prominence\s*\{[^}]*transform-box:\s*fill-box;[^}]*transform-origin:\s*var\(--prominence-origin\);/s)
+  assert.match(css, /#planet-surface\s*\{[^}]*--planet-equator-angle:\s*var\(--saturn-equator-angle\);/s)
+  assert.doesNotMatch(css, /@keyframes\s+saturn-|saturn-(?:prominence|flare|gas|magnetic)/)
 })
 
-test('stellar motion uses one-way compositor animations and supplies fallback controls', () => {
+test('ring dimensions and restrained edge encode the approved dust geometry', () => {
   const css = sceneCss()
-  const animationNames = [
-    'saturn-gas-rotation',
-    'saturn-magnetic-rotation',
-    'saturn-flare-transit',
-    'saturn-prominence-breathe'
-  ]
-
-  for (const name of animationNames) {
-    const keyframes = css.match(new RegExp(`@keyframes\\s+${name}\\s*\\{([\\s\\S]*?)\\n\\}`, 'm'))?.[1]
-    assert.ok(keyframes, `${name} keyframes exist`)
-    assert.doesNotMatch(keyframes, /\b(background-position|filter|box-shadow)\s*:/)
-    assert.match(keyframes, /\b(transform|opacity)\s*:/)
-  }
-
-  for (const [target, animation] of [
-    ['.saturn-bands::before', 'saturn-gas-rotation'],
-    ['.saturn-bands::after', 'saturn-magnetic-rotation']
-  ]) {
-    const selector = target.replace(/[:.]/g, '\\$&')
-    const rules = [...css.matchAll(new RegExp(`${selector}\\s*\\{([^}]*)\\}`, 'g'))].map(match => match[1])
-    const animationRule = rules.find(rule => rule.includes(`animation: ${animation}`))
-    assert.ok(animationRule, `${target} animation rule exists`)
-    assert.match(animationRule, new RegExp(`animation:\\s*${animation}\\s+\\d+(?:\\.\\d+)?s\\s+linear\\s+infinite;`))
-    assert.doesNotMatch(animationRule, /\balternate\b/)
-  }
-
-  const pausedTargets = [
-    '.saturn-bands::before',
-    '.saturn-bands::after',
-    '.saturn-flares',
-    '.saturn-prominence'
-  ]
-  for (const state of ['.motion-paused', '.particle-fallback']) {
-    for (const target of pausedTargets) {
-      const selector = `${state} ${target}`
-      assert.match(css, new RegExp(selector.replace(/[:.]/g, '\\$&')))
-    }
-  }
-  assert.match(css, /\.motion-paused[\s\S]*?\.particle-fallback[\s\S]*?animation-play-state:\s*paused;/)
-  assert.doesNotMatch(css, /saturn-(?:gas|magnetic|flare|prominence)[\s\S]{0,100}\balternate\b/)
-  assert.match(read('themes/fluid-particle/source/css/main.css'), /\.home-hero:has\(\.particle-fallback\) \.motion-toggle\s*\{\s*display:\s*none;\s*\}/)
+  const ringRule = css.match(/\.saturn-ring\s*\{([^}]*)\}/s)?.[1] || ''
+  assert.match(css, /\.saturn\s*\{[^}]*width:\s*62%;[^}]*aspect-ratio:\s*43\s*\/\s*38;/s)
+  assert.match(css, /\.saturn-ring\s*\{[^}]*left:\s*-9%;[^}]*width:\s*118%;[^}]*height:\s*23%;/s)
+  assert.match(css, /--ring-inner-stop:\s*90\.5%;/)
+  assert.equal((ringRule.match(/rgba\(104,\s*217,\s*244,\s*0\.2[0-9]\)/g) || []).length, 1)
+  assert.doesNotMatch(ringRule, /\b(?:border|box-shadow|filter)\s*:/)
+  assert.doesNotMatch(css, /drop-shadow\([^)]*(?:149,\s*104,\s*255|234,\s*251,\s*255)/)
 })
 
 test('particle renderer and Canvas visual contract stay unchanged', () => {
