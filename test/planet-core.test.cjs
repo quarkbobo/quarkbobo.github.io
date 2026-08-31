@@ -131,6 +131,32 @@ test('sphere map excludes corners, stays in bounds, and records differential lat
   }
 })
 
+test('sphere map inverse-rotates minus ten degrees with exact longitude and symmetric latitude speeds', () => {
+  const map = core.createSphereMap({
+    width: 3,
+    height: 3,
+    sourceWidth: 360,
+    sourceHeight: 181,
+    equatorRadians: -10 * Math.PI / 180
+  })
+  const center = 4
+  const rightMiddle = 5
+  const northMiddle = 1
+  const southMiddle = 7
+
+  assert.equal(map.visibleCount, 9)
+  assert.equal(map.sourceRows[center], 90)
+  assert.equal(map.baseSourceX[center], 180)
+  assert.equal(map.speedFactors[center], 1)
+  assert.equal(map.sourceRows[rightMiddle], 97)
+  assert.ok(Math.abs(map.baseSourceX[rightMiddle] - 221.37484741210938) < 1e-5)
+  assert.ok(Math.abs(map.speedFactors[rightMiddle] - 0.9991958737373352) < 1e-7)
+  assert.equal(map.sourceRows[northMiddle], 49)
+  assert.equal(map.sourceRows[southMiddle], 131)
+  assert.ok(Math.abs(map.speedFactors[northMiddle] - map.speedFactors[southMiddle]) < 1e-7)
+  assert.ok(map.speedFactors[northMiddle] < map.speedFactors[center])
+})
+
 test('projected redraw changes phase while reusing every caller-owned buffer', () => {
   const texture = new Uint8ClampedArray(128 * 64 * 4)
   core.fillTexturePixels(texture, 128, 64, 0x706C616E)
@@ -142,6 +168,52 @@ test('projected redraw changes phase while reusing every caller-owned buffer', (
   assert.equal(core.renderProjectedFrame(texture, 128, map, 0.07, output), output)
   assert.notDeepEqual(output, firstFrame)
   assert.equal(map.targetOffsets, targetOffsets)
+})
+
+test('projected redraw interpolates, wraps, applies speed, and only writes mapped RGBA bytes', () => {
+  const texture = new Uint8ClampedArray([
+    0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
+    160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 251, 252, 20, 30, 40, 50
+  ])
+  const map = {
+    visibleCount: 3,
+    targetOffsets: new Uint32Array([4, 16, 28]),
+    sourceRows: new Uint16Array([0, 0, 1]),
+    baseSourceX: new Float32Array([0.25, 3.75, 1]),
+    speedFactors: new Float32Array([0.5, 0, 0.25]),
+    limbCoverage: new Uint8Array([200, 75, 255])
+  }
+  const output = new Uint8ClampedArray(32)
+  assert.equal(core.renderProjectedFrame(texture, 4, map, 0, output), output)
+  assert.deepEqual(Array.from(output.slice(4, 8)), [10, 20, 30, 200])
+  assert.deepEqual(Array.from(output.slice(16, 20)), [30, 40, 50, 75])
+  assert.deepEqual(Array.from(output.slice(28, 32)), [200, 210, 220, 255])
+  for (const offset of [0, 8, 12, 20, 24]) assert.deepEqual(Array.from(output.slice(offset, offset + 4)), [0, 0, 0, 0])
+
+  assert.equal(core.renderProjectedFrame(texture, 4, map, core.TAU, output), output)
+  assert.deepEqual(Array.from(output.slice(4, 8)), [90, 100, 110, 200])
+  assert.deepEqual(Array.from(output.slice(16, 20)), [30, 40, 50, 75])
+  assert.deepEqual(Array.from(output.slice(28, 32)), [240, 250, 251, 255])
+
+  const sentinel = new Uint8ClampedArray(32).fill(173)
+  assert.equal(core.renderProjectedFrame(texture, 4, map, core.TAU, sentinel), sentinel)
+  assert.deepEqual(Array.from(sentinel.slice(4, 8)), [90, 100, 110, 200])
+  assert.deepEqual(Array.from(sentinel.slice(16, 20)), [30, 40, 50, 75])
+  assert.deepEqual(Array.from(sentinel.slice(28, 32)), [240, 250, 251, 255])
+  for (const offset of [0, 8, 12, 20, 24]) assert.deepEqual(Array.from(sentinel.slice(offset, offset + 4)), [173, 173, 173, 173])
+})
+
+test('texture sampler bilinearly interpolates distinct channels, wraps, and clamps vertical rows', () => {
+  const pixels = new Uint8ClampedArray([
+    0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110,
+    120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230
+  ])
+  assert.equal(core.sampleTextureChannel(pixels, 3, 2, 0.25, 0.5, 0), 70)
+  assert.equal(core.sampleTextureChannel(pixels, 3, 2, 0.25, 0.5, 2), 90)
+  assert.equal(core.sampleTextureChannel(pixels, 3, 2, 2.5, 0.5, 0), 100)
+  assert.equal(core.sampleTextureChannel(pixels, 3, 2, -0.5, 0.5, 3), 130)
+  assert.equal(core.sampleTextureChannel(pixels, 3, 2, 1.5, -9, 1), 70)
+  assert.equal(core.sampleTextureChannel(pixels, 3, 2, 1.5, 9, 1), 190)
 })
 
 test('projected hot loop contains no allocation or DOM work', () => {
