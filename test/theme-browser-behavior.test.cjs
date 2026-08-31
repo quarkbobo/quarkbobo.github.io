@@ -31,7 +31,7 @@ function readProbeResult (html) {
   return JSON.parse(decodeHtml(encoded))
 }
 
-function dumpWithChrome (fixturePath, { reducedMotion = false, viewport } = {}) {
+function dumpWithChrome (fixturePath, { reducedMotion = false, viewport, virtualTimeBudget = 1000 } = {}) {
   assert.ok(chromePath, `Chrome or Edge is installed (${chromeCandidates.join(', ')})`)
   const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fluid-theme-chrome-'))
   try {
@@ -41,7 +41,7 @@ function dumpWithChrome (fixturePath, { reducedMotion = false, viewport } = {}) 
       '--no-sandbox',
       '--allow-file-access-from-files',
       `--user-data-dir=${userDataDir}`,
-      '--virtual-time-budget=1000',
+      `--virtual-time-budget=${virtualTimeBudget}`,
       '--dump-dom'
     ]
     if (reducedMotion) args.push('--force-prefers-reduced-motion=reduce')
@@ -83,6 +83,10 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
         .post-grid, .archive-list li { display: block !important; }
         .skip-link:focus { transform: translateY(0) !important; }
         #main-content:focus { outline: none !important; }
+        .saturn-ring { width: 80% !important; height: 12% !important; }
+        #planet-surface { animation: forbidden-planet-pulse 0.2s linear infinite !important; }
+        @keyframes forbidden-planet-pulse { from { opacity: 0.2; } to { opacity: 1; } }
+        @media (max-width: 760px) { .saturn-system { --planet-layout-mode: desktop !important; } }
         @media (prefers-reduced-motion: reduce) {
           .motion-toggle { display: inline-flex !important; }
         }
@@ -97,6 +101,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
         <meta name="theme-color" content="${themeColor}">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/space-scene.css">
+        <style>#planet-surface { transition: none !important; }</style>
         ${mutation}
       </head>
       <body>
@@ -129,6 +134,8 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
           <ol class="archive-list"><li id="probe-archive-row"><time>2026</time><a id="probe-archive-link" href="#probe-heading">B</a></li></ol>
         </main>
         <pre id="probe-result"></pre>
+        <script src="js/planet-core.js"></script>
+        <script src="js/planet-surface.js"></script>
         <script>
           addEventListener('load', function () {
             const heading = document.getElementById('probe-heading')
@@ -162,14 +169,8 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
               outlineWidth: mainFocusStyle.outlineWidth,
               outlineOffset: mainFocusStyle.outlineOffset
             }
-            const planet = document.querySelector('.saturn')
             const surface = document.getElementById('planet-surface')
             const ring = document.querySelector('.saturn-ring')
-            const sceneAnimations = scene.getAnimations({ subtree: true })
-              .filter(function (animation) { return animation.constructor.name === 'CSSAnimation' })
-              .map(function (animation) {
-                return animation.animationName || animation.effect?.target?.className || 'anonymous'
-              })
             control.focus()
             const controlStyle = getComputedStyle(control)
             const cardStyle = getComputedStyle(card)
@@ -182,66 +183,111 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
             const archiveLinkRect = archiveLink.getBoundingClientRect()
             const bodyStyle = getComputedStyle(document.body)
             const headerStyle = getComputedStyle(document.querySelector('.site-header'))
-            document.getElementById('probe-result').textContent = JSON.stringify({
-              colorScheme: getComputedStyle(document.documentElement).colorScheme,
-              themeColor: document.querySelector('meta[name="theme-color"]').content,
-              scrollMarginTop: getComputedStyle(heading).scrollMarginTop,
-              skipFocus: { pointerLike: pointerLikeSkip, keyboardLike: keyboardLikeSkip },
-              mainFocus,
-              control: {
-                minHeight: controlStyle.minHeight,
-                height: controlStyle.height,
-                touchAction: controlStyle.touchAction,
-                tapHighlightColor: controlStyle.webkitTapHighlightColor,
-                outlineStyle: controlStyle.outlineStyle,
-                outlineWidth: controlStyle.outlineWidth,
-                outlineOffset: controlStyle.outlineOffset,
-                display: controlStyle.display
-              },
-              card: {
-                contentVisibility: cardStyle.contentVisibility,
-                transitionProperty: cardStyle.transitionProperty,
-                transitionDuration: cardStyle.transitionDuration
-              },
-              entryTargets: {
-                cardTitle: {
-                  display: cardTitleStyle.display,
-                  minBlockSize: cardTitleStyle.minBlockSize,
-                  width: cardTitleRect.width,
-                  height: cardTitleRect.height
+            const cssSceneAnimations = function () {
+              return scene.getAnimations({ subtree: true })
+                .filter(function (animation) { return animation.constructor.name === 'CSSAnimation' })
+                .map(function (animation) {
+                  return animation.animationName || animation.effect?.target?.className || 'anonymous'
+                })
+            }
+            const writeProbeResult = function (motion) {
+              const sceneAnimations = cssSceneAnimations()
+              document.getElementById('probe-result').textContent = JSON.stringify({
+                colorScheme: getComputedStyle(document.documentElement).colorScheme,
+                themeColor: document.querySelector('meta[name="theme-color"]').content,
+                scrollMarginTop: getComputedStyle(heading).scrollMarginTop,
+                skipFocus: { pointerLike: pointerLikeSkip, keyboardLike: keyboardLikeSkip },
+                mainFocus,
+                control: {
+                  minHeight: controlStyle.minHeight,
+                  height: controlStyle.height,
+                  touchAction: controlStyle.touchAction,
+                  tapHighlightColor: controlStyle.webkitTapHighlightColor,
+                  outlineStyle: controlStyle.outlineStyle,
+                  outlineWidth: controlStyle.outlineWidth,
+                  outlineOffset: controlStyle.outlineOffset,
+                  display: controlStyle.display
                 },
-                archive: {
-                  display: archiveLinkStyle.display,
-                  minBlockSize: archiveLinkStyle.minBlockSize,
-                  width: archiveLinkRect.width,
-                  height: archiveLinkRect.height
-                }
-              },
-              collectionLayout: {
-                postGridDisplay: getComputedStyle(grid).display,
-                archiveRowDisplay: getComputedStyle(archiveRow).display,
-                cardWidth: cardRect.width,
-                category: {
-                  display: categoryStyle.display,
-                  minBlockSize: categoryStyle.minBlockSize,
-                  width: categoryRect.width,
-                  height: categoryRect.height
-                }
-              },
-              planetPresentation: {
-                sceneAnimations,
-                surfaceOpacity: getComputedStyle(surface).opacity,
-                equatorAngles: {
-                  ring: getComputedStyle(ring).getPropertyValue('--saturn-equator-angle').trim(),
-                  surface: getComputedStyle(surface).getPropertyValue('--planet-equator-angle').trim()
-                }
-              },
-              scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior,
-              safeAreaResolved: {
-                bodyLeft: bodyStyle.paddingLeft,
-                bodyRight: bodyStyle.paddingRight,
-                headerTop: headerStyle.paddingTop
+                card: {
+                  contentVisibility: cardStyle.contentVisibility,
+                  transitionProperty: cardStyle.transitionProperty,
+                  transitionDuration: cardStyle.transitionDuration
+                },
+                entryTargets: {
+                  cardTitle: {
+                    display: cardTitleStyle.display,
+                    minBlockSize: cardTitleStyle.minBlockSize,
+                    width: cardTitleRect.width,
+                    height: cardTitleRect.height
+                  },
+                  archive: {
+                    display: archiveLinkStyle.display,
+                    minBlockSize: archiveLinkStyle.minBlockSize,
+                    width: archiveLinkRect.width,
+                    height: archiveLinkRect.height
+                  }
+                },
+                collectionLayout: {
+                  postGridDisplay: getComputedStyle(grid).display,
+                  archiveRowDisplay: getComputedStyle(archiveRow).display,
+                  cardWidth: cardRect.width,
+                  category: {
+                    display: categoryStyle.display,
+                    minBlockSize: categoryStyle.minBlockSize,
+                    width: categoryRect.width,
+                    height: categoryRect.height
+                  }
+                },
+                planetPresentation: {
+                  sceneAnimations,
+                  surfaceOpacity: getComputedStyle(surface).opacity,
+                  equatorAngles: {
+                    ring: getComputedStyle(ring).getPropertyValue('--saturn-equator-angle').trim(),
+                    surface: getComputedStyle(surface).getPropertyValue('--planet-equator-angle').trim()
+                  }
+                },
+                scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior,
+                safeAreaResolved: {
+                  bodyLeft: bodyStyle.paddingLeft,
+                  bodyRight: bodyStyle.paddingRight,
+                  headerTop: headerStyle.paddingTop
+                },
+                ...motion
+              })
+            }
+            const waitForPlanet = function (deadline, done) {
+              const snapshot = window.__planetSurfaceMetrics?.snapshot()
+              if (snapshot?.initialized || performance.now() >= deadline) return done(snapshot)
+              setTimeout(function () { waitForPlanet(deadline, done) }, 25)
+            }
+            waitForPlanet(performance.now() + 1500, function (initial) {
+              if (${reducedMotion}) {
+                writeProbeResult({ initial, sceneAnimations: cssSceneAnimations().length })
+                return
               }
+              scene.classList.add('motion-paused')
+              setTimeout(function () {
+                const paused = window.__planetSurfaceMetrics.snapshot()
+                scene.classList.add('particle-fallback')
+                scene.classList.remove('motion-paused')
+                setTimeout(function () {
+                  const particleFallback = window.__planetSurfaceMetrics.snapshot()
+                  const particleFallbackControlDisplay = getComputedStyle(control).display
+                  scene.classList.remove('particle-fallback')
+                  setTimeout(function () {
+                    const resumed = window.__planetSurfaceMetrics.snapshot()
+                    writeProbeResult({
+                      initial,
+                      paused,
+                      particleFallback,
+                      resumed,
+                      ownFallback: scene.classList.contains('planet-fallback'),
+                      particleFallbackControlDisplay,
+                      sceneAnimations: cssSceneAnimations().length
+                    })
+                  }, 250)
+                }, 50)
+              }, 50)
             })
           })
         </script>
@@ -397,16 +443,29 @@ function runPlanetCompositionProbe (viewport) {
   const desktopViewportConstraint = viewport.width >= 768
     ? '<style>html { overflow-y: hidden; }</style>'
     : ''
+  const mutation = process.env.FLUID_STYLE_PROBE_MUTATION === '1'
+    ? `<style>
+        .saturn-ring { width: 80% !important; height: 12% !important; }
+        #planet-surface { animation: forbidden-planet-pulse 0.2s linear infinite !important; }
+        @keyframes forbidden-planet-pulse { from { opacity: 0.2; } to { opacity: 1; } }
+        @media (max-width: 760px) { .saturn-system { --planet-layout-mode: desktop !important; } }
+      </style>`
+    : ''
   const probeScript = `<pre id="probe-result"></pre>
     <script>
       addEventListener('load', function () {
         const system = document.querySelector('.saturn-system')
-        const planet = document.querySelector('.saturn')
-        const ring = document.querySelector('.saturn-ring')
+        const body = document.querySelector('.saturn')
+        const rings = Array.from(document.querySelectorAll('.saturn-ring'))
+        const ring = rings[0]
         const surface = document.getElementById('planet-surface')
         const copy = document.querySelector('.home-hero__copy')
-        const planetRect = planet.getBoundingClientRect()
+        const planetRect = body.getBoundingClientRect()
         const ringRect = ring.getBoundingClientRect()
+        const innerStop = Number.parseFloat(getComputedStyle(ring).getPropertyValue('--ring-inner-stop')) / 100
+        const ringWidthRatio = ring.offsetWidth / body.offsetWidth
+        const ringHeightRatio = ring.offsetHeight / body.offsetWidth
+        const beltThicknessRatio = ringWidthRatio * (1 - innerStop) / 2
         const copyContentRects = Array.from(copy.querySelectorAll('p, h1, a, button')).flatMap(function (child) {
           const style = getComputedStyle(child)
           if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return []
@@ -464,35 +523,49 @@ function runPlanetCompositionProbe (viewport) {
           clippedSyntheticRect.right > 0 && clippedSyntheticRect.bottom > 0 &&
           clippedSyntheticRect.left < ${acceptanceWidth} && clippedSyntheticRect.top < ${viewportHeight}
 
-        document.getElementById('probe-result').textContent = JSON.stringify({
-          noHorizontalOverflow: document.body.scrollWidth <= ${acceptanceWidth},
-          canvasIds: ['particle-flow', 'planet-surface'].filter(function (id) { return document.getElementById(id) }),
-          copyIntersectsPlanetOrRing: copyContentRects.some(function (copyRect) {
-            return rectanglesIntersect(copyRect, planetRect) || rectanglesIntersect(copyRect, ringRect)
-          }),
-          ringWidthRatio: ring.offsetWidth / planet.offsetWidth,
-          ringHeightRatio: ring.offsetHeight / planet.offsetWidth,
-          planetRect: { left: planetRect.left, top: planetRect.top, right: planetRect.right, bottom: planetRect.bottom },
-          ringRect: { left: ringRect.left, top: ringRect.top, right: ringRect.right, bottom: ringRect.bottom },
-          copyContentRects,
-          syntheticClipping: {
-            rawViewportVisible,
-            clippingAwareVisible: hasVisibleBounds(clippedSyntheticGroup)
-          },
-          ringAngle: getComputedStyle(ring).getPropertyValue('--saturn-equator-angle').trim(),
-          surfaceAngle: getComputedStyle(surface).getPropertyValue('--planet-equator-angle').trim(),
-          mobilePolicy: matchMedia('(max-width: 760px)').matches,
-          layoutMode: getComputedStyle(system).getPropertyValue('--planet-layout-mode').trim(),
-          viewportWidths: { inner: innerWidth, client: document.documentElement.clientWidth },
-          bodyWidth: document.body.getBoundingClientRect().width
+        const waitForPlanet = function (deadline, done) {
+          const snapshot = window.__planetSurfaceMetrics?.snapshot()
+          if (snapshot?.initialized || performance.now() >= deadline) return done()
+          setTimeout(function () { waitForPlanet(deadline, done) }, 25)
+        }
+        waitForPlanet(performance.now() + 1500, function () {
+          const metrics = window.__planetSurfaceMetrics.snapshot()
+          document.getElementById('probe-result').textContent = JSON.stringify({
+            noHorizontalOverflow: document.body.scrollWidth <= ${acceptanceWidth},
+            canvasIds: Array.from(document.querySelectorAll('#space-scene canvas')).map(function (canvas) { return canvas.id }).sort(),
+            planetInitialized: metrics.initialized,
+            planetFallback: metrics.fallback,
+            planetCanvas: { width: metrics.canvasWidth, height: metrics.canvasHeight, effectiveDpr: metrics.effectiveDpr },
+            copyIntersectsPlanetOrRing: copyContentRects.some(function (copyRect) {
+              return rectanglesIntersect(copyRect, body.getBoundingClientRect()) ||
+                rings.some(function (candidate) { return rectanglesIntersect(copyRect, visibleBounds(candidate)) })
+            }),
+            ringWidthRatio,
+            ringHeightRatio,
+            beltThicknessRatio,
+            planetRect: { left: planetRect.left, top: planetRect.top, right: planetRect.right, bottom: planetRect.bottom },
+            ringRect: { left: ringRect.left, top: ringRect.top, right: ringRect.right, bottom: ringRect.bottom },
+            copyContentRects,
+            syntheticClipping: {
+              rawViewportVisible,
+              clippingAwareVisible: hasVisibleBounds(clippedSyntheticGroup)
+            },
+            ringAngle: getComputedStyle(ring).getPropertyValue('--saturn-equator-angle').trim(),
+            surfaceAngle: getComputedStyle(surface).getPropertyValue('--planet-equator-angle').trim(),
+            mobilePolicy: matchMedia('(max-width: 760px)').matches,
+            layoutMode: getComputedStyle(system).getPropertyValue('--planet-layout-mode').trim(),
+            viewportWidths: { inner: innerWidth, client: document.documentElement.clientWidth },
+            bodyWidth: document.body.getBoundingClientRect().width,
+            surfaceReady: document.getElementById('space-scene').classList.contains('planet-ready')
+          })
         })
       })
     </script>`
 
   const offlineHome = generatedHome.replace(/\b(href|src)="\//g, '$1="')
-  fs.writeFileSync(fixturePath, offlineHome.replace('</head>', `${contentWidthConstraint}${desktopViewportConstraint}</head>`).replace('</body>', `${probeScript}</body>`))
+  fs.writeFileSync(fixturePath, offlineHome.replace('</head>', `${contentWidthConstraint}${desktopViewportConstraint}${mutation}</head>`).replace('</body>', `${probeScript}</body>`))
   try {
-    return readProbeResult(dumpWithChrome(fixturePath, { viewport }))
+    return readProbeResult(dumpWithChrome(fixturePath, { viewport, virtualTimeBudget: 3000 }))
   } finally {
     fs.rmSync(fixturePath, { force: true })
   }
@@ -519,7 +592,7 @@ test('built theme exposes accessible interaction and compositor-friendly renderi
   assert.deepEqual(probe.card.transitionProperty.split(',').map(value => value.trim()), ['transform'])
   assert.notEqual(probe.card.transitionProperty, 'all')
   assert.deepEqual(probe.planetPresentation.sceneAnimations, [])
-  assert.equal(probe.planetPresentation.surfaceOpacity, '0')
+  assert.equal(probe.planetPresentation.surfaceOpacity, '1')
   assert.deepEqual(probe.planetPresentation.equatorAngles, { ring: '-10deg', surface: '-10deg' })
   assert.deepEqual(probe.safeAreaResolved, { bodyLeft: '0px', bodyRight: '0px', headerTop: '0px' })
 })
@@ -565,19 +638,28 @@ test('main landmark retains its visible keyboard focus replacement in Chrome', (
   assert.equal(probe.mainFocus.outlineOffset, '4px')
 })
 
-test('static planet composition has no CSS motion and preserves shared geometry', () => {
+test('planet Canvas initializes, obeys shared pause states, and resumes without owning particle fallback', () => {
   const probe = normalChromeProbe()
 
-  assert.deepEqual(probe.planetPresentation.sceneAnimations, [])
-  assert.deepEqual(probe.planetPresentation.equatorAngles, { ring: '-10deg', surface: '-10deg' })
+  assert.equal(probe.initial.initialized, true)
+  assert.equal(probe.initial.running, true)
+  assert.equal(probe.paused.running, false)
+  assert.equal(probe.particleFallback.running, false)
+  assert.equal(probe.resumed.running, true)
+  assert.equal(probe.ownFallback, false)
+  assert.equal(probe.particleFallbackControlDisplay, 'none')
+  assert.equal(probe.sceneAnimations, 0)
 })
 
-test('built theme removes continuous motion in Chrome reduced-motion mode', () => {
-  // Merely slowing the animation would still expose a redundant pause control and continuous Saturn movement.
+test('reduced-motion keeps one complete deterministic frame and no continuous scene motion', () => {
+  // Animating this branch would turn the static reduced-motion frame into a hidden continuous effect.
   const probe = runChromeProbe({ reducedMotion: true })
 
+  assert.equal(probe.initial.initialized, true)
+  assert.equal(probe.initial.running, false)
+  assert.ok(probe.initial.drawCount >= 1)
+  assert.equal(probe.sceneAnimations, 0)
   assert.equal(probe.control.display, 'none')
-  assert.deepEqual(probe.planetPresentation.sceneAnimations, [])
   assert.equal(probe.scrollBehavior, 'auto')
 })
 
@@ -638,11 +720,19 @@ test('planet and dust ring keep approved geometry clear of copy at every accepta
     }
     assert.equal(probe.noHorizontalOverflow, true, `${viewport.width}px overflow`)
     assert.deepEqual(probe.canvasIds, ['particle-flow', 'planet-surface'])
+    assert.equal(probe.planetInitialized, true)
+    assert.equal(probe.planetFallback, false)
+    assert.equal(probe.surfaceReady, true)
     assert.equal(probe.copyContentRects.filter(rect => rect.kind === 'text').length >= 4, true, `${viewport.width}px visible copy text`)
     assert.equal(probe.copyContentRects.filter(rect => rect.kind === 'control').length, 2, `${viewport.width}px visible copy controls`)
     assert.equal(probe.copyIntersectsPlanetOrRing, false, `${viewport.width}px copy collision`)
     assert.ok(probe.ringWidthRatio >= 1.88 && probe.ringWidthRatio <= 1.94, probe.ringWidthRatio)
     assert.ok(probe.ringHeightRatio >= 0.34 && probe.ringHeightRatio <= 0.38, probe.ringHeightRatio)
+    assert.ok(probe.beltThicknessRatio >= 0.07 && probe.beltThicknessRatio <= 0.10, probe.beltThicknessRatio)
+    assert.equal(probe.planetCanvas.width % 8, 0)
+    assert.equal(probe.planetCanvas.height % 8, 0)
+    assert.ok(probe.planetCanvas.width <= (viewport.width <= 760 ? 320 : 512))
+    assert.ok(probe.planetCanvas.effectiveDpr <= (viewport.width <= 760 ? 1.25 : 1.5))
     assert.equal(probe.ringAngle, '-10deg')
     assert.equal(probe.surfaceAngle, '-10deg')
     assert.equal(probe.mobilePolicy, viewport.width <= 760)
@@ -656,4 +746,12 @@ test('planet geometry probe excludes an event fully clipped by an overflow ances
 
   assert.equal(probe.syntheticClipping.rawViewportVisible, true)
   assert.equal(probe.syntheticClipping.clippingAwareVisible, false)
+})
+
+test('mobile planet composition keeps the approved mobile layout policy', () => {
+  // Forcing desktop placement at this breakpoint would push the ring back into the desktop composition.
+  const probe = runPlanetCompositionProbe({ width: 320, height: 740 })
+
+  assert.equal(probe.mobilePolicy, true)
+  assert.equal(probe.layoutMode, 'mobile')
 })
