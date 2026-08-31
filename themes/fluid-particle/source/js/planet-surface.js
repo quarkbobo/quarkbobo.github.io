@@ -101,6 +101,7 @@
     if (!valid) return createFallback(canvas, scene)
 
     if (canvas.style) canvas.style.display = ''
+    removeClass(scene, 'planet-ready')
     removeClass(scene, 'planet-fallback')
 
     let initialized = false
@@ -109,12 +110,7 @@
     let idleId = 0
     let idleUsesTimeout = false
     let backing = { width: 0, height: 0, effectiveDpr: 1 }
-    let qualityState
-    try {
-      qualityState = core.createQualityState(2)
-    } catch (error) {
-      return createFallback(canvas, scene)
-    }
+    let qualityState = null
     let basePhase = 0
     let drawCount = 0
     let drawMs = 0
@@ -127,7 +123,7 @@
         maxDrawMs: drawMs,
         over8msPercent: drawMs > 8 ? 100 : 0,
         redrawFps: 0,
-        qualityLevel: qualityState.level,
+        qualityLevel: qualityState ? qualityState.level : 2,
         canvasWidth: backing.width,
         canvasHeight: backing.height,
         effectiveDpr: backing.effectiveDpr,
@@ -173,6 +169,7 @@
       idleId = 0
       if (destroyed) return
       try {
+        qualityState = core.createQualityState(2)
         const sourceCanvas = document.createElement('canvas')
         sourceCanvas.width = config.textureWidth || core.TEXTURE_WIDTH
         sourceCanvas.height = config.textureHeight || core.TEXTURE_HEIGHT
@@ -227,6 +224,7 @@
         else if (typeof root.cancelIdleCallback === 'function') root.cancelIdleCallback(idleId)
       }
       idleId = 0
+      removeClass(scene, 'planet-ready')
       if (mountedLifecycle === lifecycle) {
         mountedLifecycle = null
         activeSnapshot = emptySnapshot

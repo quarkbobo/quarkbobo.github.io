@@ -137,6 +137,57 @@ test('mount is idempotent and destroy permits one clean remount', () => {
   third.destroy()
 })
 
+test('destroy hides the completed frame until a remount finishes its own first frame', () => {
+  const harness = createHarness()
+  const first = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+  harness.flushIdle()
+  assert.equal(harness.scene.classList.contains('planet-ready'), true)
+  assert.equal(harness.state.outputPutCount, 1)
+
+  first.destroy()
+  const second = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+  assert.equal(harness.scene.classList.contains('planet-ready'), false)
+  assert.equal(second.snapshot().initialized, false)
+  assert.equal(harness.state.outputPutCount, 1)
+
+  harness.flushIdle()
+  assert.equal(harness.scene.classList.contains('planet-ready'), true)
+  assert.equal(harness.state.outputPutCount, 2)
+  second.destroy()
+})
+
+test('quality state setup is deferred and its failures stay isolated to the planet', async t => {
+  await t.test('successful setup starts after mount returns', () => {
+    const core = require('../themes/fluid-particle/source/js/planet-core.js')
+    let calls = 0
+    const harness = createHarness({
+      core: { ...core, createQualityState: level => { calls++; return core.createQualityState(level) } }
+    })
+    const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+    assert.equal(calls, 0)
+    assert.equal(lifecycle.snapshot().qualityLevel, 2)
+    harness.flushIdle()
+    assert.equal(calls, 1)
+    assert.equal(lifecycle.snapshot().initialized, true)
+    lifecycle.destroy()
+  })
+
+  await t.test('failed setup falls back only after the deferred callback', () => {
+    let calls = 0
+    const harness = createHarness({
+      core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), createQualityState: () => { calls++; throw new Error('quality failure') } }
+    })
+    const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+    assert.equal(calls, 0)
+    assert.equal(harness.scene.classList.contains('planet-fallback'), false)
+    harness.flushIdle()
+    assert.equal(calls, 1)
+    assert.equal(harness.scene.classList.contains('planet-fallback'), true)
+    assert.equal(lifecycle.snapshot().fallback, true)
+    lifecycle.destroy()
+  })
+})
+
 test('browser auto-mount creates the same single lifecycle returned by a later mount call', () => {
   const harness = createHarness({ autoMount: true })
   assert.equal(harness.state.idles.size, 1)
