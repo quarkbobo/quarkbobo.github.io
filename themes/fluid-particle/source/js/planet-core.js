@@ -11,11 +11,10 @@
   const TEXTURE_HEIGHT = 512
   const QUALITY_WINDOW = 120
   const PALETTE = Object.freeze({
-    night: [23, 19, 44],
-    ocean: [22, 58, 87],
-    violet: [86, 52, 89],
-    terracotta: [180, 95, 104],
-    sand: [240, 211, 177]
+    abyss: [26, 29, 78],
+    indigo: [38, 38, 96],
+    violet: [52, 47, 114],
+    haze: [67, 61, 133]
   })
   const DESKTOP_LEVELS = Object.freeze([
     Object.freeze({ maxWidth: 384, fps: 20 }),
@@ -65,6 +64,50 @@
     return Math.max(0, Math.min(255, Math.round(value)))
   }
 
+  function writeGasFlowVector (output, u, v) {
+    if (!output || output.length < 2) throw new TypeError('gas flow output requires two channels')
+
+    const centerU = 0.44
+    const centerV = 0.48
+    const dx = modulo(u - centerU + 0.5, 1) - 0.5
+    const dy = v - centerV
+    const normalizedX = dx / 0.25
+    const normalizedY = dy / 0.18
+    const radius = Math.hypot(normalizedX, normalizedY)
+    const centerFade = 1 - Math.exp(-radius * radius * 13)
+    const outerFade = Math.exp(-radius * radius * 0.88)
+    const entrainment = 1 + 0.09 * Math.sin(TAU * (3 * u + 2 * v)) +
+      0.045 * Math.sin(TAU * (7 * u - 3 * v)) + 0.022 * Math.sin(TAU * (13 * u + 5 * v))
+    const radialStrength = 0.05 * centerFade * outerFade * entrainment
+    const inverseRadius = radius > 1e-9 ? 1 / radius : 0
+    const radialX = normalizedX * inverseRadius
+    const radialY = normalizedY * inverseRadius
+    const flowAngle = Math.atan2(normalizedY, normalizedX)
+    const curlRatio = 0.08 * Math.sin(
+      flowAngle * 2 + radius * 4.2 + 0.45 * Math.sin(TAU * (5 * u - 3 * v))
+    )
+
+    let flowX = radialStrength * (radialX - radialY * curlRatio) * 1.18
+    let flowY = radialStrength * (radialY + radialX * curlRatio) * 0.84
+
+    const inletDistance = centerV - v
+    if (inletDistance > 0) {
+      const meanderedDx = dx - 0.012 * Math.sin(TAU * (1.4 * v + 0.18))
+      const inletAcross = meanderedDx / 0.06
+      const inletCenterFade = Math.min(1, inletDistance / 0.065)
+      const inletLength = (inletDistance - 0.2) / 0.31
+      const inletEnvelope = Math.exp(-0.5 * inletAcross * inletAcross) *
+        Math.exp(-Math.pow(inletLength, 4)) * inletCenterFade
+      const inlet = 0.055 * inletEnvelope
+      flowX += inlet * 0.075 * Math.sin(TAU * (2 * v + 3 * u))
+      flowY += inlet
+    }
+
+    output[0] = flowX
+    output[1] = flowY
+    return output
+  }
+
   function fillTexturePixels (output, width, height, seed) {
     const textureWidth = width || TEXTURE_WIDTH
     const textureHeight = height || TEXTURE_HEIGHT
@@ -74,36 +117,49 @@
     const rng = createRng(Number.isInteger(seed) ? seed : 0x706C616E)
     const phases = new Float64Array(8)
     for (let index = 0; index < phases.length; index++) phases[index] = rng() * TAU
-    const vortexU = 0.68 + rng() * 0.08
-    const vortexV = 0.58 + rng() * 0.08
+    const flow = new Float64Array(2)
 
     for (let y = 0; y < textureHeight; y++) {
       const v = y / Math.max(1, textureHeight - 1)
       for (let x = 0; x < textureWidth; x++) {
         const u = x / textureWidth
-        const fieldA = Math.sin(TAU * (3 * u + 1.15 * v) + phases[0])
-        const fieldB = Math.sin(TAU * (7 * u - 2.4 * v) + phases[1] + 0.48 * fieldA)
-        const fieldC = Math.sin(TAU * (13 * u + 4.2 * v) + phases[2] + 0.31 * fieldB)
-        const fieldD = Math.sin(TAU * (19 * u - 7.3 * v) + phases[3] + 0.18 * fieldC)
-        const warpedV = v + 0.018 * fieldA + 0.01 * fieldB
-        const broadBand = 0.5 + 0.5 * Math.sin(TAU * (5.2 * warpedV + 0.07 * fieldB) + phases[4])
-        const fineBand = 0.5 + 0.5 * Math.sin(TAU * (12.4 * warpedV + 0.025 * fieldC) + phases[5])
-        const seam = Math.pow(1 - Math.abs(Math.sin(TAU * (8.1 * warpedV + 0.018 * fieldD) + phases[6])), 18)
-        const filament = Math.pow(1 - Math.abs(Math.sin(TAU * (17 * u + 5.7 * warpedV) + phases[3])), 24) * Math.max(0, fieldC)
-        const localizedDarkening = Math.min(0.72, seam * (0.38 + 0.2 * Math.max(0, fieldB)) + filament * 0.34)
-        const wrappedDx = modulo(u - vortexU + 0.5, 1) - 0.5
-        const vortexDy = (v - vortexV) * 1.8
-        const radius = Math.hypot(wrappedDx * 5.4, vortexDy * 5.4)
-        const angle = Math.atan2(vortexDy, wrappedDx)
-        const vortex = Math.max(0, 1 - radius) * (0.5 + 0.5 * Math.sin(angle * 2.2 + radius * 15 + phases[7]))
-        const warmMix = Math.max(0, Math.min(1, broadBand * 0.72 + fineBand * 0.22 + vortex * 0.28))
-        const coolMix = Math.max(0, Math.min(1, 0.38 + 0.28 * fieldA - 0.16 * fieldC))
-        const base = coolMix > 0.62 ? PALETTE.ocean : coolMix > 0.34 ? PALETTE.violet : PALETTE.night
-        const warm = fineBand > 0.57 ? PALETTE.sand : PALETTE.terracotta
+        writeGasFlowVector(flow, u, v)
+        const qU = modulo(u - flow[0], 1)
+        const qV = Math.max(0, Math.min(1, v - flow[1]))
+        const fieldA = Math.sin(TAU * (2 * qU + 0.72 * qV) + phases[0])
+        const fieldB = Math.sin(TAU * (5 * qU - 1.35 * qV) + phases[1] + 0.34 * fieldA)
+        const fieldC = Math.sin(TAU * (11 * qU + 2.65 * qV) + phases[2] + 0.24 * fieldB)
+        const fieldD = Math.sin(TAU * (17 * qU - 4.4 * qV) + phases[3] + 0.15 * fieldC)
+        const warpedV = qV + 0.015 * fieldA + 0.008 * fieldB + 0.004 * fieldC
+        const broadBand = 0.5 + 0.5 * Math.sin(TAU * (4.35 * warpedV + 0.048 * fieldB) + phases[4])
+        const fineBand = 0.5 + 0.5 * Math.sin(TAU * (10.6 * warpedV + 0.021 * fieldC) + phases[5])
+        const seam = Math.pow(1 - Math.abs(Math.sin(TAU * (7.3 * warpedV + 0.014 * fieldD) + phases[6])), 5)
+        const filament = Math.pow(1 - Math.abs(Math.sin(TAU * (13 * qU + 4.8 * warpedV) + phases[7])), 6) * (0.5 + 0.5 * fieldC)
+        const darkening = Math.min(0.16, seam * (0.075 + 0.025 * Math.max(0, fieldB)) + filament * 0.05)
+        const tone = Math.max(0, Math.min(1,
+          0.48 + 0.4 * (broadBand - 0.5) + 0.2 * (fineBand - 0.5) +
+          0.125 * fieldA + 0.075 * fieldC + 0.045 * fieldD
+        ))
+        let colorLow = PALETTE.abyss
+        let colorHigh = PALETTE.indigo
+        let colorMix = tone / 0.34
+        if (tone >= 0.68) {
+          colorLow = PALETTE.violet
+          colorHigh = PALETTE.haze
+          colorMix = (tone - 0.68) / 0.32
+        } else if (tone >= 0.34) {
+          colorLow = PALETTE.indigo
+          colorHigh = PALETTE.violet
+          colorMix = (tone - 0.34) / 0.34
+        }
+        const baseRed = mixChannel(colorLow[0], colorHigh[0], colorMix)
+        const baseGreen = mixChannel(colorLow[1], colorHigh[1], colorMix)
+        const baseBlue = mixChannel(colorLow[2], colorHigh[2], colorMix)
+        const violetVeil = 0.5 + 0.5 * Math.sin(TAU * (1.7 * warpedV + 0.18 * fieldA) + phases[3])
         const offset = (y * textureWidth + x) * 4
-        output[offset] = clampChannel(mixChannel(base[0], warm[0], warmMix) * (1 - localizedDarkening))
-        output[offset + 1] = clampChannel(mixChannel(base[1], warm[1], warmMix) * (1 - localizedDarkening * 1.04))
-        output[offset + 2] = clampChannel(mixChannel(base[2], warm[2], warmMix * 0.82) * (1 - localizedDarkening * 0.8))
+        output[offset] = clampChannel((baseRed + violetVeil * 7 + fieldB * 2.4 + fieldD * 1.3) * (1 - darkening * 0.92))
+        output[offset + 1] = clampChannel((baseGreen + violetVeil * 2 + fieldC * 2.1 - fieldD * 1.1) * (1 - darkening))
+        output[offset + 2] = clampChannel((baseBlue + violetVeil * 7 + fieldD * 3.1 + fieldB * 1.4) * (1 - darkening * 0.7))
         output[offset + 3] = 255
       }
     }
@@ -290,6 +346,7 @@
     advanceBasePhase,
     sampleLongitude,
     createRng,
+    writeGasFlowVector,
     fillTexturePixels,
     sampleTextureChannel,
     createSphereMap,

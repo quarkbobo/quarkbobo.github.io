@@ -47,6 +47,17 @@ test('ring dimensions and restrained edge encode the approved dust geometry', ()
   assert.doesNotMatch(css, /drop-shadow\([^)]*(?:149,\s*104,\s*255|234,\s*251,\s*255)/)
 })
 
+test('static planet, fixed light, and dust ring contain no warm mineral fallback colors', () => {
+  const css = sceneCss()
+  const staticRule = css.match(/\.planet-static-surface\s*\{([^}]*)\}/s)?.[1] || ''
+  const ringRule = css.match(/\.saturn-ring\s*\{([^}]*)\}/s)?.[1] || ''
+  assert.doesNotMatch(css, /(?:240,\s*211,\s*177|180,\s*95,\s*104)/)
+  assert.doesNotMatch(staticRule, /transparent\s+0\s+\d+%/)
+  assert.match(css, /rgba\(146,\s*166,\s*232,\s*0\.18\)/)
+  assert.match(ringRule, /rgba\(105,\s*94,\s*164,\s*0\.1\)/)
+  assert.equal((ringRule.match(/rgba\(104,\s*217,\s*244,\s*0\.24\)/g) || []).length, 1)
+})
+
 test('particle renderer and Canvas visual contract stay unchanged', () => {
   assert.equal(hash('themes/fluid-particle/source/js/particle-core.js'), 'A16D193E8874DF1248532458B3114AC0393B746431EF2559C5A2A2035B5F11E0')
   assert.equal(hash('themes/fluid-particle/source/js/particle-flow.js'), '45982BE65E5F465C730DEA7E3E1FCC8FCBC93F6B9C238B346C11F028FD116D2A')

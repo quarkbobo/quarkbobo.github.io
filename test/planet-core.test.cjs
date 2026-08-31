@@ -60,9 +60,9 @@ test('quality ignores warmup, degrades one level per bad window, and needs two g
   assert.equal(state.count, 0)
 })
 
-test('fixed-seed mineral texture is deterministic, opaque, detailed, warm/cool, and horizontally periodic', () => {
-  const width = 64
-  const height = 32
+test('fixed-seed gas texture is deterministic, opaque, detailed, low-contrast blue-purple, and horizontally periodic', () => {
+  const width = 128
+  const height = 64
   const first = new Uint8ClampedArray(width * height * 4)
   const second = new Uint8ClampedArray(first.length)
   const different = new Uint8ClampedArray(first.length)
@@ -74,16 +74,96 @@ test('fixed-seed mineral texture is deterministic, opaque, detailed, warm/cool, 
 
   const colors = new Set()
   let warm = 0
-  let cool = 0
+  let bluePurple = 0
+  let purple = 0
+  const channelTotals = [0, 0, 0]
+  const horizontalDeltas = []
+  const verticalDeltas = []
+  const textureLuminance = []
+  const rowMeans = Array.from({ length: height }, () => [0, 0, 0])
   for (let offset = 0; offset < first.length; offset += 4) {
-    colors.add(`${first[offset]},${first[offset + 1]},${first[offset + 2]}`)
-    if (first[offset] > first[offset + 2] * 1.08) warm++
-    if (first[offset + 2] > first[offset] * 1.08) cool++
+    const pixel = offset / 4
+    const x = pixel % width
+    const y = Math.floor(pixel / width)
+    const red = first[offset]
+    const green = first[offset + 1]
+    const blue = first[offset + 2]
+    colors.add(`${red},${green},${blue}`)
+    if (red > blue * 1.05) warm++
+    if (blue >= red + 12 && blue >= green + 8) bluePurple++
+    if (red >= green + 4) purple++
+    channelTotals[0] += red
+    channelTotals[1] += green
+    channelTotals[2] += blue
+    textureLuminance.push(red * 0.2126 + green * 0.7152 + blue * 0.0722)
+    rowMeans[y][0] += red / width
+    rowMeans[y][1] += green / width
+    rowMeans[y][2] += blue / width
+    if (x > 0) {
+      horizontalDeltas.push((Math.abs(red - first[offset - 4]) + Math.abs(green - first[offset - 3]) + Math.abs(blue - first[offset - 2])) / 3)
+    }
+    if (y > 0) {
+      const above = offset - width * 4
+      verticalDeltas.push((Math.abs(red - first[above]) + Math.abs(green - first[above + 1]) + Math.abs(blue - first[above + 2])) / 3)
+    }
     assert.equal(first[offset + 3], 255)
   }
-  assert.ok(colors.size > 180, colors.size)
-  assert.ok(warm > width * height * 0.12, warm)
-  assert.ok(cool > width * height * 0.12, cool)
+  const pixelCount = width * height
+  const channelMeans = channelTotals.map(total => total / pixelCount)
+  assert.ok(colors.size > 700, colors.size)
+  assert.ok(warm < pixelCount * 0.02, warm)
+  assert.ok(bluePurple > pixelCount * 0.72, bluePurple)
+  assert.ok(purple > pixelCount * 0.25, purple)
+  assert.ok(channelMeans[2] - channelMeans[0] > 30, channelMeans)
+  assert.ok(channelMeans[2] - channelMeans[1] > 22, channelMeans)
+  textureLuminance.sort((left, right) => left - right)
+  const textureP5 = textureLuminance[Math.ceil(textureLuminance.length * 0.05) - 1]
+  const textureP95 = textureLuminance[Math.ceil(textureLuminance.length * 0.95) - 1]
+  const textureP99 = textureLuminance[Math.ceil(textureLuminance.length * 0.99) - 1]
+  assert.ok(textureP95 - textureP5 > 22, textureP95 - textureP5)
+  assert.ok(textureP99 < 110, textureP99)
+
+  horizontalDeltas.sort((left, right) => left - right)
+  verticalDeltas.sort((left, right) => left - right)
+  const percentile = (values, amount) => values[Math.ceil(values.length * amount) - 1]
+  const horizontalMean = horizontalDeltas.reduce((sum, value) => sum + value, 0) / horizontalDeltas.length
+  assert.ok(horizontalMean > 0.5, horizontalMean)
+  assert.ok(percentile(horizontalDeltas, 0.99) < 32, percentile(horizontalDeltas, 0.99))
+  assert.ok(horizontalDeltas.at(-1) < 16, horizontalDeltas.at(-1))
+  assert.ok(percentile(verticalDeltas, 0.95) < 20, percentile(verticalDeltas, 0.95))
+  assert.ok(percentile(verticalDeltas, 0.99) < 32, percentile(verticalDeltas, 0.99))
+  const rowDeltas = rowMeans.slice(1).map((row, index) => (
+    Math.abs(row[0] - rowMeans[index][0]) +
+    Math.abs(row[1] - rowMeans[index][1]) +
+    Math.abs(row[2] - rowMeans[index][2])
+  ) / 3).sort((left, right) => left - right)
+  const rowMean = rowDeltas.reduce((sum, value) => sum + value, 0) / rowDeltas.length
+  const rowP95 = rowDeltas[Math.ceil(rowDeltas.length * 0.95) - 1]
+  assert.ok(rowMean < 8, rowMean)
+  assert.ok(rowP95 < 16, rowP95)
+
+  const contactLuminance = []
+  const outflowLuminance = []
+  const flowCenterU = 0.44
+  const flowCenterV = 0.48
+  for (let y = 0; y < height; y++) {
+    const v = y / (height - 1)
+    for (let x = 0; x < width; x++) {
+      const u = x / width
+      const dx = core.modulo(u - flowCenterU + 0.5, 1) - 0.5
+      const dy = v - flowCenterV
+      const radius = Math.hypot(dx / 0.2, dy / 0.22)
+      const offset = (y * width + x) * 4
+      const luminance = first[offset] * 0.2126 + first[offset + 1] * 0.7152 + first[offset + 2] * 0.0722
+      if (radius < 0.18) contactLuminance.push(luminance)
+      else if (radius > 0.32 && radius < 0.62) outflowLuminance.push(luminance)
+    }
+  }
+  contactLuminance.sort((left, right) => left - right)
+  outflowLuminance.sort((left, right) => left - right)
+  const contactP95 = percentile(contactLuminance, 0.95)
+  const outflowP95 = percentile(outflowLuminance, 0.95)
+  assert.ok(contactP95 <= outflowP95 + 8, `${contactP95} > ${outflowP95}`)
 
   let seamDelta = 0
   let interiorDelta = 0
@@ -97,13 +177,88 @@ test('fixed-seed mineral texture is deterministic, opaque, detailed, warm/cool, 
   }
   const seamMean = seamDelta / (height * 3)
   const interiorMean = interiorDelta / (height * 3 * (width - 1))
-  assert.ok(seamMean <= interiorMean * 2.5 + 1, `${seamMean} > ${interiorMean}`)
+  assert.ok(seamMean <= interiorMean * 1.5 + 1, `${seamMean} > ${interiorMean}`)
 
   for (const channel of [0, 1, 2, 3]) {
     assert.equal(
       core.sampleTextureChannel(first, width, height, -0.25, 13.4, channel),
       core.sampleTextureChannel(first, width, height, width - 0.25, 13.4, channel)
     )
+  }
+
+  const source = require('node:fs').readFileSync(modulePath, 'utf8')
+  const fillBody = source.match(/function fillTexturePixels[\s\S]*?\n  }/)?.[0] || ''
+  assert.match(fillBody, /writeGasFlowVector\(/)
+})
+
+test('gas flow enters vertically, spreads around its contact point, curls slightly, and fades into the ambient bands', () => {
+  assert.equal(typeof core.writeGasFlowVector, 'function')
+  const flowCenterU = 0.44
+  const flowCenterV = 0.48
+  const inletUpperV = flowCenterV - 0.23
+  const inletMiddleV = flowCenterV - 0.14
+  const sample = (u, v) => {
+    const output = new Float64Array(2)
+    assert.equal(core.writeGasFlowVector(output, u, v), output)
+    assert.ok(Number.isFinite(output[0]) && Number.isFinite(output[1]))
+    return output
+  }
+
+  const inletUpper = sample(flowCenterU, inletUpperV)
+  const inletMiddle = sample(flowCenterU, inletMiddleV)
+  assert.ok(inletUpper[1] > 0.012, inletUpper)
+  assert.ok(inletMiddle[1] > 0.006, inletMiddle)
+  assert.ok(Math.abs(inletUpper[0]) < inletUpper[1] * 0.55, inletUpper)
+  assert.ok(Math.abs(inletMiddle[0]) < inletMiddle[1] * 0.65, inletMiddle)
+  const inletLeft = sample(flowCenterU - 0.08, inletUpperV)
+  const inletRight = sample(flowCenterU + 0.08, inletUpperV)
+  assert.ok(inletLeft[1] < inletUpper[1] * 0.5, { inletLeft, inletUpper })
+  assert.ok(inletRight[1] < inletUpper[1] * 0.5, { inletRight, inletUpper })
+
+  const contact = sample(flowCenterU, flowCenterV)
+  assert.ok(Math.hypot(contact[0], contact[1]) < 0.002, contact)
+
+  const left = sample(flowCenterU - 0.09, flowCenterV)
+  const right = sample(flowCenterU + 0.09, flowCenterV)
+  const lower = sample(flowCenterU, flowCenterV + 0.1)
+  assert.ok(left[0] < -0.008, left)
+  assert.ok(right[0] > 0.008, right)
+  assert.ok(lower[1] > 0.008, lower)
+
+  const ringAngles = [0, Math.PI / 6, Math.PI / 3, Math.PI / 2, Math.PI * 2 / 3, Math.PI * 5 / 6, Math.PI, Math.PI * 7 / 6, Math.PI * 11 / 6]
+  const components = ringAngles.map(angle => {
+    const dx = 0.11 * Math.cos(angle)
+    const dy = 0.11 * Math.sin(angle)
+    const vector = sample(flowCenterU + dx, flowCenterV + dy)
+    const radial = vector[0] * Math.cos(angle) + vector[1] * Math.sin(angle)
+    const tangential = -vector[0] * Math.sin(angle) + vector[1] * Math.cos(angle)
+    return { radial, tangential, magnitude: Math.hypot(vector[0], vector[1]) }
+  })
+  assert.ok(components.every(value => value.radial > 0.006), components)
+  assert.ok(components.every(value => value.magnitude < 0.05), components)
+  const radialTotal = components.reduce((sum, value) => sum + value.radial, 0)
+  const tangentialTotal = components.reduce((sum, value) => sum + Math.abs(value.tangential), 0)
+  const signedTangential = components.reduce((sum, value) => sum + value.tangential, 0)
+  const positiveCurl = components.filter(value => value.tangential > 0.0001).length
+  const negativeCurl = components.filter(value => value.tangential < -0.0001).length
+  assert.ok(tangentialTotal / radialTotal > 0.05 && tangentialTotal / radialTotal < 0.25, tangentialTotal / radialTotal)
+  assert.ok(positiveCurl >= 2 && negativeCurl >= 2, { positiveCurl, negativeCurl })
+  assert.ok(Math.abs(signedTangential) / tangentialTotal < 0.55, signedTangential / tangentialTotal)
+
+  const farPoints = [
+    [flowCenterU - 0.32, 0.15], [flowCenterU - 0.32, 0.9],
+    [flowCenterU + 0.32, 0.15], [flowCenterU + 0.32, 0.9],
+    [flowCenterU - 0.48, 0.5], [flowCenterU + 0.48, 0.5]
+  ]
+  for (const point of farPoints) {
+    const far = sample(point[0], point[1])
+    assert.ok(Math.hypot(far[0], far[1]) < 0.003, { point, far })
+  }
+  for (const point of [[flowCenterU, inletUpperV], [flowCenterU - 0.09, flowCenterV], [flowCenterU + 0.09, flowCenterV], [flowCenterU + 0.05, flowCenterV + 0.08]]) {
+    const original = sample(point[0], point[1])
+    const wrapped = sample(point[0] + 1, point[1])
+    assert.ok(Math.abs(original[0] - wrapped[0]) < 1e-12, { point, original, wrapped })
+    assert.ok(Math.abs(original[1] - wrapped[1]) < 1e-12, { point, original, wrapped })
   }
 })
 
