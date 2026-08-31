@@ -8,3 +8,7 @@ public/
 _multiconfig.yml
 .worktrees/
 .superpowers/
+desktop.ini
+.codebuddy/
+__pycache__/
+*.py[cod]
