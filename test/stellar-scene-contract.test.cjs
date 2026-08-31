@@ -6,7 +6,7 @@ const path = require('node:path')
 
 const root = path.resolve(__dirname, '..')
 const read = relative => fs.readFileSync(path.join(root, relative), 'utf8')
-const hash = relative => crypto.createHash('sha256').update(fs.readFileSync(path.join(root, relative))).digest('hex').toUpperCase()
+const hash = relative => crypto.createHash('sha256').update(read(relative).replace(/\r\n/g, '\n')).digest('hex').toUpperCase()
 const sceneTemplate = () => read('themes/fluid-particle/layout/_partial/space-scene.ejs')
 const sceneCss = () => read('themes/fluid-particle/source/css/space-scene.css')
 
