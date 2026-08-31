@@ -100,7 +100,8 @@ function planetMutationStyle (mode) {
     'planet-ring': '.saturn-ring { width: 80% !important; height: 12% !important; }',
     'planet-mobile': '@media (max-width: 760px) { .saturn-system { --planet-layout-mode: desktop !important; } }',
     'planet-transition-long': '#planet-surface { transition: opacity 30s linear !important; }',
-    'planet-transition-invalid': '#planet-surface { transition: transform 0.2s ease-out !important; }'
+    'planet-transition-invalid': '#planet-surface { transition: transform 0.2s ease-out !important; }',
+    'planet-transition-delay': '#planet-surface { transition: opacity 0.2s ease-out 30s !important; }'
   }[mode]
   return rules ? `<style>${rules}</style>` : ''
 }
@@ -264,7 +265,8 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                   transition: {
                     property: surfaceStyle.transitionProperty,
                     duration: surfaceStyle.transitionDuration,
-                    timingFunction: surfaceStyle.transitionTimingFunction
+                    timingFunction: surfaceStyle.transitionTimingFunction,
+                    delay: surfaceStyle.transitionDelay
                   },
                   equatorAngles: {
                     ring: getComputedStyle(ring).getPropertyValue('--saturn-equator-angle').trim(),
@@ -624,6 +626,7 @@ test('built theme exposes accessible interaction and compositor-friendly renderi
   assert.equal(probe.planetPresentation.transition.property, 'opacity')
   assert.equal(probe.planetPresentation.transition.duration, '0.2s')
   assert.equal(probe.planetPresentation.transition.timingFunction, 'ease-out')
+  assert.equal(probe.planetPresentation.transition.delay, '0s')
   assert.deepEqual(probe.planetPresentation.equatorAngles, { ring: '-10deg', surface: '-10deg' })
   assert.deepEqual(probe.safeAreaResolved, { bodyLeft: '0px', bodyRight: '0px', headerTop: '0px' })
 })
