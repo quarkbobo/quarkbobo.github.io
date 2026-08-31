@@ -339,6 +339,29 @@ test('timer fallback performs one complete frame when idle callbacks are unavail
   lifecycle.destroy()
 })
 
+test('destroyed stale idle and timer initialization callbacks cannot revive a lifecycle', () => {
+  for (const [name, options, queue] of [
+    ['idle', {}, 'idles'],
+    ['timer', { noIdle: true }, 'timers']
+  ]) {
+    const harness = createHarness({ ...options, textureWidth: 64, textureHeight: 32 })
+    const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+    const stale = [...harness.state[queue].values()][0]
+    lifecycle.destroy()
+    assert.equal(harness.pendingRafs(), 0, name)
+    assert.equal(harness.state[queue].size, 0, name)
+    assert.equal(harness.document.listenerCount('visibilitychange'), 0, name)
+    assert.equal(harness.motionQuery.listenerCount('change'), 0, name)
+    assert.equal(harness.mobileQuery.listenerCount('change'), 0, name)
+    assert.ok(harness.state.mutationObservers.every(observer => observer.disconnected), name)
+    assert.ok(harness.state.intersectionObservers.every(observer => observer.disconnected), name)
+    assert.ok(harness.state.resizeObservers.every(observer => observer.disconnected), name)
+    stale({ didTimeout: false, timeRemaining: () => 50 })
+    assert.equal(lifecycle.snapshot().initialized, false, name)
+    assert.equal(harness.state.outputPutCount, 0, name)
+  }
+})
+
 test('planet metrics are a read-only frozen diagnostics API', () => {
   const harness = createHarness()
   const descriptor = Object.getOwnPropertyDescriptor(harness.window, '__planetSurfaceMetrics')
@@ -810,6 +833,7 @@ test('hot redraw helpers avoid allocating or querying DOM', () => {
   }
   assert.equal(/=\s*\[/.test(render) || /=\s*\[/.test(draw) || /=\s*\[/.test(record), false)
   assert.equal(/=\s*\{/.test(render) || /=\s*\{/.test(draw) || /=\s*\{/.test(record), false)
+  assert.equal(render.includes('computeCurrentBacking'), false, 'renderFrame delegates policy allocation only to rebuildProjection')
 
   const harness = createHarness({ textureWidth: 64, textureHeight: 32 })
   const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
@@ -819,6 +843,10 @@ test('hot redraw helpers avoid allocating or querying DOM', () => {
   const arrays = harness.state.float64Lengths.length
   const queries = harness.state.documentQueries
   harness.runCompletedDraws(4, 2)
+  harness.canvas.clientWidth = 345
+  harness.triggerResize()
+  harness.queueDrawCost(2)
+  harness.flushRaf(harness.state.clock + 50)
   assert.equal(harness.state.createdImageData, imageData)
   assert.equal(harness.state.createdElements, elements)
   assert.equal(harness.state.float64Lengths.length, arrays)

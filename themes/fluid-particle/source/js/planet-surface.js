@@ -134,6 +134,7 @@
     let drawSerial = 0
     let redrawCount = 0
     let redrawCursor = 0
+    let transactionDue = false
     let drawHistory = null
     let measureScratch = null
     let redrawIntervals = null
@@ -233,23 +234,25 @@
       if (measure) recordCompletedDraw(Math.max(0, (root.performance && typeof root.performance.now === 'function' ? root.performance.now() : started) - started), timestamp, animated)
     }
 
-    function computeCurrentBacking () {
-      return core.computeBackingSize({
-        cssWidth: canvas.clientWidth,
-        aspectRatio: 43 / 38,
-        devicePixelRatio: root.devicePixelRatio,
-        mobile: Boolean(mobileQuery.matches),
-        level: qualityState.level
-      })
-    }
-
-    function rebuildProjection (timestamp, force, animated, nextBacking) {
+    function rebuildProjection (timestamp, force) {
       if (destroyed || fallback || !sourceImage || !qualityState) return
       if (!force && !canAnimate()) return false
       try {
         resizeDirty = false
-        nextBacking = nextBacking || computeCurrentBacking()
+        const nextBacking = core.computeBackingSize({
+          cssWidth: canvas.clientWidth,
+          aspectRatio: 43 / 38,
+          devicePixelRatio: root.devicePixelRatio,
+          mobile: Boolean(mobileQuery.matches),
+          level: qualityState.level
+        })
         activeFps = nextBacking.fps
+        transactionDue = !force && elapsedSinceDraw + 0.000001 >= 1000 / activeFps
+        if (transactionDue) {
+          const phaseElapsed = elapsedSinceDraw
+          elapsedSinceDraw = 0
+          basePhase = core.advanceBasePhase(basePhase, phaseElapsed)
+        }
         if (nextBacking.width === backing.width && nextBacking.height === backing.height) {
           backing = nextBacking
           return false
@@ -267,7 +270,7 @@
           equatorRadians: Number.parseFloat(angleValue) * Math.PI / 180
         })
         outputImage = context.createImageData(canvas.width, canvas.height)
-        drawCurrentFrame(true, timestamp || 0, Boolean(animated))
+        drawCurrentFrame(true, timestamp || 0, transactionDue)
         if (drawSerial > 1) core.resetQualitySamples(qualityState)
         addClass(scene, 'planet-ready')
         return true
@@ -287,7 +290,7 @@
         lastTimestamp = timestamp
         hasTimestamp = true
         if (resizeDirty) {
-          try { rebuildProjection(timestamp, false, false, computeCurrentBacking()) } catch (error) { fail(); return }
+          rebuildProjection(timestamp, false)
         }
         if (fallback) return
         syncAnimation()
@@ -296,27 +299,20 @@
       const elapsed = Math.max(0, timestamp - lastTimestamp)
       lastTimestamp = timestamp
       elapsedSinceDraw += elapsed
-      let nextBacking = null
+      transactionDue = false
+      let rebuilt = false
       if (resizeDirty) {
-        try {
-          nextBacking = computeCurrentBacking()
-          activeFps = nextBacking.fps
-        } catch (error) { fail(); return }
-      }
-      const frameInterval = 1000 / activeFps
-      let due = false
-      if (elapsedSinceDraw + 0.000001 >= frameInterval) {
-        due = true
+        rebuilt = rebuildProjection(timestamp, false)
+      } else if (elapsedSinceDraw + 0.000001 >= 1000 / activeFps) {
+        transactionDue = true
         const phaseElapsed = elapsedSinceDraw
         elapsedSinceDraw = 0
         try {
           basePhase = core.advanceBasePhase(basePhase, phaseElapsed)
         } catch (error) { fail(); return }
       }
-      let rebuilt = false
-      if (resizeDirty) rebuilt = rebuildProjection(timestamp, false, due, nextBacking)
       if (fallback) return
-      if (due && !rebuilt) {
+      if (transactionDue && !rebuilt) {
         try { drawCurrentFrame(true, timestamp, true) } catch (error) { fail(); return }
       }
       syncAnimation()
@@ -361,7 +357,7 @@
 
     function initialize () {
       idleId = 0
-      if (destroyed) return
+      if (destroyed || fallback) return
       try {
         qualityState = core.createQualityState(2)
         drawHistory = new Float64Array(1024)
@@ -377,7 +373,7 @@
         core.fillTexturePixels(sourceImage.data, sourceCanvas.width, sourceCanvas.height, Number.isInteger(config.seed) ? config.seed : 0x706C616E)
         sourceContext.putImageData(sourceImage, 0, 0)
         fallback = false
-        rebuildProjection(0, true, false)
+        rebuildProjection(0, true)
         if (fallback) return
         initialized = true
         if (canvas.style) canvas.style.display = ''
