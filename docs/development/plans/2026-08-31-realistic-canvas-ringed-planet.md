@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- The approved design is `docs/superpowers/specs/2026-08-31-realistic-canvas-ringed-planet-design.md` at commit `4093a71`.
+- The approved design is `docs/development/specs/2026-08-31-realistic-canvas-ringed-planet-design.md` at commit `4093a71`.
 - Do not add bitmap textures, remote assets, watermarks, new npm dependencies, WebGL, workers, React, Next.js, or third-party rendering libraries.
 - Do not modify article, archive, category, tag, navigation, typography, route, source-content, or publishing-tool behavior.
 - Do not modify `themes/fluid-particle/source/js/particle-core.js` or `themes/fluid-particle/source/js/particle-flow.js`; their normalized-LF SHA256 values must remain `A16D193E8874DF1248532458B3114AC0393B746431EF2559C5A2A2035B5F11E0` and `45982BE65E5F465C730DEA7E3E1FCC8FCBC93F6B9C238B346C11F028FD116D2A`.
@@ -41,7 +41,7 @@
 - `themes/fluid-particle/source/js/planet-surface.js` — Canvas setup, detached source Canvas, first-frame reveal, scheduling, observers, fallback, cleanup, and read-only metrics.
 - `test/planet-core.test.cjs` — pure timing, texture, seam, projection, sizing, and quality tests.
 - `test/planet-renderer-contract.test.cjs` — VM/fake-DOM lifecycle, reuse, blocker, failure, cadence, resize, and isolation tests.
-- `docs/verification/2026-08-31-realistic-canvas-ringed-planet.md` — final screenshots, measured metrics, hashes, commands, and result record.
+- `docs/development/verification/2026-08-31-realistic-canvas-ringed-planet.md` — final screenshots, measured metrics, hashes, commands, and result record.
 
 ### Modify
 
@@ -2123,7 +2123,7 @@ If no tracked file changed, do not create an empty commit.
 - Review: `test/planet-renderer-contract.test.cjs`
 - Review: `test/stellar-scene-contract.test.cjs`
 - Review: `test/theme-browser-behavior.test.cjs`
-- Create: `docs/verification/2026-08-31-realistic-canvas-ringed-planet.md`
+- Create: `docs/development/verification/2026-08-31-realistic-canvas-ringed-planet.md`
 
 **Interfaces:**
 - Consumes passing Tasks 1–7, four inspected screenshots, and the visible performance JSON.
@@ -2182,7 +2182,7 @@ Recalculate normalized-LF hashes using the PowerShell block from Execution Prefl
 
 - [ ] **Step 5: Write the exact verification record**
 
-Create `docs/verification/2026-08-31-realistic-canvas-ringed-planet.md` with the title `Realistic Canvas Ringed Planet Verification`, date `2026-08-31`, the exact tested branch and commit from `git branch --show-current` and `git rev-parse HEAD`, and the approved spec path.
+Create `docs/development/verification/2026-08-31-realistic-canvas-ringed-planet.md` with the title `Realistic Canvas Ringed Planet Verification`, date `2026-08-31`, the exact tested branch and commit from `git branch --show-current` and `git rev-parse HEAD`, and the approved spec path.
 
 Under `Automated Evidence`, paste the exact `npm run test:fresh` totals and duration, both syntax-check exit results, both normalized particle hashes, and the protected source/dependency diff exit results. Under `Visual Evidence`, list the absolute latest PNG path and pass result for each of the four acceptance viewports, followed by the completed visual checklist result. Under `Foreground Performance`, paste visibility, DPR, page FPS, combined long-frame percentage, the complete particle JSON, the complete planet snapshot JSON, the complete `planetSample` interval JSON, and the threshold result. Under `Review Gates`, record every frontend-design, web-design-guidelines, and code/spec review finding plus its resolution. End with `Scope` bullets stating that particle implementation, content/routes/publishing tools, dependencies/frameworks/assets, push, and deployment were unchanged or not performed.
 
@@ -2193,7 +2193,7 @@ Every value in the report must come from the current execution evidence; do not 
 Run:
 
 ```powershell
-git add -- docs/verification/2026-08-31-realistic-canvas-ringed-planet.md
+git add -- docs/development/verification/2026-08-31-realistic-canvas-ringed-planet.md
 git diff --cached --check
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 git commit -m "docs: record realistic planet verification"

@@ -32,7 +32,7 @@
 - Modify `themes/fluid-particle/source/css/space-scene.css`: style the prominence field, rebuild the moving surface layers, share the equatorial angle, and add pause/reduced-motion/fallback rules.
 - Modify `themes/fluid-particle/source/css/main.css`: add only the hero-level fallback rule that hides the unbound motion button through `:has(.particle-fallback)`.
 - Modify `test/theme-browser-behavior.test.cjs`: probe both surface pseudo-elements, flare knots, prominence groups, fallback behavior, reduced motion, shared angle, and real responsive geometry.
-- Create `docs/verification/2026-08-30-high-energy-ringed-star.md`: record fresh tests, hashes, viewport geometry, screenshots inspected, and foreground performance metrics.
+- Create `docs/development/verification/2026-08-30-high-energy-ringed-star.md`: record fresh tests, hashes, viewport geometry, screenshots inspected, and foreground performance metrics.
 
 ### Task 1: Static high-energy-star composition and protected particle boundary
 
@@ -422,7 +422,7 @@ git commit -m "feat: animate stellar surface and prominences"
 **Files:**
 - Modify: `test/theme-browser-behavior.test.cjs`
 - Modify: `themes/fluid-particle/source/css/space-scene.css`
-- Create: `docs/verification/2026-08-30-high-energy-ringed-star.md`
+- Create: `docs/development/verification/2026-08-30-high-energy-ringed-star.md`
 
 **Interfaces:**
 - Consumes: Task 2's complete star composition and animation selectors.
@@ -509,12 +509,12 @@ Expected: both hashes equal the Global Constraints and the particle-source diff 
 
 - [ ] **Step 7: Record verification evidence**
 
-Create `docs/verification/2026-08-30-high-energy-ringed-star.md` containing the exact test count, viewport results, measured performance snapshot, two particle hashes, confirmation that the particle diff is empty, reduced-motion/pause/fallback results, and the screenshot paths inspected. Do not use estimated or rounded substitute values.
+Create `docs/development/verification/2026-08-30-high-energy-ringed-star.md` containing the exact test count, viewport results, measured performance snapshot, two particle hashes, confirmation that the particle diff is empty, reduced-motion/pause/fallback results, and the screenshot paths inspected. Do not use estimated or rounded substitute values.
 
 - [ ] **Step 8: Commit responsive tuning and evidence**
 
 ```powershell
-git add -- test/theme-browser-behavior.test.cjs themes/fluid-particle/source/css/space-scene.css docs/verification/2026-08-30-high-energy-ringed-star.md
+git add -- test/theme-browser-behavior.test.cjs themes/fluid-particle/source/css/space-scene.css docs/development/verification/2026-08-30-high-energy-ringed-star.md
 git commit -m "test: verify high-energy star experience"
 ```
 
