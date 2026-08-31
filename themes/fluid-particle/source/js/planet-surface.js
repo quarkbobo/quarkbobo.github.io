@@ -106,9 +106,6 @@
     } catch (error) {
       return createFallback(canvas, scene)
     }
-    const drawHistory = new Float64Array(1024)
-    const measureScratch = new Float64Array(1024)
-    const redrawIntervals = new Float64Array(120)
     let initialized = false
     let fallback = false
     let destroyed = false
@@ -120,12 +117,11 @@
     let idleId = 0
     let idleUsesTimeout = false
     let animationFrameId = 0
-    let resizeFrameId = 0
     let lastTimestamp = 0
     let hasTimestamp = false
     let elapsedSinceDraw = 0
-    let lastDrawTimestamp = 0
-    let hasDrawTimestamp = false
+    let lastAnimatedDrawTimestamp = 0
+    let hasAnimatedDrawTimestamp = false
     let resizeDirty = false
     let activeFps = 0
     let backing = { width: 0, height: 0, effectiveDpr: 1, fps: 0 }
@@ -138,6 +134,9 @@
     let drawSerial = 0
     let redrawCount = 0
     let redrawCursor = 0
+    let drawHistory = null
+    let measureScratch = null
+    let redrawIntervals = null
     let mutationObserver = null
     let intersectionObserver = null
     let resizeObserver = null
@@ -160,11 +159,9 @@
       lastTimestamp = 0
       hasTimestamp = false
       elapsedSinceDraw = 0
-    }
-
-    function cancelResize () {
-      if (resizeFrameId) root.cancelAnimationFrame(resizeFrameId)
-      resizeFrameId = 0
+      hasAnimatedDrawTimestamp = false
+      redrawCount = 0
+      redrawCursor = 0
     }
 
     function removeMediaListener (query, handler, legacy) {
@@ -175,7 +172,6 @@
 
     function cleanupOwned () {
       cancelAnimation()
-      cancelResize()
       if (idleId) {
         if (idleUsesTimeout) root.clearTimeout(idleId)
         else if (typeof root.cancelIdleCallback === 'function') root.cancelIdleCallback(idleId)
@@ -209,50 +205,54 @@
         cancelAnimation()
         return
       }
-      if (resizeDirty && !resizeFrameId) resizeFrameId = root.requestAnimationFrame(rebuildProjection)
       if (!animationFrameId) animationFrameId = root.requestAnimationFrame(renderFrame)
     }
 
-    function recordCompletedDraw (cost, timestamp) {
+    function recordCompletedDraw (cost, timestamp, animated) {
       drawHistory[drawSerial % 1024] = cost
       drawSerial++
-      if (hasDrawTimestamp) {
-        redrawIntervals[redrawCursor] = Math.max(0, timestamp - lastDrawTimestamp)
-        redrawCursor = (redrawCursor + 1) % 120
-        if (redrawCount < 120) redrawCount++
+      if (animated) {
+        if (hasAnimatedDrawTimestamp) {
+          redrawIntervals[redrawCursor] = Math.max(0, timestamp - lastAnimatedDrawTimestamp)
+          redrawCursor = (redrawCursor + 1) % 120
+          if (redrawCount < 120) redrawCount++
+        }
+        lastAnimatedDrawTimestamp = timestamp
+        hasAnimatedDrawTimestamp = true
       }
-      lastDrawTimestamp = timestamp
-      hasDrawTimestamp = true
       const previousLevel = qualityState.level
       core.recordDrawCost(qualityState, cost)
       if (qualityState.level !== previousLevel) queueResize()
     }
 
-    function drawCurrentFrame (measure, timestamp) {
+    function drawCurrentFrame (measure, timestamp, animated) {
       let started = 0
       if (measure) started = root.performance && typeof root.performance.now === 'function' ? root.performance.now() : 0
       core.renderProjectedFrame(sourceImage.data, sourceWidth, projection, basePhase, outputImage.data)
       context.putImageData(outputImage, 0, 0)
-      if (measure) recordCompletedDraw(Math.max(0, (root.performance && typeof root.performance.now === 'function' ? root.performance.now() : started) - started), timestamp)
+      if (measure) recordCompletedDraw(Math.max(0, (root.performance && typeof root.performance.now === 'function' ? root.performance.now() : started) - started), timestamp, animated)
     }
 
-    function rebuildProjection (timestamp) {
-      resizeFrameId = 0
+    function computeCurrentBacking () {
+      return core.computeBackingSize({
+        cssWidth: canvas.clientWidth,
+        aspectRatio: 43 / 38,
+        devicePixelRatio: root.devicePixelRatio,
+        mobile: Boolean(mobileQuery.matches),
+        level: qualityState.level
+      })
+    }
+
+    function rebuildProjection (timestamp, force, animated, nextBacking) {
       if (destroyed || fallback || !sourceImage || !qualityState) return
-      if (resizeDirty && !canAnimate()) return
+      if (!force && !canAnimate()) return false
       try {
         resizeDirty = false
-        const nextBacking = core.computeBackingSize({
-          cssWidth: canvas.clientWidth,
-          aspectRatio: 43 / 38,
-          devicePixelRatio: root.devicePixelRatio,
-          mobile: Boolean(mobileQuery.matches),
-          level: qualityState.level
-        })
+        nextBacking = nextBacking || computeCurrentBacking()
         activeFps = nextBacking.fps
         if (nextBacking.width === backing.width && nextBacking.height === backing.height) {
           backing = nextBacking
-          return
+          return false
         }
         removeClass(scene, 'planet-ready')
         backing = nextBacking
@@ -267,10 +267,11 @@
           equatorRadians: Number.parseFloat(angleValue) * Math.PI / 180
         })
         outputImage = context.createImageData(canvas.width, canvas.height)
-        drawCurrentFrame(true, timestamp || 0)
+        drawCurrentFrame(true, timestamp || 0, Boolean(animated))
         if (drawSerial > 1) core.resetQualitySamples(qualityState)
         addClass(scene, 'planet-ready')
-      } catch (error) { fail() }
+        return true
+      } catch (error) { fail(); return false }
     }
 
     function queueResize () {
@@ -285,20 +286,38 @@
       if (!hasTimestamp) {
         lastTimestamp = timestamp
         hasTimestamp = true
+        if (resizeDirty) {
+          try { rebuildProjection(timestamp, false, false, computeCurrentBacking()) } catch (error) { fail(); return }
+        }
+        if (fallback) return
         syncAnimation()
         return
       }
       const elapsed = Math.max(0, timestamp - lastTimestamp)
       lastTimestamp = timestamp
       elapsedSinceDraw += elapsed
+      let nextBacking = null
+      if (resizeDirty) {
+        try {
+          nextBacking = computeCurrentBacking()
+          activeFps = nextBacking.fps
+        } catch (error) { fail(); return }
+      }
       const frameInterval = 1000 / activeFps
-      if (elapsedSinceDraw >= frameInterval) {
+      let due = false
+      if (elapsedSinceDraw + 0.000001 >= frameInterval) {
+        due = true
         const phaseElapsed = elapsedSinceDraw
         elapsedSinceDraw = 0
         try {
           basePhase = core.advanceBasePhase(basePhase, phaseElapsed)
-          drawCurrentFrame(true, timestamp)
         } catch (error) { fail(); return }
+      }
+      let rebuilt = false
+      if (resizeDirty) rebuilt = rebuildProjection(timestamp, false, due, nextBacking)
+      if (fallback) return
+      if (due && !rebuilt) {
+        try { drawCurrentFrame(true, timestamp, true) } catch (error) { fail(); return }
       }
       syncAnimation()
     }
@@ -324,7 +343,7 @@
       if (reducedMotion) {
         cancelAnimation()
         if (initialized && !fallback) {
-          try { drawCurrentFrame(true, hasDrawTimestamp ? lastDrawTimestamp : 0) } catch (error) { fail() }
+          try { drawCurrentFrame(true, 0, false) } catch (error) { fail() }
         }
       }
       syncAnimation()
@@ -345,6 +364,9 @@
       if (destroyed) return
       try {
         qualityState = core.createQualityState(2)
+        drawHistory = new Float64Array(1024)
+        measureScratch = new Float64Array(1024)
+        redrawIntervals = new Float64Array(120)
         const sourceCanvas = document.createElement('canvas')
         sourceCanvas.width = config.textureWidth || core.TEXTURE_WIDTH
         sourceCanvas.height = config.textureHeight || core.TEXTURE_HEIGHT
@@ -354,10 +376,10 @@
         sourceImage = sourceContext.createImageData(sourceCanvas.width, sourceCanvas.height)
         core.fillTexturePixels(sourceImage.data, sourceCanvas.width, sourceCanvas.height, Number.isInteger(config.seed) ? config.seed : 0x706C616E)
         sourceContext.putImageData(sourceImage, 0, 0)
-        initialized = true
         fallback = false
-        rebuildProjection(0)
+        rebuildProjection(0, true, false)
         if (fallback) return
+        initialized = true
         if (canvas.style) canvas.style.display = ''
         removeClass(scene, 'planet-fallback')
         addClass(scene, 'planet-ready')
@@ -370,7 +392,7 @@
     function measureSince (marker) {
       const start = Number.isInteger(marker) ? marker : -1
       const count = drawSerial - start
-      if (start < 0 || count < 0 || count > 1024) return emptyMeasurement()
+      if (start < 0 || count < 0 || count > 1024 || !drawHistory || !measureScratch) return emptyMeasurement()
       let total = 0
       let maximum = 0
       let overEight = 0

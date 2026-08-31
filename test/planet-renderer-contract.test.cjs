@@ -49,6 +49,8 @@ function createHarness (options = {}) {
     sourcePutCount: 0,
     createdImageData: 0,
     documentQueries: 0,
+    createdElements: 0,
+    float64Lengths: [],
     clock: 0,
     nowValues: [],
     mutationObservers: [],
@@ -70,7 +72,10 @@ function createHarness (options = {}) {
     },
     putImageData () {
       if (kind === 'source') state.sourcePutCount++
-      else state.outputPutCount++
+      else {
+        state.outputPutCount++
+        if (options.outputPutThrowsAfter && state.outputPutCount > options.outputPutThrowsAfter) throw new Error('output put failure')
+      }
     }
   })
   const outputContext = options.outputContext === null ? null : makeContext('output')
@@ -94,6 +99,7 @@ function createHarness (options = {}) {
     },
     createElement (name) {
       assert.equal(name, 'canvas')
+      state.createdElements++
       const source = {
         width: 0,
         height: 0,
@@ -130,7 +136,13 @@ function createHarness (options = {}) {
     constructor (callback) { super(callback, state.resizeObservers) }
   }
   const source = fs.readFileSync(path.resolve(__dirname, '../themes/fluid-particle/source/js/planet-surface.js'), 'utf8')
-  vm.runInNewContext(source, { window, globalThis: window, Uint8Array, Uint16Array, Uint32Array, Uint8ClampedArray, Float32Array, Float64Array, Math, Object, Number, Error, TypeError })
+  class TrackedFloat64Array extends Float64Array {
+    constructor (...args) {
+      super(...args)
+      if (args.length === 1 && typeof args[0] === 'number') state.float64Lengths.push(args[0])
+    }
+  }
+  vm.runInNewContext(source, { window, globalThis: window, Uint8Array, Uint16Array, Uint32Array, Uint8ClampedArray, Float32Array, Float64Array: TrackedFloat64Array, Math, Object, Number, Error, TypeError })
   const flush = queue => {
     const entries = [...queue.values()]
     queue.clear()
@@ -338,6 +350,42 @@ test('planet metrics are a read-only frozen diagnostics API', () => {
   assert.deepEqual(Object.keys(harness.window.__planetSurfaceMetrics).sort(), ['mark', 'measureSince', 'snapshot'])
 })
 
+test('mount defers renderer-owned bulk typed arrays until idle initialization', () => {
+  const harness = createHarness({ textureWidth: 64, textureHeight: 32 })
+  const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+  assert.deepEqual(harness.state.float64Lengths, [])
+  assert.doesNotThrow(() => lifecycle.snapshot())
+  assert.equal(harness.window.__planetSurfaceMetrics.mark(), 0)
+  assert.doesNotThrow(() => harness.window.__planetSurfaceMetrics.measureSince(0))
+  harness.flushIdle()
+  assert.deepEqual(harness.state.float64Lengths, [1024, 1024, 120])
+  lifecycle.destroy()
+})
+
+test('pre-idle resize still forces exactly one complete static first frame for every initial blocker', () => {
+  const cases = [
+    ['hidden', harness => { harness.document.hidden = true; harness.document.dispatch('visibilitychange') }],
+    ['reduced', harness => harness.motionQuery.setMatches(true)],
+    ['manual', harness => harness.mutateScene('motion-paused')],
+    ['offscreen', harness => harness.setIntersection(false)]
+  ]
+  for (const [name, block] of cases) {
+    const harness = createHarness({ textureWidth: 64, textureHeight: 32 })
+    const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+    block(harness)
+    harness.triggerResize()
+    harness.flushIdle()
+    const snapshot = lifecycle.snapshot()
+    assert.equal(snapshot.initialized, true, name)
+    assert.ok(snapshot.canvasWidth > 0, name)
+    assert.equal(snapshot.drawCount, 1, name)
+    assert.equal(harness.state.outputPutCount, 1, name)
+    assert.equal(harness.scene.classList.contains('planet-ready'), true, name)
+    assert.equal(harness.pendingRafs(), 0, name)
+    lifecycle.destroy()
+  }
+})
+
 test('all blockers compose and clearing only one never resumes the renderer', () => {
   const harness = createHarness({ textureWidth: 64, textureHeight: 32 })
   const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
@@ -481,6 +529,73 @@ test('breakpoint cadence changes even when rounded backing dimensions remain equ
   lifecycle.destroy()
 })
 
+test('redraw fps records only continuous animated intervals across every blocker epoch', () => {
+  for (const [name, block, unblock] of [
+    ['manual', harness => harness.mutateScene('motion-paused'), harness => harness.mutateScene('motion-paused')],
+    ['hidden', harness => { harness.document.hidden = true; harness.document.dispatch('visibilitychange') }, harness => { harness.document.hidden = false; harness.document.dispatch('visibilitychange') }],
+    ['offscreen', harness => harness.setIntersection(false), harness => harness.setIntersection(true)],
+    ['reduced', harness => harness.motionQuery.setMatches(true), harness => harness.motionQuery.setMatches(false)]
+  ]) {
+    for (const fps of [20, 24, 30]) {
+      const interval = 1000 / fps
+      const realCore = require('../themes/fluid-particle/source/js/planet-core.js')
+      const harness = createHarness({
+        core: { ...realCore, computeBackingSize: options => ({ ...realCore.computeBackingSize(options), fps }) },
+        textureWidth: 64,
+        textureHeight: 32
+      })
+      const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+      harness.flushIdle()
+      harness.flushRaf(1000)
+      harness.flushRaf(1000 + interval)
+      harness.flushRaf(1000 + interval * 2)
+      harness.flushRaf(1000 + interval * 3)
+      assert.ok(Math.abs(lifecycle.snapshot().redrawFps - fps) < 1e-9, `${name}/${fps} before`)
+      block(harness)
+      unblock(harness)
+      harness.flushRaf(500000)
+      harness.flushRaf(500000 + interval)
+      assert.equal(lifecycle.snapshot().redrawFps, 0, `${name}/${fps} first redraw primes`)
+      harness.flushRaf(500000 + interval * 2)
+      harness.flushRaf(500000 + interval * 3)
+      assert.ok(Math.abs(lifecycle.snapshot().redrawFps - fps) < 1e-9, `${name}/${fps} after`)
+      lifecycle.destroy()
+    }
+  }
+})
+
+test('active resize and due animation commit one draw using the latest projection', () => {
+  const harness = createHarness({ textureWidth: 64, textureHeight: 32 })
+  const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+  harness.flushIdle()
+  harness.flushRaf(1000)
+  harness.canvas.clientWidth = 400
+  harness.triggerResize()
+  const draws = lifecycle.snapshot().drawCount
+  const puts = harness.state.outputPutCount
+  harness.flushRaf(1050)
+  assert.equal(lifecycle.snapshot().drawCount, draws + 1)
+  assert.equal(harness.state.outputPutCount, puts + 1)
+  lifecycle.destroy()
+})
+
+test('rounded-equal active resize does not double-draw a due animation frame', () => {
+  const harness = createHarness({ clientWidth: 300, textureWidth: 64, textureHeight: 32 })
+  const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+  harness.flushIdle()
+  harness.flushRaf(1000)
+  harness.canvas.clientWidth = 301
+  harness.triggerResize()
+  const draws = lifecycle.snapshot().drawCount
+  const puts = harness.state.outputPutCount
+  const images = harness.state.createdImageData
+  harness.flushRaf(1050)
+  assert.equal(lifecycle.snapshot().drawCount, draws + 1)
+  assert.equal(harness.state.outputPutCount, puts + 1)
+  assert.equal(harness.state.createdImageData, images)
+  lifecycle.destroy()
+})
+
 test('read-only measurement markers summarize exactly the selected successful draws', () => {
   const harness = createHarness({ textureWidth: 64, textureHeight: 32 })
   const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
@@ -507,6 +622,18 @@ test('measurement markers older than the 1024-entry draw history are incomplete'
   const marker = harness.window.__planetSurfaceMetrics.mark()
   harness.runCompletedDraws(1025, 2)
   assert.equal(harness.window.__planetSurfaceMetrics.measureSince(marker).complete, false)
+  lifecycle.destroy()
+})
+
+test('measurement accepts exactly 1024 draws and rejects negative or future markers', () => {
+  const harness = createHarness({ textureWidth: 64, textureHeight: 32 })
+  const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+  harness.flushIdle()
+  const marker = harness.window.__planetSurfaceMetrics.mark()
+  harness.runCompletedDraws(1024, 2)
+  assert.equal(harness.window.__planetSurfaceMetrics.measureSince(marker).complete, true)
+  assert.equal(harness.window.__planetSurfaceMetrics.measureSince(-1).complete, false)
+  assert.equal(harness.window.__planetSurfaceMetrics.measureSince(lifecycle.snapshot().drawCount + 1).complete, false)
   lifecycle.destroy()
 })
 
@@ -539,11 +666,23 @@ test('an animation-time render failure freezes only the planet and is never unca
   const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
   harness.flushIdle()
   harness.flushRaf(1000)
+  const stale = [...harness.state.rafs.values()][0]
   assert.doesNotThrow(() => harness.flushRaf(1050))
   assert.equal(lifecycle.snapshot().fallback, true)
   assert.equal(harness.scene.classList.contains('planet-fallback'), true)
   assert.equal(harness.scene.classList.contains('particle-fallback'), false)
   assert.equal(harness.pendingRafs(), 0)
+  assert.equal(harness.document.listenerCount('visibilitychange'), 0)
+  assert.equal(harness.motionQuery.listenerCount('change'), 0)
+  assert.equal(harness.mobileQuery.listenerCount('change'), 0)
+  assert.ok(harness.state.mutationObservers.every(observer => observer.disconnected))
+  assert.ok(harness.state.intersectionObservers.every(observer => observer.disconnected))
+  assert.ok(harness.state.resizeObservers.every(observer => observer.disconnected))
+  const frozen = lifecycle.snapshot()
+  const puts = harness.state.outputPutCount
+  stale(2000)
+  assert.deepEqual(lifecycle.snapshot(), frozen)
+  assert.equal(harness.state.outputPutCount, puts)
   lifecycle.destroy()
 })
 
@@ -563,6 +702,48 @@ test('an animation-time phase failure freezes only the planet and is never uncau
   lifecycle.destroy()
 })
 
+test('rebuild, output, and quality failures clean every owned resource before destroy', () => {
+  const realCore = require('../themes/fluid-particle/source/js/planet-core.js')
+  const scenarios = [
+    ['rebuild', {
+      core: (() => {
+        let maps = 0
+        return { ...realCore, createSphereMap (...args) { maps++; if (maps > 1) throw new Error('rebuild failure'); return realCore.createSphereMap(...args) } }
+      })(),
+      trigger: harness => { harness.canvas.clientWidth = 400; harness.triggerResize() }
+    }],
+    ['output', { outputPutThrowsAfter: 1, trigger: harness => harness.flushRaf(1000) }],
+    ['quality', {
+      core: (() => {
+        let records = 0
+        return { ...realCore, recordDrawCost (...args) { records++; if (records > 1) throw new Error('quality failure'); return realCore.recordDrawCost(...args) } }
+      })(),
+      trigger: harness => harness.flushRaf(1000)
+    }]
+  ]
+  for (const [name, options] of scenarios) {
+    const harness = createHarness({ ...options, textureWidth: 64, textureHeight: 32 })
+    const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+    harness.flushIdle()
+    options.trigger(harness)
+    assert.doesNotThrow(() => harness.flushRaf(1050), name)
+    assert.equal(lifecycle.snapshot().fallback, true, name)
+    assert.equal(harness.pendingRafs(), 0, name)
+    assert.equal(harness.document.listenerCount('visibilitychange'), 0, name)
+    assert.equal(harness.motionQuery.listenerCount('change'), 0, name)
+    assert.equal(harness.mobileQuery.listenerCount('change'), 0, name)
+    assert.ok(harness.state.mutationObservers.every(observer => observer.disconnected), name)
+    assert.ok(harness.state.intersectionObservers.every(observer => observer.disconnected), name)
+    assert.ok(harness.state.resizeObservers.every(observer => observer.disconnected), name)
+    const snapshot = lifecycle.snapshot()
+    const puts = harness.state.outputPutCount
+    harness.flushRaf(2000)
+    assert.deepEqual(lifecycle.snapshot(), snapshot, name)
+    assert.equal(harness.state.outputPutCount, puts, name)
+    lifecycle.destroy()
+  }
+})
+
 test('resize work stays latched while hidden and is coalesced after visibility returns', () => {
   const harness = createHarness({ textureWidth: 64, textureHeight: 32 })
   const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
@@ -576,7 +757,7 @@ test('resize work stays latched while hidden and is coalesced after visibility r
   assert.equal(harness.state.createdImageData, imageCount)
   harness.document.hidden = false
   harness.document.dispatch('visibilitychange')
-  assert.equal(harness.pendingRafs(), 2)
+  assert.equal(harness.pendingRafs(), 1)
   harness.flushRaf(50)
   assert.ok(harness.state.createdImageData > imageCount)
   lifecycle.destroy()
@@ -593,7 +774,7 @@ test('resize work stays latched while offscreen and is coalesced after intersect
   assert.equal(harness.pendingRafs(), 0)
   assert.equal(harness.state.createdImageData, imageCount)
   harness.setIntersection(true)
-  assert.equal(harness.pendingRafs(), 2)
+  assert.equal(harness.pendingRafs(), 1)
   harness.flushRaf(50)
   assert.ok(harness.state.createdImageData > imageCount)
   lifecycle.destroy()
@@ -621,10 +802,26 @@ test('hot redraw helpers avoid allocating or querying DOM', () => {
   const source = fs.readFileSync(path.resolve(__dirname, '../themes/fluid-particle/source/js/planet-surface.js'), 'utf8')
   const render = source.slice(source.indexOf('function renderFrame'), source.indexOf('function onMutation'))
   const draw = source.slice(source.indexOf('function drawCurrentFrame'), source.indexOf('function rebuildProjection'))
+  const record = source.slice(source.indexOf('function recordCompletedDraw'), source.indexOf('function drawCurrentFrame'))
   for (const forbidden of ['new ', 'createElement', 'createImageData', 'getContext', 'getComputedStyle', 'querySelector', 'setTimeout']) {
     assert.equal(render.includes(forbidden), false, `renderFrame contains ${forbidden}`)
     assert.equal(draw.includes(forbidden), false, `drawCurrentFrame contains ${forbidden}`)
+    assert.equal(record.includes(forbidden), false, `recordCompletedDraw contains ${forbidden}`)
   }
-  assert.equal(/=\s*\[/.test(render) || /=\s*\[/.test(draw), false)
-  assert.equal(/=\s*\{/.test(render) || /=\s*\{/.test(draw), false)
+  assert.equal(/=\s*\[/.test(render) || /=\s*\[/.test(draw) || /=\s*\[/.test(record), false)
+  assert.equal(/=\s*\{/.test(render) || /=\s*\{/.test(draw) || /=\s*\{/.test(record), false)
+
+  const harness = createHarness({ textureWidth: 64, textureHeight: 32 })
+  const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+  harness.flushIdle()
+  const imageData = harness.state.createdImageData
+  const elements = harness.state.createdElements
+  const arrays = harness.state.float64Lengths.length
+  const queries = harness.state.documentQueries
+  harness.runCompletedDraws(4, 2)
+  assert.equal(harness.state.createdImageData, imageData)
+  assert.equal(harness.state.createdElements, elements)
+  assert.equal(harness.state.float64Lengths.length, arrays)
+  assert.equal(harness.state.documentQueries, queries)
+  lifecycle.destroy()
 })
