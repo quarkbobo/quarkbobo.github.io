@@ -381,6 +381,21 @@ function Invoke-QuarkPublish {
     }
 }
 
+function Invoke-QuarkRefreshAndPublish {
+    [CmdletBinding()]
+    param(
+        [string]$CommitMessage = 'chore: publish blog updates',
+        [scriptblock]$BuildAction,
+        [scriptblock]$PublishAction
+    )
+    if ($null -eq $BuildAction) { $BuildAction = { Invoke-QuarkBuild } }
+    if ($null -eq $PublishAction) {
+        $PublishAction = { param([string]$Message) Invoke-QuarkPublish -CommitMessage $Message }
+    }
+    & $BuildAction
+    & $PublishAction $CommitMessage
+}
+
 function Show-QuarkBlogMenu {
     [CmdletBinding()]
     param(

@@ -31,6 +31,7 @@ $requiredFunctions = @(
     'Invoke-QuarkPreview'
     'Invoke-QuarkBuild'
     'Invoke-QuarkPublish'
+    'Invoke-QuarkRefreshAndPublish'
     'Invoke-QuarkBlogAction'
     'Invoke-QuarkBlogEntryPoint'
     'Show-QuarkBlogMenu'
@@ -68,6 +69,24 @@ function Assert-SequenceEqual {
         Assert-True ($Actual[$index] -ceq $Expected[$index]) "$Message Mismatch at index $index."
     }
 }
+
+$script:RefreshPublishJournal = [System.Collections.Generic.List[string]]::new()
+$recordBuild = { [void]$script:RefreshPublishJournal.Add('build') }
+$recordPublish = { param([string]$Message) [void]$script:RefreshPublishJournal.Add("publish:$Message") }
+Invoke-QuarkRefreshAndPublish -CommitMessage 'three-step test' -BuildAction $recordBuild -PublishAction $recordPublish
+Assert-SequenceEqual @($script:RefreshPublishJournal) @('build', 'publish:three-step test') 'RefreshAndPublish order is wrong.'
+
+$script:RefreshPublishJournal.Clear()
+$failed = $false
+try {
+    Invoke-QuarkRefreshAndPublish -BuildAction {
+        [void]$script:RefreshPublishJournal.Add('build')
+        throw 'simulated build failure'
+    } -PublishAction { param($Message) [void]$script:RefreshPublishJournal.Add('publish') }
+}
+catch { $failed = $true }
+Assert-True $failed 'Build failure must propagate.'
+Assert-SequenceEqual @($script:RefreshPublishJournal) @('build') 'Build failure must block publish.'
 
 function Invoke-TestPowerShell {
     param([string[]]$ArgumentList)
