@@ -16,7 +16,7 @@ function git { [void]$script:NoRunSideEffects.Add('git') }
 function npm.cmd { [void]$script:NoRunSideEffects.Add('npm.cmd') }
 
 $noRunOutput = @()
-foreach ($noRunAction in @('Menu', 'OpenPosts', 'Preview', 'Build', 'Publish', 'Describe')) {
+foreach ($noRunAction in @('Menu', 'OpenPosts', 'Refresh', 'RefreshAndPublish', 'Describe')) {
     $noRunOutput += @(. $launcher -NoRun -Action $noRunAction *>&1)
 }
 
@@ -159,7 +159,7 @@ Assert-SequenceEqual -Actual @($description.PSObject.Properties.Name) -Expected 
 Assert-SequenceEqual -Actual @($description.Paths.PSObject.Properties.Name) -Expected @('Project', 'Posts') -Message 'Describe paths are incomplete.'
 Assert-True ($description.Paths.Project -ceq 'C:\Users\Lenovo\Desktop\Quarkbobo') 'Describe has the wrong project path.'
 Assert-True ($description.Paths.Posts -ceq 'C:\Users\Lenovo\Desktop\Quarkbobo\source\_posts') 'Describe has the wrong posts path.'
-Assert-SequenceEqual -Actual @($description.Actions) -Expected @('Menu', 'OpenPosts', 'Preview', 'Build', 'Publish', 'Describe') -Message 'Describe has the wrong action allowlist.'
+Assert-SequenceEqual -Actual @($description.Actions) -Expected @('Menu', 'OpenPosts', 'Refresh', 'RefreshAndPublish', 'Describe') -Message 'Describe has the wrong action allowlist.'
 
 $invalidActionResult = Invoke-TestPowerShell -ArgumentList @(
     '-NoProfile',
@@ -537,14 +537,48 @@ $menuOutput = @(Show-QuarkBlogMenu -CommitMessage 'menu test' -SelectionReader {
 $menuText = $menuOutput -join "`n"
 foreach ($menuLabel in @(
     [regex]::Unescape('Quark \u535a\u5ba2\u5de5\u5177')
-    [regex]::Unescape('\u6253\u5f00\u6587\u7ae0\u76ee\u5f55')
-    [regex]::Unescape('\u9884\u89c8\u535a\u5ba2')
-    [regex]::Unescape('\u6784\u5efa\u535a\u5ba2')
-    [regex]::Unescape('\u5b89\u5168\u53d1\u5e03')
+    [regex]::Unescape('\u67e5\u770b\u5f53\u524d\u6587\u7ae0\u76ee\u5f55')
+    [regex]::Unescape('\u66f4\u65b0\u6587\u7ae0\u76ee\u5f55')
+    [regex]::Unescape('\u66f4\u65b0\u5e76\u4e0a\u4f20 GitHub')
 )) {
     Assert-True ($menuText.Contains($menuLabel)) "Menu did not show the Chinese label: $menuLabel"
 }
+foreach ($removedMenuLabel in @(
+    [regex]::Unescape('\u9884\u89c8\u535a\u5ba2')
+    [regex]::Unescape('\u5b89\u5168\u53d1\u5e03')
+)) {
+    Assert-True (-not $menuText.Contains($removedMenuLabel)) "Menu must not show the retired label: $removedMenuLabel"
+}
 Assert-SequenceEqual -Actual @($script:MenuPrompts) -Expected @([regex]::Unescape('\u8bf7\u9009\u62e9\u64cd\u4f5c')) -Message 'The menu prompt must be Chinese.'
+
+$originalOpen = (Get-Command Invoke-QuarkOpenPosts -CommandType Function).ScriptBlock
+$originalBuild = (Get-Command Invoke-QuarkBuild -CommandType Function).ScriptBlock
+$originalCombined = (Get-Command Invoke-QuarkRefreshAndPublish -CommandType Function).ScriptBlock
+$script:MenuDispatch = [System.Collections.Generic.List[string]]::new()
+Set-Item Function:\Invoke-QuarkOpenPosts -Value { [void]$script:MenuDispatch.Add('open') }
+Set-Item Function:\Invoke-QuarkBuild -Value { [void]$script:MenuDispatch.Add('refresh') }
+Set-Item Function:\Invoke-QuarkRefreshAndPublish -Value { param($CommitMessage) [void]$script:MenuDispatch.Add("combined:$CommitMessage") }
+foreach ($case in @(
+    @{ Choice = '1'; Expected = 'open' },
+    @{ Choice = '2'; Expected = 'refresh' },
+    @{ Choice = '3'; Expected = 'combined:menu test' }
+)) {
+    $script:MenuDispatch.Clear()
+    $null = @(Show-QuarkBlogMenu -CommitMessage 'menu test' -SelectionReader { param($Prompt) $case.Choice } *>&1)
+    Assert-SequenceEqual @($script:MenuDispatch) @($case.Expected) "Menu $($case.Choice) dispatched incorrectly."
+}
+
+$script:MenuDispatch.Clear()
+Invoke-QuarkBlogAction -Action 'Refresh'
+Assert-SequenceEqual @($script:MenuDispatch) @('refresh') 'Refresh must dispatch to build.'
+
+$script:MenuDispatch.Clear()
+Invoke-QuarkBlogAction -Action 'RefreshAndPublish' -CommitMessage 'public test'
+Assert-SequenceEqual @($script:MenuDispatch) @('combined:public test') 'RefreshAndPublish must dispatch to the combined action.'
+
+Set-Item Function:\Invoke-QuarkOpenPosts -Value $originalOpen
+Set-Item Function:\Invoke-QuarkBuild -Value $originalBuild
+Set-Item Function:\Invoke-QuarkRefreshAndPublish -Value $originalCombined
 
 $script:DispatchCalls = [System.Collections.Generic.List[string]]::new()
 $failingDispatcher = {
@@ -580,14 +614,22 @@ $script:PausePrompts.Clear()
 $explicitFailureThrown = $false
 try {
     $explicitExitCode = 0
-    $null = @(Invoke-QuarkBlogEntryPoint -Action 'Build' -CommitMessage 'explicit failure' -ActionDispatcher $failingDispatcher -PauseReader $pauseReader -ExitCode ([ref]$explicitExitCode) *>&1)
+    $null = @(Invoke-QuarkBlogEntryPoint -Action 'Refresh' -CommitMessage 'explicit failure' -ActionDispatcher $failingDispatcher -PauseReader $pauseReader -ExitCode ([ref]$explicitExitCode) *>&1)
 }
 catch {
     $explicitFailureThrown = $true
 }
 Assert-True $explicitFailureThrown 'A failing explicit action must propagate its error for automation.'
-Assert-SequenceEqual -Actual @($script:DispatchCalls) -Expected @('Build') -Message 'The entry point dispatched the wrong explicit action.'
+Assert-SequenceEqual -Actual @($script:DispatchCalls) -Expected @('Refresh') -Message 'The entry point dispatched the wrong explicit action.'
 Assert-True ($script:PausePrompts.Count -eq 0) 'A failing explicit non-interactive action must not pause.'
+
+$successfulExitCode = 99
+$script:PausePrompts.Clear()
+Invoke-QuarkBlogEntryPoint -Action 'RefreshAndPublish' -CommitMessage 'success' -ActionDispatcher {
+    param($Action, $Message)
+} -PauseReader $pauseReader -ExitCode ([ref]$successfulExitCode)
+Assert-True ($successfulExitCode -eq 0) 'Success must return zero.'
+Assert-True ($script:PausePrompts.Count -eq 0) 'Success must not pause before close.'
 
 $script:ProcessCalls = [System.Collections.Generic.List[object]]::new()
 function Start-Process {

@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [ValidateSet('Menu', 'OpenPosts', 'Preview', 'Build', 'Publish', 'Describe')]
+    [ValidateSet('Menu', 'OpenPosts', 'Refresh', 'RefreshAndPublish', 'Describe')]
     [string]$Action = 'Menu',
 
     [switch]$NoRun,
@@ -8,7 +8,7 @@ param(
     [string]$CommitMessage = 'chore: publish blog updates'
 )
 
-$script:QuarkBlogActions = @('Menu', 'OpenPosts', 'Preview', 'Build', 'Publish', 'Describe')
+$script:QuarkBlogActions = @('Menu', 'OpenPosts', 'Refresh', 'RefreshAndPublish', 'Describe')
 
 function Get-QuarkText {
     [CmdletBinding()]
@@ -31,7 +31,9 @@ function Get-QuarkText {
         'FinalCachedStatHeading' { '\u6682\u5b58\u5168\u90e8\u66f4\u6539\u540e\u7684\u7edf\u8ba1\uff1a' }
         'NothingToCommit' { '\u6ca1\u6709\u53ef\u63d0\u4ea4\u7684\u66f4\u6539\uff1b\u5c06\u53ea\u6267\u884c\u666e\u901a\u63a8\u9001\u3002' }
         'MenuTitle' { 'Quark \u535a\u5ba2\u5de5\u5177' }
-        'MenuOpenPosts' { '1. \u6253\u5f00\u6587\u7ae0\u76ee\u5f55' }
+        'MenuOpenPosts' { '1. \u67e5\u770b\u5f53\u524d\u6587\u7ae0\u76ee\u5f55' }
+        'MenuRefresh' { '2. \u66f4\u65b0\u6587\u7ae0\u76ee\u5f55' }
+        'MenuRefreshAndPublish' { '3. \u66f4\u65b0\u5e76\u4e0a\u4f20 GitHub' }
         'MenuPreview' { '2. \u9884\u89c8\u535a\u5ba2' }
         'MenuBuild' { '3. \u6784\u5efa\u535a\u5ba2' }
         'MenuPublish' { '4. \u5b89\u5168\u53d1\u5e03' }
@@ -414,17 +416,15 @@ function Show-QuarkBlogMenu {
     Write-Host ''
     Write-Host (Get-QuarkText -Key 'MenuTitle')
     Write-Host (Get-QuarkText -Key 'MenuOpenPosts')
-    Write-Host (Get-QuarkText -Key 'MenuPreview')
-    Write-Host (Get-QuarkText -Key 'MenuBuild')
-    Write-Host (Get-QuarkText -Key 'MenuPublish')
+    Write-Host (Get-QuarkText -Key 'MenuRefresh')
+    Write-Host (Get-QuarkText -Key 'MenuRefreshAndPublish')
     Write-Host (Get-QuarkText -Key 'MenuCancel')
     $selection = & $SelectionReader (Get-QuarkText -Key 'MenuPrompt')
 
     switch ($selection) {
         '1' { Invoke-QuarkOpenPosts }
-        '2' { Invoke-QuarkPreview }
-        '3' { Invoke-QuarkBuild }
-        '4' { Invoke-QuarkPublish -CommitMessage $CommitMessage }
+        '2' { Invoke-QuarkBuild }
+        '3' { Invoke-QuarkRefreshAndPublish -CommitMessage $CommitMessage }
         '0' { return }
         default { Write-Host (Get-QuarkText -Key 'MenuUnknown') }
     }
@@ -434,7 +434,7 @@ function Invoke-QuarkBlogAction {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [ValidateSet('Menu', 'OpenPosts', 'Preview', 'Build', 'Publish', 'Describe')]
+        [ValidateSet('Menu', 'OpenPosts', 'Refresh', 'RefreshAndPublish', 'Describe')]
         [string]$Action,
 
         [string]$CommitMessage = 'chore: publish blog updates'
@@ -447,14 +447,11 @@ function Invoke-QuarkBlogAction {
         'OpenPosts' {
             Invoke-QuarkOpenPosts
         }
-        'Preview' {
-            Invoke-QuarkPreview
-        }
-        'Build' {
+        'Refresh' {
             Invoke-QuarkBuild
         }
-        'Publish' {
-            Invoke-QuarkPublish -CommitMessage $CommitMessage
+        'RefreshAndPublish' {
+            Invoke-QuarkRefreshAndPublish -CommitMessage $CommitMessage
         }
         'Describe' {
             $paths = Get-QuarkBlogPaths
@@ -473,7 +470,7 @@ function Invoke-QuarkBlogEntryPoint {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [ValidateSet('Menu', 'OpenPosts', 'Preview', 'Build', 'Publish', 'Describe')]
+        [ValidateSet('Menu', 'OpenPosts', 'Refresh', 'RefreshAndPublish', 'Describe')]
         [string]$Action,
 
         [string]$CommitMessage = 'chore: publish blog updates',
