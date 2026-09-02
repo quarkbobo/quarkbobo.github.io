@@ -356,6 +356,36 @@ test('hover returns to fixed-phase baseline after 240 ms and impact after 720 ms
   impactLifecycle.destroy()
 })
 
+test('same-size bounds refresh never promotes an impact-only click into hover', () => {
+  const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+  const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+  h.flushIdle()
+  const baseline = h.lastOutputImage()
+  h.flushRaf(0)
+
+  dispatchAt(h, 'pointermove', 1, 1)
+  h.flushRaf(50)
+  h.flushRaf(300)
+  assert.equal(imageDelta(h.lastOutputImage(), baseline), 0)
+
+  dispatchAt(h, 'pointerdown', 0, 0)
+  h.flushRaf(350)
+  assert.ok(imageDelta(h.lastOutputImage(), baseline) > 0)
+
+  const boundsReads = h.state.boundsReads
+  h.triggerResize()
+  assert.equal(h.state.boundsReads, boundsReads)
+  h.flushRaf(400)
+  assert.equal(h.state.boundsReads, boundsReads + 1)
+  h.flushRaf(1100)
+  assert.equal(imageDelta(h.lastOutputImage(), baseline), 0)
+
+  dispatchAt(h, 'pointermove', 0, 0)
+  h.flushRaf(1150)
+  assert.ok(imageDelta(h.lastOutputImage(), baseline) > 0)
+  lifecycle.destroy()
+})
+
 test('mobile coarse and no-hover policies attach no pointer listeners', () => {
   const fine = createHarness({ clientWidth: 96, clientHeight: 84 })
   const fineLifecycle = fine.renderer.mount(fine.canvas, { scene: fine.scene, textureWidth: 64, textureHeight: 32 })

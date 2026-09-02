@@ -155,11 +155,13 @@
     let boundsDirty = false
     const cachedBounds = { left: 0, top: 0, width: 0, height: 0 }
     const interaction = { hoverX: 0, hoverY: 0, hoverEnergy: 0, impactX: 0, impactY: 0, impactEnergy: 0 }
-    let pointerClientX = 0
-    let pointerClientY = 0
+    let hoverClientX = 0
+    let hoverClientY = 0
+    let impactClientX = 0
+    let impactClientY = 0
     let pointerPrimary = false
     let pointerButton = -1
-    let hasPointerCoordinates = false
+    let hasHoverCoordinates = false
     let pointerMovePending = false
     let impactPending = false
     let hoverInside = false
@@ -197,11 +199,13 @@
       interaction.impactX = 0
       interaction.impactY = 0
       interaction.impactEnergy = 0
-      pointerClientX = 0
-      pointerClientY = 0
+      hoverClientX = 0
+      hoverClientY = 0
+      impactClientX = 0
+      impactClientY = 0
       pointerPrimary = false
       pointerButton = -1
-      hasPointerCoordinates = false
+      hasHoverCoordinates = false
       pointerMovePending = false
       impactPending = false
       hoverInside = false
@@ -353,7 +357,7 @@
       cachedBounds.top = nextBounds.top
       cachedBounds.width = nextBounds.width
       cachedBounds.height = nextBounds.height
-      if (hasPointerCoordinates) pointerMovePending = true
+      if (hasHoverCoordinates) pointerMovePending = true
     }
 
     function updateInteraction (elapsed) {
@@ -364,12 +368,12 @@
       let x = 0
       let y = 0
       let inside = false
-      if (cachedBounds.width > 0 && cachedBounds.height > 0) {
-        x = (pointerClientX - cachedBounds.left) / cachedBounds.width * 2 - 1
-        y = (pointerClientY - cachedBounds.top) / cachedBounds.height * 2 - 1
-        inside = x * x + y * y <= 1
-      }
       if (pointerMovePending) {
+        if (cachedBounds.width > 0 && cachedBounds.height > 0) {
+          x = (hoverClientX - cachedBounds.left) / cachedBounds.width * 2 - 1
+          y = (hoverClientY - cachedBounds.top) / cachedBounds.height * 2 - 1
+          inside = x * x + y * y <= 1
+        }
         hoverInside = inside
         if (inside) {
           interaction.hoverX = x
@@ -379,6 +383,14 @@
         pointerMovePending = false
       }
       if (impactPending) {
+        x = 0
+        y = 0
+        inside = false
+        if (cachedBounds.width > 0 && cachedBounds.height > 0) {
+          x = (impactClientX - cachedBounds.left) / cachedBounds.width * 2 - 1
+          y = (impactClientY - cachedBounds.top) / cachedBounds.height * 2 - 1
+          inside = x * x + y * y <= 1
+        }
         if (inside && pointerPrimary && pointerButton === 0) {
           interaction.impactX = x
           interaction.impactY = y
@@ -390,19 +402,18 @@
 
     function onPointerMove (event) {
       if (manualPaused || particleFailed || pageHidden || offscreen) return
-      pointerClientX = event.clientX
-      pointerClientY = event.clientY
-      hasPointerCoordinates = true
+      hoverClientX = event.clientX
+      hoverClientY = event.clientY
+      hasHoverCoordinates = true
       pointerMovePending = true
     }
 
     function onPointerDown (event) {
       if (manualPaused || particleFailed || pageHidden || offscreen) return
-      pointerClientX = event.clientX
-      pointerClientY = event.clientY
+      impactClientX = event.clientX
+      impactClientY = event.clientY
       pointerPrimary = Boolean(event.isPrimary)
       pointerButton = event.button
-      hasPointerCoordinates = true
       impactPending = true
     }
 
