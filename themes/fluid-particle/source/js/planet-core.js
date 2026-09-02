@@ -64,6 +64,15 @@
     return Math.max(0, Math.min(255, Math.round(value)))
   }
 
+  function clamp01 (value) {
+    return Math.max(0, Math.min(1, value))
+  }
+
+  function smoothFalloff (value) {
+    const clamped = clamp01(value)
+    return 1 - clamped * clamped * (3 - 2 * clamped)
+  }
+
   function writeGasFlowVector (output, u, v) {
     if (!output || output.length < 2) throw new TypeError('gas flow output requires two channels')
 
@@ -187,6 +196,7 @@
   function createSphereMap (options) {
     const capacity = options.width * options.height
     const targetOffsets = new Uint32Array(capacity)
+    const projectionIndexByPixel = new Uint32Array(capacity)
     const sourceRows = options.sourceHeight <= 65535 ? new Uint16Array(capacity) : new Uint32Array(capacity)
     const baseSourceX = new Float32Array(capacity)
     const speedFactors = new Float32Array(capacity)
@@ -207,6 +217,7 @@
         const latitude = Math.asin(Math.max(-1, Math.min(1, sphereY)))
         const longitude = Math.atan2(sphereX, sphereZ)
         targetOffsets[visibleCount] = (y * options.width + x) * 4
+        projectionIndexByPixel[targetOffsets[visibleCount] / 4] = visibleCount + 1
         sourceRows[visibleCount] = Math.min(options.sourceHeight - 1, Math.max(0, Math.round((latitude / Math.PI + 0.5) * (options.sourceHeight - 1))))
         baseSourceX[visibleCount] = modulo(longitude / TAU + 0.5, 1) * options.sourceWidth
         speedFactors[visibleCount] = latitudeSpeedFactor(latitude)
@@ -221,6 +232,7 @@
       baseSourceX: baseSourceX.subarray(0, visibleCount),
       speedFactors: speedFactors.subarray(0, visibleCount),
       limbCoverage: limbCoverage.subarray(0, visibleCount),
+      projectionIndexByPixel,
       visibleCount,
       width: options.width,
       height: options.height
@@ -242,6 +254,71 @@
       outputPixels[targetOffset + 1] = texturePixels[sourceOffset0 + 1] + (texturePixels[sourceOffset1 + 1] - texturePixels[sourceOffset0 + 1]) * horizontal
       outputPixels[targetOffset + 2] = texturePixels[sourceOffset0 + 2] + (texturePixels[sourceOffset1 + 2] - texturePixels[sourceOffset0 + 2]) * horizontal
       outputPixels[targetOffset + 3] = map.limbCoverage[index]
+    }
+    return outputPixels
+  }
+
+  function applyLocalizedGasDisplacement (texturePixels, textureWidth, textureHeight, map, basePhase, interaction, outputPixels) {
+    const hoverEnergy = clamp01(interaction.hoverEnergy)
+    const impactEnergy = clamp01(interaction.impactEnergy)
+    if (hoverEnergy === 0 && impactEnergy === 0) return outputPixels
+
+    let minimumX = map.width
+    let maximumX = -1
+    let minimumY = map.height
+    let maximumY = -1
+    if (hoverEnergy > 0) {
+      minimumX = Math.max(0, Math.floor((interaction.hoverX - 0.32 + 1) * map.width * 0.5))
+      maximumX = Math.min(map.width - 1, Math.ceil((interaction.hoverX + 0.32 + 1) * map.width * 0.5) - 1)
+      minimumY = Math.max(0, Math.floor((interaction.hoverY - 0.32 + 1) * map.height * 0.5))
+      maximumY = Math.min(map.height - 1, Math.ceil((interaction.hoverY + 0.32 + 1) * map.height * 0.5) - 1)
+    }
+    if (impactEnergy > 0) {
+      minimumX = Math.max(0, Math.min(minimumX, Math.floor((interaction.impactX - 0.56 + 1) * map.width * 0.5)))
+      maximumX = Math.min(map.width - 1, Math.max(maximumX, Math.ceil((interaction.impactX + 0.56 + 1) * map.width * 0.5) - 1))
+      minimumY = Math.max(0, Math.min(minimumY, Math.floor((interaction.impactY - 0.56 + 1) * map.height * 0.5)))
+      maximumY = Math.min(map.height - 1, Math.max(maximumY, Math.ceil((interaction.impactY + 0.56 + 1) * map.height * 0.5) - 1))
+    }
+
+    const phaseScale = basePhase / TAU * textureWidth
+    for (let y = minimumY; y <= maximumY; y++) {
+      const normalizedY = ((y + 0.5) / map.height) * 2 - 1
+      for (let x = minimumX; x <= maximumX; x++) {
+        const lookup = map.projectionIndexByPixel[y * map.width + x]
+        if (lookup === 0) continue
+
+        const normalizedX = ((x + 0.5) / map.width) * 2 - 1
+        const hoverDx = normalizedX - interaction.hoverX
+        const hoverDy = normalizedY - interaction.hoverY
+        const impactDx = normalizedX - interaction.impactX
+        const impactDy = normalizedY - interaction.impactY
+        const distanceToHover = Math.hypot(hoverDx, hoverDy)
+        const distanceToImpact = Math.hypot(impactDx, impactDy)
+        const hoverFalloff = smoothFalloff(distanceToHover / 0.32) * hoverEnergy
+        const impactFalloff = smoothFalloff(distanceToImpact / 0.56) * impactEnergy
+        const hoverShift = hoverFalloff * 1.5
+        const impactShift = impactFalloff * 6
+        if (hoverShift === 0 && impactShift === 0) continue
+
+        let longitudeShift = 0
+        let latitudeShift = 0
+        if (distanceToHover > 0) {
+          longitudeShift -= hoverDy / distanceToHover * hoverShift
+          latitudeShift += hoverDx / distanceToHover * hoverShift * 0.5
+        }
+        if (distanceToImpact > 0) {
+          longitudeShift -= impactDy / distanceToImpact * impactShift
+          latitudeShift += impactDx / distanceToImpact * impactShift * 0.5
+        }
+
+        const index = lookup - 1
+        const sourceX = map.baseSourceX[index] + phaseScale * map.speedFactors[index] + longitudeShift
+        const sourceY = map.sourceRows[index] + latitudeShift
+        const targetOffset = map.targetOffsets[index]
+        outputPixels[targetOffset] = sampleTextureChannel(texturePixels, textureWidth, textureHeight, sourceX, sourceY, 0)
+        outputPixels[targetOffset + 1] = sampleTextureChannel(texturePixels, textureWidth, textureHeight, sourceX, sourceY, 1)
+        outputPixels[targetOffset + 2] = sampleTextureChannel(texturePixels, textureWidth, textureHeight, sourceX, sourceY, 2)
+      }
     }
     return outputPixels
   }
@@ -351,6 +428,7 @@
     sampleTextureChannel,
     createSphereMap,
     renderProjectedFrame,
+    applyLocalizedGasDisplacement,
     computeBackingSize,
     createQualityState,
     recordDrawCost,

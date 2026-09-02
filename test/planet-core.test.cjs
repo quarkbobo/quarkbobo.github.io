@@ -286,6 +286,39 @@ test('sphere map excludes corners, stays in bounds, and records differential lat
   }
 })
 
+test('projection lookup covers every visible target exactly once and leaves corners zero', () => {
+  const map = core.createSphereMap({
+    width: 64,
+    height: 56,
+    sourceWidth: 128,
+    sourceHeight: 64,
+    equatorRadians: -10 * Math.PI / 180
+  })
+  assert.ok(map.projectionIndexByPixel instanceof Uint32Array)
+  assert.equal(map.projectionIndexByPixel.length, map.width * map.height)
+  assert.equal(map.projectionIndexByPixel[0], 0)
+  assert.equal(map.projectionIndexByPixel[map.width - 1], 0)
+  assert.equal(map.projectionIndexByPixel[(map.height - 1) * map.width], 0)
+  assert.equal(map.projectionIndexByPixel.at(-1), 0)
+
+  let lookupCount = 0
+  const visitsByVisibleIndex = new Uint8Array(map.visibleCount)
+  for (let pixel = 0; pixel < map.projectionIndexByPixel.length; pixel++) {
+    const lookup = map.projectionIndexByPixel[pixel]
+    if (lookup === 0) continue
+    const visibleIndex = lookup - 1
+    assert.ok(visibleIndex < map.visibleCount)
+    assert.equal(map.targetOffsets[visibleIndex] / 4, pixel)
+    visitsByVisibleIndex[visibleIndex]++
+    lookupCount++
+  }
+  assert.equal(lookupCount, map.visibleCount)
+  for (let index = 0; index < map.visibleCount; index++) {
+    assert.equal(visitsByVisibleIndex[index], 1)
+    assert.equal(map.projectionIndexByPixel[map.targetOffsets[index] / 4], index + 1)
+  }
+})
+
 test('sphere map inverse-rotates minus ten degrees with exact longitude and symmetric latitude speeds', () => {
   const map = core.createSphereMap({
     width: 3,
@@ -323,6 +356,137 @@ test('projected redraw changes phase while reusing every caller-owned buffer', (
   assert.equal(core.renderProjectedFrame(texture, 128, map, 0.07, output), output)
   assert.notDeepEqual(output, firstFrame)
   assert.equal(map.targetOffsets, targetOffsets)
+})
+
+test('localized gas displacement changes only its mapped radius and preserves alpha', () => {
+  const texture = new Uint8ClampedArray(128 * 64 * 4)
+  core.fillTexturePixels(texture, 128, 64, 0x706C616E)
+  const map = core.createSphereMap({ width: 64, height: 56, sourceWidth: 128, sourceHeight: 64, equatorRadians: -10 * Math.PI / 180 })
+  const baseline = new Uint8ClampedArray(64 * 56 * 4)
+  const disturbed = new Uint8ClampedArray(64 * 56 * 4)
+  core.renderProjectedFrame(texture, 128, map, 0.07, baseline)
+  disturbed.set(baseline)
+  const interaction = { hoverX: 0, hoverY: 0, hoverEnergy: 1, impactX: 0, impactY: 0, impactEnergy: 0 }
+  assert.equal(core.applyLocalizedGasDisplacement(texture, 128, 64, map, 0.07, interaction, disturbed), disturbed)
+  let changed = 0
+  for (let pixel = 0; pixel < map.width * map.height; pixel++) {
+    const offset = pixel * 4
+    assert.equal(disturbed[offset + 3], baseline[offset + 3])
+    const x = ((pixel % map.width) + 0.5) / map.width * 2 - 1
+    const y = (Math.floor(pixel / map.width) + 0.5) / map.height * 2 - 1
+    const differs = disturbed[offset] !== baseline[offset] || disturbed[offset + 1] !== baseline[offset + 1] || disturbed[offset + 2] !== baseline[offset + 2]
+    if (Math.hypot(x, y) > 0.32) assert.equal(differs, false)
+    else if (differs) changed++
+  }
+  assert.ok(changed > 0)
+})
+
+test('impact at equal energy changes more pixels with a larger channel delta than hover', () => {
+  const texture = new Uint8ClampedArray(128 * 64 * 4)
+  core.fillTexturePixels(texture, 128, 64, 0x706C616E)
+  const map = core.createSphereMap({ width: 64, height: 56, sourceWidth: 128, sourceHeight: 64, equatorRadians: -10 * Math.PI / 180 })
+  const baseline = new Uint8ClampedArray(64 * 56 * 4)
+  const hover = new Uint8ClampedArray(baseline.length)
+  const impact = new Uint8ClampedArray(baseline.length)
+  core.renderProjectedFrame(texture, 128, map, 0.07, baseline)
+  hover.set(baseline)
+  impact.set(baseline)
+  core.applyLocalizedGasDisplacement(texture, 128, 64, map, 0.07, {
+    hoverX: 0,
+    hoverY: 0,
+    hoverEnergy: 1,
+    impactX: 0,
+    impactY: 0,
+    impactEnergy: 0
+  }, hover)
+  core.applyLocalizedGasDisplacement(texture, 128, 64, map, 0.07, {
+    hoverX: 0,
+    hoverY: 0,
+    hoverEnergy: 0,
+    impactX: 0,
+    impactY: 0,
+    impactEnergy: 1
+  }, impact)
+
+  let hoverChanged = 0
+  let hoverDelta = 0
+  let impactChanged = 0
+  let impactDelta = 0
+  for (let offset = 0; offset < baseline.length; offset += 4) {
+    const hoverPixelDelta = Math.abs(hover[offset] - baseline[offset]) +
+      Math.abs(hover[offset + 1] - baseline[offset + 1]) +
+      Math.abs(hover[offset + 2] - baseline[offset + 2])
+    const impactPixelDelta = Math.abs(impact[offset] - baseline[offset]) +
+      Math.abs(impact[offset + 1] - baseline[offset + 1]) +
+      Math.abs(impact[offset + 2] - baseline[offset + 2])
+    if (hoverPixelDelta > 0) hoverChanged++
+    if (impactPixelDelta > 0) impactChanged++
+    hoverDelta += hoverPixelDelta
+    impactDelta += impactPixelDelta
+  }
+  assert.ok(impactChanged > hoverChanged, { hoverChanged, impactChanged })
+  assert.ok(impactDelta > hoverDelta, { hoverDelta, impactDelta })
+})
+
+test('localized gas displacement wraps longitude and clamps latitude at texture poles', () => {
+  const texture = new Uint8ClampedArray([
+    0, 0, 0, 255, 10, 10, 10, 255, 20, 20, 20, 255, 30, 30, 30, 255,
+    100, 100, 100, 255, 110, 110, 110, 255, 120, 120, 120, 255, 130, 130, 130, 255,
+    200, 200, 200, 255, 210, 210, 210, 255, 220, 220, 220, 255, 230, 230, 230, 255
+  ])
+  const projectionIndexByPixel = new Uint32Array(8 * 8)
+  const seamPixel = 3 * 8 + 4
+  const polePixel = 4 * 8 + 5
+  projectionIndexByPixel[seamPixel] = 1
+  projectionIndexByPixel[polePixel] = 2
+  const map = {
+    width: 8,
+    height: 8,
+    visibleCount: 2,
+    projectionIndexByPixel,
+    targetOffsets: new Uint32Array([seamPixel * 4, polePixel * 4]),
+    sourceRows: new Uint16Array([1, 2]),
+    baseSourceX: new Float32Array([3.5, 1]),
+    speedFactors: new Float32Array([0, 0]),
+    limbCoverage: new Uint8Array([255, 255])
+  }
+  const output = new Uint8ClampedArray(8 * 8 * 4).fill(77)
+  const distance = 0.25
+  const normalizedDistance = distance / 0.56
+  const falloff = 1 - normalizedDistance * normalizedDistance * (3 - 2 * normalizedDistance)
+  const shift = falloff * 6
+  core.applyLocalizedGasDisplacement(texture, 4, 3, map, 0, {
+    hoverX: 0.125,
+    hoverY: 0.125,
+    hoverEnergy: 0,
+    impactX: 0.125,
+    impactY: 0.125,
+    impactEnergy: 1
+  }, output)
+
+  const wrappedExpected = new Uint8ClampedArray([core.sampleTextureChannel(texture, 4, 3, 3.5 + shift, 1, 0)])[0]
+  assert.equal(output[seamPixel * 4], wrappedExpected)
+  assert.equal(output[polePixel * 4], 210)
+  assert.equal(output[seamPixel * 4 + 3], 77)
+  assert.equal(output[polePixel * 4 + 3], 77)
+})
+
+test('localized gas displacement with zero energy returns the same buffer unchanged', () => {
+  const texture = new Uint8ClampedArray(16 * 8 * 4)
+  core.fillTexturePixels(texture, 16, 8, 0x706C616E)
+  const map = core.createSphereMap({ width: 8, height: 8, sourceWidth: 16, sourceHeight: 8, equatorRadians: 0 })
+  const output = new Uint8ClampedArray(8 * 8 * 4)
+  core.renderProjectedFrame(texture, 16, map, 0.07, output)
+  const baseline = Uint8ClampedArray.from(output)
+  assert.equal(core.applyLocalizedGasDisplacement(texture, 16, 8, map, 0.07, {
+    hoverX: -0.25,
+    hoverY: 0.25,
+    hoverEnergy: 0,
+    impactX: 0.25,
+    impactY: -0.25,
+    impactEnergy: 0
+  }, output), output)
+  assert.deepEqual(output, baseline)
 })
 
 test('projected redraw interpolates, wraps, applies speed, and only writes mapped RGBA bytes', () => {
@@ -378,6 +542,13 @@ test('projected hot loop contains no allocation or DOM work', () => {
   assert.doesNotMatch(body, /\bnew\s+|Array\.|Object\.|getContext|getComputedStyle|querySelector|createElement|createImageData/)
 })
 
+test('localized gas displacement hot loop contains no allocation, Canvas, or DOM work', () => {
+  const source = require('node:fs').readFileSync(modulePath, 'utf8')
+  const body = source.match(/function applyLocalizedGasDisplacement[\s\S]*?\n  }/)?.[0] || ''
+  assert.ok(body)
+  assert.doesNotMatch(body, /\bnew\s+|\b(?:Array|Object)\s*\(|Array\.|Object\.|getContext|getComputedStyle|querySelector|createElement|createImageData/)
+})
+
 test('browser UMD export exposes the same frozen core API as CommonJS', () => {
   const fs = require('node:fs')
   const vm = require('node:vm')
@@ -385,6 +556,7 @@ test('browser UMD export exposes the same frozen core API as CommonJS', () => {
   const window = {}
   vm.runInNewContext(source, { window, globalThis: window, Math, Object, Number, Uint8Array, Uint16Array, Uint32Array, Uint8ClampedArray, Float32Array, Float64Array, TypeError })
   assert.deepEqual(Object.keys(window.FluidPlanetCore).sort(), Object.keys(core).sort())
+  assert.equal(typeof window.FluidPlanetCore.applyLocalizedGasDisplacement, 'function')
   assert.ok(Object.isFrozen(core))
   assert.ok(Object.isFrozen(window.FluidPlanetCore))
 })
