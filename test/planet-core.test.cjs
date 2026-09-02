@@ -428,6 +428,51 @@ test('impact at equal energy changes more pixels with a larger channel delta tha
   assert.ok(impactDelta > hoverDelta, { hoverDelta, impactDelta })
 })
 
+test('far-separated localized effects do not read projection lookups in the inactive gap', () => {
+  const width = 32
+  const height = 16
+  const leftPixel = 8 * width + 4
+  const rightPixel = 8 * width + 24
+  const lookupStorage = new Uint32Array(width * height)
+  lookupStorage[leftPixel] = 1
+  lookupStorage[rightPixel] = 2
+  let gapReads = 0
+  const projectionIndexByPixel = new Proxy(lookupStorage, {
+    get (target, property) {
+      const pixel = typeof property === 'string' ? Number(property) : NaN
+      if (Number.isInteger(pixel)) {
+        const x = pixel % width
+        if (x >= 9 && x <= 18) gapReads++
+      }
+      return target[property]
+    }
+  })
+  const map = {
+    width,
+    height,
+    visibleCount: 2,
+    projectionIndexByPixel,
+    targetOffsets: new Uint32Array([leftPixel * 4, rightPixel * 4]),
+    sourceRows: new Uint16Array([2, 2]),
+    baseSourceX: new Float32Array([2, 2]),
+    speedFactors: new Float32Array([0, 0]),
+    limbCoverage: new Uint8Array([255, 255])
+  }
+  const texture = new Uint8ClampedArray(4 * 4 * 4)
+  core.fillTexturePixels(texture, 4, 4, 0x706C616E)
+  const output = new Uint8ClampedArray(width * height * 4)
+
+  assert.equal(core.applyLocalizedGasDisplacement(texture, 4, 4, map, 0, {
+    hoverX: -0.8,
+    hoverY: 0,
+    hoverEnergy: 1,
+    impactX: 0.8,
+    impactY: 0,
+    impactEnergy: 1
+  }, output), output)
+  assert.equal(gapReads, 0)
+})
+
 test('localized gas displacement wraps longitude and clamps latitude at texture poles', () => {
   const texture = new Uint8ClampedArray([
     0, 0, 0, 255, 10, 10, 10, 255, 20, 20, 20, 255, 30, 30, 30, 255,

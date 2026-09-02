@@ -263,61 +263,93 @@
     const impactEnergy = clamp01(interaction.impactEnergy)
     if (hoverEnergy === 0 && impactEnergy === 0) return outputPixels
 
-    let minimumX = map.width
-    let maximumX = -1
-    let minimumY = map.height
-    let maximumY = -1
-    if (hoverEnergy > 0) {
-      minimumX = Math.max(0, Math.floor((interaction.hoverX - 0.32 + 1) * map.width * 0.5))
-      maximumX = Math.min(map.width - 1, Math.ceil((interaction.hoverX + 0.32 + 1) * map.width * 0.5) - 1)
-      minimumY = Math.max(0, Math.floor((interaction.hoverY - 0.32 + 1) * map.height * 0.5))
-      maximumY = Math.min(map.height - 1, Math.ceil((interaction.hoverY + 0.32 + 1) * map.height * 0.5) - 1)
-    }
-    if (impactEnergy > 0) {
-      minimumX = Math.max(0, Math.min(minimumX, Math.floor((interaction.impactX - 0.56 + 1) * map.width * 0.5)))
-      maximumX = Math.min(map.width - 1, Math.max(maximumX, Math.ceil((interaction.impactX + 0.56 + 1) * map.width * 0.5) - 1))
-      minimumY = Math.max(0, Math.min(minimumY, Math.floor((interaction.impactY - 0.56 + 1) * map.height * 0.5)))
-      maximumY = Math.min(map.height - 1, Math.max(maximumY, Math.ceil((interaction.impactY + 0.56 + 1) * map.height * 0.5) - 1))
-    }
+    const hoverMinimumX = hoverEnergy > 0 ? Math.max(0, Math.floor((interaction.hoverX - 0.32 + 1) * map.width * 0.5)) : map.width
+    const hoverMaximumX = hoverEnergy > 0 ? Math.min(map.width - 1, Math.ceil((interaction.hoverX + 0.32 + 1) * map.width * 0.5) - 1) : -1
+    const hoverMinimumY = hoverEnergy > 0 ? Math.max(0, Math.floor((interaction.hoverY - 0.32 + 1) * map.height * 0.5)) : map.height
+    const hoverMaximumY = hoverEnergy > 0 ? Math.min(map.height - 1, Math.ceil((interaction.hoverY + 0.32 + 1) * map.height * 0.5) - 1) : -1
+    const impactMinimumX = impactEnergy > 0 ? Math.max(0, Math.floor((interaction.impactX - 0.56 + 1) * map.width * 0.5)) : map.width
+    const impactMaximumX = impactEnergy > 0 ? Math.min(map.width - 1, Math.ceil((interaction.impactX + 0.56 + 1) * map.width * 0.5) - 1) : -1
+    const impactMinimumY = impactEnergy > 0 ? Math.max(0, Math.floor((interaction.impactY - 0.56 + 1) * map.height * 0.5)) : map.height
+    const impactMaximumY = impactEnergy > 0 ? Math.min(map.height - 1, Math.ceil((interaction.impactY + 0.56 + 1) * map.height * 0.5) - 1) : -1
+    const minimumY = Math.min(hoverMinimumY, impactMinimumY)
+    const maximumY = Math.max(hoverMaximumY, impactMaximumY)
 
     const phaseScale = basePhase / TAU * textureWidth
     for (let y = minimumY; y <= maximumY; y++) {
+      const hoverRowActive = y >= hoverMinimumY && y <= hoverMaximumY
+      const impactRowActive = y >= impactMinimumY && y <= impactMaximumY
+      let firstMinimumX
+      let firstMaximumX
+      let secondMinimumX = 0
+      let secondMaximumX = -1
+      if (hoverRowActive && impactRowActive) {
+        if (hoverMinimumX <= impactMaximumX + 1 && impactMinimumX <= hoverMaximumX + 1) {
+          firstMinimumX = Math.min(hoverMinimumX, impactMinimumX)
+          firstMaximumX = Math.max(hoverMaximumX, impactMaximumX)
+        } else if (hoverMinimumX < impactMinimumX) {
+          firstMinimumX = hoverMinimumX
+          firstMaximumX = hoverMaximumX
+          secondMinimumX = impactMinimumX
+          secondMaximumX = impactMaximumX
+        } else {
+          firstMinimumX = impactMinimumX
+          firstMaximumX = impactMaximumX
+          secondMinimumX = hoverMinimumX
+          secondMaximumX = hoverMaximumX
+        }
+      } else if (hoverRowActive) {
+        firstMinimumX = hoverMinimumX
+        firstMaximumX = hoverMaximumX
+      } else if (impactRowActive) {
+        firstMinimumX = impactMinimumX
+        firstMaximumX = impactMaximumX
+      } else {
+        continue
+      }
+
       const normalizedY = ((y + 0.5) / map.height) * 2 - 1
-      for (let x = minimumX; x <= maximumX; x++) {
-        const lookup = map.projectionIndexByPixel[y * map.width + x]
-        if (lookup === 0) continue
+      for (let interval = 0; interval < 2; interval++) {
+        const intervalMinimumX = interval === 0 ? firstMinimumX : secondMinimumX
+        const intervalMaximumX = interval === 0 ? firstMaximumX : secondMaximumX
+        for (let x = intervalMinimumX; x <= intervalMaximumX; x++) {
+          const lookup = map.projectionIndexByPixel[y * map.width + x]
+          if (lookup === 0) continue
 
-        const normalizedX = ((x + 0.5) / map.width) * 2 - 1
-        const hoverDx = normalizedX - interaction.hoverX
-        const hoverDy = normalizedY - interaction.hoverY
-        const impactDx = normalizedX - interaction.impactX
-        const impactDy = normalizedY - interaction.impactY
-        const distanceToHover = Math.hypot(hoverDx, hoverDy)
-        const distanceToImpact = Math.hypot(impactDx, impactDy)
-        const hoverFalloff = smoothFalloff(distanceToHover / 0.32) * hoverEnergy
-        const impactFalloff = smoothFalloff(distanceToImpact / 0.56) * impactEnergy
-        const hoverShift = hoverFalloff * 1.5
-        const impactShift = impactFalloff * 6
-        if (hoverShift === 0 && impactShift === 0) continue
+          const normalizedX = ((x + 0.5) / map.width) * 2 - 1
+          let longitudeShift = 0
+          let latitudeShift = 0
+          if (hoverRowActive && x >= hoverMinimumX && x <= hoverMaximumX) {
+            const hoverDx = normalizedX - interaction.hoverX
+            const hoverDy = normalizedY - interaction.hoverY
+            const distanceToHover = Math.hypot(hoverDx, hoverDy)
+            const hoverFalloff = smoothFalloff(distanceToHover / 0.32) * hoverEnergy
+            const hoverShift = hoverFalloff * 1.5
+            if (distanceToHover > 0) {
+              longitudeShift -= hoverDy / distanceToHover * hoverShift
+              latitudeShift += hoverDx / distanceToHover * hoverShift * 0.5
+            }
+          }
+          if (impactRowActive && x >= impactMinimumX && x <= impactMaximumX) {
+            const impactDx = normalizedX - interaction.impactX
+            const impactDy = normalizedY - interaction.impactY
+            const distanceToImpact = Math.hypot(impactDx, impactDy)
+            const impactFalloff = smoothFalloff(distanceToImpact / 0.56) * impactEnergy
+            const impactShift = impactFalloff * 6
+            if (distanceToImpact > 0) {
+              longitudeShift -= impactDy / distanceToImpact * impactShift
+              latitudeShift += impactDx / distanceToImpact * impactShift * 0.5
+            }
+          }
+          if (longitudeShift === 0 && latitudeShift === 0) continue
 
-        let longitudeShift = 0
-        let latitudeShift = 0
-        if (distanceToHover > 0) {
-          longitudeShift -= hoverDy / distanceToHover * hoverShift
-          latitudeShift += hoverDx / distanceToHover * hoverShift * 0.5
+          const index = lookup - 1
+          const sourceX = map.baseSourceX[index] + phaseScale * map.speedFactors[index] + longitudeShift
+          const sourceY = map.sourceRows[index] + latitudeShift
+          const targetOffset = map.targetOffsets[index]
+          outputPixels[targetOffset] = sampleTextureChannel(texturePixels, textureWidth, textureHeight, sourceX, sourceY, 0)
+          outputPixels[targetOffset + 1] = sampleTextureChannel(texturePixels, textureWidth, textureHeight, sourceX, sourceY, 1)
+          outputPixels[targetOffset + 2] = sampleTextureChannel(texturePixels, textureWidth, textureHeight, sourceX, sourceY, 2)
         }
-        if (distanceToImpact > 0) {
-          longitudeShift -= impactDy / distanceToImpact * impactShift
-          latitudeShift += impactDx / distanceToImpact * impactShift * 0.5
-        }
-
-        const index = lookup - 1
-        const sourceX = map.baseSourceX[index] + phaseScale * map.speedFactors[index] + longitudeShift
-        const sourceY = map.sourceRows[index] + latitudeShift
-        const targetOffset = map.targetOffsets[index]
-        outputPixels[targetOffset] = sampleTextureChannel(texturePixels, textureWidth, textureHeight, sourceX, sourceY, 0)
-        outputPixels[targetOffset + 1] = sampleTextureChannel(texturePixels, textureWidth, textureHeight, sourceX, sourceY, 1)
-        outputPixels[targetOffset + 2] = sampleTextureChannel(texturePixels, textureWidth, textureHeight, sourceX, sourceY, 2)
       }
     }
     return outputPixels
