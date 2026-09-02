@@ -170,7 +170,6 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
             const scene = document.getElementById('space-scene')
             const skipLink = document.querySelector('.skip-link')
             const comet = document.getElementById('cursor-comet')
-            const cometSegments = Array.from(comet.querySelectorAll('.cursor-comet__segment'))
 
             skipLink.focus({ focusVisible: false })
             const pointerLikeSkip = {
@@ -215,6 +214,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
             const writeProbeResult = function (motion) {
               const sceneAnimations = cssSceneAnimations()
               const surfaceStyle = getComputedStyle(surface)
+              const liveCometSegments = Array.from(comet.querySelectorAll('.cursor-comet__segment'))
               document.getElementById('probe-result').textContent = JSON.stringify({
                 colorScheme: getComputedStyle(document.documentElement).colorScheme,
                 themeColor: document.querySelector('meta[name="theme-color"]').content,
@@ -276,9 +276,9 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                   }
                 },
                 cometPresentation: {
-                  segmentCount: cometSegments.length,
+                  segmentCount: liveCometSegments.length,
                   overlayPointerEvents: getComputedStyle(comet).pointerEvents,
-                  segmentPointerEvents: cometSegments.map(function (segment) { return getComputedStyle(segment).pointerEvents })
+                  segmentPointerEvents: liveCometSegments.map(function (segment) { return getComputedStyle(segment).pointerEvents })
                 },
                 scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior,
                 safeAreaResolved: {
@@ -334,7 +334,27 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
               setTimeout(async function () {
                 settleSurfaceFade()
                 if (${reducedMotion}) {
-                  writeProbeResult({ initial, sceneAnimations: cssSceneAnimations().length })
+                  const reducedBounds = surface.getBoundingClientRect()
+                  const reducedCenterX = reducedBounds.left + reducedBounds.width / 2
+                  const reducedCenterY = reducedBounds.top + reducedBounds.height / 2
+                  const reducedBaseline = captureCenterPatch()
+                  dispatchPointer('pointermove', reducedCenterX - 48, reducedCenterY)
+                  dispatchPointer('pointermove', reducedCenterX + 48, reducedCenterY)
+                  dispatchPointer('pointerdown', reducedCenterX, reducedCenterY)
+                  await wait(100)
+                  const reducedAfterInput = captureCenterPatch()
+                  const reducedLiveCometSegments = Array.from(comet.querySelectorAll('.cursor-comet__segment'))
+                  writeProbeResult({
+                    initial,
+                    reducedPointerInteraction: {
+                      planetDifference: patchDifference(reducedBaseline, reducedAfterInput),
+                      cometSegmentCount: reducedLiveCometSegments.length,
+                      cometActiveSegments: reducedLiveCometSegments.filter(function (segment) { return segment.dataset.active === 'true' }).length,
+                      cometOverlayPointerEvents: getComputedStyle(comet).pointerEvents,
+                      cometSegmentPointerEvents: reducedLiveCometSegments.map(function (segment) { return getComputedStyle(segment).pointerEvents })
+                    },
+                    sceneAnimations: cssSceneAnimations().length
+                  })
                   return
                 }
 
@@ -348,7 +368,8 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
 
                 dispatchPointer('pointermove', bounds.right + 32, centerY)
                 await wait(50)
-                const activeCometSegment = cometSegments.find(function (segment) { return segment.dataset.active === 'true' })
+                const interactionCometSegments = Array.from(comet.querySelectorAll('.cursor-comet__segment'))
+                const activeCometSegment = interactionCometSegments.find(function (segment) { return segment.dataset.active === 'true' })
                 const cometInkStyle = activeCometSegment && getComputedStyle(activeCometSegment.querySelector('.cursor-comet__ink'))
                 const cometSegmentStyle = activeCometSegment && getComputedStyle(activeCometSegment)
                 const cometInteraction = {
@@ -367,7 +388,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                 dispatchPointer('pointerdown', centerX, centerY)
                 await wait(100)
                 const impact = captureCenterPatch()
-                await wait(780)
+                await wait(820)
                 const impactDecay = captureCenterPatch()
 
                 dispatchPointer('pointerdown', bounds.left + 1, bounds.top + 1)
@@ -382,7 +403,8 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                 dispatchPointer('pointerdown', centerX, centerY)
                 await wait(100)
                 const pausedAfterInput = captureCenterPatch()
-                const pausedCometActiveSegments = cometSegments.filter(function (segment) { return segment.dataset.active === 'true' }).length
+                const pausedCometSegments = Array.from(comet.querySelectorAll('.cursor-comet__segment'))
+                const pausedCometActiveSegments = pausedCometSegments.filter(function (segment) { return segment.dataset.active === 'true' }).length
                 const pointerInteraction = {
                   pointerPolicy: {
                     mobile: matchMedia('(max-width: 760px)').matches,
@@ -398,7 +420,10 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                   impactDecayDifference: patchDifference(baseline, impactDecay),
                   cornerDifference: patchDifference(baseline, corner),
                   pausedPlanetDifference: patchDifference(pausedBaseline, pausedAfterInput),
-                  pausedCometActiveSegments
+                  pausedCometActiveSegments,
+                  liveCometSegmentCount: interactionCometSegments.length,
+                  liveCometOverlayPointerEvents: getComputedStyle(comet).pointerEvents,
+                  liveCometSegmentPointerEvents: interactionCometSegments.map(function (segment) { return getComputedStyle(segment).pointerEvents })
                 }
 
                 setTimeout(function () {
@@ -845,6 +870,9 @@ test('fine-pointer comet and planet interactions render, decay, and stay blocked
   assert.deepEqual(interaction.cornerDifference, { count: 0, sum: 0 })
   assert.deepEqual(interaction.pausedPlanetDifference, { count: 0, sum: 0 })
   assert.equal(interaction.pausedCometActiveSegments, 0)
+  assert.equal(interaction.liveCometSegmentCount, 8)
+  assert.equal(interaction.liveCometOverlayPointerEvents, 'none')
+  assert.deepEqual(interaction.liveCometSegmentPointerEvents, Array(8).fill('none'))
 })
 
 test('reduced-motion keeps one complete deterministic frame and no continuous scene motion', () => {
@@ -857,6 +885,13 @@ test('reduced-motion keeps one complete deterministic frame and no continuous sc
   assert.equal(probe.sceneAnimations, 0)
   assert.equal(probe.control.display, 'none')
   assert.equal(probe.scrollBehavior, 'auto')
+  assert.deepEqual(probe.reducedPointerInteraction, {
+    planetDifference: { count: 0, sum: 0 },
+    cometSegmentCount: 8,
+    cometActiveSegments: 0,
+    cometOverlayPointerEvents: 'none',
+    cometSegmentPointerEvents: Array(8).fill('none')
+  })
 })
 
 test('generated TOC anchors navigate to their unique heading in Chrome', () => {
