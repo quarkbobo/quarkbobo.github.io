@@ -4,18 +4,12 @@ const childProcess = require('node:child_process')
 const fs = require('node:fs')
 const os = require('node:os')
 const path = require('node:path')
+const { chromeCandidatesFor, windowSizeFor } = require('./browser-launch-policy.cjs')
 
 const root = path.resolve(__dirname, '..')
 const publicRoot = path.join(root, 'public')
-const chromeCandidates = [
-  process.env.CHROME_PATH,
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
-  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
-].filter(Boolean)
+const chromeCandidates = chromeCandidatesFor()
 const chromePath = chromeCandidates.find(candidate => fs.existsSync(candidate))
-const WINDOWS_HEADLESS_OUTER_FRAME_WIDTH = 22
 
 function decodeHtml (value) {
   return value
@@ -49,10 +43,8 @@ function dumpWithChrome (fixturePath, { reducedMotion = false, viewport, virtual
       // This Windows headless build makes the CSS viewport 22px narrower than
       // the requested outer desktop window. The probes below hard-fail unless
       // the measured CSS viewport exactly matches their requested desktop size.
-      const outerWidth = viewport.width >= 768
-        ? viewport.width + WINDOWS_HEADLESS_OUTER_FRAME_WIDTH
-        : viewport.width
-      args.push(`--window-size=${outerWidth},${viewport.height}`)
+      const [outerWidth, outerHeight] = windowSizeFor(viewport)
+      args.push(`--window-size=${outerWidth},${outerHeight}`)
     }
     args.push(new URL(`file:///${fixturePath.replace(/\\/g, '/')}`).href)
     const result = childProcess.spawnSync(chromePath, args, {
