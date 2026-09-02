@@ -109,6 +109,17 @@ test('generated navigation exposes a skip target and a controlled collapsed menu
   assert.match(`${nav?.[1]} ${nav?.[2]}`, /aria-label="主要导航"/)
 })
 
+test('generated home brand names the approved station and links home', () => {
+  // Reverting to the configuration title would expose the prior Q / LOG brand instead of the approved station.
+  const output = built('index.html')
+  const brand = output.match(/<a\b([^>]*)class="site-brand"([^>]*)>([\s\S]*?)<\/a>/)
+  assert.ok(brand)
+  const attributes = `${brand[1]} ${brand[2]}`
+  assert.equal(htmlAttribute(attributes, 'href'), '/')
+  assert.equal(htmlAttribute(attributes, 'aria-label'), '政治月测后宫版V3/太空站 首页')
+  assert.equal(textContent(brand[3]), '政治月测后宫版V3/太空站')
+})
+
 test('generated home exposes a keyboard-native control for the continuous background motion', () => {
   // Removing the control would leave the persistent Canvas and Saturn motion with no pause path.
   const output = built('index.html')

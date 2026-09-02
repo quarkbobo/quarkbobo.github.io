@@ -54,7 +54,7 @@
   position: absolute;
   z-index: 2;
   top: 50%;
-  right: clamp(-3rem, -1vw, 0rem);
+  right: clamp(4rem, 5vw, 5rem);
   width: clamp(21rem, 40vw, 35rem);
   aspect-ratio: 1;
   --saturn-equator-angle: -10deg;

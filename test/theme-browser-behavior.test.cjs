@@ -466,7 +466,7 @@ function runPlanetCompositionProbe (viewport) {
   const fixturePath = path.join(publicRoot, fixtureName)
   const acceptanceWidth = viewport.width
   const viewportHeight = viewport.height
-  const contentWidthConstraint = viewport.width === 320
+  const contentWidthConstraint = viewport.width < 500
     ? `<style>body { width: ${viewport.width}px; }</style>`
     : ''
   const desktopViewportConstraint = viewport.width >= 768
@@ -477,13 +477,21 @@ function runPlanetCompositionProbe (viewport) {
     <script>
       addEventListener('load', function () {
         const system = document.querySelector('.saturn-system')
+        const scene = document.querySelector('.space-scene')
         const body = document.querySelector('.saturn')
         const rings = Array.from(document.querySelectorAll('.saturn-ring'))
         const ring = rings[0]
         const surface = document.getElementById('planet-surface')
         const copy = document.querySelector('.home-hero__copy')
+        const brand = document.querySelector('.site-brand')
+        const sceneRect = scene.getBoundingClientRect()
         const planetRect = body.getBoundingClientRect()
         const ringRect = ring.getBoundingClientRect()
+        const brandRect = brand.getBoundingClientRect()
+        const brandTextRange = document.createRange()
+        brandTextRange.selectNodeContents(brand)
+        const brandLineCount = Array.from(brandTextRange.getClientRects())
+          .filter(function (rect) { return rect.width > 0 && rect.height > 0 }).length
         const innerStop = Number.parseFloat(getComputedStyle(ring).getPropertyValue('--ring-inner-stop')) / 100
         const ringWidthRatio = ring.offsetWidth / body.offsetWidth
         const ringHeightRatio = ring.offsetHeight / body.offsetWidth
@@ -565,8 +573,16 @@ function runPlanetCompositionProbe (viewport) {
             ringWidthRatio,
             ringHeightRatio,
             beltThicknessRatio,
+            sceneRect: { left: sceneRect.left, top: sceneRect.top, right: sceneRect.right, bottom: sceneRect.bottom },
             planetRect: { left: planetRect.left, top: planetRect.top, right: planetRect.right, bottom: planetRect.bottom },
             ringRect: { left: ringRect.left, top: ringRect.top, right: ringRect.right, bottom: ringRect.bottom },
+            ringRightClearance: sceneRect.right - ringRect.right,
+            brandRect: { left: brandRect.left, top: brandRect.top, right: brandRect.right, bottom: brandRect.bottom },
+            brandLineCount,
+            brandNavigationCollision: Array.from(document.querySelectorAll('.nav-toggle, .site-nav')).some(function (element) {
+              return hasVisibleBounds(element) && rectanglesIntersect(brandRect, visibleBounds(element))
+            }),
+            viewportWidth: ${acceptanceWidth},
             copyContentRects,
             syntheticClipping: {
               rawViewportVisible,
@@ -733,7 +749,10 @@ test('planet and dust ring keep approved geometry clear of copy at every accepta
   for (const viewport of [
     { width: 1920, height: 1080 },
     { width: 1440, height: 900 },
+    { width: 1280, height: 720 },
+    { width: 1024, height: 768 },
     { width: 768, height: 1024 },
+    { width: 390, height: 844 },
     { width: 320, height: 740 }
   ]) {
     const probe = runPlanetCompositionProbe(viewport)
@@ -741,10 +760,19 @@ test('planet and dust ring keep approved geometry clear of copy at every accepta
       assert.equal(probe.viewportWidths.inner, viewport.width, `requested=${viewport.width}, measured inner=${probe.viewportWidths.inner}, client=${probe.viewportWidths.client}`)
       assert.equal(probe.viewportWidths.client, viewport.width, `requested=${viewport.width}, measured inner=${probe.viewportWidths.inner}, client=${probe.viewportWidths.client}`)
     } else {
-      assert.equal(probe.bodyWidth, 320)
-      assert.ok(probe.viewportWidths.inner <= 760, `requested=320, measured inner=${probe.viewportWidths.inner}, client=${probe.viewportWidths.client}`)
-      assert.ok(probe.viewportWidths.client <= 760, `requested=320, measured inner=${probe.viewportWidths.inner}, client=${probe.viewportWidths.client}`)
+      assert.equal(probe.bodyWidth, viewport.width)
+      assert.ok(probe.viewportWidths.inner <= 760, `requested=${viewport.width}, measured inner=${probe.viewportWidths.inner}, client=${probe.viewportWidths.client}`)
+      assert.ok(probe.viewportWidths.client <= 760, `requested=${viewport.width}, measured inner=${probe.viewportWidths.inner}, client=${probe.viewportWidths.client}`)
     }
+    if (viewport.width > 760) {
+      assert.ok(probe.ringRect.left >= probe.sceneRect.left)
+      assert.ok(probe.ringRightClearance >= 8, `${viewport.width}px ring clearance`)
+      assert.equal(probe.noHorizontalOverflow, true)
+      assert.equal(probe.copyIntersectsPlanetOrRing, false)
+    }
+    assert.equal(probe.brandLineCount, 1)
+    assert.ok(probe.brandRect.right <= probe.viewportWidth)
+    assert.equal(probe.brandNavigationCollision, false)
     assert.equal(probe.noHorizontalOverflow, true, `${viewport.width}px overflow`)
     assert.deepEqual(probe.canvasIds, ['particle-flow', 'planet-surface'])
     assert.equal(probe.planetInitialized, true)
@@ -764,6 +792,11 @@ test('planet and dust ring keep approved geometry clear of copy at every accepta
     assert.equal(probe.surfaceAngle, '-10deg')
     assert.equal(probe.mobilePolicy, viewport.width <= 760)
     assert.equal(probe.layoutMode, viewport.width <= 760 ? 'mobile' : 'desktop')
+    if (viewport.width === 390) {
+      assert.equal(probe.mobilePolicy, true)
+      assert.equal(probe.layoutMode, 'mobile')
+      assert.ok(probe.ringRect.right > probe.sceneRect.right)
+    }
   }
 })
 
