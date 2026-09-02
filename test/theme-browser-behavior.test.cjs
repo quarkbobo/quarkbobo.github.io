@@ -319,6 +319,16 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
               const top = Math.floor((surface.height - size) / 2)
               return context.getImageData(left, top, size, size).data
             }
+            const waitForBaselinePatch = async function (baseline, minimumMilliseconds) {
+              await wait(minimumMilliseconds)
+              const deadline = performance.now() + 120
+              let patch = captureCenterPatch()
+              while (patchDifference(baseline, patch).count && performance.now() < deadline) {
+                await wait(16)
+                patch = captureCenterPatch()
+              }
+              return patch
+            }
             const dispatchPointer = function (type, x, y) {
               dispatchEvent(new PointerEvent(type, {
                 bubbles: true,
@@ -388,8 +398,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                 dispatchPointer('pointerdown', centerX, centerY)
                 await wait(100)
                 const impact = captureCenterPatch()
-                await wait(820)
-                const impactDecay = captureCenterPatch()
+                const impactDecay = await waitForBaselinePatch(baseline, 720)
 
                 dispatchPointer('pointerdown', bounds.left + 1, bounds.top + 1)
                 await wait(100)

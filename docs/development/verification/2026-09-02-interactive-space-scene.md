@@ -10,13 +10,13 @@ The real-Chrome fixture in `test/theme-browser-behavior.test.cjs` now loads the 
 
 The fixture dispatches the required center and outside pointer moves, reads the activated comet segment's phase and computed custom properties, and compares bounded 64×64 center patches captured with `getImageData()`. Browser assertions prove:
 
-- the comet has eight reusable nodes, the overlay and all nodes are noninteractive, and one real segment becomes active at phase `1` with `comet-fade-b` plus populated x/y/length/angle/width styles;
+- after real pointer activity, a fresh live-overlay query still finds exactly eight reusable nodes, the overlay and all live nodes are noninteractive, and one real segment becomes active at phase `1` with `comet-fade-b` plus populated x/y/length/angle/width styles;
 - center hover changes real planet pixels;
 - a primary-left center click produces a larger RGB difference sum than hover without another center move;
-- the hover patch returns exactly to baseline after more than 240 ms and the impact patch returns exactly after more than 720 ms;
+- the hover patch returns exactly to baseline after more than 240 ms and the impact patch returns exactly at or after the required 720 ms;
 - a corner pointerdown outside the ellipse leaves the baseline unchanged;
 - pause blocks both planet pixels and comet activation;
-- reduced motion runs in a separate `runChromeProbe({ reducedMotion: true })` process, initializes one complete static frame, leaves the planet stopped, hides the motion toggle, and produces no continuous scene animation;
+- reduced motion runs in a separate `runChromeProbe({ reducedMotion: true })` process, initializes one complete static frame, leaves the planet stopped, hides the motion toggle, and produces no continuous scene animation; two real pointer moves plus a primary-left center pointerdown leave the reduced baseline pixels unchanged, all eight live comet nodes present and noninteractive, and zero comet nodes active;
 - the exact five-viewport geometry matrix passes, with full ring containment required only above 760px and the 390px mobile crop preserved.
 
 TDD and focused verification evidence:
@@ -40,6 +40,10 @@ Result: exit 0; Hexo generated 83 files.
 Chrome acceptance: node --test test/theme-browser-behavior.test.cjs
 Result: exit 0; 12 passed, 0 failed.
 ```
+
+Review-fix RED added the two missing observations before the fixture produced them. The focused normal/reduced command failed 0/2: `liveCometSegmentCount` and `reducedPointerInteraction` were both absent. After the fixture correction, it queries the live comet overlay after activity and dispatches real input in the forced reduced-motion process.
+
+That browser coverage exposed a cross-task lifecycle defect: a center `pointerdown` overwrote the coordinates used for hover, so a later same-size bounds refresh promoted impact-only input into hover. Task 5 commit `adb6890` separated hover and impact coordinates and added a lower-level regression. After rebuilding that commit, the focused normal/reduced Chrome tests passed in five consecutive runs and the full browser file passed 12/12. Impact decay now waits the required 720 ms and then condition-polls the fixed-phase baseline for at most 120 ms in 16 ms steps, avoiding an arbitrary fixed delay while retaining a hard deadline.
 
 ## Foreground performance
 
@@ -139,7 +143,7 @@ The final capture server ran in managed terminal session `19227` and was stopped
 
 ```text
 npm run test:fresh
-Result: exit 0; Hexo clean/build succeeded; 195 tests passed, 0 failed, 0 skipped, 0 todo.
+Result: exit 0; Hexo clean/build succeeded; 196 tests passed, 0 failed, 0 skipped, 0 todo.
 ```
 
 `git diff --check`, pre-commit status, post-commit fresh verification, and the final clean-tree status are recorded in the Task 6 execution report.
