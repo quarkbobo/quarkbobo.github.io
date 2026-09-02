@@ -6,18 +6,19 @@ const vm = require('node:vm')
 
 class FakeEventTarget {
   constructor () { this.listeners = new Map() }
-  addEventListener (type, handler) {
-    const handlers = this.listeners.get(type) || []
-    handlers.push(handler)
-    this.listeners.set(type, handlers)
+  addEventListener (type, handler, options) {
+    const registrations = this.listeners.get(type) || []
+    registrations.push({ handler, options })
+    this.listeners.set(type, registrations)
   }
   removeEventListener (type, handler) {
-    this.listeners.set(type, (this.listeners.get(type) || []).filter(candidate => candidate !== handler))
+    this.listeners.set(type, (this.listeners.get(type) || []).filter(candidate => candidate.handler !== handler))
   }
   dispatch (type, event = {}) {
-    for (const handler of [...(this.listeners.get(type) || [])]) handler({ type, ...event })
+    for (const registration of [...(this.listeners.get(type) || [])]) registration.handler({ type, ...event })
   }
   listenerCount (type) { return (this.listeners.get(type) || []).length }
+  listenerOptions (type) { return (this.listeners.get(type) || []).map(registration => registration.options) }
 }
 
 class FakeObserver {
@@ -55,7 +56,9 @@ function createHarness (options = {}) {
     nowValues: [],
     mutationObservers: [],
     intersectionObservers: [],
-    resizeObservers: []
+    resizeObservers: [],
+    boundsReads: 0,
+    outputImages: []
   }
   const classes = new Set()
   const scene = {
@@ -70,15 +73,22 @@ function createHarness (options = {}) {
       state.createdImageData++
       return { width, height, data: new Uint8ClampedArray(width * height * 4) }
     },
-    putImageData () {
+    putImageData (image) {
       if (kind === 'source') state.sourcePutCount++
       else {
         state.outputPutCount++
+        if (options.recordOutputImages) state.outputImages.push(Uint8ClampedArray.from(image.data))
         if (options.outputPutThrowsAfter && state.outputPutCount > options.outputPutThrowsAfter) throw new Error('output put failure')
       }
     }
   })
   const outputContext = options.outputContext === null ? null : makeContext('output')
+  const bounds = {
+    left: options.bounds && Number.isFinite(options.bounds.left) ? options.bounds.left : 100,
+    top: options.bounds && Number.isFinite(options.bounds.top) ? options.bounds.top : 50,
+    width: options.bounds && Number.isFinite(options.bounds.width) ? options.bounds.width : (options.clientWidth || 344),
+    height: options.bounds && Number.isFinite(options.bounds.height) ? options.bounds.height : (options.clientHeight || 304)
+  }
   const canvas = {
     clientWidth: options.clientWidth || 344,
     clientHeight: options.clientHeight || 304,
@@ -86,6 +96,7 @@ function createHarness (options = {}) {
     height: 0,
     style: {},
     getContext: () => outputContext,
+    getBoundingClientRect: () => { state.boundsReads++; return bounds },
     closest: selector => selector === '#space-scene' ? scene : null
   }
   let exposeAutoCanvas = Boolean(options.autoMount)
@@ -111,9 +122,13 @@ function createHarness (options = {}) {
   })
   const mobileQuery = new FakeMediaQuery('(max-width: 760px)', Boolean(options.mobile))
   const motionQuery = new FakeMediaQuery('(prefers-reduced-motion: reduce)', Boolean(options.reducedMotion))
+  const coarseQuery = new FakeMediaQuery('(pointer: coarse)', Boolean(options.coarsePointer))
+  const noHoverQuery = new FakeMediaQuery('(hover: none)', Boolean(options.noHover))
+  const injectedCore = options.core || require('../themes/fluid-particle/source/js/planet-core.js')
+  const harnessCore = options.fixedPhase ? { ...injectedCore, advanceBasePhase: phase => phase } : injectedCore
   const window = Object.assign(new FakeEventTarget(), {
     document,
-    FluidPlanetCore: options.core || require('../themes/fluid-particle/source/js/planet-core.js'),
+    FluidPlanetCore: harnessCore,
     devicePixelRatio: options.devicePixelRatio || 1,
     innerWidth: options.innerWidth || 1440,
     requestAnimationFrame: options.noRaf ? undefined : callback => { const id = state.nextId++; state.rafs.set(id, callback); return id },
@@ -123,7 +138,11 @@ function createHarness (options = {}) {
     setTimeout: callback => { const id = state.nextId++; state.timers.set(id, callback); return id },
     clearTimeout: id => state.timers.delete(id),
     getComputedStyle: () => ({ getPropertyValue: name => name === '--planet-equator-angle' ? '-10deg' : '' }),
-    matchMedia: query => query === mobileQuery.media ? mobileQuery : motionQuery,
+    matchMedia: query => query === mobileQuery.media
+      ? mobileQuery
+      : query === coarseQuery.media
+        ? coarseQuery
+        : query === noHoverQuery.media ? noHoverQuery : motionQuery,
     performance: { now: () => state.nowValues.length ? state.nowValues.shift() : state.clock }
   })
   if (!options.noMutationObserver) window.MutationObserver = class extends FakeObserver {
@@ -183,10 +202,13 @@ function createHarness (options = {}) {
     state,
     scene,
     canvas,
+    bounds,
     window,
     document,
     mobileQuery,
     motionQuery,
+    coarseQuery,
+    noHoverQuery,
     renderer: window.FluidPlanetSurface,
     flushIdle: () => flush(state.idles),
     flushTimers: () => flush(state.timers),
@@ -196,11 +218,271 @@ function createHarness (options = {}) {
     triggerResize,
     queueDrawCost,
     pendingRafs,
-    runCompletedDraws
+    runCompletedDraws,
+    lastOutputImage: () => state.outputImages.at(-1)
   }
 }
 
 const metricKeys = ['averageDrawMs', 'basePhase', 'canvasHeight', 'canvasWidth', 'drawCount', 'effectiveDpr', 'fallback', 'initialized', 'maxDrawMs', 'over8msPercent', 'p95DrawMs', 'pageVisible', 'qualityLevel', 'redrawFps', 'running', 'visible']
+
+function imageDelta (image, baseline) {
+  let delta = 0
+  for (let index = 0; index < image.length; index++) delta += Math.abs(image[index] - baseline[index])
+  return delta
+}
+
+function dispatchAt (harness, type, normalizedX, normalizedY, event = {}) {
+  harness.window.dispatch(type, {
+    clientX: harness.bounds.left + (normalizedX + 1) * harness.bounds.width / 2,
+    clientY: harness.bounds.top + (normalizedY + 1) * harness.bounds.height / 2,
+    pointerType: 'mouse',
+    isPrimary: true,
+    button: 0,
+    ...event
+  })
+}
+
+test('fine-pointer interaction accepts the planet ellipse and rejects canvas corners', () => {
+  const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+  const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+  h.flushIdle()
+  const baseline = h.lastOutputImage()
+  h.window.dispatch('pointermove', { clientX: h.bounds.left, clientY: h.bounds.top, pointerType: 'mouse', isPrimary: true })
+  h.runCompletedDraws(2, 1)
+  assert.deepEqual(h.lastOutputImage(), baseline)
+  h.window.dispatch('pointermove', { clientX: h.bounds.left + h.bounds.width / 2, clientY: h.bounds.top + h.bounds.height / 2, pointerType: 'mouse', isPrimary: true })
+  h.runCompletedDraws(2, 1)
+  assert.notDeepEqual(h.lastOutputImage(), baseline)
+  lifecycle.destroy()
+})
+
+test('pointer handlers use cached bounds with zero synchronous reads', () => {
+  const h = createHarness({ fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+  const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+  h.flushIdle()
+  h.flushRaf(0)
+  assert.equal(h.state.boundsReads, 1)
+  const reads = h.state.boundsReads
+  dispatchAt(h, 'pointermove', 0, 0)
+  dispatchAt(h, 'pointerdown', 0, 0)
+  assert.equal(h.state.boundsReads, reads)
+  assert.equal(h.window.listenerOptions('pointermove')[0].passive, true)
+  assert.equal(h.window.listenerOptions('pointerdown')[0].passive, true)
+  assert.equal(h.window.listenerOptions('scroll')[0].passive, true)
+  lifecycle.destroy()
+})
+
+test('only a primary pointer with button zero replaces the single impact', () => {
+  const realCore = require('../themes/fluid-particle/source/js/planet-core.js')
+  const observed = []
+  let ownedInteraction
+  const core = {
+    ...realCore,
+    applyLocalizedGasDisplacement (...args) {
+      ownedInteraction = ownedInteraction || args[5]
+      assert.equal(args[5], ownedInteraction)
+      observed.push({ ...args[5] })
+      return realCore.applyLocalizedGasDisplacement(...args)
+    }
+  }
+  const h = createHarness({ core, recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+  const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+  h.flushIdle()
+  h.flushRaf(0)
+
+  dispatchAt(h, 'pointerdown', -0.5, 0)
+  h.runCompletedDraws(1, 1)
+  assert.ok(observed.at(-1).impactX < -0.4)
+
+  dispatchAt(h, 'pointerdown', 0.5, 0, { button: 1 })
+  h.runCompletedDraws(1, 1)
+  assert.ok(observed.at(-1).impactX < -0.4)
+
+  dispatchAt(h, 'pointerdown', 0.5, 0, { isPrimary: false })
+  h.runCompletedDraws(1, 1)
+  assert.ok(observed.at(-1).impactX < -0.4)
+
+  dispatchAt(h, 'pointerdown', 0.5, 0)
+  h.runCompletedDraws(1, 1)
+  assert.ok(observed.at(-1).impactX > 0.4)
+  lifecycle.destroy()
+})
+
+test('impact image delta exceeds hover delta', () => {
+  const render = type => {
+    const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+    const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+    h.flushIdle()
+    const baseline = h.lastOutputImage()
+    dispatchAt(h, type, 0, 0)
+    h.runCompletedDraws(2, 1)
+    const delta = imageDelta(h.lastOutputImage(), baseline)
+    lifecycle.destroy()
+    return delta
+  }
+  const hoverDelta = render('pointermove')
+  const impactDelta = render('pointerdown')
+  assert.ok(hoverDelta > 0)
+  assert.ok(impactDelta > hoverDelta, { hoverDelta, impactDelta })
+})
+
+test('hover returns to fixed-phase baseline after 240 ms and impact after 720 ms', () => {
+  const hover = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+  const hoverLifecycle = hover.renderer.mount(hover.canvas, { scene: hover.scene, textureWidth: 64, textureHeight: 32 })
+  hover.flushIdle()
+  const hoverBaseline = hover.lastOutputImage()
+  hover.flushRaf(0)
+  dispatchAt(hover, 'pointermove', 0, 0)
+  hover.flushRaf(50)
+  assert.notDeepEqual(hover.lastOutputImage(), hoverBaseline)
+  dispatchAt(hover, 'pointermove', 1, 1)
+  hover.flushRaf(51)
+  hover.flushRaf(291)
+  assert.deepEqual(hover.lastOutputImage(), hoverBaseline)
+  hoverLifecycle.destroy()
+
+  const impact = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+  const impactLifecycle = impact.renderer.mount(impact.canvas, { scene: impact.scene, textureWidth: 64, textureHeight: 32 })
+  impact.flushIdle()
+  const impactBaseline = impact.lastOutputImage()
+  impact.flushRaf(0)
+  dispatchAt(impact, 'pointerdown', 0, 0)
+  impact.flushRaf(50)
+  assert.notDeepEqual(impact.lastOutputImage(), impactBaseline)
+  impact.flushRaf(720)
+  assert.notDeepEqual(impact.lastOutputImage(), impactBaseline)
+  impact.flushRaf(770)
+  assert.deepEqual(impact.lastOutputImage(), impactBaseline)
+  impactLifecycle.destroy()
+})
+
+test('mobile coarse and no-hover policies attach no pointer listeners', () => {
+  const fine = createHarness({ clientWidth: 96, clientHeight: 84 })
+  const fineLifecycle = fine.renderer.mount(fine.canvas, { scene: fine.scene, textureWidth: 64, textureHeight: 32 })
+  assert.equal(fine.window.listenerCount('pointermove'), 1)
+  assert.equal(fine.window.listenerCount('pointerdown'), 1)
+  fine.coarseQuery.setMatches(true)
+  assert.equal(fine.window.listenerCount('pointermove'), 0)
+  assert.equal(fine.window.listenerCount('pointerdown'), 0)
+  fine.coarseQuery.setMatches(false)
+  assert.equal(fine.window.listenerCount('pointermove'), 1)
+  assert.equal(fine.window.listenerCount('pointerdown'), 1)
+  fineLifecycle.destroy()
+
+  for (const [name, options] of [
+    ['mobile', { mobile: true }],
+    ['coarse', { coarsePointer: true }],
+    ['no-hover', { noHover: true }],
+    ['reduced', { reducedMotion: true }]
+  ]) {
+    const h = createHarness({ ...options, clientWidth: 96, clientHeight: 84 })
+    const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+    assert.equal(h.window.listenerCount('pointermove'), 0, name)
+    assert.equal(h.window.listenerCount('pointerdown'), 0, name)
+    lifecycle.destroy()
+  }
+})
+
+test('every blocker transition must clear interaction before cancellation or static redraw', () => {
+  const cases = [
+    ['manual pause', h => h.mutateScene('motion-paused'), h => h.mutateScene('motion-paused')],
+    ['particle fallback', h => h.mutateScene('particle-fallback'), h => h.mutateScene('particle-fallback')],
+    ['hidden', h => { h.document.hidden = true; h.document.dispatch('visibilitychange') }, h => { h.document.hidden = false; h.document.dispatch('visibilitychange') }],
+    ['offscreen', h => h.setIntersection(false), h => h.setIntersection(true)],
+    ['reduced motion', h => h.motionQuery.setMatches(true), h => h.motionQuery.setMatches(false)],
+    ['mobile', h => h.mobileQuery.setMatches(true), h => h.mobileQuery.setMatches(false)],
+    ['coarse', h => h.coarseQuery.setMatches(true), h => h.coarseQuery.setMatches(false)],
+    ['no-hover', h => h.noHoverQuery.setMatches(true), h => h.noHoverQuery.setMatches(false)]
+  ]
+  for (const [name, block, unblock] of cases) {
+    const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+    const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+    h.flushIdle()
+    const baseline = h.lastOutputImage()
+    h.flushRaf(0)
+    dispatchAt(h, 'pointerdown', 0, 0)
+    h.flushRaf(50)
+    assert.notDeepEqual(h.lastOutputImage(), baseline, `${name} setup`)
+    block(h)
+    if (name === 'reduced motion') assert.deepEqual(h.lastOutputImage(), baseline, `${name} static redraw`)
+    unblock(h)
+    h.flushRaf(h.state.clock + 1)
+    h.flushRaf(h.state.clock + 50)
+    assert.deepEqual(h.lastOutputImage(), baseline, name)
+    lifecycle.destroy()
+  }
+})
+
+test('scroll and resize coalesce one bounds refresh and recompute a stationary pointer', () => {
+  const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+  const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+  h.flushIdle()
+  const baseline = h.lastOutputImage()
+  h.flushRaf(0)
+  assert.equal(h.state.boundsReads, 1)
+  dispatchAt(h, 'pointermove', 0, 0)
+  h.flushRaf(50)
+  assert.notDeepEqual(h.lastOutputImage(), baseline)
+
+  h.bounds.left += h.bounds.width * 2
+  const reads = h.state.boundsReads
+  h.window.dispatch('scroll')
+  h.window.dispatch('scroll')
+  h.triggerResize()
+  h.triggerResize()
+  assert.equal(h.state.boundsReads, reads)
+  assert.equal(h.pendingRafs(), 1)
+  h.flushRaf(100)
+  assert.equal(h.state.boundsReads, reads + 1)
+  h.flushRaf(340)
+  assert.deepEqual(h.lastOutputImage(), baseline)
+  lifecycle.destroy()
+})
+
+test('destroy and fallback remove pointer scroll media listeners and pending bounds refresh', () => {
+  const destroyed = createHarness({ clientWidth: 96, clientHeight: 84 })
+  const destroyedLifecycle = destroyed.renderer.mount(destroyed.canvas, { scene: destroyed.scene, textureWidth: 64, textureHeight: 32 })
+  assert.ok(destroyed.pendingRafs() > 0)
+  destroyedLifecycle.destroy()
+  assert.equal(destroyed.pendingRafs(), 0)
+  assert.equal(destroyed.window.listenerCount('pointermove'), 0)
+  assert.equal(destroyed.window.listenerCount('pointerdown'), 0)
+  assert.equal(destroyed.window.listenerCount('scroll'), 0)
+  assert.equal(destroyed.motionQuery.listenerCount('change'), 0)
+  assert.equal(destroyed.mobileQuery.listenerCount('change'), 0)
+  assert.equal(destroyed.coarseQuery.listenerCount('change'), 0)
+  assert.equal(destroyed.noHoverQuery.listenerCount('change'), 0)
+
+  const realCore = require('../themes/fluid-particle/source/js/planet-core.js')
+  let renders = 0
+  const failed = createHarness({
+    clientWidth: 96,
+    clientHeight: 84,
+    core: {
+      ...realCore,
+      renderProjectedFrame (...args) {
+        renders++
+        if (renders > 1) throw new Error('render failure')
+        return realCore.renderProjectedFrame(...args)
+      }
+    }
+  })
+  const failedLifecycle = failed.renderer.mount(failed.canvas, { scene: failed.scene, textureWidth: 64, textureHeight: 32 })
+  failed.flushIdle()
+  dispatchAt(failed, 'pointermove', 0, 0)
+  failed.flushRaf(0)
+  failed.flushRaf(50)
+  assert.equal(failedLifecycle.snapshot().fallback, true)
+  assert.equal(failed.pendingRafs(), 0)
+  assert.equal(failed.window.listenerCount('pointermove'), 0)
+  assert.equal(failed.window.listenerCount('pointerdown'), 0)
+  assert.equal(failed.window.listenerCount('scroll'), 0)
+  assert.equal(failed.motionQuery.listenerCount('change'), 0)
+  assert.equal(failed.mobileQuery.listenerCount('change'), 0)
+  assert.equal(failed.coarseQuery.listenerCount('change'), 0)
+  assert.equal(failed.noHoverQuery.listenerCount('change'), 0)
+  failedLifecycle.destroy()
+})
 
 test('mount defers work, builds a detached 1024x512 texture, and reveals only a complete frame', () => {
   const harness = createHarness()
@@ -304,7 +586,8 @@ test('initialization failures isolate the planet and never mutate particle state
     ['animation frame', { noRaf: true }],
     ['quality setup', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), createQualityState: () => { throw new Error('quality failure') } } }],
     ['texture generation', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), fillTexturePixels: () => { throw new Error('texture failure') } } }],
-    ['projection setup', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), createSphereMap: () => { throw new Error('projection failure') } } }]
+    ['projection setup', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), createSphereMap: () => { throw new Error('projection failure') } } }],
+    ['localized displacement API', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), applyLocalizedGasDisplacement: undefined } }]
   ]) {
     await t.test(name, () => {
       const harness = createHarness(options)

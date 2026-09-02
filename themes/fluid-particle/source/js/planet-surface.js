@@ -59,6 +59,7 @@
     return core && typeof core.fillTexturePixels === 'function' &&
       typeof core.createSphereMap === 'function' &&
       typeof core.renderProjectedFrame === 'function' &&
+      typeof core.applyLocalizedGasDisplacement === 'function' &&
       typeof core.computeBackingSize === 'function' &&
       typeof core.createQualityState === 'function' &&
       typeof core.advanceBasePhase === 'function' &&
@@ -100,9 +101,13 @@
 
     let motionQuery
     let mobileQuery
+    let coarseQuery
+    let noHoverQuery
     try {
       motionQuery = root.matchMedia('(prefers-reduced-motion: reduce)')
       mobileQuery = root.matchMedia('(max-width: 760px)')
+      coarseQuery = root.matchMedia('(pointer: coarse)')
+      noHoverQuery = root.matchMedia('(hover: none)')
     } catch (error) {
       return createFallback(canvas, scene)
     }
@@ -144,6 +149,20 @@
     let resizeFallback = false
     let motionUsesLegacy = false
     let mobileUsesLegacy = false
+    let coarseUsesLegacy = false
+    let noHoverUsesLegacy = false
+    let inputAttached = false
+    let boundsDirty = false
+    const cachedBounds = { left: 0, top: 0, width: 0, height: 0 }
+    const interaction = { hoverX: 0, hoverY: 0, hoverEnergy: 0, impactX: 0, impactY: 0, impactEnergy: 0 }
+    let pointerClientX = 0
+    let pointerClientY = 0
+    let pointerPrimary = false
+    let pointerButton = -1
+    let hasPointerCoordinates = false
+    let pointerMovePending = false
+    let impactPending = false
+    let hoverInside = false
     let lifecycle
 
     if (canvas.style) canvas.style.display = ''
@@ -171,7 +190,33 @@
       else query.removeEventListener('change', handler)
     }
 
+    function clearInteraction () {
+      interaction.hoverX = 0
+      interaction.hoverY = 0
+      interaction.hoverEnergy = 0
+      interaction.impactX = 0
+      interaction.impactY = 0
+      interaction.impactEnergy = 0
+      pointerClientX = 0
+      pointerClientY = 0
+      pointerPrimary = false
+      pointerButton = -1
+      hasPointerCoordinates = false
+      pointerMovePending = false
+      impactPending = false
+      hoverInside = false
+    }
+
+    function removeInputListeners () {
+      if (!inputAttached) return
+      root.removeEventListener('pointermove', onPointerMove)
+      root.removeEventListener('pointerdown', onPointerDown)
+      root.removeEventListener('scroll', queueBoundsRefresh)
+      inputAttached = false
+    }
+
     function cleanupOwned () {
+      boundsDirty = false
       cancelAnimation()
       if (idleId) {
         if (idleUsesTimeout) root.clearTimeout(idleId)
@@ -185,14 +230,18 @@
       intersectionObserver = null
       resizeObserver = null
       document.removeEventListener('visibilitychange', onVisibilityChange)
+      removeInputListeners()
       removeMediaListener(motionQuery, onMotionChange, motionUsesLegacy)
       removeMediaListener(mobileQuery, onMobileChange, mobileUsesLegacy)
-      if (resizeFallback) root.removeEventListener('resize', queueResize)
+      removeMediaListener(coarseQuery, onCoarseChange, coarseUsesLegacy)
+      removeMediaListener(noHoverQuery, onNoHoverChange, noHoverUsesLegacy)
+      if (resizeFallback) root.removeEventListener('resize', onResize)
       resizeFallback = false
     }
 
     function fail () {
       if (fallback || destroyed) return
+      clearInteraction()
       initialized = false
       fallback = true
       cleanupOwned()
@@ -230,6 +279,9 @@
       let started = 0
       if (measure) started = root.performance && typeof root.performance.now === 'function' ? root.performance.now() : 0
       core.renderProjectedFrame(sourceImage.data, sourceWidth, projection, basePhase, outputImage.data)
+      if (interaction.hoverEnergy > 0 || interaction.impactEnergy > 0) {
+        core.applyLocalizedGasDisplacement(sourceImage.data, sourceWidth, sourceImage.height, projection, basePhase, interaction, outputImage.data)
+      }
       context.putImageData(outputImage, 0, 0)
       if (measure) recordCompletedDraw(Math.max(0, (root.performance && typeof root.performance.now === 'function' ? root.performance.now() : started) - started), timestamp, animated)
     }
@@ -283,12 +335,104 @@
       syncAnimation()
     }
 
+    function queueBoundsRefresh () {
+      if (destroyed || fallback) return
+      boundsDirty = true
+      if ((!initialized || canAnimate()) && !animationFrameId) animationFrameId = root.requestAnimationFrame(renderFrame)
+    }
+
+    function onResize () {
+      queueResize()
+      queueBoundsRefresh()
+    }
+
+    function refreshCachedBounds () {
+      boundsDirty = false
+      const nextBounds = canvas.getBoundingClientRect()
+      cachedBounds.left = nextBounds.left
+      cachedBounds.top = nextBounds.top
+      cachedBounds.width = nextBounds.width
+      cachedBounds.height = nextBounds.height
+      if (hasPointerCoordinates) pointerMovePending = true
+    }
+
+    function updateInteraction (elapsed) {
+      if (!hoverInside && interaction.hoverEnergy > 0) interaction.hoverEnergy = Math.max(0, interaction.hoverEnergy - elapsed / 240)
+      if (interaction.impactEnergy > 0) interaction.impactEnergy = Math.max(0, interaction.impactEnergy - elapsed / 720)
+      if (!pointerMovePending && !impactPending) return
+
+      let x = 0
+      let y = 0
+      let inside = false
+      if (cachedBounds.width > 0 && cachedBounds.height > 0) {
+        x = (pointerClientX - cachedBounds.left) / cachedBounds.width * 2 - 1
+        y = (pointerClientY - cachedBounds.top) / cachedBounds.height * 2 - 1
+        inside = x * x + y * y <= 1
+      }
+      if (pointerMovePending) {
+        hoverInside = inside
+        if (inside) {
+          interaction.hoverX = x
+          interaction.hoverY = y
+          interaction.hoverEnergy = 1
+        }
+        pointerMovePending = false
+      }
+      if (impactPending) {
+        if (inside && pointerPrimary && pointerButton === 0) {
+          interaction.impactX = x
+          interaction.impactY = y
+          interaction.impactEnergy = 1
+        }
+        impactPending = false
+      }
+    }
+
+    function onPointerMove (event) {
+      pointerClientX = event.clientX
+      pointerClientY = event.clientY
+      hasPointerCoordinates = true
+      pointerMovePending = true
+    }
+
+    function onPointerDown (event) {
+      pointerClientX = event.clientX
+      pointerClientY = event.clientY
+      pointerPrimary = Boolean(event.isPrimary)
+      pointerButton = event.button
+      hasPointerCoordinates = true
+      impactPending = true
+    }
+
+    function inputAllowed () {
+      return !mobileQuery.matches && !coarseQuery.matches && !noHoverQuery.matches && !reducedMotion && !destroyed && !fallback
+    }
+
+    function syncInputPolicy () {
+      if (!inputAllowed()) {
+        clearInteraction()
+        removeInputListeners()
+        return
+      }
+      if (!inputAttached) {
+        root.addEventListener('pointermove', onPointerMove, { passive: true })
+        root.addEventListener('pointerdown', onPointerDown, { passive: true })
+        root.addEventListener('scroll', queueBoundsRefresh, { passive: true })
+        inputAttached = true
+        queueBoundsRefresh()
+      }
+    }
+
     function renderFrame (timestamp) {
       animationFrameId = 0
+      if (boundsDirty) {
+        try { refreshCachedBounds() } catch (error) { fail(); return }
+      }
       if (!canAnimate()) return
       if (!hasTimestamp) {
         lastTimestamp = timestamp
         hasTimestamp = true
+        updateInteraction(0)
         if (resizeDirty) {
           rebuildProjection(timestamp, false)
         }
@@ -298,6 +442,7 @@
       }
       const elapsed = Math.max(0, timestamp - lastTimestamp)
       lastTimestamp = timestamp
+      updateInteraction(elapsed)
       elapsedSinceDraw += elapsed
       transactionDue = false
       let rebuilt = false
@@ -319,23 +464,31 @@
     }
 
     function onMutation () {
+      const wasManualPaused = manualPaused
+      const wasParticleFailed = particleFailed
       manualPaused = scene.classList.contains('motion-paused')
       particleFailed = scene.classList.contains('particle-fallback')
+      if ((!wasManualPaused && manualPaused) || (!wasParticleFailed && particleFailed)) clearInteraction()
       syncAnimation()
     }
 
     function onIntersection (entries) {
+      const wasOffscreen = offscreen
       offscreen = !(entries && entries[0] && entries[0].isIntersecting)
+      if (!wasOffscreen && offscreen) clearInteraction()
       syncAnimation()
     }
 
     function onVisibilityChange () {
+      const wasPageHidden = pageHidden
       pageHidden = Boolean(document.hidden)
+      if (!wasPageHidden && pageHidden) clearInteraction()
       syncAnimation()
     }
 
     function onMotionChange (event) {
       reducedMotion = Boolean(event && event.matches)
+      syncInputPolicy()
       if (reducedMotion) {
         cancelAnimation()
         if (initialized && !fallback) {
@@ -345,7 +498,14 @@
       syncAnimation()
     }
 
-    function onMobileChange () { queueResize() }
+    function onMobileChange () {
+      syncInputPolicy()
+      queueResize()
+    }
+
+    function onCoarseChange () { syncInputPolicy() }
+
+    function onNoHoverChange () { syncInputPolicy() }
 
     function addMediaListener (query, handler, setLegacy) {
       if (query && typeof query.addEventListener === 'function') query.addEventListener('change', handler)
@@ -436,6 +596,7 @@
     function destroy () {
       if (destroyed) return
       destroyed = true
+      clearInteraction()
       cleanupOwned()
       removeClass(scene, 'planet-ready')
       if (mountedLifecycle === lifecycle) {
@@ -457,15 +618,18 @@
         intersectionObserver.observe(canvas)
       }
       if (typeof root.ResizeObserver === 'function') {
-        resizeObserver = new root.ResizeObserver(queueResize)
+        resizeObserver = new root.ResizeObserver(onResize)
         resizeObserver.observe(canvas)
       } else {
         resizeFallback = true
-        root.addEventListener('resize', queueResize)
+        root.addEventListener('resize', onResize)
       }
       document.addEventListener('visibilitychange', onVisibilityChange)
       addMediaListener(motionQuery, onMotionChange, function () { motionUsesLegacy = true })
       addMediaListener(mobileQuery, onMobileChange, function () { mobileUsesLegacy = true })
+      addMediaListener(coarseQuery, onCoarseChange, function () { coarseUsesLegacy = true })
+      addMediaListener(noHoverQuery, onNoHoverChange, function () { noHoverUsesLegacy = true })
+      syncInputPolicy()
       if (typeof root.requestIdleCallback === 'function') {
         idleUsesTimeout = false
         idleId = root.requestIdleCallback(initialize, { timeout: 300 })
