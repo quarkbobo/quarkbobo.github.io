@@ -413,6 +413,35 @@ test('every blocker transition must clear interaction before cancellation or sta
   }
 })
 
+test('blocked input is not replayed after resume and fresh input still works', () => {
+  const cases = [
+    ['manual pause', h => h.mutateScene('motion-paused'), h => h.mutateScene('motion-paused')],
+    ['particle fallback', h => h.mutateScene('particle-fallback'), h => h.mutateScene('particle-fallback')],
+    ['hidden', h => { h.document.hidden = true; h.document.dispatch('visibilitychange') }, h => { h.document.hidden = false; h.document.dispatch('visibilitychange') }],
+    ['offscreen', h => h.setIntersection(false), h => h.setIntersection(true)]
+  ]
+  for (const [name, block, unblock] of cases) {
+    const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+    const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+    h.flushIdle()
+    const baseline = h.lastOutputImage()
+    h.flushRaf(0)
+
+    block(h)
+    dispatchAt(h, 'pointermove', 0, 0)
+    dispatchAt(h, 'pointerdown', 0, 0)
+    unblock(h)
+    h.flushRaf(1)
+    h.flushRaf(51)
+    assert.deepEqual(h.lastOutputImage(), baseline, `${name} blocked input`)
+
+    dispatchAt(h, 'pointermove', 0, 0)
+    h.flushRaf(101)
+    assert.notDeepEqual(h.lastOutputImage(), baseline, `${name} fresh input`)
+    lifecycle.destroy()
+  }
+})
+
 test('scroll and resize coalesce one bounds refresh and recompute a stationary pointer', () => {
   const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
   const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })

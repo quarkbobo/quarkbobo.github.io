@@ -389,6 +389,7 @@
     }
 
     function onPointerMove (event) {
+      if (manualPaused || particleFailed || pageHidden || offscreen) return
       pointerClientX = event.clientX
       pointerClientY = event.clientY
       hasPointerCoordinates = true
@@ -396,6 +397,7 @@
     }
 
     function onPointerDown (event) {
+      if (manualPaused || particleFailed || pageHidden || offscreen) return
       pointerClientX = event.clientX
       pointerClientY = event.clientY
       pointerPrimary = Boolean(event.isPrimary)
