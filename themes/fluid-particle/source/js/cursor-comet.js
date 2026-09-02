@@ -77,13 +77,14 @@
         segment.dataset.phase = segment.dataset.phase === '0' ? '1' : '0'
         segment.dataset.active = 'true'
         poolIndex = core.nextPoolIndex(poolIndex, segments.length)
+        previous.x = pending.x
+        previous.y = pending.y
+        previous.time = pending.time
       }
-      previous.x = pending.x
-      previous.y = pending.y
-      previous.time = pending.time
     }
 
     function handlePointerMove (event) {
+      if (event.pointerType !== 'mouse') return
       if (!Number.isFinite(event.clientX) || !Number.isFinite(event.clientY) || !Number.isFinite(event.timeStamp)) return
       if (!seeded) {
         previous.x = event.clientX

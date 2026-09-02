@@ -198,18 +198,22 @@ function createHarness (options = {}) {
 }
 
 function drawTwoSegments (h, start = 0) {
-  h.window.dispatch('pointermove', { clientX: start, clientY: 10, timeStamp: 0 })
-  h.window.dispatch('pointermove', { clientX: start + 20, clientY: 10, timeStamp: 16 })
+  dispatchMouseMove(h, { clientX: start, clientY: 10, timeStamp: 0 })
+  dispatchMouseMove(h, { clientX: start + 20, clientY: 10, timeStamp: 16 })
   h.flushRaf(16)
-  h.window.dispatch('pointermove', { clientX: start + 40, clientY: 10, timeStamp: 32 })
+  dispatchMouseMove(h, { clientX: start + 40, clientY: 10, timeStamp: 32 })
   h.flushRaf(32)
+}
+
+function dispatchMouseMove (h, event) {
+  h.window.dispatch('pointermove', { pointerType: 'mouse', ...event })
 }
 
 test('fine hover pointer coalesces movement and cycles the fixed eight-node pool', () => {
   const h = createHarness({ fine: true, hover: true })
   const life = h.api.mount(h.overlay, { scene: h.scene })
-  h.window.dispatch('pointermove', { clientX: 10, clientY: 10, timeStamp: 0 })
-  h.window.dispatch('pointermove', { clientX: 42, clientY: 10, timeStamp: 16 })
+  dispatchMouseMove(h, { clientX: 10, clientY: 10, timeStamp: 0 })
+  dispatchMouseMove(h, { clientX: 42, clientY: 10, timeStamp: 16 })
   assert.equal(h.pendingRafs(), 1)
   h.flushRaf(16)
   assert.equal(life.snapshot().activeSegments, 1)
@@ -217,12 +221,40 @@ test('fine hover pointer coalesces movement and cycles the fixed eight-node pool
   assert.equal(h.overlay.segments[0].style.getPropertyValue('--comet-length'), '32px')
 
   for (let index = 0; index < 8; index++) {
-    h.window.dispatch('pointermove', { clientX: 50 + index * 8, clientY: 10, timeStamp: 32 + index * 16 })
+    dispatchMouseMove(h, { clientX: 50 + index * 8, clientY: 10, timeStamp: 32 + index * 16 })
     h.flushRaf(32 + index * 16)
   }
   assert.equal(life.snapshot().poolIndex, 1)
   assert.equal(life.snapshot().activeSegments, 8)
   assert.equal(h.overlay.appendCalls, 0)
+})
+
+test('one-pixel mouse moves accumulate from the accepted anchor until one segment reaches four pixels', () => {
+  const h = createHarness()
+  const life = h.api.mount(h.overlay, { scene: h.scene })
+  dispatchMouseMove(h, { clientX: 10, clientY: 10, timeStamp: 0 })
+
+  for (let offset = 1; offset <= 4; offset++) {
+    dispatchMouseMove(h, { clientX: 10 + offset, clientY: 10, timeStamp: offset * 16 })
+    h.flushRaf(offset * 16)
+  }
+
+  assert.equal(life.snapshot().activeSegments, 1)
+  assert.equal(life.snapshot().poolIndex, 1)
+  assert.equal(h.overlay.segments[0].style.getPropertyValue('--comet-length'), '4px')
+})
+
+test('hybrid fine-pointer media never lets touch or pen movement create comet state', () => {
+  for (const pointerType of ['touch', 'pen']) {
+    const h = createHarness({ fine: true, hover: true })
+    const life = h.api.mount(h.overlay, { scene: h.scene })
+    h.window.dispatch('pointermove', { clientX: 10, clientY: 10, timeStamp: 0, pointerType })
+    h.window.dispatch('pointermove', { clientX: 30, clientY: 10, timeStamp: 16, pointerType })
+
+    assert.equal(h.pendingRafs(), 0, pointerType)
+    assert.equal(life.snapshot().activeSegments, 0, pointerType)
+    assert.equal(life.snapshot().poolIndex, 0, pointerType)
+  }
 })
 
 test('blocked pointer policies start disabled without attaching pointer movement', () => {
@@ -249,7 +281,7 @@ test('eligible pointer listener is passive and twenty rapid moves queue only one
   assert.equal(h.window.listenerOptions('pointermove')[0].passive, true)
 
   for (let index = 0; index < 20; index++) {
-    h.window.dispatch('pointermove', { clientX: index * 5, clientY: 4, timeStamp: index })
+    dispatchMouseMove(h, { clientX: index * 5, clientY: 4, timeStamp: index })
   }
   assert.equal(h.pendingRafs(), 1)
   h.flushRaf(20)
@@ -330,9 +362,9 @@ test('policy re-enable restores one listener and seeds a fresh point', () => {
 
   coarse.setMatches(false)
   assert.equal(h.window.listenerCount('pointermove'), 1)
-  h.window.dispatch('pointermove', { clientX: 500, clientY: 400, timeStamp: 100 })
+  dispatchMouseMove(h, { clientX: 500, clientY: 400, timeStamp: 100 })
   assert.equal(h.pendingRafs(), 0)
-  h.window.dispatch('pointermove', { clientX: 510, clientY: 400, timeStamp: 116 })
+  dispatchMouseMove(h, { clientX: 510, clientY: 400, timeStamp: 116 })
   assert.equal(h.pendingRafs(), 1)
   h.flushRaf(116)
   assert.equal(life.snapshot().activeSegments, 1)
@@ -342,8 +374,8 @@ test('policy re-enable restores one listener and seeds a fresh point', () => {
 test('destroy cancels work and removes every owned observer and listener', () => {
   const h = createHarness()
   const life = h.api.mount(h.overlay, { scene: h.scene })
-  h.window.dispatch('pointermove', { clientX: 0, clientY: 0, timeStamp: 0 })
-  h.window.dispatch('pointermove', { clientX: 20, clientY: 0, timeStamp: 16 })
+  dispatchMouseMove(h, { clientX: 0, clientY: 0, timeStamp: 0 })
+  dispatchMouseMove(h, { clientX: 20, clientY: 0, timeStamp: 16 })
   assert.equal(h.pendingRafs(), 1)
 
   life.destroy()

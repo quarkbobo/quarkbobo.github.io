@@ -143,7 +143,7 @@ The final capture server ran in managed terminal session `19227` and was stopped
 
 ```text
 npm run test:fresh
-Result: exit 0; Hexo clean/build succeeded; 196 tests passed, 0 failed, 0 skipped, 0 todo.
+Result: exit 0; Hexo clean/build succeeded; 200 tests passed, 0 failed, 0 skipped, 0 todo.
 ```
 
 `git diff --check`, pre-commit status, post-commit fresh verification, and the final clean-tree status are recorded in the Task 6 execution report.

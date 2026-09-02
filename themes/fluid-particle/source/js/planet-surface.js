@@ -192,29 +192,35 @@
       else query.removeEventListener('change', handler)
     }
 
-    function clearInteraction () {
+    function clearHover () {
       interaction.hoverX = 0
       interaction.hoverY = 0
       interaction.hoverEnergy = 0
+      hoverClientX = 0
+      hoverClientY = 0
+      hasHoverCoordinates = false
+      pointerMovePending = false
+      hoverInside = false
+    }
+
+    function clearInteraction () {
+      clearHover()
       interaction.impactX = 0
       interaction.impactY = 0
       interaction.impactEnergy = 0
-      hoverClientX = 0
-      hoverClientY = 0
       impactClientX = 0
       impactClientY = 0
       pointerPrimary = false
       pointerButton = -1
-      hasHoverCoordinates = false
-      pointerMovePending = false
       impactPending = false
-      hoverInside = false
     }
 
     function removeInputListeners () {
       if (!inputAttached) return
       root.removeEventListener('pointermove', onPointerMove)
       root.removeEventListener('pointerdown', onPointerDown)
+      root.removeEventListener('pointerout', onPointerOut)
+      root.removeEventListener('blur', onBlur)
       root.removeEventListener('scroll', queueBoundsRefresh)
       inputAttached = false
     }
@@ -401,6 +407,7 @@
     }
 
     function onPointerMove (event) {
+      if (event.pointerType !== 'mouse') return
       if (manualPaused || particleFailed || pageHidden || offscreen) return
       hoverClientX = event.clientX
       hoverClientY = event.clientY
@@ -409,12 +416,21 @@
     }
 
     function onPointerDown (event) {
+      if (event.pointerType !== 'mouse') return
       if (manualPaused || particleFailed || pageHidden || offscreen) return
       impactClientX = event.clientX
       impactClientY = event.clientY
       pointerPrimary = Boolean(event.isPrimary)
       pointerButton = event.button
       impactPending = true
+    }
+
+    function onPointerOut (event) {
+      if (event.relatedTarget == null) clearHover()
+    }
+
+    function onBlur () {
+      clearHover()
     }
 
     function inputAllowed () {
@@ -430,6 +446,8 @@
       if (!inputAttached) {
         root.addEventListener('pointermove', onPointerMove, { passive: true })
         root.addEventListener('pointerdown', onPointerDown, { passive: true })
+        root.addEventListener('pointerout', onPointerOut)
+        root.addEventListener('blur', onBlur)
         root.addEventListener('scroll', queueBoundsRefresh, { passive: true })
         inputAttached = true
         queueBoundsRefresh()

@@ -256,6 +256,24 @@ test('fine-pointer interaction accepts the planet ellipse and rejects canvas cor
   lifecycle.destroy()
 })
 
+test('hybrid fine-pointer media never lets touch or pen input change planet pixels', () => {
+  for (const pointerType of ['touch', 'pen']) {
+    for (const eventType of ['pointermove', 'pointerdown']) {
+      const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+      const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+      h.flushIdle()
+      const baseline = h.lastOutputImage()
+      h.flushRaf(0)
+
+      dispatchAt(h, eventType, 0, 0, { pointerType })
+      h.runCompletedDraws(2, 1)
+
+      assert.deepEqual(h.lastOutputImage(), baseline, `${pointerType} ${eventType}`)
+      lifecycle.destroy()
+    }
+  }
+})
+
 test('pointer handlers use cached bounds with zero synchronous reads', () => {
   const h = createHarness({ fixedPhase: true, clientWidth: 96, clientHeight: 84 })
   const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
@@ -356,6 +374,32 @@ test('hover returns to fixed-phase baseline after 240 ms and impact after 720 ms
   impactLifecycle.destroy()
 })
 
+test('window exit and blur clear active hover without treating child transitions as exit', () => {
+  const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+  const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+  h.flushIdle()
+  const baseline = h.lastOutputImage()
+  h.flushRaf(0)
+
+  dispatchAt(h, 'pointermove', 0, 0)
+  h.flushRaf(50)
+  assert.notDeepEqual(h.lastOutputImage(), baseline)
+  h.window.dispatch('pointerout', { relatedTarget: {} })
+  h.flushRaf(100)
+  assert.notDeepEqual(h.lastOutputImage(), baseline)
+  h.window.dispatch('pointerout', { relatedTarget: null })
+  h.flushRaf(150)
+  assert.deepEqual(h.lastOutputImage(), baseline)
+
+  dispatchAt(h, 'pointermove', 0, 0)
+  h.flushRaf(200)
+  assert.notDeepEqual(h.lastOutputImage(), baseline)
+  h.window.dispatch('blur')
+  h.flushRaf(250)
+  assert.deepEqual(h.lastOutputImage(), baseline)
+  lifecycle.destroy()
+})
+
 test('same-size bounds refresh never promotes an impact-only click into hover', () => {
   const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
   const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
@@ -391,12 +435,18 @@ test('mobile coarse and no-hover policies attach no pointer listeners', () => {
   const fineLifecycle = fine.renderer.mount(fine.canvas, { scene: fine.scene, textureWidth: 64, textureHeight: 32 })
   assert.equal(fine.window.listenerCount('pointermove'), 1)
   assert.equal(fine.window.listenerCount('pointerdown'), 1)
+  assert.equal(fine.window.listenerCount('pointerout'), 1)
+  assert.equal(fine.window.listenerCount('blur'), 1)
   fine.coarseQuery.setMatches(true)
   assert.equal(fine.window.listenerCount('pointermove'), 0)
   assert.equal(fine.window.listenerCount('pointerdown'), 0)
+  assert.equal(fine.window.listenerCount('pointerout'), 0)
+  assert.equal(fine.window.listenerCount('blur'), 0)
   fine.coarseQuery.setMatches(false)
   assert.equal(fine.window.listenerCount('pointermove'), 1)
   assert.equal(fine.window.listenerCount('pointerdown'), 1)
+  assert.equal(fine.window.listenerCount('pointerout'), 1)
+  assert.equal(fine.window.listenerCount('blur'), 1)
   fineLifecycle.destroy()
 
   for (const [name, options] of [
@@ -409,6 +459,8 @@ test('mobile coarse and no-hover policies attach no pointer listeners', () => {
     const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
     assert.equal(h.window.listenerCount('pointermove'), 0, name)
     assert.equal(h.window.listenerCount('pointerdown'), 0, name)
+    assert.equal(h.window.listenerCount('pointerout'), 0, name)
+    assert.equal(h.window.listenerCount('blur'), 0, name)
     lifecycle.destroy()
   }
 })
@@ -502,10 +554,14 @@ test('destroy and fallback remove pointer scroll media listeners and pending bou
   const destroyed = createHarness({ clientWidth: 96, clientHeight: 84 })
   const destroyedLifecycle = destroyed.renderer.mount(destroyed.canvas, { scene: destroyed.scene, textureWidth: 64, textureHeight: 32 })
   assert.ok(destroyed.pendingRafs() > 0)
+  assert.equal(destroyed.window.listenerCount('pointerout'), 1)
+  assert.equal(destroyed.window.listenerCount('blur'), 1)
   destroyedLifecycle.destroy()
   assert.equal(destroyed.pendingRafs(), 0)
   assert.equal(destroyed.window.listenerCount('pointermove'), 0)
   assert.equal(destroyed.window.listenerCount('pointerdown'), 0)
+  assert.equal(destroyed.window.listenerCount('pointerout'), 0)
+  assert.equal(destroyed.window.listenerCount('blur'), 0)
   assert.equal(destroyed.window.listenerCount('scroll'), 0)
   assert.equal(destroyed.motionQuery.listenerCount('change'), 0)
   assert.equal(destroyed.mobileQuery.listenerCount('change'), 0)
@@ -527,6 +583,8 @@ test('destroy and fallback remove pointer scroll media listeners and pending bou
     }
   })
   const failedLifecycle = failed.renderer.mount(failed.canvas, { scene: failed.scene, textureWidth: 64, textureHeight: 32 })
+  assert.equal(failed.window.listenerCount('pointerout'), 1)
+  assert.equal(failed.window.listenerCount('blur'), 1)
   failed.flushIdle()
   dispatchAt(failed, 'pointermove', 0, 0)
   failed.flushRaf(0)
@@ -535,6 +593,8 @@ test('destroy and fallback remove pointer scroll media listeners and pending bou
   assert.equal(failed.pendingRafs(), 0)
   assert.equal(failed.window.listenerCount('pointermove'), 0)
   assert.equal(failed.window.listenerCount('pointerdown'), 0)
+  assert.equal(failed.window.listenerCount('pointerout'), 0)
+  assert.equal(failed.window.listenerCount('blur'), 0)
   assert.equal(failed.window.listenerCount('scroll'), 0)
   assert.equal(failed.motionQuery.listenerCount('change'), 0)
   assert.equal(failed.mobileQuery.listenerCount('change'), 0)
