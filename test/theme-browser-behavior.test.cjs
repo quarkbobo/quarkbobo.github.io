@@ -102,6 +102,8 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
   const generatedHome = fs.readFileSync(path.join(publicRoot, 'index.html'), 'utf8')
   const themeColor = generatedHome.match(/<meta\b[^>]*name="theme-color"[^>]*content="([^"]+)"/i)?.[1]
   assert.ok(themeColor, 'generated home exposes a theme color')
+  const cometMarkup = generatedHome.match(/<div id="cursor-comet"[\s\S]*?<\/div>/)?.[0]
+  assert.ok(cometMarkup, 'generated home exposes the cursor comet overlay')
 
   const mutationMode = process.env.FLUID_STYLE_PROBE_MUTATION
   const mutation = accessibilityMutationStyle(mutationMode) + planetMutationStyle(mutationMode)
@@ -117,6 +119,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
         ${mutation}
       </head>
       <body>
+        ${cometMarkup}
         <a class="skip-link" href="#main-content">Skip to content</a>
         <header class="site-header"></header>
         <main id="main-content" tabindex="-1">
@@ -161,6 +164,8 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
             const main = document.getElementById('main-content')
             const scene = document.getElementById('space-scene')
             const skipLink = document.querySelector('.skip-link')
+            const comet = document.getElementById('cursor-comet')
+            const cometSegments = Array.from(comet.querySelectorAll('.cursor-comet__segment'))
 
             skipLink.focus({ focusVisible: false })
             const pointerLikeSkip = {
@@ -264,6 +269,11 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                     ring: getComputedStyle(ring).getPropertyValue('--saturn-equator-angle').trim(),
                     surface: getComputedStyle(surface).getPropertyValue('--planet-equator-angle').trim()
                   }
+                },
+                cometPresentation: {
+                  segmentCount: cometSegments.length,
+                  overlayPointerEvents: getComputedStyle(comet).pointerEvents,
+                  segmentPointerEvents: cometSegments.map(function (segment) { return getComputedStyle(segment).pointerEvents })
                 },
                 scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior,
                 safeAreaResolved: {
@@ -636,6 +646,9 @@ test('built theme exposes accessible interaction and compositor-friendly renderi
   assert.equal(probe.planetPresentation.transition.timingFunction, 'ease-out')
   assert.equal(probe.planetPresentation.transition.delay, '0s')
   assert.deepEqual(probe.planetPresentation.equatorAngles, { ring: '-10deg', surface: '-10deg' })
+  assert.equal(probe.cometPresentation.segmentCount, 8)
+  assert.equal(probe.cometPresentation.overlayPointerEvents, 'none')
+  assert.deepEqual(probe.cometPresentation.segmentPointerEvents, Array(8).fill('none'))
   assert.deepEqual(probe.safeAreaResolved, { bodyLeft: '0px', bodyRight: '0px', headerTop: '0px' })
 })
 
