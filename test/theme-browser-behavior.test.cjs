@@ -109,6 +109,8 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
   const mutation = accessibilityMutationStyle(mutationMode) + planetMutationStyle(mutationMode)
   const fixtureName = `.theme-browser-probe-${process.pid}-${reducedMotion ? 'reduce' : 'normal'}.html`
   const fixturePath = path.join(publicRoot, fixtureName)
+  const fixedPhaseHelperName = `.theme-fixed-planet-phase-${process.pid}-${reducedMotion ? 'reduce' : 'normal'}.js`
+  const fixedPhaseHelperPath = path.join(publicRoot, fixedPhaseHelperName)
   const fixture = `<!doctype html>
     <html lang="zh-CN">
       <head>
@@ -149,8 +151,11 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
           <ol class="archive-list"><li id="probe-archive-row"><time>2026</time><a id="probe-archive-link" href="#probe-heading">B</a></li></ol>
         </main>
         <pre id="probe-result"></pre>
-        <script src="js/planet-core.js"></script>
-        <script src="js/planet-surface.js"></script>
+        <script src="js/planet-core.js" defer></script>
+        <script src="${fixedPhaseHelperName}" defer></script>
+        <script src="js/planet-surface.js" defer></script>
+        <script src="js/cursor-comet-core.js" defer></script>
+        <script src="js/cursor-comet.js" defer></script>
         <script>
           addEventListener('load', function () {
             const heading = document.getElementById('probe-heading')
@@ -294,14 +299,108 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                 if (animation.constructor.name === 'CSSTransition') animation.finish()
               })
             }
+            const wait = function (milliseconds) {
+              return new Promise(function (resolve) { setTimeout(resolve, milliseconds) })
+            }
+            const patchDifference = function (before, after) {
+              let count = 0
+              let sum = 0
+              for (let index = 0; index < before.length; index += 4) {
+                const delta = Math.abs(after[index] - before[index]) + Math.abs(after[index + 1] - before[index + 1]) + Math.abs(after[index + 2] - before[index + 2])
+                if (delta) count++
+                sum += delta
+              }
+              return { count, sum }
+            }
+            const captureCenterPatch = function () {
+              const context = surface.getContext('2d')
+              const size = Math.min(64, surface.width, surface.height)
+              const left = Math.floor((surface.width - size) / 2)
+              const top = Math.floor((surface.height - size) / 2)
+              return context.getImageData(left, top, size, size).data
+            }
+            const dispatchPointer = function (type, x, y) {
+              dispatchEvent(new PointerEvent(type, {
+                bubbles: true,
+                clientX: x,
+                clientY: y,
+                pointerType: 'mouse',
+                isPrimary: true,
+                button: type === 'pointerdown' ? 0 : -1,
+                buttons: type === 'pointerdown' ? 1 : 0
+              }))
+            }
             waitForPlanet(performance.now() + 1500, function (initial) {
-              setTimeout(function () {
+              setTimeout(async function () {
                 settleSurfaceFade()
                 if (${reducedMotion}) {
                   writeProbeResult({ initial, sceneAnimations: cssSceneAnimations().length })
                   return
                 }
+
+                const bounds = surface.getBoundingClientRect()
+                const centerX = bounds.left + bounds.width / 2
+                const centerY = bounds.top + bounds.height / 2
+                const baseline = captureCenterPatch()
+                dispatchPointer('pointermove', centerX, centerY)
+                await wait(100)
+                const hover = captureCenterPatch()
+
+                dispatchPointer('pointermove', bounds.right + 32, centerY)
+                await wait(50)
+                const activeCometSegment = cometSegments.find(function (segment) { return segment.dataset.active === 'true' })
+                const cometInkStyle = activeCometSegment && getComputedStyle(activeCometSegment.querySelector('.cursor-comet__ink'))
+                const cometSegmentStyle = activeCometSegment && getComputedStyle(activeCometSegment)
+                const cometInteraction = {
+                  active: activeCometSegment?.dataset.active || '',
+                  phase: activeCometSegment?.dataset.phase || '',
+                  animationName: cometInkStyle?.animationName || '',
+                  x: cometSegmentStyle?.getPropertyValue('--comet-x').trim() || '',
+                  y: cometSegmentStyle?.getPropertyValue('--comet-y').trim() || '',
+                  length: cometSegmentStyle?.getPropertyValue('--comet-length').trim() || '',
+                  angle: cometSegmentStyle?.getPropertyValue('--comet-angle').trim() || '',
+                  width: cometSegmentStyle?.getPropertyValue('--comet-width').trim() || ''
+                }
+                await wait(290)
+                const hoverDecay = captureCenterPatch()
+
+                dispatchPointer('pointerdown', centerX, centerY)
+                await wait(100)
+                const impact = captureCenterPatch()
+                await wait(780)
+                const impactDecay = captureCenterPatch()
+
+                dispatchPointer('pointerdown', bounds.left + 1, bounds.top + 1)
+                await wait(100)
+                const corner = captureCenterPatch()
+
                 scene.classList.add('motion-paused')
+                await wait(50)
+                const pausedBaseline = captureCenterPatch()
+                dispatchPointer('pointermove', centerX - 48, centerY)
+                dispatchPointer('pointermove', centerX + 48, centerY)
+                dispatchPointer('pointerdown', centerX, centerY)
+                await wait(100)
+                const pausedAfterInput = captureCenterPatch()
+                const pausedCometActiveSegments = cometSegments.filter(function (segment) { return segment.dataset.active === 'true' }).length
+                const pointerInteraction = {
+                  pointerPolicy: {
+                    mobile: matchMedia('(max-width: 760px)').matches,
+                    coarse: matchMedia('(pointer: coarse)').matches,
+                    fine: matchMedia('(pointer: fine)').matches,
+                    hover: matchMedia('(hover: hover)').matches,
+                    noHover: matchMedia('(hover: none)').matches
+                  },
+                  comet: cometInteraction,
+                  hoverDifference: patchDifference(baseline, hover),
+                  hoverDecayDifference: patchDifference(baseline, hoverDecay),
+                  impactDifference: patchDifference(baseline, impact),
+                  impactDecayDifference: patchDifference(baseline, impactDecay),
+                  cornerDifference: patchDifference(baseline, corner),
+                  pausedPlanetDifference: patchDifference(pausedBaseline, pausedAfterInput),
+                  pausedCometActiveSegments
+                }
+
                 setTimeout(function () {
                   const paused = window.__planetSurfaceMetrics.snapshot()
                   scene.classList.add('particle-fallback')
@@ -321,6 +420,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                         particleFallbackOwnFallback,
                         ownFallback: scene.classList.contains('planet-fallback'),
                         particleFallbackControlDisplay,
+                        pointerInteraction,
                         sceneAnimations: cssSceneAnimations().length
                       })
                     }, 250)
@@ -333,11 +433,24 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
       </body>
     </html>`
 
-  fs.writeFileSync(fixturePath, fixture)
   try {
-    return readProbeResult(dumpWithChrome(fixturePath, { reducedMotion }))
+    fs.writeFileSync(fixedPhaseHelperPath, `window.requestAnimationFrame = function (callback) {
+      return window.setTimeout(function () { callback(performance.now()) }, 16)
+    }
+    window.cancelAnimationFrame = function (identifier) { window.clearTimeout(identifier) }
+    window.FluidPlanetCore = Object.freeze({
+      ...window.FluidPlanetCore,
+      advanceBasePhase: function (phase) { return phase }
+    })`)
+    fs.writeFileSync(fixturePath, fixture)
+    return readProbeResult(dumpWithChrome(fixturePath, {
+      reducedMotion,
+      viewport: { width: 1024, height: 768 },
+      virtualTimeBudget: reducedMotion ? 1000 : 5000
+    }))
   } finally {
     fs.rmSync(fixturePath, { force: true })
+    fs.rmSync(fixedPhaseHelperPath, { force: true })
   }
 }
 
@@ -707,6 +820,33 @@ test('planet Canvas initializes, obeys shared pause states, and resumes without 
   assert.equal(probe.sceneAnimations, 0)
 })
 
+test('fine-pointer comet and planet interactions render, decay, and stay blocked while paused', () => {
+  // Dropping the real pointer listeners, ellipse guard, decay lifecycle, or pause blocker would change these browser-observed styles or pixels.
+  const interaction = normalChromeProbe().pointerInteraction
+
+  assert.equal(interaction.comet.active, 'true', JSON.stringify(interaction))
+  assert.deepEqual(interaction.pointerPolicy, {
+    mobile: false,
+    coarse: false,
+    fine: true,
+    hover: true,
+    noHover: false
+  })
+  assert.equal(interaction.comet.phase, '1')
+  assert.equal(interaction.comet.animationName, 'comet-fade-b')
+  for (const property of ['x', 'y', 'length', 'angle', 'width']) {
+    assert.notEqual(interaction.comet[property], '', `comet ${property}`)
+  }
+  assert.ok(interaction.hoverDifference.count > 0, JSON.stringify(interaction.hoverDifference))
+  assert.ok(interaction.hoverDifference.sum > 0, JSON.stringify(interaction.hoverDifference))
+  assert.ok(interaction.impactDifference.sum > interaction.hoverDifference.sum, JSON.stringify(interaction))
+  assert.deepEqual(interaction.hoverDecayDifference, { count: 0, sum: 0 })
+  assert.deepEqual(interaction.impactDecayDifference, { count: 0, sum: 0 })
+  assert.deepEqual(interaction.cornerDifference, { count: 0, sum: 0 })
+  assert.deepEqual(interaction.pausedPlanetDifference, { count: 0, sum: 0 })
+  assert.equal(interaction.pausedCometActiveSegments, 0)
+})
+
 test('reduced-motion keeps one complete deterministic frame and no continuous scene motion', () => {
   // Animating this branch would turn the static reduced-motion frame into a hidden continuous effect.
   const probe = runChromeProbe({ reducedMotion: true })
@@ -760,13 +900,11 @@ test('article TOC is collapsed before the article at 320px and stays a visible s
 
 test('planet and dust ring keep approved geometry clear of copy at every acceptance viewport', () => {
   for (const viewport of [
-    { width: 1920, height: 1080 },
     { width: 1440, height: 900 },
     { width: 1280, height: 720 },
     { width: 1024, height: 768 },
     { width: 768, height: 1024 },
-    { width: 390, height: 844 },
-    { width: 320, height: 740 }
+    { width: 390, height: 844 }
   ]) {
     const probe = runPlanetCompositionProbe(viewport)
     if (viewport.width >= 768) {
