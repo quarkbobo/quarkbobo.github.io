@@ -262,7 +262,8 @@
     const roundedCenterX = Math.round(centerX)
     const roundedCenterY = Math.round(centerY)
     for (let yOffset = -verticalRadius; yOffset <= verticalRadius; yOffset++) {
-      const y = Math.max(0, Math.min(height - 1, roundedCenterY + yOffset))
+      const y = roundedCenterY + yOffset
+      if (y < 0 || y >= height) continue
       const normalizedY = yOffset / verticalRadius
       for (let xOffset = -horizontalRadius; xOffset <= horizontalRadius; xOffset++) {
         const normalizedX = xOffset / horizontalRadius

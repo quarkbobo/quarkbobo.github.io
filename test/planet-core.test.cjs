@@ -337,6 +337,14 @@ test('surface mark mask wraps at the longitude seam and reuses caller storage', 
   assert.ok(mask.some(value => value > 0))
 })
 
+test('surface mark mask retains its center intensity at the south texture pole', () => {
+  const width = 64
+  const height = 32
+  const mask = new Uint8Array(width * height)
+  core.writeSurfaceMarkMask(mask, width, height, 32, height - 1)
+  assert.ok(mask[(height - 1) * width + 32] > 0)
+})
+
 test('projected surface mark follows phase, fades by energy, and preserves alpha', () => {
   const texture = new Uint8ClampedArray(128 * 64 * 4)
   core.fillTexturePixels(texture, 128, 64, 0x706C616E)
@@ -349,10 +357,14 @@ test('projected surface mark follows phase, fades by energy, and preserves alpha
   const full = new Uint8ClampedArray(baseline.length)
   const half = new Uint8ClampedArray(baseline.length)
   const zero = new Uint8ClampedArray(baseline.length)
+  const phasedBaseline = new Uint8ClampedArray(baseline.length)
+  const phasedFull = new Uint8ClampedArray(baseline.length)
   core.renderProjectedFrame(texture, 128, map, 0, baseline)
   core.renderProjectedFrame(texture, 128, map, 0, full, mask, 1)
   core.renderProjectedFrame(texture, 128, map, 0, half, mask, 0.5)
   core.renderProjectedFrame(texture, 128, map, 0, zero, mask, 0)
+  core.renderProjectedFrame(texture, 128, map, 0.37, phasedBaseline)
+  core.renderProjectedFrame(texture, 128, map, 0.37, phasedFull, mask, 1)
   let fullDelta = 0
   let halfDelta = 0
   for (let offset = 0; offset < baseline.length; offset += 4) {
@@ -363,6 +375,10 @@ test('projected surface mark follows phase, fades by energy, and preserves alpha
   assert.ok(fullDelta > halfDelta)
   assert.ok(halfDelta > 0)
   assert.deepEqual(zero, baseline)
+  assert.notDeepEqual(phasedFull, phasedBaseline)
+  for (let offset = 0; offset < phasedBaseline.length; offset += 4) {
+    assert.equal(phasedFull[offset + 3], phasedBaseline[offset + 3])
+  }
 })
 
 test('sphere map inverse-rotates minus ten degrees with exact longitude and symmetric latitude speeds', () => {
