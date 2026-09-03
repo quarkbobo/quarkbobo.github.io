@@ -39,7 +39,10 @@ test('Pages workflow builds, tests, and deploys public with job-scoped permissio
     },
     { name: 'Install dependencies', run: 'npm ci' },
     { name: 'Build Hexo site', run: 'npm run build' },
-    { name: 'Run Node tests', run: 'npm run test:node' },
+    {
+      name: 'Run Node tests',
+      run: 'node --test --test-reporter=spec --test-reporter=./tools/github-actions-test-reporter.cjs --test-reporter-destination=stdout --test-reporter-destination=stdout test/*.test.cjs'
+    },
     { name: 'Configure Pages', uses: 'actions/configure-pages@v5' },
     {
       name: 'Upload Pages artifact',

@@ -29,7 +29,7 @@ jobs:
       - name: Build Hexo site
         run: npm run build
       - name: Run Node tests
-        run: npm run test:node
+        run: node --test --test-reporter=spec --test-reporter=./tools/github-actions-test-reporter.cjs --test-reporter-destination=stdout --test-reporter-destination=stdout test/*.test.cjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact
