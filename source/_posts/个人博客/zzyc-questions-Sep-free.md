@@ -13,7 +13,7 @@ tags:
 
 ## 📥 获取本期题库
 
-👉 **点击跳转下载页：<a href="https://quark567.patrickliucloud.top/COCKY ZHOU" target="_blank">COCKY_ZHOU ♡ 文件中心</a>**
+👉 **点击跳转下载页：<a href="https://quarkbobo.github.io/COCKY ZHOU" target="_blank">COCKY_ZHOU ♡ 文件中心</a>**
 
 > 文件中心收录了所有月份的题库，支持在线预览和一键下载 📂
 
@@ -43,15 +43,16 @@ tags:
 关注微信公众号，每月月测前第一时间获取最新题库推送 📱
 
 <div align="center">
-  <img src="https://quark567.patrickliucloud.top/images/wx公众号.jpg" alt="微信公众号二维码" style="max-width:240px; border-radius:12px;" />
+  <img src="https://quarkbobo.github.io/images/wx公众号.jpg" alt="微信公众号二维码" style="max-width:240px; border-radius:12px;" />
   <p style="font-size:13px;color:#888;">扫码关注 · 备考不迷路</p>
 </div>
+
 
 ---
 
 ## 🔗 相关链接
 
-- 🏠 <a href="https://quark567.patrickliucloud.top/COCKY ZHOU" target="_blank">文件中心 · COCKY ZHOU</a>
+- 🏠 <a href="https://quarkbobo.github.io/COCKY ZHOU" target="_blank">文件中心 · COCKY ZHOU</a>
 - 📝 更多推文持续更新中，欢迎转发给同学一起备考！
 
 ---
