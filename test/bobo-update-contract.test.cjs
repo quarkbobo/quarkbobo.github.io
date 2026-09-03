@@ -77,6 +77,25 @@ function runUpdater (fixture, extraArgs = []) {
   ])
 }
 
+function runUpdaterFromShortcut (fixture, extraArgs = []) {
+  return run(powershell, [
+    '-NoProfile',
+    '-ExecutionPolicy', 'Bypass',
+    '-File', fixture.copiedScript,
+    ...extraArgs
+  ], { cwd: fixture.repo })
+}
+
+test('shortcut invocation derives the repository from the script location', t => {
+  if (!requirePowerShell(t)) return
+  const fixture = createFixture(t)
+
+  const result = runUpdaterFromShortcut(fixture, ['-SuccessDelaySeconds', '0', '-NonInteractive'])
+
+  assert.equal(result.status, 0, result.stderr || result.stdout)
+  assert.equal(fs.existsSync(path.join(fixture.repo, 'source', '_posts', '博客目录.md')), true)
+})
+
 test('Bobo updater generates the catalogue, commits pending work, and pushes master', t => {
   if (!requirePowerShell(t)) return
   const fixture = createFixture(t)

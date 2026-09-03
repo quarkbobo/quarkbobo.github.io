@@ -1,12 +1,16 @@
 ﻿[CmdletBinding()]
 param(
-    [string]$RepositoryPath = (Split-Path -Parent $PSScriptRoot),
+    [string]$RepositoryPath,
     [ValidateRange(0, 60)][int]$SuccessDelaySeconds = 1,
     [switch]$NonInteractive
 )
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
+
+if ([string]::IsNullOrWhiteSpace($RepositoryPath)) {
+    $RepositoryPath = Split-Path -Parent $PSScriptRoot
+}
 
 function Get-FrontMatter {
     param([string]$Content)
