@@ -116,6 +116,53 @@ permalink: /game-log/
   assert.equal(git(fixture.remote, 'show', 'master:source/_posts/博客目录.md').includes('你好，Bobo'), true)
 })
 
+test('Bobo updater discovers current folders, nested posts, root posts, renames, and deletions', t => {
+  if (!requirePowerShell(t)) return
+  const fixture = createFixture(t)
+  write(path.join(fixture.repo, 'source', '_posts', '随笔', 'hello.md'), `---
+title: 随笔问候
+---
+
+正文
+`)
+  write(path.join(fixture.repo, 'source', '_posts', '实验', '深层', 'demo.md'), `---
+title: 深层实验
+---
+
+正文
+`)
+  write(path.join(fixture.repo, 'source', '_posts', 'root.md'), `---
+title: 根目录文章
+---
+
+正文
+`)
+
+  const first = runUpdater(fixture, ['-SuccessDelaySeconds', '0', '-NonInteractive'])
+  assert.equal(first.status, 0, first.stderr || first.stdout)
+  let catalogue = fs.readFileSync(path.join(fixture.repo, 'source', '_posts', '博客目录.md'), 'utf8')
+  assert.match(catalogue, /### 随笔[\s\S]*\[随笔问候\]\(随笔\/hello\)/)
+  assert.match(catalogue, /### 实验[\s\S]*\[深层实验\]\(实验\/深层\/demo\)/)
+  assert.match(catalogue, /### 未分类[\s\S]*\[根目录文章\]\(root\)/)
+
+  fs.renameSync(
+    path.join(fixture.repo, 'source', '_posts', '随笔'),
+    path.join(fixture.repo, 'source', '_posts', '航行日志')
+  )
+  fs.renameSync(
+    path.join(fixture.repo, 'source', '_posts', '实验'),
+    path.join(path.dirname(fixture.repo), 'deleted-experiment')
+  )
+  assert.equal(fs.existsSync(path.join(fixture.repo, 'source', '_posts', '实验')), false)
+
+  const second = runUpdater(fixture, ['-SuccessDelaySeconds', '0', '-NonInteractive'])
+  assert.equal(second.status, 0, second.stderr || second.stdout)
+  catalogue = fs.readFileSync(path.join(fixture.repo, 'source', '_posts', '博客目录.md'), 'utf8')
+  assert.match(catalogue, /### 航行日志[\s\S]*\[随笔问候\]\(航行日志\/hello\)/)
+  assert.doesNotMatch(catalogue, /### 随笔|### 实验|实验\/深层\/demo/)
+  assert.match(catalogue, /### 未分类[\s\S]*\[根目录文章\]\(root\)/)
+})
+
 test('a successful no-change run keeps one commit and exits after the default one-second delay', t => {
   if (!requirePowerShell(t)) return
   const fixture = createFixture(t)

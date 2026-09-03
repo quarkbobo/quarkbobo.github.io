@@ -49,38 +49,6 @@ function Get-HtmlTitle {
     return $null
 }
 
-function Get-PostCategory {
-    param(
-        [string]$FileFullPath,
-        [AllowNull()][string]$FrontMatter,
-        [string]$BaseName,
-        [string]$PostsPath,
-        [object[]]$FolderOrder
-    )
-
-    foreach ($folder in $FolderOrder) {
-        $candidate = [System.IO.Path]::GetFullPath((Join-Path $PostsPath $folder.Path)).TrimEnd('\', '/')
-        $prefix = $candidate + [System.IO.Path]::DirectorySeparatorChar
-        if ($FileFullPath.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)) {
-            return $folder.Name
-        }
-    }
-
-    $category = Get-FrontMatterValue $FrontMatter 'category'
-    if (-not $category) { $category = Get-FrontMatterValue $FrontMatter 'categories' }
-    if (-not $category) { $category = Get-FrontMatterValue $FrontMatter 'tags' }
-    if ($category) {
-        foreach ($folder in $FolderOrder) {
-            if ($category -match [regex]::Escape($folder.Name)) { return $folder.Name }
-            if ($category -match [regex]::Escape($folder.Path)) { return $folder.Name }
-        }
-        return '未分类'
-    }
-
-    if ($BaseName -match '(?i)about|aboutme|关于|about-me') { return '关于我' }
-    return '未分类'
-}
-
 function Write-BlogCatalogue {
     param([string]$RepoPath)
 
@@ -90,15 +58,8 @@ function Write-BlogCatalogue {
         throw "文章目录不存在：$postsPath"
     }
 
-    $folderOrder = @(
-        [pscustomobject]@{ Name = '个人博客'; Path = '个人博客' },
-        [pscustomobject]@{ Name = '技术教程'; Path = '技术教程' },
-        [pscustomobject]@{ Name = '游戏相关'; Path = '游戏相关' },
-        [pscustomobject]@{ Name = '关于我'; Path = '关于我' }
-    )
     $categories = @{}
-    foreach ($folder in $folderOrder) { $categories[$folder.Name] = @() }
-    $categories['未分类'] = @()
+    $postsPrefix = $postsPath.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
 
     $allFiles = Get-ChildItem -LiteralPath $postsPath -Recurse -File |
         Where-Object {
@@ -110,8 +71,13 @@ function Write-BlogCatalogue {
     foreach ($file in $allFiles) {
         $fileName = $file.BaseName
         $fileExtension = $file.Extension.ToLowerInvariant()
+        $relativePath = $file.FullName.Substring($postsPrefix.Length)
+        $relativeSegments = @($relativePath -split '[\\/]')
+        $category = if ($relativeSegments.Count -gt 1) { $relativeSegments[0] } else { '未分类' }
+        if (-not $categories.ContainsKey($category)) { $categories[$category] = @() }
         $title = $fileName -replace '\s+', '-'
-        $permalink = "$($file.Directory.Name)/$($fileName -replace '\s+', '-')"
+        $relativeRoute = [System.IO.Path]::ChangeExtension($relativePath, $null).TrimEnd('.')
+        $permalink = ($relativeRoute -replace '\\', '/') -replace '\s+', '-'
         $frontMatter = $null
 
         try {
@@ -130,7 +96,6 @@ function Write-BlogCatalogue {
             Write-Host "警告：无法读取 $($file.FullName)，将使用文件名。" -ForegroundColor Yellow
         }
 
-        $category = Get-PostCategory $file.FullName $frontMatter $fileName $postsPath $folderOrder
         $categories[$category] += [pscustomobject]@{
             Title = $title
             Permalink = $permalink
@@ -147,10 +112,14 @@ function Write-BlogCatalogue {
     $lines.Add('## 📚 文章分类')
     $lines.Add('')
 
-    foreach ($folder in @($folderOrder) + @([pscustomobject]@{ Name = '未分类'; Path = '' })) {
-        $articles = $categories[$folder.Name]
+    $categoryNames = @($categories.Keys | Sort-Object)
+    if ($categoryNames -contains '未分类') {
+        $categoryNames = @($categoryNames | Where-Object { $_ -ne '未分类' }) + @('未分类')
+    }
+    foreach ($categoryName in $categoryNames) {
+        $articles = @($categories[$categoryName] | Sort-Object Title, Permalink)
         if (-not $articles -or $articles.Count -eq 0) { continue }
-        $lines.Add("### $($folder.Name)")
+        $lines.Add("### $categoryName")
         $lines.Add('')
         foreach ($article in $articles) {
             $line = "- [$($article.Title)]($($article.Permalink))"
