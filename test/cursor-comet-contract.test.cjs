@@ -7,11 +7,14 @@ const vm = require('node:vm')
 const root = path.resolve(__dirname, '..')
 const sourcePath = path.join(root, 'themes', 'fluid-particle', 'source', 'js', 'cursor-comet.js')
 const coreSource = fs.readFileSync(path.join(root, 'themes', 'fluid-particle', 'source', 'js', 'cursor-comet-core.js'), 'utf8')
-const spaceSceneCss = fs.readFileSync(path.join(root, 'themes', 'fluid-particle', 'source', 'css', 'space-scene.css'), 'utf8')
+const cursorCssPath = path.join(root, 'themes', 'fluid-particle', 'source', 'css', 'cursor-comet.css')
+
+assert.ok(fs.existsSync(cursorCssPath), 'global cursor stylesheet exists')
+const cursorCometCss = fs.readFileSync(cursorCssPath, 'utf8')
 
 test('both pooled comet phases retain their trail for 520ms', () => {
-  assert.match(spaceSceneCss, /animation:\s*comet-fade-a\s+520ms\s+ease-out\s+both/)
-  assert.match(spaceSceneCss, /animation:\s*comet-fade-b\s+520ms\s+ease-out\s+both/)
+  assert.match(cursorCometCss, /animation:\s*comet-fade-a\s+520ms\s+ease-out\s+both/)
+  assert.match(cursorCometCss, /animation:\s*comet-fade-b\s+520ms\s+ease-out\s+both/)
 })
 
 class FakeEventTarget {
@@ -113,7 +116,7 @@ function createHarness (options = {}) {
   }
   const window = new FakeEventTarget()
   const document = new FakeEventTarget()
-  const scene = { classList: new FakeClassList(options.sceneClasses) }
+  const scene = options.noScene ? null : { classList: new FakeClassList(options.sceneClasses) }
   const segments = Array.from({ length: 8 }, () => new FakeSegment())
   const overlay = {
     segments,
@@ -202,6 +205,18 @@ function createHarness (options = {}) {
     }
   }
 }
+
+test('an eligible inner page mounts and draws without a home scene', () => {
+  const h = createHarness({ noScene: true })
+  const life = h.api.mount(h.overlay, { scene: null })
+
+  assert.equal(life.snapshot().enabled, true)
+  assert.equal(h.observers.length, 0)
+  dispatchMouseMove(h, { clientX: 10, clientY: 10, timeStamp: 0 })
+  dispatchMouseMove(h, { clientX: 30, clientY: 10, timeStamp: 16 })
+  h.flushRaf(16)
+  assert.equal(life.snapshot().activeSegments, 1)
+})
 
 function drawTwoSegments (h, start = 0) {
   dispatchMouseMove(h, { clientX: start, clientY: 10, timeStamp: 0 })

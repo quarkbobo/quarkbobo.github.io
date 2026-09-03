@@ -114,10 +114,12 @@
 
     function syncPolicy () {
       if (destroyed) return
+      const sceneBlocked = scene && (
+        scene.classList.contains('motion-paused') ||
+        scene.classList.contains('particle-fallback')
+      )
       const nextEnabled = !mobileQuery.matches && fineQuery.matches && !coarseQuery.matches && hoverQuery.matches &&
-        !motionQuery.matches && !document.hidden &&
-        !scene.classList.contains('motion-paused') &&
-        !scene.classList.contains('particle-fallback')
+        !motionQuery.matches && !document.hidden && !sceneBlocked
       if (nextEnabled) {
         enabled = true
         attachPointerListener()
@@ -148,7 +150,7 @@
       document.removeEventListener('visibilitychange', syncPolicy)
       window.removeEventListener('pointerout', handlePointerOut)
       window.removeEventListener('blur', handleBlur)
-      observer.disconnect()
+      if (observer) observer.disconnect()
       for (let index = 0; index < segments.length; index++) {
         segments[index].removeEventListener('animationend', animationHandlers[index])
       }
@@ -163,8 +165,8 @@
     document.addEventListener('visibilitychange', syncPolicy)
     window.addEventListener('pointerout', handlePointerOut)
     window.addEventListener('blur', handleBlur)
-    const observer = new MutationObserver(syncPolicy)
-    observer.observe(scene, { attributes: true, attributeFilter: ['class'] })
+    const observer = scene ? new MutationObserver(syncPolicy) : null
+    if (observer) observer.observe(scene, { attributes: true, attributeFilter: ['class'] })
 
     singleton = Object.freeze({ clear, destroy, snapshot })
     syncPolicy()
@@ -175,7 +177,7 @@
   if (document && core) {
     const overlay = document.getElementById('cursor-comet')
     const scene = document.getElementById('space-scene')
-    if (overlay && scene) mount(overlay, { scene })
+    if (overlay) mount(overlay, { scene })
   }
   return api
 })

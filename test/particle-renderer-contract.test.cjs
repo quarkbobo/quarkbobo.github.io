@@ -468,13 +468,15 @@ function createHarness (options = {}) {
   }
 }
 
-test('the generated home owns the approved particle and planet canvases while inner pages load no scene assets', () => {
+test('the generated home owns scene canvases while every themed page owns one cursor trail', () => {
   const home = built('index.html')
   const post = built(path.join('个人博客', 'Hello-World', 'index.html'))
   assert.equal(occurrences(home, 'id="particle-flow"'), 1)
   assert.equal(occurrences(home, 'id="planet-surface"'), 1)
   assert.equal(occurrences(home, 'id="cursor-comet"'), 1)
   assert.equal(occurrences(home, 'class="cursor-comet__segment"'), 8)
+  assert.equal(occurrences(post, 'id="cursor-comet"'), 1)
+  assert.equal(occurrences(post, 'class="cursor-comet__segment"'), 8)
   assert.equal(occurrences(home, '<canvas'), 2)
   assert.equal(occurrences(home, '<script src="/js/particle-core.js" defer></script>'), 1)
   assert.equal(occurrences(home, '<script src="/js/particle-flow.js" defer></script>'), 1)
@@ -482,6 +484,10 @@ test('the generated home owns the approved particle and planet canvases while in
   assert.equal(occurrences(home, '<script src="/js/planet-surface.js" defer></script>'), 1)
   assert.equal(occurrences(home, '<script src="/js/cursor-comet-core.js" defer></script>'), 1)
   assert.equal(occurrences(home, '<script src="/js/cursor-comet.js" defer></script>'), 1)
+  assert.equal(occurrences(post, '<script src="/js/cursor-comet-core.js" defer></script>'), 1)
+  assert.equal(occurrences(post, '<script src="/js/cursor-comet.js" defer></script>'), 1)
+  assert.equal(occurrences(home, '<link rel="stylesheet" href="/css/cursor-comet.css">'), 1)
+  assert.equal(occurrences(post, '<link rel="stylesheet" href="/css/cursor-comet.css">'), 1)
   assert.equal(occurrences(home, '<link rel="stylesheet" href="/css/space-scene.css">'), 1)
   assert.equal(occurrences(post, '<canvas'), 0)
   assert.equal(occurrences(post, 'space-scene.css'), 0)
@@ -489,7 +495,7 @@ test('the generated home owns the approved particle and planet canvases while in
   assert.equal(occurrences(post, 'particle-flow.js'), 0)
   assert.equal(occurrences(post, 'planet-core.js'), 0)
   assert.equal(occurrences(post, 'planet-surface.js'), 0)
-  assert.equal(occurrences(post, 'cursor-comet'), 0)
+  assert.equal(occurrences(post, 'home-latest.js'), 0)
   const sceneScriptOrder = ['particle-core.js', 'particle-flow.js', 'planet-core.js', 'planet-surface.js', 'cursor-comet-core.js', 'cursor-comet.js']
     .map(name => home.indexOf(`/js/${name}`))
   assert.ok(sceneScriptOrder.every(index => index >= 0))

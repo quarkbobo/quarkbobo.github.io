@@ -248,6 +248,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
         <meta name="theme-color" content="${themeColor}">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/space-scene.css">
+        <link rel="stylesheet" href="css/cursor-comet.css">
         ${mutation}
       </head>
       <body>
