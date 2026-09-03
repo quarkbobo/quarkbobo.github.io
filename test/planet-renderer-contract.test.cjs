@@ -432,7 +432,9 @@ test('impact and surface mark energies reach their exact independent decay bound
   dispatchAt(h, 'pointerdown', 0, 0)
   h.flushRaf(50)
 
+  const displacementSamplesBefore719 = displacedImpactEnergies.length
   h.flushRaf(769)
+  assert.equal(displacedImpactEnergies.length, displacementSamplesBefore719 + 1, '719ms frame records displacement')
   assert.ok(projectedMarkEnergies.at(-1) > 0, 'mark remains positive at 719ms')
   assert.ok(displacedImpactEnergies.at(-1) > 0, 'impact remains positive at 719ms')
 
