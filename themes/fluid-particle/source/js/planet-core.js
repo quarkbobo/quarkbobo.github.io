@@ -298,7 +298,7 @@
 
   function applyProjectedSurfaceMark (textureWidth, map, basePhase, outputPixels, markMask, markEnergy) {
     const markEnergyValue = clamp01(markEnergy)
-    if (!markMask || markEnergyValue === 0) return outputPixels
+    if (!markMask || !(markEnergyValue > 0)) return outputPixels
     const phaseScale = basePhase / TAU * textureWidth
     for (let index = 0; index < map.visibleCount; index++) {
       const sourceX = modulo(map.baseSourceX[index] + phaseScale * map.speedFactors[index], textureWidth)

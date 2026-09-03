@@ -522,17 +522,20 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                   sum: window.__planetImpactProbe.sum
                 }
                 await wait(720)
-                const markOnly = capturePlanetFrame()
+                const firstMarkAt770 = capturePlanetFrame()
                 const impactCallsAt770 = window.__planetImpactProbe.calls
+                await wait(2280)
+                const naturalExpiry = capturePlanetFrame()
+                const impactCallsAfter770 = window.__planetImpactProbe.calls
+
+                dispatchPointer('pointerdown', centerX, centerY)
+                await wait(770)
+                const markBeforePause = capturePlanetFrame()
                 scene.classList.add('motion-paused')
                 await Promise.resolve()
                 const markPaused = capturePlanetFrame()
                 scene.classList.remove('motion-paused')
                 await wait(50)
-                await wait(80)
-                const impactCallsAfter770 = window.__planetImpactProbe.calls
-                await wait(2200)
-                const final = capturePlanetFrame()
 
                 dispatchPointer('pointerdown', bounds.left + 1, bounds.top + 1)
                 await wait(100)
@@ -564,9 +567,10 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                   impactCallsAt50: impactAt50.calls,
                   impactCallsAt770,
                   impactCallsAfter770,
-                  markOnlyDifference: patchDifference(baseline, markOnly),
+                  firstMarkDifference: patchDifference(baseline, firstMarkAt770),
+                  markBeforePauseDifference: patchDifference(baseline, markBeforePause),
                   markPauseDifference: patchDifference(baseline, markPaused),
-                  finalDifference: patchDifference(baseline, final),
+                  naturalExpiryDifference: patchDifference(baseline, naturalExpiry),
                   cornerDifference: patchDifference(baseline, corner),
                   pausedPlanetDifference: patchDifference(pausedBaseline, pausedAfterInput),
                   pausedCometActiveSegments,
@@ -643,7 +647,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
     return readProbeResult(dumpWithChrome(fixturePath, {
       reducedMotion,
       viewport: { width: 1024, height: 768 },
-      virtualTimeBudget: reducedMotion ? 1000 : 5000
+      virtualTimeBudget: reducedMotion ? 1000 : 6000
     }))
   } finally {
     fs.rmSync(fixturePath, { force: true })
@@ -1047,10 +1051,11 @@ test('fine-pointer comet and planet interactions render, decay, and stay blocked
   assert.ok(interaction.impactCallsAt50 > 0, JSON.stringify(interaction))
   assert.equal(interaction.impactCallsAfter770, interaction.impactCallsAt770, JSON.stringify(interaction))
   assert.ok(interaction.impactDifference.sum > 0, JSON.stringify(interaction))
-  assert.ok(interaction.impactFrameDifference.sum > interaction.markOnlyDifference.sum, JSON.stringify(interaction))
-  assert.ok(interaction.markOnlyDifference.sum > 0, JSON.stringify(interaction))
+  assert.ok(interaction.impactFrameDifference.sum > interaction.firstMarkDifference.sum, JSON.stringify(interaction))
+  assert.ok(interaction.firstMarkDifference.sum > 0, JSON.stringify(interaction))
+  assert.ok(interaction.markBeforePauseDifference.sum > 0, JSON.stringify(interaction))
   assert.deepEqual(interaction.markPauseDifference, { count: 0, sum: 0 })
-  assert.deepEqual(interaction.finalDifference, { count: 0, sum: 0 })
+  assert.deepEqual(interaction.naturalExpiryDifference, { count: 0, sum: 0 })
   assert.deepEqual(interaction.cornerDifference, { count: 0, sum: 0 })
   assert.deepEqual(interaction.pausedPlanetDifference, { count: 0, sum: 0 })
   assert.equal(interaction.pausedCometActiveSegments, 0)

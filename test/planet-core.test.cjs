@@ -388,6 +388,26 @@ test('projected surface mark follows phase, fades by energy, and preserves alpha
   }
 })
 
+test('projected frame treats omitted and non-finite mark energy as an identity overlay', () => {
+  const texture = new Uint8ClampedArray(64 * 32 * 4)
+  core.fillTexturePixels(texture, 64, 32, 0x706C616E)
+  const map = core.createSphereMap({ width: 32, height: 28, sourceWidth: 64, sourceHeight: 32, equatorRadians: 0 })
+  const mask = new Uint8Array(64 * 32)
+  mask.fill(255)
+  const baseline = new Uint8ClampedArray(32 * 28 * 4)
+  core.renderProjectedFrame(texture, 64, map, 0.25, baseline)
+
+  for (const [name, render] of [
+    ['omitted', output => core.renderProjectedFrame(texture, 64, map, 0.25, output, mask)],
+    ['undefined', output => core.renderProjectedFrame(texture, 64, map, 0.25, output, mask, undefined)],
+    ['NaN', output => core.renderProjectedFrame(texture, 64, map, 0.25, output, mask, Number.NaN)]
+  ]) {
+    const output = new Uint8ClampedArray(baseline.length)
+    assert.equal(render(output), output, `${name} returns the caller buffer`)
+    assert.deepEqual(output, baseline, `${name} preserves projected RGB and alpha`)
+  }
+})
+
 test('sphere map inverse-rotates minus ten degrees with exact longitude and symmetric latitude speeds', () => {
   const map = core.createSphereMap({
     width: 3,
