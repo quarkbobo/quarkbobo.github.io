@@ -381,6 +381,7 @@ test('post cards render real category links when the post has categories', () =>
     },
     dateFormatter: { format: () => '2026年8月30日' },
     date_xml: value => value.toISOString(),
+    post_lead: () => 'Summary',
     strip_html: stripHtml,
     url_for: value => `/${value}`
   })
@@ -388,6 +389,32 @@ test('post cards render real category links when the post has categories', () =>
   assert.match(output, /class="post-card__categories"[^>]*aria-label="分类"/)
   assert.match(output, /href="\/categories\/技术教程\/"[^>]*>技术教程<\/a>/)
   assert.match(output, /href="\/categories\/随笔\/"[^>]*>随笔<\/a>/)
+})
+
+test('post cards render the complete marked lead and leave visual truncation to CSS', () => {
+  const lead = '这是一段有意写得很长的首页引导文字，用来确认模板不会再按照固定字符数量截断，而是完整输出并交给卡片宽度和可见行数处理。'.repeat(3)
+  const output = ejs.render(template(path.join('_partial', 'post-card.ejs')), {
+    post: {
+      title: 'Long lead post',
+      path: 'long-lead/index.html',
+      date: new Date('2026-09-03T00:00:00Z'),
+      raw: `\t${lead}`,
+      content: '<p>不应作为摘要的完整文章</p>',
+      categories: []
+    },
+    dateFormatter: { format: () => '2026年9月3日' },
+    date_xml: value => value.toISOString(),
+    post_lead: () => lead,
+    strip_html: stripHtml,
+    url_for: value => `/${value}`
+  })
+  const css = fs.readFileSync(path.join(themeRoot, 'source', 'css', 'main.css'), 'utf8')
+
+  assert.match(output, new RegExp(`<p class="post-card__summary">${lead}</p>`))
+  assert.doesNotMatch(output, /\.\.\.|…/)
+  assert.match(css, /\.post-card__summary\s*\{[^}]*display:\s*-webkit-box;/s)
+  assert.match(css, /\.post-card__summary\s*\{[^}]*-webkit-line-clamp:\s*\d+;/s)
+  assert.match(css, /\.post-card__summary\s*\{[^}]*overflow:\s*hidden;/s)
 })
 
 test('the homepage empty state includes a usable return-home link', () => {

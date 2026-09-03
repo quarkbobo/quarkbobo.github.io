@@ -373,9 +373,14 @@ a {
 }
 
 .post-card__summary {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
   margin: 1rem 0 0;
   color: var(--archive-blue-grey);
   font-size: 0.92rem;
+  text-overflow: ellipsis;
 }
 
 .post-card__link {
