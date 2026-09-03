@@ -319,6 +319,52 @@ test('projection lookup covers every visible target exactly once and leaves corn
   }
 })
 
+test('surface point capture maps a visible click to the currently sampled texture coordinate', () => {
+  const map = core.createSphereMap({ width: 64, height: 56, sourceWidth: 128, sourceHeight: 64, equatorRadians: -10 * Math.PI / 180 })
+  const point = new Float64Array(3)
+  assert.equal(core.captureSurfacePoint(map, 128, 0.07, 0, 0, point), point)
+  assert.equal(point[2], 1)
+  assert.ok(point[0] >= 0 && point[0] < 128)
+  assert.ok(point[1] >= 0 && point[1] < 64)
+  assert.equal(core.captureSurfacePoint(map, 128, 0.07, 1, 1, point)[2], 0)
+})
+
+test('surface mark mask wraps at the longitude seam and reuses caller storage', () => {
+  const mask = new Uint8Array(64 * 32)
+  assert.equal(core.writeSurfaceMarkMask(mask, 64, 32, 1, 16), mask)
+  assert.ok(mask[16 * 64 + 1] > 0)
+  assert.ok(mask[16 * 64 + 63] > 0)
+  assert.ok(mask.some(value => value > 0))
+})
+
+test('projected surface mark follows phase, fades by energy, and preserves alpha', () => {
+  const texture = new Uint8ClampedArray(128 * 64 * 4)
+  core.fillTexturePixels(texture, 128, 64, 0x706C616E)
+  const map = core.createSphereMap({ width: 64, height: 56, sourceWidth: 128, sourceHeight: 64, equatorRadians: 0 })
+  const point = new Float64Array(3)
+  core.captureSurfacePoint(map, 128, 0, 0, 0, point)
+  const mask = new Uint8Array(128 * 64)
+  core.writeSurfaceMarkMask(mask, 128, 64, point[0], point[1])
+  const baseline = new Uint8ClampedArray(64 * 56 * 4)
+  const full = new Uint8ClampedArray(baseline.length)
+  const half = new Uint8ClampedArray(baseline.length)
+  const zero = new Uint8ClampedArray(baseline.length)
+  core.renderProjectedFrame(texture, 128, map, 0, baseline)
+  core.renderProjectedFrame(texture, 128, map, 0, full, mask, 1)
+  core.renderProjectedFrame(texture, 128, map, 0, half, mask, 0.5)
+  core.renderProjectedFrame(texture, 128, map, 0, zero, mask, 0)
+  let fullDelta = 0
+  let halfDelta = 0
+  for (let offset = 0; offset < baseline.length; offset += 4) {
+    fullDelta += Math.abs(full[offset] - baseline[offset]) + Math.abs(full[offset + 1] - baseline[offset + 1]) + Math.abs(full[offset + 2] - baseline[offset + 2])
+    halfDelta += Math.abs(half[offset] - baseline[offset]) + Math.abs(half[offset + 1] - baseline[offset + 1]) + Math.abs(half[offset + 2] - baseline[offset + 2])
+    assert.equal(full[offset + 3], baseline[offset + 3])
+  }
+  assert.ok(fullDelta > halfDelta)
+  assert.ok(halfDelta > 0)
+  assert.deepEqual(zero, baseline)
+})
+
 test('sphere map inverse-rotates minus ten degrees with exact longitude and symmetric latitude speeds', () => {
   const map = core.createSphereMap({
     width: 3,

@@ -239,8 +239,46 @@
     }
   }
 
-  function renderProjectedFrame (texturePixels, textureWidth, map, basePhase, outputPixels) {
+  function captureSurfacePoint (map, textureWidth, basePhase, normalizedX, normalizedY, output) {
+    output[2] = 0
+    const x = Math.max(0, Math.min(map.width - 1, Math.floor((normalizedX + 1) * map.width * 0.5)))
+    const y = Math.max(0, Math.min(map.height - 1, Math.floor((normalizedY + 1) * map.height * 0.5)))
+    const lookup = map.projectionIndexByPixel[y * map.width + x]
+    if (!lookup) return output
+    const index = lookup - 1
+    output[0] = modulo(map.baseSourceX[index] + basePhase / TAU * textureWidth * map.speedFactors[index], textureWidth)
+    output[1] = map.sourceRows[index]
+    output[2] = 1
+    return output
+  }
+
+  function writeSurfaceMarkMask (output, width, height, centerX, centerY) {
+    if (!(output instanceof Uint8Array) || output.length !== width * height) {
+      throw new TypeError('surface mark output length must equal width × height')
+    }
+    output.fill(0)
+    const horizontalRadius = Math.max(3, Math.round(width * 0.065))
+    const verticalRadius = Math.max(2, Math.round(height * 0.11))
+    const roundedCenterX = Math.round(centerX)
+    const roundedCenterY = Math.round(centerY)
+    for (let yOffset = -verticalRadius; yOffset <= verticalRadius; yOffset++) {
+      const y = Math.max(0, Math.min(height - 1, roundedCenterY + yOffset))
+      const normalizedY = yOffset / verticalRadius
+      for (let xOffset = -horizontalRadius; xOffset <= horizontalRadius; xOffset++) {
+        const normalizedX = xOffset / horizontalRadius
+        const distance = Math.hypot(normalizedX, normalizedY)
+        if (distance > 1) continue
+        const angle = Math.atan2(normalizedY, normalizedX)
+        const mark = smoothFalloff(distance) * (0.72 + 0.28 * Math.sin(angle * 3 + distance * 8))
+        output[y * width + modulo(roundedCenterX + xOffset, width)] = clampChannel(mark * 255)
+      }
+    }
+    return output
+  }
+
+  function renderProjectedFrame (texturePixels, textureWidth, map, basePhase, outputPixels, markMask, markEnergy) {
     const phaseScale = basePhase / TAU * textureWidth
+    const markEnergyValue = clamp01(markEnergy)
     for (let index = 0; index < map.visibleCount; index++) {
       const sourceX = modulo(map.baseSourceX[index] + phaseScale * map.speedFactors[index], textureWidth)
       const sourceX0 = Math.floor(sourceX)
@@ -253,6 +291,13 @@
       outputPixels[targetOffset] = texturePixels[sourceOffset0] + (texturePixels[sourceOffset1] - texturePixels[sourceOffset0]) * horizontal
       outputPixels[targetOffset + 1] = texturePixels[sourceOffset0 + 1] + (texturePixels[sourceOffset1 + 1] - texturePixels[sourceOffset0 + 1]) * horizontal
       outputPixels[targetOffset + 2] = texturePixels[sourceOffset0 + 2] + (texturePixels[sourceOffset1 + 2] - texturePixels[sourceOffset0 + 2]) * horizontal
+      if (markMask && markEnergyValue > 0) {
+        const markAlpha = markMask[map.sourceRows[index] * textureWidth + sourceX0] / 255
+        const strength = markAlpha * markEnergyValue * markEnergyValue * (3 - 2 * markEnergyValue)
+        outputPixels[targetOffset] = clampChannel(outputPixels[targetOffset] + 14 * strength)
+        outputPixels[targetOffset + 1] = clampChannel(outputPixels[targetOffset + 1] + 30 * strength)
+        outputPixels[targetOffset + 2] = clampChannel(outputPixels[targetOffset + 2] + 48 * strength)
+      }
       outputPixels[targetOffset + 3] = map.limbCoverage[index]
     }
     return outputPixels
@@ -459,6 +504,8 @@
     fillTexturePixels,
     sampleTextureChannel,
     createSphereMap,
+    captureSurfacePoint,
+    writeSurfaceMarkMask,
     renderProjectedFrame,
     applyLocalizedGasDisplacement,
     computeBackingSize,
