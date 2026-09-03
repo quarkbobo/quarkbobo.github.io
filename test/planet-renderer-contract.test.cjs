@@ -51,6 +51,7 @@ function createHarness (options = {}) {
     createdImageData: 0,
     documentQueries: 0,
     createdElements: 0,
+    uint8Lengths: [],
     float64Lengths: [],
     clock: 0,
     nowValues: [],
@@ -163,7 +164,13 @@ function createHarness (options = {}) {
       if (args.length === 1 && typeof args[0] === 'number') state.float64Lengths.push(args[0])
     }
   }
-  vm.runInNewContext(source, { window, globalThis: window, Uint8Array, Uint16Array, Uint32Array, Uint8ClampedArray, Float32Array, Float64Array: TrackedFloat64Array, Math, Object, Number, Error, TypeError })
+  class TrackedUint8Array extends Uint8Array {
+    constructor (...args) {
+      super(...args)
+      if (args.length === 1 && typeof args[0] === 'number') state.uint8Lengths.push(args[0])
+    }
+  }
+  vm.runInNewContext(source, { window, globalThis: window, Uint8Array: TrackedUint8Array, Uint16Array, Uint32Array, Uint8ClampedArray, Float32Array, Float64Array: TrackedFloat64Array, Math, Object, Number, Error, TypeError })
   const flush = queue => {
     const entries = [...queue.values()]
     queue.clear()
@@ -231,6 +238,21 @@ function imageDelta (image, baseline) {
   return delta
 }
 
+function patchDelta (image, baseline, width, height, normalizedX, normalizedY) {
+  const centerX = Math.round((normalizedX + 1) * width / 2)
+  const centerY = Math.round((normalizedY + 1) * height / 2)
+  const radiusX = Math.max(2, Math.round(width * 0.16))
+  const radiusY = Math.max(2, Math.round(height * 0.2))
+  let delta = 0
+  for (let y = Math.max(0, centerY - radiusY); y <= Math.min(height - 1, centerY + radiusY); y++) {
+    for (let x = Math.max(0, centerX - radiusX); x <= Math.min(width - 1, centerX + radiusX); x++) {
+      const offset = (y * width + x) * 4
+      for (let channel = 0; channel < 4; channel++) delta += Math.abs(image[offset + channel] - baseline[offset + channel])
+    }
+  }
+  return delta
+}
+
 function dispatchAt (harness, type, normalizedX, normalizedY, event = {}) {
   harness.window.dispatch(type, {
     clientX: harness.bounds.left + (normalizedX + 1) * harness.bounds.width / 2,
@@ -256,21 +278,30 @@ test('fine-pointer interaction accepts the planet ellipse and rejects canvas cor
   lifecycle.destroy()
 })
 
-test('hybrid fine-pointer media never lets touch or pen input change planet pixels', () => {
-  for (const pointerType of ['touch', 'pen']) {
-    for (const eventType of ['pointermove', 'pointerdown']) {
-      const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
-      const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
-      h.flushIdle()
-      const baseline = h.lastOutputImage()
-      h.flushRaf(0)
-
-      dispatchAt(h, eventType, 0, 0, { pointerType })
-      h.runCompletedDraws(2, 1)
-
-      assert.deepEqual(h.lastOutputImage(), baseline, `${pointerType} ${eventType}`)
-      lifecycle.destroy()
-    }
+test('invalid pointer input and canvas corners leave no impact or surface mark', () => {
+  const cases = [
+    ['touch pointer move', 'pointermove', 0, 0, { pointerType: 'touch' }],
+    ['touch pointer down', 'pointerdown', 0, 0, { pointerType: 'touch' }],
+    ['pen pointer move', 'pointermove', 0, 0, { pointerType: 'pen' }],
+    ['pen pointer down', 'pointerdown', 0, 0, { pointerType: 'pen' }],
+    ['non-primary button', 'pointerdown', 0, 0, { button: 1 }],
+    ['non-primary pointer', 'pointerdown', 0, 0, { isPrimary: false }],
+    ['top-left corner', 'pointerdown', -1, -1, {}],
+    ['top-right corner', 'pointerdown', 1, -1, {}],
+    ['bottom-left corner', 'pointerdown', -1, 1, {}],
+    ['bottom-right corner', 'pointerdown', 1, 1, {}]
+  ]
+  for (const [name, type, x, y, event] of cases) {
+    const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+    const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+    h.flushIdle()
+    const baseline = h.lastOutputImage()
+    h.flushRaf(0)
+    dispatchAt(h, type, x, y, event)
+    h.flushRaf(50)
+    h.flushRaf(770)
+    assert.deepEqual(h.lastOutputImage(), baseline, name)
+    lifecycle.destroy()
   }
 })
 
@@ -344,7 +375,7 @@ test('impact image delta exceeds hover delta', () => {
   assert.ok(impactDelta > hoverDelta, { hoverDelta, impactDelta })
 })
 
-test('hover returns to fixed-phase baseline after 240 ms and impact after 720 ms', () => {
+test('hover returns to fixed-phase baseline after 240 ms', () => {
   const hover = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
   const hoverLifecycle = hover.renderer.mount(hover.canvas, { scene: hover.scene, textureWidth: 64, textureHeight: 32 })
   hover.flushIdle()
@@ -358,20 +389,47 @@ test('hover returns to fixed-phase baseline after 240 ms and impact after 720 ms
   hover.flushRaf(291)
   assert.deepEqual(hover.lastOutputImage(), hoverBaseline)
   hoverLifecycle.destroy()
+})
 
-  const impact = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
-  const impactLifecycle = impact.renderer.mount(impact.canvas, { scene: impact.scene, textureWidth: 64, textureHeight: 32 })
-  impact.flushIdle()
-  const impactBaseline = impact.lastOutputImage()
-  impact.flushRaf(0)
-  dispatchAt(impact, 'pointerdown', 0, 0)
-  impact.flushRaf(50)
-  assert.notDeepEqual(impact.lastOutputImage(), impactBaseline)
-  impact.flushRaf(720)
-  assert.notDeepEqual(impact.lastOutputImage(), impactBaseline)
-  impact.flushRaf(770)
-  assert.deepEqual(impact.lastOutputImage(), impactBaseline)
-  impactLifecycle.destroy()
+test('valid left click keeps one surface mark after impact decay and clears it at 3000ms', () => {
+  const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+  const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+  h.flushIdle()
+  const baseline = h.lastOutputImage()
+  h.flushRaf(0)
+  dispatchAt(h, 'pointerdown', 0, 0)
+  h.flushRaf(50)
+  const earlyDelta = imageDelta(baseline, h.lastOutputImage())
+  h.flushRaf(770)
+  const markOnlyDelta = imageDelta(baseline, h.lastOutputImage())
+  assert.ok(earlyDelta > markOnlyDelta)
+  assert.ok(markOnlyDelta > 0)
+  h.flushRaf(3050)
+  assert.deepEqual(h.lastOutputImage(), baseline)
+  lifecycle.destroy()
+})
+
+test('a second click replaces the previous surface mark', () => {
+  const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+  const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+  h.flushIdle()
+  const baseline = h.lastOutputImage()
+  const { canvasWidth, canvasHeight } = lifecycle.snapshot()
+  h.flushRaf(0)
+
+  dispatchAt(h, 'pointerdown', -0.5, 0)
+  h.flushRaf(50)
+  h.flushRaf(770)
+  const leftMark = h.lastOutputImage()
+  assert.ok(patchDelta(leftMark, baseline, canvasWidth, canvasHeight, -0.5, 0) > 0)
+
+  dispatchAt(h, 'pointerdown', 0.5, 0)
+  h.flushRaf(820)
+  h.flushRaf(1540)
+  const rightMark = h.lastOutputImage()
+  assert.equal(patchDelta(rightMark, baseline, canvasWidth, canvasHeight, -0.5, 0), 0)
+  assert.ok(patchDelta(rightMark, baseline, canvasWidth, canvasHeight, 0.5, 0) > 0)
+  lifecycle.destroy()
 })
 
 test('window exit and blur clear active hover without treating child transitions as exit', () => {
@@ -457,10 +515,12 @@ test('same-size bounds refresh never promotes an impact-only click into hover', 
   h.flushRaf(400)
   assert.equal(h.state.boundsReads, boundsReads + 1)
   h.flushRaf(1100)
+  assert.ok(imageDelta(h.lastOutputImage(), baseline) > 0)
+  h.flushRaf(3400)
   assert.equal(imageDelta(h.lastOutputImage(), baseline), 0)
 
   dispatchAt(h, 'pointermove', 0, 0)
-  h.flushRaf(1150)
+  h.flushRaf(3450)
   assert.ok(imageDelta(h.lastOutputImage(), baseline) > 0)
   lifecycle.destroy()
 })
@@ -520,6 +580,8 @@ test('every blocker transition must clear interaction before cancellation or sta
     dispatchAt(h, 'pointerdown', 0, 0)
     h.flushRaf(50)
     assert.notDeepEqual(h.lastOutputImage(), baseline, `${name} setup`)
+    h.flushRaf(770)
+    assert.notDeepEqual(h.lastOutputImage(), baseline, `${name} retained mark setup`)
     block(h)
     if (name === 'reduced motion') assert.deepEqual(h.lastOutputImage(), baseline, `${name} static redraw`)
     unblock(h)
@@ -741,6 +803,8 @@ test('initialization failures isolate the planet and never mutate particle state
     ['quality setup', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), createQualityState: () => { throw new Error('quality failure') } } }],
     ['texture generation', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), fillTexturePixels: () => { throw new Error('texture failure') } } }],
     ['projection setup', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), createSphereMap: () => { throw new Error('projection failure') } } }],
+    ['surface capture API', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), captureSurfacePoint: undefined } }],
+    ['surface mark API', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), writeSurfaceMarkMask: undefined } }],
     ['localized displacement API', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), applyLocalizedGasDisplacement: undefined } }]
   ]) {
     await t.test(name, () => {
@@ -894,11 +958,14 @@ test('mount defers renderer-owned bulk typed arrays until idle initialization', 
   const harness = createHarness({ textureWidth: 64, textureHeight: 32 })
   const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
   assert.deepEqual(harness.state.float64Lengths, [])
+  assert.equal(harness.state.float64Lengths.includes(3), false)
+  assert.equal(harness.state.uint8Lengths.includes(64 * 32), false)
   assert.doesNotThrow(() => lifecycle.snapshot())
   assert.equal(harness.window.__planetSurfaceMetrics.mark(), 0)
   assert.doesNotThrow(() => harness.window.__planetSurfaceMetrics.measureSince(0))
   harness.flushIdle()
-  assert.deepEqual(harness.state.float64Lengths, [1024, 1024, 120])
+  assert.deepEqual(harness.state.float64Lengths, [1024, 1024, 120, 3])
+  assert.deepEqual(harness.state.uint8Lengths, [64 * 32])
   lifecycle.destroy()
 })
 
@@ -1178,9 +1245,13 @@ test('measurement accepts exactly 1024 draws and rejects negative or future mark
 })
 
 test('destroy cancels every callback, listener, and owned observer', () => {
-  const harness = createHarness({ textureWidth: 64, textureHeight: 32 })
+  const harness = createHarness({ recordOutputImages: true, fixedPhase: true, textureWidth: 64, textureHeight: 32 })
   const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
   harness.flushIdle()
+  harness.flushRaf(0)
+  dispatchAt(harness, 'pointerdown', 0, 0)
+  harness.flushRaf(50)
+  const lastOutput = harness.lastOutputImage()
   lifecycle.destroy()
   assert.equal(harness.pendingRafs(), 0)
   assert.equal(harness.document.listenerCount('visibilitychange'), 0)
@@ -1189,6 +1260,8 @@ test('destroy cancels every callback, listener, and owned observer', () => {
   assert.ok(harness.state.mutationObservers.every(observer => observer.disconnected))
   assert.ok(harness.state.intersectionObservers.every(observer => observer.disconnected))
   assert.ok(harness.state.resizeObservers.every(observer => observer.disconnected))
+  harness.flushRaf(3050)
+  assert.deepEqual(harness.lastOutputImage(), lastOutput)
 })
 
 test('an animation-time render failure freezes only the planet and is never uncaught', () => {
@@ -1341,18 +1414,21 @@ test('missing required mutation observation falls back while optional observer g
 test('hot redraw helpers avoid allocating or querying DOM', () => {
   const source = fs.readFileSync(path.resolve(__dirname, '../themes/fluid-particle/source/js/planet-surface.js'), 'utf8')
   const render = source.slice(source.indexOf('function renderFrame'), source.indexOf('function onMutation'))
+  const interaction = source.slice(source.indexOf('function updateInteraction'), source.indexOf('function onPointerMove'))
   const draw = source.slice(source.indexOf('function drawCurrentFrame'), source.indexOf('function rebuildProjection'))
   const record = source.slice(source.indexOf('function recordCompletedDraw'), source.indexOf('function drawCurrentFrame'))
   assert.ok(render.length > 0, 'renderFrame source slice is non-empty')
+  assert.ok(interaction.length > 0, 'updateInteraction source slice is non-empty')
   assert.ok(draw.length > 0, 'drawCurrentFrame source slice is non-empty')
   assert.ok(record.length > 0, 'recordCompletedDraw source slice is non-empty')
   for (const forbidden of ['new ', 'createElement', 'createImageData', 'getContext', 'getComputedStyle', 'querySelector', 'setTimeout']) {
     assert.equal(render.includes(forbidden), false, `renderFrame contains ${forbidden}`)
+    assert.equal(interaction.includes(forbidden), false, `updateInteraction contains ${forbidden}`)
     assert.equal(draw.includes(forbidden), false, `drawCurrentFrame contains ${forbidden}`)
     assert.equal(record.includes(forbidden), false, `recordCompletedDraw contains ${forbidden}`)
   }
-  assert.equal(/=\s*\[/.test(render) || /=\s*\[/.test(draw) || /=\s*\[/.test(record), false)
-  assert.equal(/=\s*\{/.test(render) || /=\s*\{/.test(draw) || /=\s*\{/.test(record), false)
+  assert.equal(/=\s*\[/.test(render) || /=\s*\[/.test(interaction) || /=\s*\[/.test(draw) || /=\s*\[/.test(record), false)
+  assert.equal(/=\s*\{/.test(render) || /=\s*\{/.test(interaction) || /=\s*\{/.test(draw) || /=\s*\{/.test(record), false)
   assert.equal(render.includes('computeCurrentBacking'), false, 'renderFrame delegates policy allocation only to rebuildProjection')
   assert.equal(render.includes('computeBackingSize'), false, 'renderFrame never calls the allocating backing-size policy directly')
 

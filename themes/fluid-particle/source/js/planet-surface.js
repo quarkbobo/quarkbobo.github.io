@@ -58,6 +58,8 @@
   function validCore (core) {
     return core && typeof core.fillTexturePixels === 'function' &&
       typeof core.createSphereMap === 'function' &&
+      typeof core.captureSurfacePoint === 'function' &&
+      typeof core.writeSurfaceMarkMask === 'function' &&
       typeof core.renderProjectedFrame === 'function' &&
       typeof core.applyLocalizedGasDisplacement === 'function' &&
       typeof core.computeBackingSize === 'function' &&
@@ -133,6 +135,9 @@
     let qualityState = null
     let sourceImage = null
     let sourceWidth = 0
+    let markMask = null
+    let markPoint = null
+    let markEnergy = 0
     let projection = null
     let outputImage = null
     let basePhase = 0
@@ -208,6 +213,7 @@
       interaction.impactX = 0
       interaction.impactY = 0
       interaction.impactEnergy = 0
+      markEnergy = 0
       impactClientX = 0
       impactClientY = 0
       pointerPrimary = false
@@ -288,7 +294,7 @@
     function drawCurrentFrame (measure, timestamp, animated) {
       let started = 0
       if (measure) started = root.performance && typeof root.performance.now === 'function' ? root.performance.now() : 0
-      core.renderProjectedFrame(sourceImage.data, sourceWidth, projection, basePhase, outputImage.data)
+      core.renderProjectedFrame(sourceImage.data, sourceWidth, projection, basePhase, outputImage.data, markMask, markEnergy)
       if (interaction.hoverEnergy > 0 || interaction.impactEnergy > 0) {
         core.applyLocalizedGasDisplacement(sourceImage.data, sourceWidth, sourceImage.height, projection, basePhase, interaction, outputImage.data)
       }
@@ -369,6 +375,7 @@
     function updateInteraction (elapsed) {
       if (!hoverInside && interaction.hoverEnergy > 0) interaction.hoverEnergy = Math.max(0, interaction.hoverEnergy - elapsed / 240)
       if (interaction.impactEnergy > 0) interaction.impactEnergy = Math.max(0, interaction.impactEnergy - elapsed / 720)
+      if (markEnergy > 0) markEnergy = Math.max(0, markEnergy - elapsed / 3000)
       if (!pointerMovePending && !impactPending) return
 
       let x = 0
@@ -401,6 +408,11 @@
           interaction.impactX = x
           interaction.impactY = y
           interaction.impactEnergy = 1
+          core.captureSurfacePoint(projection, sourceWidth, basePhase, x, y, markPoint)
+          if (markPoint[2]) {
+            core.writeSurfaceMarkMask(markMask, sourceWidth, sourceImage.height, markPoint[0], markPoint[1])
+            markEnergy = 1
+          }
         }
         impactPending = false
       }
@@ -559,6 +571,8 @@
         sourceCanvas.width = config.textureWidth || core.TEXTURE_WIDTH
         sourceCanvas.height = config.textureHeight || core.TEXTURE_HEIGHT
         sourceWidth = sourceCanvas.width
+        markMask = new Uint8Array(sourceWidth * sourceCanvas.height)
+        markPoint = new Float64Array(3)
         const sourceContext = sourceCanvas.getContext('2d', { alpha: false })
         if (!sourceContext) throw new Error('planet source context unavailable')
         sourceImage = sourceContext.createImageData(sourceCanvas.width, sourceCanvas.height)
