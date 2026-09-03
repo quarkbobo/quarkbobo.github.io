@@ -4,6 +4,7 @@ const childProcess = require('node:child_process')
 const fs = require('node:fs')
 const os = require('node:os')
 const path = require('node:path')
+const ejs = require('ejs')
 const { chromeCandidatesFor, windowSizeFor } = require('./browser-launch-policy.cjs')
 const { finePointerMatchMediaFixtureScript } = require('./browser-match-media-fixture.cjs')
 
@@ -11,6 +12,11 @@ const root = path.resolve(__dirname, '..')
 const publicRoot = path.join(root, 'public')
 const chromeCandidates = chromeCandidatesFor()
 const chromePath = chromeCandidates.find(candidate => fs.existsSync(candidate))
+const hexoToc = require(path.join(root, 'node_modules', 'hexo', 'dist', 'plugins', 'helper', 'toc.js'))
+const postFullTemplate = fs.readFileSync(
+  path.join(root, 'themes', 'fluid-particle', 'layout', '_partial', 'post-full.ejs'),
+  'utf8'
+)
 
 function decodeHtml (value) {
   return value
@@ -324,7 +330,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
             }
             const surface = document.getElementById('planet-surface')
             const ring = document.querySelector('.saturn-ring')
-            control.focus()
+            control.focus({ focusVisible: true })
             const controlStyle = getComputedStyle(control)
             const cardStyle = getComputedStyle(card)
             const cardTitleStyle = getComputedStyle(cardTitle)
@@ -657,8 +663,23 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
 }
 
 function runArticleNavigationProbe () {
-  const articleDirectory = path.join(publicRoot, '技术教程', 'How-to-create-a-website')
-  const article = fs.readFileSync(path.join(articleDirectory, 'index.html'), 'utf8')
+  const article = ejs.render(postFullTemplate, {
+    config: { language: 'zh-CN', title: 'Fixture site', timezone: 'Asia/Shanghai' },
+    theme: { image_dimensions: {} },
+    post: {
+      path: 'fixture/index.html',
+      title: 'Fixture article',
+      date: new Date('2026-09-03T00:00:00.000Z'),
+      content: [
+        '<h2>第一个章节<a class="header-anchor" href="#old-first">#</a></h2>',
+        '<p>正文。</p>',
+        '<h2><img src="fixture.png" alt="示意图"><a class="header-anchor" href="#old-image">#</a></h2>'
+      ].join('\n')
+    },
+    strip_html: html => String(html).replace(/<[^>]+>/g, ''),
+    toc: hexoToc,
+    date_xml: value => value.toISOString()
+  })
   const fixtureDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'fluid-theme-toc-'))
   const fixturePath = path.join(fixtureDirectory, 'article.html')
   const probeScript = `<pre id="probe-result"></pre>
@@ -684,7 +705,7 @@ function runArticleNavigationProbe () {
       })
     </script>`
   const offlineArticle = article.replace(/(<img\b[^>]*\bsrc=)"https?:\/\/[^" ]+"/gi, '$1""')
-  fs.writeFileSync(fixturePath, offlineArticle.replace('</body>', `${probeScript}</body>`))
+  fs.writeFileSync(fixturePath, `<!doctype html><html lang="zh-CN"><body>${offlineArticle}${probeScript}</body></html>`)
   try {
     return readProbeResult(dumpWithChrome(fixturePath))
   } finally {

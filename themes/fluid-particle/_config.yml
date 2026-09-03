@@ -6,7 +6,7 @@ hero:
 menu:
   首页: /
   归档: /archives/
-  关于: /关于我/About-me/
+  关于: /#guan-yu-wo
 image_dimensions:
   "https://cdn.nlark.com/yuque/0/2025/png/54207903/1762238688380-8ceb053b-5d25-432f-a0eb-84443781f7e7.png": { width: 968, height: 122 }
   "https://cdn.nlark.com/yuque/0/2025/png/54207903/1762240163395-212e4180-df61-4995-bf7a-2ca35bf6ab35.png": { width: 912, height: 529 }

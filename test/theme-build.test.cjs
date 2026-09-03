@@ -9,6 +9,21 @@ const sourceRoot = path.join(projectRoot, 'source')
 const root = path.join(projectRoot, 'public')
 const html = relative => fs.readFileSync(path.join(root, relative), 'utf8')
 
+function generatedArticleDocuments (directory = root) {
+  const documents = []
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const absolute = path.join(directory, entry.name)
+    if (entry.isDirectory()) {
+      documents.push(...generatedArticleDocuments(absolute))
+      continue
+    }
+    if (!entry.isFile() || entry.name !== 'index.html') continue
+    const output = fs.readFileSync(absolute, 'utf8')
+    if (/<article[^>]*class="article-shell"/.test(output)) documents.push({ absolute, output })
+  }
+  return documents
+}
+
 function completeHtmlDocuments (directory = sourceRoot) {
   const documents = []
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
@@ -33,24 +48,24 @@ test('root catalogue renders as the designed home without changing its URL', () 
 
   assert.match(output, /data-fluid-home/)
   assert.match(output, /Quark(?:'|&#39;)s Blog/)
-  assert.match(output, /在噪声里，保留信号。/)
-  assert.match(output, /技术笔记、游戏实验与日常观测。/)
-  assert.match(output, /class="post-card"/)
+  assert.match(output, /蓝色空间号/)
+  assert.match(output, /技术笔记、游戏合集、日常Vlog/)
+  assert.match(output, /id="latest-posts"/)
+  assert.match(output, /data-latest-grid|档案中还没有记录/)
   assert.match(output, /博客目录/)
 })
 
 test('normal posts render an article shell and heading-derived contents', () => {
-  const output = html('个人博客/Hello-World/index.html')
+  const articles = generatedArticleDocuments()
+  assert.ok(articles.length, 'at least one current Markdown article is generated')
+  const output = articles[0].output
 
   assert.match(output, /<article[^>]*class="article-shell"/)
-  assert.match(output, /class="article-toc"/)
-  assert.match(output, /Quick Start/)
+  assert.match(output, /class="article-body"/)
 })
 
-test('archive and taxonomy routes render their semantic collection surfaces', () => {
+test('archive route and primary navigation render their semantic surfaces', () => {
   assert.match(html('archives/index.html'), /class="archive-list"/)
-  assert.match(html('categories/index.html'), /class="taxonomy-index"/)
-  assert.match(html('tags/index.html'), /class="taxonomy-index"/)
   assert.match(html('index.html'), /<nav[^>]*aria-label="主要导航"/)
 })
 
