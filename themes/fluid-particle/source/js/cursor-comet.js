@@ -129,6 +129,7 @@
     }
 
     function handlePointerOut (event) {
+      if (event.pointerType !== 'mouse') return
       if (event.relatedTarget === null) clear()
     }
 

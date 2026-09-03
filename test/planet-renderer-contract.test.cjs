@@ -384,10 +384,15 @@ test('window exit and blur clear active hover without treating child transitions
   dispatchAt(h, 'pointermove', 0, 0)
   h.flushRaf(50)
   assert.notDeepEqual(h.lastOutputImage(), baseline)
-  h.window.dispatch('pointerout', { relatedTarget: {} })
+  h.window.dispatch('pointerout', { pointerType: 'mouse', relatedTarget: {} })
   h.flushRaf(100)
   assert.notDeepEqual(h.lastOutputImage(), baseline)
-  h.window.dispatch('pointerout', { relatedTarget: null })
+  for (const pointerType of ['touch', 'pen']) {
+    h.window.dispatch('pointerout', { pointerType, relatedTarget: null })
+    h.flushRaf(125)
+    assert.notDeepEqual(h.lastOutputImage(), baseline, pointerType)
+  }
+  h.window.dispatch('pointerout', { pointerType: 'mouse', relatedTarget: null })
   h.flushRaf(150)
   assert.deepEqual(h.lastOutputImage(), baseline)
 
@@ -396,6 +401,36 @@ test('window exit and blur clear active hover without treating child transitions
   assert.notDeepEqual(h.lastOutputImage(), baseline)
   h.window.dispatch('blur')
   h.flushRaf(250)
+  assert.deepEqual(h.lastOutputImage(), baseline)
+  lifecycle.destroy()
+})
+
+test('non-mouse window exits preserve an existing mouse hover while mouse exit clears it', () => {
+  for (const pointerType of ['touch', 'pen']) {
+    const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+    const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+    h.flushIdle()
+    const baseline = h.lastOutputImage()
+    h.flushRaf(0)
+
+    dispatchAt(h, 'pointermove', 0, 0)
+    h.flushRaf(50)
+    assert.notDeepEqual(h.lastOutputImage(), baseline, pointerType)
+    h.window.dispatch('pointerout', { pointerType, relatedTarget: null })
+    h.flushRaf(350)
+    assert.notDeepEqual(h.lastOutputImage(), baseline, pointerType)
+    lifecycle.destroy()
+  }
+
+  const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+  const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+  h.flushIdle()
+  const baseline = h.lastOutputImage()
+  h.flushRaf(0)
+  dispatchAt(h, 'pointermove', 0, 0)
+  h.flushRaf(50)
+  h.window.dispatch('pointerout', { pointerType: 'mouse', relatedTarget: null })
+  h.flushRaf(350)
   assert.deepEqual(h.lastOutputImage(), baseline)
   lifecycle.destroy()
 })

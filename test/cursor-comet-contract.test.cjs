@@ -257,6 +257,24 @@ test('hybrid fine-pointer media never lets touch or pen movement create comet st
   }
 })
 
+test('non-mouse window exits preserve an existing mouse comet while mouse exit clears it', () => {
+  for (const pointerType of ['touch', 'pen']) {
+    const h = createHarness()
+    const life = h.api.mount(h.overlay, { scene: h.scene })
+    drawTwoSegments(h)
+    assert.equal(life.snapshot().activeSegments, 2, pointerType)
+
+    h.window.dispatch('pointerout', { pointerType, relatedTarget: null })
+    assert.equal(life.snapshot().activeSegments, 2, pointerType)
+  }
+
+  const h = createHarness()
+  const life = h.api.mount(h.overlay, { scene: h.scene })
+  drawTwoSegments(h)
+  h.window.dispatch('pointerout', { pointerType: 'mouse', relatedTarget: null })
+  assert.equal(life.snapshot().activeSegments, 0)
+})
+
 test('blocked pointer policies start disabled without attaching pointer movement', () => {
   for (const options of [
     { mobile: true },
@@ -336,7 +354,7 @@ test('pause, fallback, hidden, window leave, and blur clear every pooled segment
         h.document.dispatch('visibilitychange')
       }
     },
-    { label: 'window leave', act: h => h.window.dispatch('pointerout', { relatedTarget: null }) },
+    { label: 'window leave', act: h => h.window.dispatch('pointerout', { pointerType: 'mouse', relatedTarget: null }) },
     { label: 'blur', act: h => h.window.dispatch('blur') }
   ]
 
