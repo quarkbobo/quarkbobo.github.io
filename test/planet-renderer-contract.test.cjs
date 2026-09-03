@@ -245,6 +245,16 @@ function imageDelta (image, baseline) {
   return delta
 }
 
+function positiveRgbContribution (image, underlay) {
+  let delta = 0
+  for (let offset = 0; offset < image.length; offset += 4) {
+    delta += Math.max(0, image[offset] - underlay[offset])
+    delta += Math.max(0, image[offset + 1] - underlay[offset + 1])
+    delta += Math.max(0, image[offset + 2] - underlay[offset + 2])
+  }
+  return delta
+}
+
 function patchDelta (image, baseline, width, height, normalizedX, normalizedY) {
   const centerX = Math.round((normalizedX + 1) * width / 2)
   const centerY = Math.round((normalizedY + 1) * height / 2)
@@ -399,6 +409,47 @@ test('hover returns to fixed-phase baseline after 240 ms', () => {
   hoverLifecycle.destroy()
 })
 
+test('50ms impact frame keeps a positive surface mark contribution above impact-only pixels', () => {
+  const realCore = require('../themes/fluid-particle/source/js/planet-core.js')
+  const renderImpact = core => {
+    const h = createHarness({ core, recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+    const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+    h.flushIdle()
+    h.flushRaf(0)
+    dispatchAt(h, 'pointerdown', 0, 0)
+    h.flushRaf(50)
+    const output = h.lastOutputImage()
+    lifecycle.destroy()
+    return output
+  }
+  const impactOnly = renderImpact({
+    ...realCore,
+    renderProjectedFrame (...args) {
+      return realCore.renderProjectedFrame(args[0], args[1], args[2], args[3], args[4])
+    },
+    applyProjectedSurfaceMark (...args) { return args[3] }
+  })
+  const calls = []
+  const impactAndMark = renderImpact({
+    ...realCore,
+    renderProjectedFrame (...args) {
+      calls.push('base')
+      assert.equal(args.length, 5, 'renderer does not ask the base pass to blend the mark')
+      return realCore.renderProjectedFrame(...args)
+    },
+    applyLocalizedGasDisplacement (...args) {
+      calls.push('impact')
+      return realCore.applyLocalizedGasDisplacement(...args)
+    },
+    applyProjectedSurfaceMark (...args) {
+      calls.push('mark')
+      return realCore.applyProjectedSurfaceMark(...args)
+    }
+  })
+  assert.deepEqual(calls.slice(-3), ['base', 'impact', 'mark'])
+  assert.ok(positiveRgbContribution(impactAndMark, impactOnly) > 0)
+})
+
 test('valid left click keeps one surface mark after impact decay and clears it at 3000ms', () => {
   const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
   const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
@@ -423,9 +474,9 @@ test('impact and surface mark energies reach their exact independent decay bound
   const displacedImpactEnergies = []
   const core = {
     ...realCore,
-    renderProjectedFrame (...args) {
-      projectedMarkEnergies.push(args[6])
-      return realCore.renderProjectedFrame(...args)
+    applyProjectedSurfaceMark (...args) {
+      projectedMarkEnergies.push(args[5])
+      return realCore.applyProjectedSurfaceMark(...args)
     },
     applyLocalizedGasDisplacement (...args) {
       displacedImpactEnergies.push(args[5].impactEnergy)
@@ -440,8 +491,10 @@ test('impact and surface mark energies reach their exact independent decay bound
   h.flushRaf(50)
 
   const displacementSamplesBefore719 = displacedImpactEnergies.length
+  const markSamplesBefore719 = projectedMarkEnergies.length
   h.flushRaf(769)
   assert.equal(displacedImpactEnergies.length, displacementSamplesBefore719 + 1, '719ms frame records displacement')
+  assert.equal(projectedMarkEnergies.length, markSamplesBefore719 + 1, '719ms frame records mark overlay')
   assert.ok(projectedMarkEnergies.at(-1) > 0, 'mark remains positive at 719ms')
   assert.ok(displacedImpactEnergies.at(-1) > 0, 'impact remains positive at 719ms')
 
@@ -614,16 +667,16 @@ test('mobile coarse and no-hover policies attach no pointer listeners', () => {
 
 test('every blocker transition must clear interaction before cancellation or static redraw', () => {
   const cases = [
-    ['manual pause', h => h.mutateScene('motion-paused'), h => h.mutateScene('motion-paused')],
-    ['particle fallback', h => h.mutateScene('particle-fallback'), h => h.mutateScene('particle-fallback')],
-    ['hidden', h => { h.document.hidden = true; h.document.dispatch('visibilitychange') }, h => { h.document.hidden = false; h.document.dispatch('visibilitychange') }],
-    ['offscreen', h => h.setIntersection(false), h => h.setIntersection(true)],
-    ['reduced motion', h => h.motionQuery.setMatches(true), h => h.motionQuery.setMatches(false)],
-    ['mobile', h => h.mobileQuery.setMatches(true), h => h.mobileQuery.setMatches(false)],
-    ['coarse', h => h.coarseQuery.setMatches(true), h => h.coarseQuery.setMatches(false)],
-    ['no-hover', h => h.noHoverQuery.setMatches(true), h => h.noHoverQuery.setMatches(false)]
+    ['manual pause', h => h.mutateScene('motion-paused'), h => h.mutateScene('motion-paused'), true],
+    ['particle fallback', h => h.mutateScene('particle-fallback'), h => h.mutateScene('particle-fallback'), true],
+    ['hidden', h => { h.document.hidden = true; h.document.dispatch('visibilitychange') }, h => { h.document.hidden = false; h.document.dispatch('visibilitychange') }, false],
+    ['offscreen', h => h.setIntersection(false), h => h.setIntersection(true), false],
+    ['reduced motion', h => h.motionQuery.setMatches(true), h => h.motionQuery.setMatches(false), true],
+    ['mobile', h => h.mobileQuery.setMatches(true), h => h.mobileQuery.setMatches(false), false],
+    ['coarse', h => h.coarseQuery.setMatches(true), h => h.coarseQuery.setMatches(false), false],
+    ['no-hover', h => h.noHoverQuery.setMatches(true), h => h.noHoverQuery.setMatches(false), false]
   ]
-  for (const [name, block, unblock] of cases) {
+  for (const [name, block, unblock, redrawsWhileVisible] of cases) {
     const h = createHarness({ recordOutputImages: true, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
     const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
     h.flushIdle()
@@ -635,11 +688,44 @@ test('every blocker transition must clear interaction before cancellation or sta
     h.flushRaf(770)
     assert.notDeepEqual(h.lastOutputImage(), baseline, `${name} retained mark setup`)
     block(h)
-    if (name === 'reduced motion') assert.deepEqual(h.lastOutputImage(), baseline, `${name} static redraw`)
+    if (redrawsWhileVisible) assert.deepEqual(h.lastOutputImage(), baseline, `${name} static redraw`)
     unblock(h)
     h.flushRaf(h.state.clock + 1)
     h.flushRaf(h.state.clock + 50)
     assert.deepEqual(h.lastOutputImage(), baseline, name)
+    lifecycle.destroy()
+  }
+})
+
+test('visible blocker static redraw failures enter fallback without escaping mutation delivery', () => {
+  for (const [name, block] of [
+    ['manual pause', h => h.mutateScene('motion-paused')],
+    ['particle fallback', h => h.mutateScene('particle-fallback')]
+  ]) {
+    const realCore = require('../themes/fluid-particle/source/js/planet-core.js')
+    let renderCalls = 0
+    const core = {
+      ...realCore,
+      renderProjectedFrame (...args) {
+        renderCalls++
+        if (renderCalls === 4) throw new Error(`${name} static redraw failure`)
+        return realCore.renderProjectedFrame(...args)
+      }
+    }
+    const h = createHarness({ core, fixedPhase: true, textureWidth: 64, textureHeight: 32 })
+    const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+    h.flushIdle()
+    h.flushRaf(0)
+    dispatchAt(h, 'pointerdown', 0, 0)
+    h.flushRaf(50)
+    h.flushRaf(770)
+    assert.doesNotThrow(() => block(h), name)
+    assert.equal(renderCalls, 4, `${name} static redraw attempted`)
+    assert.equal(lifecycle.snapshot().fallback, true, name)
+    assert.equal(h.scene.classList.contains('planet-fallback'), true, name)
+    assert.equal(h.pendingRafs(), 0, name)
+    assert.equal(h.window.listenerCount('pointerdown'), 0, name)
+    assert.ok(h.state.mutationObservers.every(observer => observer.disconnected), name)
     lifecycle.destroy()
   }
 })
@@ -857,6 +943,7 @@ test('initialization failures isolate the planet and never mutate particle state
     ['projection setup', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), createSphereMap: () => { throw new Error('projection failure') } } }],
     ['surface capture API', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), captureSurfacePoint: undefined } }],
     ['surface mark API', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), writeSurfaceMarkMask: undefined } }],
+    ['surface mark overlay API', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), applyProjectedSurfaceMark: undefined } }],
     ['localized displacement API', { core: { ...require('../themes/fluid-particle/source/js/planet-core.js'), applyLocalizedGasDisplacement: undefined } }]
   ]) {
     await t.test(name, () => {
@@ -1345,6 +1432,33 @@ for (const [name, method, primeFirst] of [
     lifecycle.destroy()
   })
 }
+
+test('surface mark overlay failure enters fallback without escaping the RAF callback', () => {
+  const realCore = require('../themes/fluid-particle/source/js/planet-core.js')
+  const core = {
+    ...realCore,
+    applyProjectedSurfaceMark (...args) {
+      if (args[5] > 0) throw new Error('surface mark overlay failure')
+      return realCore.applyProjectedSurfaceMark(...args)
+    }
+  }
+  const harness = createHarness({ core, textureWidth: 64, textureHeight: 32 })
+  const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+  harness.flushIdle()
+  harness.flushRaf(0)
+  dispatchAt(harness, 'pointerdown', 0, 0)
+  assert.doesNotThrow(() => harness.flushRaf(50))
+  assert.equal(lifecycle.snapshot().fallback, true)
+  assert.equal(harness.scene.classList.contains('planet-fallback'), true)
+  assert.equal(harness.scene.classList.contains('particle-fallback'), false)
+  assert.equal(harness.pendingRafs(), 0)
+  assert.equal(harness.window.listenerCount('pointermove'), 0)
+  assert.equal(harness.document.listenerCount('visibilitychange'), 0)
+  assert.ok(harness.state.mutationObservers.every(observer => observer.disconnected))
+  assert.ok(harness.state.intersectionObservers.every(observer => observer.disconnected))
+  assert.ok(harness.state.resizeObservers.every(observer => observer.disconnected))
+  lifecycle.destroy()
+})
 
 test('an animation-time render failure freezes only the planet and is never uncaught', () => {
   const realCore = require('../themes/fluid-particle/source/js/planet-core.js')

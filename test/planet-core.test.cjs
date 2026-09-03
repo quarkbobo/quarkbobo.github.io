@@ -357,12 +357,19 @@ test('projected surface mark follows phase, fades by energy, and preserves alpha
   const full = new Uint8ClampedArray(baseline.length)
   const half = new Uint8ClampedArray(baseline.length)
   const zero = new Uint8ClampedArray(baseline.length)
+  const direct = new Uint8ClampedArray(baseline.length)
   const phasedBaseline = new Uint8ClampedArray(baseline.length)
   const phasedFull = new Uint8ClampedArray(baseline.length)
   core.renderProjectedFrame(texture, 128, map, 0, baseline)
   core.renderProjectedFrame(texture, 128, map, 0, full, mask, 1)
   core.renderProjectedFrame(texture, 128, map, 0, half, mask, 0.5)
   core.renderProjectedFrame(texture, 128, map, 0, zero, mask, 0)
+  core.renderProjectedFrame(texture, 128, map, 0, direct)
+  assert.equal(core.applyProjectedSurfaceMark(128, map, 0, direct, mask, 1), direct)
+  assert.deepEqual(direct, full)
+  const identity = Uint8ClampedArray.from(baseline)
+  assert.equal(core.applyProjectedSurfaceMark(128, map, 0, identity, mask, 0), identity)
+  assert.deepEqual(identity, baseline)
   core.renderProjectedFrame(texture, 128, map, 0.37, phasedBaseline)
   core.renderProjectedFrame(texture, 128, map, 0.37, phasedFull, mask, 1)
   let fullDelta = 0
@@ -649,6 +656,13 @@ test('projected hot loop contains no allocation or DOM work', () => {
   assert.doesNotMatch(body, /\bnew\s+|Array\.|Object\.|getContext|getComputedStyle|querySelector|createElement|createImageData/)
 })
 
+test('projected surface mark overlay hot loop contains no allocation or DOM work', () => {
+  const source = require('node:fs').readFileSync(modulePath, 'utf8')
+  const body = source.match(/function applyProjectedSurfaceMark[\s\S]*?\n  }/)?.[0] || ''
+  assert.ok(body)
+  assert.doesNotMatch(body, /\bnew\s+|Array\.|Object\.|getContext|getComputedStyle|querySelector|createElement|createImageData/)
+})
+
 test('localized gas displacement hot loop contains no allocation, Canvas, or DOM work', () => {
   const source = require('node:fs').readFileSync(modulePath, 'utf8')
   const body = source.match(/function applyLocalizedGasDisplacement[\s\S]*?\n  }/)?.[0] || ''
@@ -663,6 +677,7 @@ test('browser UMD export exposes the same frozen core API as CommonJS', () => {
   const window = {}
   vm.runInNewContext(source, { window, globalThis: window, Math, Object, Number, Uint8Array, Uint16Array, Uint32Array, Uint8ClampedArray, Float32Array, Float64Array, TypeError })
   assert.deepEqual(Object.keys(window.FluidPlanetCore).sort(), Object.keys(core).sort())
+  assert.equal(typeof window.FluidPlanetCore.applyProjectedSurfaceMark, 'function')
   assert.equal(typeof window.FluidPlanetCore.applyLocalizedGasDisplacement, 'function')
   assert.ok(Object.isFrozen(core))
   assert.ok(Object.isFrozen(window.FluidPlanetCore))

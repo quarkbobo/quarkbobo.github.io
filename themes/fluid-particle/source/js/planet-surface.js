@@ -61,6 +61,7 @@
       typeof core.captureSurfacePoint === 'function' &&
       typeof core.writeSurfaceMarkMask === 'function' &&
       typeof core.renderProjectedFrame === 'function' &&
+      typeof core.applyProjectedSurfaceMark === 'function' &&
       typeof core.applyLocalizedGasDisplacement === 'function' &&
       typeof core.computeBackingSize === 'function' &&
       typeof core.createQualityState === 'function' &&
@@ -294,12 +295,25 @@
     function drawCurrentFrame (measure, timestamp, animated) {
       let started = 0
       if (measure) started = root.performance && typeof root.performance.now === 'function' ? root.performance.now() : 0
-      core.renderProjectedFrame(sourceImage.data, sourceWidth, projection, basePhase, outputImage.data, markMask, markEnergy)
+      core.renderProjectedFrame(sourceImage.data, sourceWidth, projection, basePhase, outputImage.data)
       if (interaction.hoverEnergy > 0 || interaction.impactEnergy > 0) {
         core.applyLocalizedGasDisplacement(sourceImage.data, sourceWidth, sourceImage.height, projection, basePhase, interaction, outputImage.data)
       }
+      core.applyProjectedSurfaceMark(sourceWidth, projection, basePhase, outputImage.data, markMask, markEnergy)
       context.putImageData(outputImage, 0, 0)
       if (measure) recordCompletedDraw(Math.max(0, (root.performance && typeof root.performance.now === 'function' ? root.performance.now() : started) - started), timestamp, animated)
+    }
+
+    function redrawVisibleBlockerFrame () {
+      cancelAnimation()
+      if (!initialized || fallback || pageHidden || offscreen) return true
+      try {
+        drawCurrentFrame(true, 0, false)
+        return true
+      } catch (error) {
+        fail()
+        return false
+      }
     }
 
     function rebuildProjection (timestamp, force) {
@@ -512,7 +526,10 @@
       const wasParticleFailed = particleFailed
       manualPaused = scene.classList.contains('motion-paused')
       particleFailed = scene.classList.contains('particle-fallback')
-      if ((!wasManualPaused && manualPaused) || (!wasParticleFailed && particleFailed)) clearInteraction()
+      if ((!wasManualPaused && manualPaused) || (!wasParticleFailed && particleFailed)) {
+        clearInteraction()
+        if (!redrawVisibleBlockerFrame()) return
+      }
       syncAnimation()
     }
 

@@ -524,6 +524,11 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                 await wait(720)
                 const markOnly = capturePlanetFrame()
                 const impactCallsAt770 = window.__planetImpactProbe.calls
+                scene.classList.add('motion-paused')
+                await Promise.resolve()
+                const markPaused = capturePlanetFrame()
+                scene.classList.remove('motion-paused')
+                await wait(50)
                 await wait(80)
                 const impactCallsAfter770 = window.__planetImpactProbe.calls
                 await wait(2200)
@@ -560,6 +565,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                   impactCallsAt770,
                   impactCallsAfter770,
                   markOnlyDifference: patchDifference(baseline, markOnly),
+                  markPauseDifference: patchDifference(baseline, markPaused),
                   finalDifference: patchDifference(baseline, final),
                   cornerDifference: patchDifference(baseline, corner),
                   pausedPlanetDifference: patchDifference(pausedBaseline, pausedAfterInput),
@@ -1040,8 +1046,10 @@ test('fine-pointer comet and planet interactions render, decay, and stay blocked
   assert.deepEqual(interaction.hoverDecayDifference, { count: 0, sum: 0 })
   assert.ok(interaction.impactCallsAt50 > 0, JSON.stringify(interaction))
   assert.equal(interaction.impactCallsAfter770, interaction.impactCallsAt770, JSON.stringify(interaction))
-  assert.ok(interaction.impactDifference.sum > interaction.markOnlyDifference.sum, JSON.stringify(interaction))
+  assert.ok(interaction.impactDifference.sum > 0, JSON.stringify(interaction))
+  assert.ok(interaction.impactFrameDifference.sum > interaction.markOnlyDifference.sum, JSON.stringify(interaction))
   assert.ok(interaction.markOnlyDifference.sum > 0, JSON.stringify(interaction))
+  assert.deepEqual(interaction.markPauseDifference, { count: 0, sum: 0 })
   assert.deepEqual(interaction.finalDifference, { count: 0, sum: 0 })
   assert.deepEqual(interaction.cornerDifference, { count: 0, sum: 0 })
   assert.deepEqual(interaction.pausedPlanetDifference, { count: 0, sum: 0 })
