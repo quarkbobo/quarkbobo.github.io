@@ -5,6 +5,7 @@ const fs = require('node:fs')
 const os = require('node:os')
 const path = require('node:path')
 const { chromeCandidatesFor, windowSizeFor } = require('./browser-launch-policy.cjs')
+const { finePointerMatchMediaFixtureScript } = require('./browser-match-media-fixture.cjs')
 
 const root = path.resolve(__dirname, '..')
 const publicRoot = path.join(root, 'public')
@@ -151,6 +152,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
           <ol class="archive-list"><li id="probe-archive-row"><time>2026</time><a id="probe-archive-link" href="#probe-heading">B</a></li></ol>
         </main>
         <pre id="probe-result"></pre>
+        <script>${finePointerMatchMediaFixtureScript()}</script>
         <script src="js/planet-core.js" defer></script>
         <script src="${fixedPhaseHelperName}" defer></script>
         <script src="js/planet-surface.js" defer></script>
