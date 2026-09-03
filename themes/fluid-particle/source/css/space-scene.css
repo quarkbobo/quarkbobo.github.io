@@ -59,7 +59,8 @@
   aspect-ratio: 1;
   --saturn-equator-angle: -10deg;
   --planet-layout-mode: desktop;
-  transform: translateY(-50%);
+  --planet-desktop-shift-x: clamp(3px, calc(1vw - 9px), 12px);
+  transform: translate(var(--planet-desktop-shift-x), -50%);
 }
 
 .saturn-halo {
@@ -218,11 +219,11 @@
 }
 
 .cursor-comet__segment[data-active="true"][data-phase="0"] .cursor-comet__ink {
-  animation: comet-fade-a 260ms ease-out both;
+  animation: comet-fade-a 520ms ease-out both;
 }
 
 .cursor-comet__segment[data-active="true"][data-phase="1"] .cursor-comet__ink {
-  animation: comet-fade-b 260ms ease-out both;
+  animation: comet-fade-b 520ms ease-out both;
 }
 
 @keyframes comet-fade-a {

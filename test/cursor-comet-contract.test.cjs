@@ -7,6 +7,12 @@ const vm = require('node:vm')
 const root = path.resolve(__dirname, '..')
 const sourcePath = path.join(root, 'themes', 'fluid-particle', 'source', 'js', 'cursor-comet.js')
 const coreSource = fs.readFileSync(path.join(root, 'themes', 'fluid-particle', 'source', 'js', 'cursor-comet-core.js'), 'utf8')
+const spaceSceneCss = fs.readFileSync(path.join(root, 'themes', 'fluid-particle', 'source', 'css', 'space-scene.css'), 'utf8')
+
+test('both pooled comet phases retain their trail for 520ms', () => {
+  assert.match(spaceSceneCss, /animation:\s*comet-fade-a\s+520ms\s+ease-out\s+both/)
+  assert.match(spaceSceneCss, /animation:\s*comet-fade-b\s+520ms\s+ease-out\s+both/)
+})
 
 class FakeEventTarget {
   constructor () {

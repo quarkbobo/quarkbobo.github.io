@@ -29,7 +29,7 @@ test('realistic planet has one static fallback and one surface canvas with no st
 test('dust ring and Canvas surface share the one minus-ten-degree equator', () => {
   const css = sceneCss()
   assert.match(css, /\.saturn-system\s*\{[^}]*--saturn-equator-angle:\s*-10deg;/s)
-  assert.match(css, /\.saturn-system\s*\{[^}]*transform:\s*translateY\(-50%\);/s)
+  assert.match(css, /\.saturn-system\s*\{[^}]*transform:\s*translate\(var\(--planet-desktop-shift-x\),\s*-50%\);/s)
   assert.doesNotMatch(css.match(/\.saturn-system\s*\{([^}]*)\}/s)?.[1] || '', /rotate\(/)
   assert.match(css, /\.saturn-ring\s*\{[^}]*transform:\s*rotate\(var\(--saturn-equator-angle\)\);/s)
   assert.match(css, /#planet-surface\s*\{[^}]*--planet-equator-angle:\s*var\(--saturn-equator-angle\);/s)

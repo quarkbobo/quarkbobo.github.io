@@ -4,6 +4,13 @@ const fs = require('node:fs')
 const path = require('node:path')
 const vm = require('node:vm')
 
+const spaceSceneCss = fs.readFileSync(path.resolve(__dirname, '../themes/fluid-particle/source/css/space-scene.css'), 'utf8')
+
+test('desktop planet translation uses the bounded responsive X shift', () => {
+  assert.match(spaceSceneCss, /--planet-desktop-shift-x:\s*clamp\(3px,\s*calc\(1vw - 9px\),\s*12px\)/)
+  assert.match(spaceSceneCss, /transform:\s*translate\(var\(--planet-desktop-shift-x\),\s*-50%\)/)
+})
+
 class FakeEventTarget {
   constructor () { this.listeners = new Map() }
   addEventListener (type, handler, options) {

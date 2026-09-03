@@ -314,22 +314,9 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
               }
               return { count, sum }
             }
-            const captureCenterPatch = function () {
+            const capturePlanetFrame = function () {
               const context = surface.getContext('2d')
-              const size = Math.min(64, surface.width, surface.height)
-              const left = Math.floor((surface.width - size) / 2)
-              const top = Math.floor((surface.height - size) / 2)
-              return context.getImageData(left, top, size, size).data
-            }
-            const waitForBaselinePatch = async function (baseline, minimumMilliseconds) {
-              await wait(minimumMilliseconds)
-              const deadline = performance.now() + 120
-              let patch = captureCenterPatch()
-              while (patchDifference(baseline, patch).count && performance.now() < deadline) {
-                await wait(16)
-                patch = captureCenterPatch()
-              }
-              return patch
+              return context.getImageData(0, 0, surface.width, surface.height).data
             }
             const dispatchPointer = function (type, x, y) {
               dispatchEvent(new PointerEvent(type, {
@@ -349,12 +336,12 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                   const reducedBounds = surface.getBoundingClientRect()
                   const reducedCenterX = reducedBounds.left + reducedBounds.width / 2
                   const reducedCenterY = reducedBounds.top + reducedBounds.height / 2
-                  const reducedBaseline = captureCenterPatch()
+                  const reducedBaseline = capturePlanetFrame()
                   dispatchPointer('pointermove', reducedCenterX - 48, reducedCenterY)
                   dispatchPointer('pointermove', reducedCenterX + 48, reducedCenterY)
                   dispatchPointer('pointerdown', reducedCenterX, reducedCenterY)
                   await wait(100)
-                  const reducedAfterInput = captureCenterPatch()
+                  const reducedAfterInput = capturePlanetFrame()
                   const reducedLiveCometSegments = Array.from(comet.querySelectorAll('.cursor-comet__segment'))
                   writeProbeResult({
                     initial,
@@ -373,10 +360,10 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                 const bounds = surface.getBoundingClientRect()
                 const centerX = bounds.left + bounds.width / 2
                 const centerY = bounds.top + bounds.height / 2
-                const baseline = captureCenterPatch()
+                const baseline = capturePlanetFrame()
                 dispatchPointer('pointermove', centerX, centerY)
                 await wait(100)
-                const hover = captureCenterPatch()
+                const hover = capturePlanetFrame()
 
                 dispatchPointer('pointermove', bounds.right + 32, centerY)
                 await wait(50)
@@ -395,25 +382,28 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                   width: cometSegmentStyle?.getPropertyValue('--comet-width').trim() || ''
                 }
                 await wait(290)
-                const hoverDecay = captureCenterPatch()
+                const hoverDecay = capturePlanetFrame()
 
                 dispatchPointer('pointerdown', centerX, centerY)
-                await wait(100)
-                const impact = captureCenterPatch()
-                const impactDecay = await waitForBaselinePatch(baseline, 720)
+                await wait(50)
+                const impact = capturePlanetFrame()
+                await wait(720)
+                const markOnly = capturePlanetFrame()
+                await wait(2280)
+                const final = capturePlanetFrame()
 
                 dispatchPointer('pointerdown', bounds.left + 1, bounds.top + 1)
                 await wait(100)
-                const corner = captureCenterPatch()
+                const corner = capturePlanetFrame()
 
                 scene.classList.add('motion-paused')
                 await wait(50)
-                const pausedBaseline = captureCenterPatch()
+                const pausedBaseline = capturePlanetFrame()
                 dispatchPointer('pointermove', centerX - 48, centerY)
                 dispatchPointer('pointermove', centerX + 48, centerY)
                 dispatchPointer('pointerdown', centerX, centerY)
                 await wait(100)
-                const pausedAfterInput = captureCenterPatch()
+                const pausedAfterInput = capturePlanetFrame()
                 const pausedCometSegments = Array.from(comet.querySelectorAll('.cursor-comet__segment'))
                 const pausedCometActiveSegments = pausedCometSegments.filter(function (segment) { return segment.dataset.active === 'true' }).length
                 const pointerInteraction = {
@@ -428,7 +418,8 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                   hoverDifference: patchDifference(baseline, hover),
                   hoverDecayDifference: patchDifference(baseline, hoverDecay),
                   impactDifference: patchDifference(baseline, impact),
-                  impactDecayDifference: patchDifference(baseline, impactDecay),
+                  markOnlyDifference: patchDifference(baseline, markOnly),
+                  finalDifference: patchDifference(baseline, final),
                   cornerDifference: patchDifference(baseline, corner),
                   pausedPlanetDifference: patchDifference(pausedBaseline, pausedAfterInput),
                   pausedCometActiveSegments,
@@ -641,6 +632,9 @@ function runPlanetCompositionProbe (viewport) {
         const rings = Array.from(document.querySelectorAll('.saturn-ring'))
         const ring = rings[0]
         const surface = document.getElementById('planet-surface')
+        const systemStyle = getComputedStyle(system)
+        const systemTransform = systemStyle.transform
+        const systemTranslationX = systemTransform === 'none' ? 0 : new DOMMatrix(systemTransform).m41
         const copy = document.querySelector('.home-hero__copy')
         const brand = document.querySelector('.site-brand')
         const sceneRect = scene.getBoundingClientRect()
@@ -750,7 +744,9 @@ function runPlanetCompositionProbe (viewport) {
             ringAngle: getComputedStyle(ring).getPropertyValue('--saturn-equator-angle').trim(),
             surfaceAngle: getComputedStyle(surface).getPropertyValue('--planet-equator-angle').trim(),
             mobilePolicy: matchMedia('(max-width: 760px)').matches,
-            layoutMode: getComputedStyle(system).getPropertyValue('--planet-layout-mode').trim(),
+            layoutMode: systemStyle.getPropertyValue('--planet-layout-mode').trim(),
+            systemTransform,
+            systemTranslationX,
             viewportWidths: { inner: innerWidth, client: document.documentElement.clientWidth },
             bodyWidth: document.body.getBoundingClientRect().width,
             surfaceReady: document.getElementById('space-scene').classList.contains('planet-ready')
@@ -877,7 +873,9 @@ test('fine-pointer comet and planet interactions render, decay, and stay blocked
   assert.ok(interaction.hoverDifference.sum > 0, JSON.stringify(interaction.hoverDifference))
   assert.ok(interaction.impactDifference.sum > interaction.hoverDifference.sum, JSON.stringify(interaction))
   assert.deepEqual(interaction.hoverDecayDifference, { count: 0, sum: 0 })
-  assert.deepEqual(interaction.impactDecayDifference, { count: 0, sum: 0 })
+  assert.ok(interaction.markOnlyDifference.sum > 0, JSON.stringify(interaction))
+  assert.ok(interaction.markOnlyDifference.count < interaction.impactDifference.count, JSON.stringify(interaction))
+  assert.deepEqual(interaction.finalDifference, { count: 0, sum: 0 })
   assert.deepEqual(interaction.cornerDifference, { count: 0, sum: 0 })
   assert.deepEqual(interaction.pausedPlanetDifference, { count: 0, sum: 0 })
   assert.equal(interaction.pausedCometActiveSegments, 0)
@@ -964,6 +962,8 @@ test('planet and dust ring keep approved geometry clear of copy at every accepta
     if (viewport.width > 760) {
       assert.ok(probe.ringRect.left >= probe.sceneRect.left)
       assert.ok(probe.ringRightClearance >= 8, `${viewport.width}px ring clearance`)
+      assert.ok(probe.systemTranslationX >= 3 && probe.systemTranslationX <= 12, `${viewport.width}px translation ${probe.systemTranslationX}`)
+      assert.notEqual(probe.systemTransform, 'none')
       assert.equal(probe.noHorizontalOverflow, true)
       assert.equal(probe.copyIntersectsPlanetOrRing, false)
     }
@@ -993,6 +993,8 @@ test('planet and dust ring keep approved geometry clear of copy at every accepta
       assert.equal(probe.mobilePolicy, true)
       assert.equal(probe.layoutMode, 'mobile')
       assert.ok(probe.ringRect.right > probe.sceneRect.right)
+      assert.equal(probe.systemTransform, 'none')
+      assert.equal(probe.systemTranslationX, 0)
     }
   }
 })
