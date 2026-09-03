@@ -439,3 +439,63 @@ test('the homepage empty state includes a usable return-home link', () => {
   assert.match(emptyState, /档案中还没有记录/)
   assert.match(emptyState, /<a\b[^>]*href="\/"[^>]*>返回首页<\/a>/)
 })
+
+test('home excludes the catalogue post while passing every other folder post to cards', () => {
+  const renderedPaths = []
+  const posts = [
+    { title: '博客目录', path: 'index.html', source: '_posts/博客目录.md' },
+    { title: '一级文章', path: '新文件夹/one/index.html', source: '_posts/新文件夹/one.md' },
+    { title: '深层文章', path: '另一个文件夹/深层/two/index.html', source: '_posts/另一个文件夹/深层/two.md' }
+  ]
+
+  ejs.render(template(path.join('_partial', 'home.ejs')), {
+    posts,
+    catalogue: { content: '' },
+    config: { language: 'zh-CN', title: 'Fixture site' },
+    theme: { hero: { eyebrow: '', title: '蓝色空间号', description: '技术笔记、游戏合集、日常Vlog' } },
+    partial: (name, locals) => {
+      if (name === '_partial/post-card') renderedPaths.push(locals.post.path)
+      return ''
+    },
+    url_for: value => value
+  })
+
+  assert.deepEqual(renderedPaths, [
+    '新文件夹/one/index.html',
+    '另一个文件夹/深层/two/index.html'
+  ])
+})
+
+test('post cards expose publication data and an initially hidden NEW ribbon', () => {
+  const output = ejs.render(template(path.join('_partial', 'post-card.ejs')), {
+    post: {
+      title: 'New post',
+      path: 'new/index.html',
+      date: new Date('2026-09-03T00:00:00Z'),
+      raw: '\t引导文字',
+      categories: []
+    },
+    dateFormatter: { format: () => '2026年9月3日' },
+    date_xml: value => value.toISOString(),
+    post_lead: () => '引导文字',
+    url_for: value => `/${value}`
+  })
+
+  assert.match(output, /<article class="post-card"[^>]*data-latest-card[^>]*data-published-at="2026-09-03T00:00:00.000Z"/)
+  assert.match(output, /class="post-card__ribbon"[^>]*aria-hidden="true"[^>]*>NEW<\/span>/)
+})
+
+test('approved home copy, navigation, footer, title layout, and ribbon styling are declared', () => {
+  const config = fs.readFileSync(path.join(themeRoot, '_config.yml'), 'utf8')
+  const footer = template(path.join('_partial', 'footer.ejs'))
+  const css = fs.readFileSync(path.join(themeRoot, 'source', 'css', 'main.css'), 'utf8')
+
+  assert.match(config, /title:\s*蓝色空间号/)
+  assert.match(config, /description:\s*技术笔记、游戏合集、日常Vlog/)
+  assert.doesNotMatch(config, /^\s+(?:分类|标签):/m)
+  assert.match(footer, /不要回答！不要回答！不要回答！/)
+  assert.match(css, /\.home-hero h1\s*\{[^}]*white-space:\s*nowrap;/s)
+  assert.match(css, /\.post-card__ribbon\s*\{[^}]*linear-gradient\([^)]*#[0-9a-f]{6}/is)
+  assert.match(css, /\.post-card__ribbon\s*\{[^}]*rotate\(45deg\)/s)
+  assert.match(css, /\.post-card\.is-new\s+\.post-card__ribbon\s*\{[^}]*display:\s*flex;/s)
+})

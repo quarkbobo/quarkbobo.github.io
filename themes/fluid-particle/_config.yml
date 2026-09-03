@@ -1,13 +1,11 @@
 name: 流体粒子
 hero:
   eyebrow: PERSONAL ARCHIVE · DEEP SPACE SIGNAL
-  title: 在噪声里，保留信号。
-  description: 技术笔记、游戏实验与日常观测。
+  title: 蓝色空间号
+  description: 技术笔记、游戏合集、日常Vlog
 menu:
   首页: /
   归档: /archives/
-  分类: /categories/
-  标签: /tags/
   关于: /关于我/About-me/
 image_dimensions:
   "https://cdn.nlark.com/yuque/0/2025/png/54207903/1762238688380-8ceb053b-5d25-432f-a0eb-84443781f7e7.png": { width: 968, height: 122 }

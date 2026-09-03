@@ -217,8 +217,10 @@ a {
 }
 
 .home-hero h1 {
-  max-width: 9em;
-  font-size: clamp(3rem, 7vw, 6.6rem);
+  max-width: none;
+  font-size: clamp(2.75rem, 5.8vw, 5.3rem);
+  letter-spacing: 0.015em;
+  white-space: nowrap;
 }
 
 .hero-description {
@@ -381,6 +383,31 @@ a {
   color: var(--archive-blue-grey);
   font-size: 0.92rem;
   text-overflow: ellipsis;
+}
+
+.post-card__ribbon {
+  position: absolute;
+  z-index: 2;
+  top: 1.1rem;
+  right: -2.65rem;
+  display: none;
+  width: 9rem;
+  min-height: 1.8rem;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(45deg);
+  border-block: 1px solid rgba(255, 235, 239, 0.5);
+  background: linear-gradient(90deg, #7d0019 0%, #ef1745 48%, #a40024 100%);
+  box-shadow: 0 0.45rem 1rem rgba(91, 0, 24, 0.38), inset 0 1px rgba(255, 255, 255, 0.28);
+  color: #fff5f7;
+  font: 800 0.68rem/1 var(--font-data);
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  text-shadow: 0 1px 2px rgba(53, 0, 12, 0.72);
+}
+
+.post-card.is-new .post-card__ribbon {
+  display: flex;
 }
 
 .post-card__link {

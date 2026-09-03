@@ -1,5 +1,10 @@
 <%
-const homePosts = posts && typeof posts.toArray === 'function' ? posts.toArray() : Array.from(posts || [])
+const allHomePosts = posts && typeof posts.toArray === 'function' ? posts.toArray() : Array.from(posts || [])
+const homePosts = allHomePosts.filter(post => {
+  const source = String(post.source || '').replace(/\\/g, '/')
+  return !source.endsWith('/博客目录.md') && source !== '博客目录.md' &&
+    !(post.path === 'index.html' && post.title === '博客目录')
+})
 const homeDateOptions = { year: 'numeric', month: 'long', day: 'numeric' }
 if (config.timezone) homeDateOptions.timeZone = config.timezone
 const homeDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN', homeDateOptions)
@@ -27,7 +32,7 @@ const homeDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN', ho
       <h2 id="latest-title">最新记录</h2>
     </div>
     <% if (homePosts.length) { %>
-      <div class="post-grid">
+      <div class="post-grid" data-latest-grid>
         <% homePosts.slice(0, 10).forEach(post => { %>
           <%- partial('_partial/post-card', { post, dateFormatter: homeDateFormatter }) %>
         <% }) %>

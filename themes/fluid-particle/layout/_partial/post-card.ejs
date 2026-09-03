@@ -3,7 +3,8 @@ const cardCategories = post.categories && typeof post.categories.toArray === 'fu
   ? post.categories.toArray()
   : Array.from(post.categories || [])
 %>
-<article class="post-card">
+<article class="post-card" data-latest-card data-published-at="<%= date_xml(post.date) %>">
+  <span class="post-card__ribbon" aria-hidden="true">NEW</span>
   <p class="post-card__date"><time datetime="<%= date_xml(post.date) %>"><%= dateFormatter.format(new Date(post.date)) %></time></p>
   <h3><a href="<%= url_for(post.path) %>"><%= post.title %></a></h3>
   <% if (cardCategories.length) { %>
