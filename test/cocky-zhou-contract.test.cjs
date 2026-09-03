@@ -16,6 +16,11 @@ const apiItems = [
   { name: 'backup', size: 0, type: 'dir' }
 ]
 
+const backupItems = [
+  { name: 'history.txt', size: 160, type: 'file' },
+  { name: 'old-sheet.xlsx', size: 4096, type: 'file' }
+]
+
 function canvasContext () {
   const gradient = { addColorStop () {} }
   return new Proxy({}, {
@@ -47,10 +52,12 @@ async function renderPage ({ reducedMotion = false, finePointer = true } = {}) {
     virtualConsole,
     beforeParse (window) {
       Object.defineProperty(window, 'devicePixelRatio', { value: 1, configurable: true })
-      window.fetch = async () => ({
+      window.fetch = async url => ({
         ok: true,
         status: 200,
-        async json () { return apiItems },
+        async json () {
+          return String(url).includes('/source/files/backup?') ? backupItems : apiItems
+        },
         async text () { return '' }
       })
       window.open = (...args) => opened.push(args)
@@ -100,8 +107,8 @@ test('files support filtering and direct opening without an in-page preview', as
   const page = await renderPage()
   const { document } = page
 
-  assert.equal(document.querySelectorAll('.file-item').length, 4)
-  assert.equal(document.querySelector('#fileCount').textContent, '共 4 个文件')
+  assert.equal(document.querySelectorAll('.file-item').length, 6)
+  assert.equal(document.querySelector('#fileCount').textContent, '共 6 个文件')
   assert.equal(document.querySelector('#list img'), null, 'escaped file names cannot inject markup')
   assert.equal(document.querySelector('#articleSection'), null)
   assert.equal(document.querySelector('.btn-preview'), null)
@@ -111,14 +118,29 @@ test('files support filtering and direct opening without an in-page preview', as
   textFilter.click()
   assert.equal(textFilter.getAttribute('aria-pressed'), 'true')
   assert.equal(document.querySelector('[data-filter="all"]').getAttribute('aria-pressed'), 'false')
-  assert.equal(document.querySelectorAll('.file-item').length, 2)
+  assert.equal(document.querySelectorAll('.file-item').length, 3)
 
   document.querySelector('[data-filter="all"]').click()
+  const search = document.querySelector('#q')
+  search.value = 'backup'
+  search.dispatchEvent(new page.dom.window.Event('input', { bubbles: true }))
+  assert.deepEqual(
+    [...document.querySelectorAll('.file-name')].map(element => element.textContent),
+    ['backup/history.txt', 'backup/old-sheet.xlsx']
+  )
+
+  search.value = ''
+  search.dispatchEvent(new page.dom.window.Event('input', { bubbles: true }))
   const markdownRow = [...document.querySelectorAll('.file-item')]
     .find(row => row.querySelector('.file-name').textContent === 'guide.md')
   assert.deepEqual([...markdownRow.querySelectorAll('.btn')].map(button => button.textContent), ['打开', '下载'])
   markdownRow.querySelector('[data-open]').click()
   assert.deepEqual(page.opened, [['/files/guide.md', '_blank', 'noopener']])
+
+  const backupRow = [...document.querySelectorAll('.file-item')]
+    .find(row => row.querySelector('.file-name').textContent === 'backup/history.txt')
+  backupRow.querySelector('[data-open]').click()
+  assert.deepEqual(page.opened[1], ['/files/backup/history.txt', '_blank', 'noopener'])
 
   page.dom.window.close()
 })
@@ -128,7 +150,10 @@ test('the particle field exposes a static reduced-motion state and accessible co
   const { document } = page
   const snapshot = page.dom.window.__fileStarfieldMetrics?.snapshot()
 
-  assert.deepEqual(snapshot, { initialized: true, reducedMotion: true, animating: false })
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(snapshot)),
+    { initialized: true, reducedMotion: true, animating: false }
+  )
   assert.equal(page.frameCallbacks.size, 0)
   assert.match(source, /@media\s*\(prefers-reduced-motion:\s*reduce\)/i)
   assert.match(source, /@media\s*\(hover:\s*hover\)\s*and\s*\(pointer:\s*fine\)/i)

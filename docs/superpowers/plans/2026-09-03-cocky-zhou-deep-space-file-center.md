@@ -13,6 +13,7 @@
 - Preserve the `COCKY ZHOU` identity and GitHub source `quarkbobo/quarkbobo.github.io`, branch `master`, directory `source/files`.
 - Use exactly these core colors: `#02040B`, `#08162A`, `#38BDF8`, `#8B5CF6`, `#E8F2FF`, and `#91A8C4`.
 - Keep search, type filtering, opening, and downloading files.
+- Recursively include files below `source/files`; display and search their relative paths such as `backup/history.txt`.
 - Remove the lower Markdown preview card, preview buttons, Markdown tabs, `marked.js`, preview state, and Markdown rendering functions.
 - Keep the page self-contained with no new runtime or build dependency.
 - Respect `prefers-reduced-motion`; disable pointer trails for touch/coarse-pointer devices and stop Canvas animation while the page is hidden.
@@ -87,7 +88,7 @@ git commit -m "test: define deep-space file center contract"
 - Test: `test/cocky-zhou-contract.test.cjs`
 
 **Interfaces:**
-- Consumes: `loadFromGitHub(): Promise<Array<{name: string, size: number}>>`, existing `publicUrl(name)` and safe HTML escaping.
+- Consumes: `loadFromGitHub(): Promise<Array<{name: string, size: number}>>`, recursive `readDirectory(apiPath, relativeDirectory)`, `publicUrl(name)`, and safe HTML escaping.
 - Produces: `renderList(): void`, `setActiveFilter(button): void`, and `mountStarfield(canvas): { destroy(): void }` inside the standalone page.
 
 - [ ] **Step 1: Replace the visual foundation**

@@ -2,537 +2,909 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <title>COCKY ZHOU ♡ 文件中心</title>
+  <title>COCKY ZHOU · 文件信号站</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#02040B">
   <style>
     :root {
-      --c-bg: #f5f5f7;
-      --c-card: #fff;
-      --c-text: #1d1d1f;
-      --c-text2: #6e6e73;
-      --c-border: rgba(0,0,0,.08);
-      --c-accent: #c0392b;
-      --c-accent-light: rgba(192,57,43,.08);
-      --c-hover: rgba(0,0,0,.03);
-      --c-success: #27ae60;
-      --c-tag-bg: rgba(192,57,43,.08);
-      --c-tag-text: #c0392b;
-      --radius: 14px;
-      --radius-sm: 10px;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --c-bg: #1a1a1c;
-        --c-card: #2a2a2e;
-        --c-text: #f5f5f7;
-        --c-text2: #8e8e93;
-        --c-border: rgba(255,255,255,.08);
-        --c-hover: rgba(255,255,255,.04);
-        --c-tag-bg: rgba(192,57,43,.18);
-        --c-tag-text: #e57373;
-      }
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-                   "PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
-      background: var(--c-bg);
-      color: var(--c-text);
-      line-height: 1.6;
-      min-height: 100vh;
+      color-scheme: dark;
+      --space: #02040B;
+      --bay: #08162A;
+      --signal: #38BDF8;
+      --nebula: #8B5CF6;
+      --ink: #E8F2FF;
+      --mist: #91A8C4;
+      --line: rgba(145, 168, 196, .2);
+      --line-bright: rgba(56, 189, 248, .42);
+      --panel: rgba(8, 22, 42, .78);
+      --panel-deep: rgba(4, 12, 25, .88);
+      --success: #5EE6B2;
+      --danger: #FF6B88;
+      --radius: 22px;
+      --radius-sm: 13px;
+      --shadow: 0 26px 90px rgba(0, 0, 0, .44);
     }
 
-    /* ===== 顶部 Hero ===== */
-    .hero {
-      background: linear-gradient(135deg, #c0392b 0%, #e74c3c 50%, #ff6f61 100%);
-      padding: 48px 24px 40px;
-      text-align: center;
-      color: #fff;
-      position: relative;
-      overflow: hidden;
+    * { box-sizing: border-box; }
+
+    html {
+      min-width: 320px;
+      background: var(--space);
+      scroll-behavior: smooth;
     }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--ink);
+      font-family: "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", system-ui, sans-serif;
+      line-height: 1.6;
+      background:
+        radial-gradient(circle at 78% 8%, rgba(139, 92, 246, .16), transparent 32rem),
+        radial-gradient(circle at 16% 24%, rgba(56, 189, 248, .11), transparent 28rem),
+        linear-gradient(180deg, #030712 0%, var(--space) 58%, #030815 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: .2;
+      background-image:
+        linear-gradient(rgba(56, 189, 248, .045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, .045) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .85), transparent 78%);
+    }
+
+    button,
+    input { font: inherit; }
+
+    button,
+    a { -webkit-tap-highlight-color: rgba(56, 189, 248, .18); }
+
+    :focus-visible {
+      outline: 2px solid var(--signal);
+      outline-offset: 4px;
+    }
+
+    #starfield {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 20;
+      top: 12px;
+      left: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: var(--space);
+      background: var(--signal);
+      font-weight: 800;
+      text-decoration: none;
+      transform: translateY(-150%);
+      transition: transform .18s ease;
+    }
+
+    .skip-link:focus-visible { transform: translateY(0); }
+
+    .page-shell {
+      position: relative;
+      width: min(100% - 32px, 960px);
+      margin-inline: auto;
+      padding: 24px 0 32px;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 330px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 64px clamp(20px, 5vw, 60px) 76px;
+      overflow: hidden;
+      border: 1px solid rgba(56, 189, 248, .2);
+      border-radius: 30px;
+      background:
+        linear-gradient(118deg, rgba(8, 22, 42, .96) 0%, rgba(8, 22, 42, .74) 55%, rgba(34, 21, 75, .7) 100%);
+      box-shadow: var(--shadow), inset 0 1px rgba(255, 255, 255, .04);
+      isolation: isolate;
+    }
+
     .hero::before {
       content: "";
       position: absolute;
-      top: -60px; right: -60px;
-      width: 200px; height: 200px;
+      width: 460px;
+      aspect-ratio: 1;
+      right: -120px;
+      top: -170px;
       border-radius: 50%;
-      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(139, 92, 246, .24);
+      background: radial-gradient(circle, rgba(139, 92, 246, .18), transparent 64%);
+      box-shadow: 0 0 100px rgba(139, 92, 246, .12);
+      z-index: -1;
     }
+
     .hero::after {
       content: "";
       position: absolute;
-      bottom: -40px; left: -40px;
-      width: 140px; height: 140px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.05);
-    }
-    .hero-icon { font-size: 42px; margin-bottom: 10px; position: relative; z-index: 1; }
-    .hero h1 { font-size: 26px; font-weight: 700; letter-spacing: .5px; position: relative; z-index: 1; }
-    .hero p  { font-size: 14px; opacity: .85; margin-top: 6px; position: relative; z-index: 1; }
-
-    /* ===== 主体 ===== */
-    .main { max-width: 860px; margin: -28px auto 40px; padding: 0 16px; position: relative; z-index: 2; }
-    .card {
-      background: var(--c-card);
-      border-radius: var(--radius);
-      box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
-      padding: 22px 24px;
-      margin-bottom: 20px;
+      inset: 0;
+      z-index: -1;
+      opacity: .42;
+      background: repeating-linear-gradient(90deg, transparent 0 98px, rgba(56, 189, 248, .055) 99px 100px);
+      mask-image: linear-gradient(to right, transparent, #000 38%, #000);
     }
 
-    /* ===== 搜索栏 ===== */
-    .search-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 0; }
-    .search-bar input[type="search"] {
-      flex: 1;
-      padding: 11px 14px 11px 38px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--c-border);
-      background: var(--c-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238e8e93' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1114 9.5 4.5 4.5 0 019.5 14z'/%3E%3C/svg%3E") 12px center no-repeat;
-      font-size: 14px;
-      color: var(--c-text);
-      outline: none;
-      transition: border-color .15s;
-    }
-    .search-bar input[type="search"]:focus { border-color: var(--c-accent); }
-    .search-bar input[type="search"]::placeholder { color: var(--c-text2); }
-    .file-count {
-      font-size: 13px;
-      color: var(--c-text2);
-      white-space: nowrap;
-    }
-
-    /* ===== 分类标签 ===== */
-    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-    .tab-btn {
-      padding: 6px 16px;
-      border-radius: 20px;
-      border: 1px solid var(--c-border);
-      background: transparent;
-      color: var(--c-text2);
-      font-size: 13px;
-      cursor: pointer;
-      transition: all .15s;
-      user-select: none;
-    }
-    .tab-btn:hover { background: var(--c-hover); }
-    .tab-btn.active {
-      background: var(--c-tag-bg);
-      color: var(--c-tag-text);
-      border-color: transparent;
-      font-weight: 500;
-    }
-
-    /* ===== 文件列表 ===== */
-    .file-list { display: flex; flex-direction: column; gap: 4px; }
-    .file-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: var(--radius-sm);
-      transition: background .12s;
-      cursor: default;
-    }
-    .file-item:hover { background: var(--c-hover); }
-
-    .file-icon {
-      width: 40px; height: 40px;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-    .ext-txt .file-icon { background: #e8f4fd; }
-    .ext-md  .file-icon { background: var(--c-tag-bg); }
-    .ext-xlsx .file-icon,
-    .ext-xls .file-icon { background: #e8f7ef; }
-
-    .file-info { flex: 1; min-width: 0; }
-    .file-name {
-      font-size: 14px; font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: var(--c-text);
-    }
-    .file-meta { font-size: 12px; color: var(--c-text2); margin-top: 2px; }
-
-    .file-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .btn {
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--c-border);
-      background: transparent;
-      color: var(--c-text);
-      font-size: 13px;
-      cursor: pointer;
-      transition: all .12s;
-      text-decoration: none;
+    .home-link {
+      position: absolute;
+      top: 24px;
+      left: clamp(20px, 5vw, 60px);
+      min-height: 44px;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      white-space: nowrap;
-    }
-    .btn:hover { background: var(--c-accent); color: #fff; border-color: var(--c-accent); }
-    .btn-preview { border-color: var(--c-accent); color: var(--c-accent); }
-    .btn-preview:hover { background: var(--c-accent); color: #fff; }
-
-    .empty-msg {
-      text-align: center;
-      padding: 32px 16px;
-      color: var(--c-text2);
-      font-size: 14px;
+      gap: 8px;
+      color: var(--mist);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-decoration: none;
+      transition: color .18s ease, transform .18s ease;
     }
 
-    /* ===== 推文预览区 ===== */
-    .article-section { margin-top: 8px; }
-    .article-head {
+    .home-link:hover { color: var(--signal); transform: translateX(-3px); }
+
+    .hero-kicker,
+    .system-label,
+    .file-meta,
+    .file-count,
+    .tab-btn {
+      font-family: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+    }
+
+    .hero-kicker {
+      margin: 0 0 15px;
+      color: var(--signal);
+      font-size: clamp(12px, 1.5vw, 14px);
+      font-weight: 800;
+      letter-spacing: .18em;
+    }
+
+    .hero h1 {
+      max-width: 720px;
+      margin: 0;
+      font-family: "Bahnschrift SemiCondensed", "Arial Narrow", "PingFang SC", sans-serif;
+      font-size: clamp(44px, 8vw, 84px);
+      font-stretch: condensed;
+      font-weight: 700;
+      letter-spacing: -.035em;
+      line-height: .98;
+      text-wrap: balance;
+    }
+
+    .hero-description {
+      max-width: 600px;
+      margin: 22px 0 0;
+      color: var(--mist);
+      font-size: clamp(14px, 2vw, 17px);
+      letter-spacing: .04em;
+    }
+
+    .signal-rail {
+      position: absolute;
+      right: clamp(20px, 5vw, 60px);
+      bottom: 30px;
+      left: clamp(20px, 5vw, 60px);
+      height: 28px;
       display: flex;
       align-items: center;
+      gap: 14px;
+      color: var(--mist);
+      font: 700 10px/1 ui-monospace, monospace;
+      letter-spacing: .14em;
+    }
+
+    .signal-rail::before {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--signal) 18%, var(--nebula) 72%, transparent);
+      box-shadow: 0 0 14px rgba(56, 189, 248, .68);
+    }
+
+    .signal-rail::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 90px;
+      height: 3px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 0 10px var(--signal), 0 0 24px var(--nebula);
+      animation: signal-scan 5.8s ease-in-out infinite;
+    }
+
+    @keyframes signal-scan {
+      0%, 100% { transform: translateX(0); opacity: 0; }
+      12% { opacity: .92; }
+      78% { opacity: .7; }
+      90% { transform: translateX(min(660px, 62vw)); opacity: 0; }
+    }
+
+    .main {
+      position: relative;
+      z-index: 2;
+      width: calc(100% - clamp(12px, 4vw, 56px));
+      margin: -30px auto 0;
+    }
+
+    .card {
+      padding: clamp(18px, 4vw, 34px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(10, 27, 50, .9), var(--panel-deep));
+      box-shadow: 0 20px 64px rgba(0, 0, 0, .36), inset 0 1px rgba(255, 255, 255, .035);
+      backdrop-filter: blur(20px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .system-label {
+      margin: 0 0 5px;
+      color: var(--signal);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .15em;
+    }
+
+    .card-header h2 { margin: 0; font-size: clamp(20px, 3vw, 26px); line-height: 1.25; }
+
+    .bay-status {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
       gap: 8px;
+      flex: none;
+      padding: 5px 10px;
+      border: 1px solid rgba(94, 230, 178, .22);
+      border-radius: 999px;
+      color: var(--success);
+      background: rgba(94, 230, 178, .07);
+      font: 700 10px/1 ui-monospace, monospace;
+      letter-spacing: .1em;
+    }
+
+    .bay-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 9px currentColor;
+    }
+
+    .search-bar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
       margin-bottom: 14px;
     }
-    .article-head h2 { font-size: 17px; font-weight: 600; }
-    .article-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-    .art-tab {
-      padding: 5px 14px;
-      border-radius: 20px;
-      border: 1px solid var(--c-border);
-      background: transparent;
-      color: var(--c-text2);
-      font-size: 13px;
-      cursor: pointer;
-      transition: all .15s;
-    }
-    .art-tab:hover { background: var(--c-hover); }
-    .art-tab.active { background: var(--c-tag-bg); color: var(--c-tag-text); border-color: transparent; font-weight: 500; }
 
-    .article-body {
-      background: var(--c-bg);
-      border: 1px solid var(--c-border);
+    .search-wrap { position: relative; }
+
+    .search-wrap::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 16px;
+      width: 13px;
+      height: 13px;
+      border: 2px solid var(--mist);
+      border-radius: 50%;
+      transform: translateY(-60%);
+      pointer-events: none;
+    }
+
+    .search-wrap::after {
+      content: "";
+      position: absolute;
+      top: calc(50% + 7px);
+      left: 29px;
+      width: 7px;
+      height: 2px;
+      background: var(--mist);
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+
+    .search-bar input[type="search"] {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 16px 12px 48px;
+      border: 1px solid var(--line);
       border-radius: var(--radius-sm);
-      padding: 24px 20px;
-      min-height: 100px;
-      line-height: 1.8;
-      font-size: 15px;
-      color: var(--c-text);
-    }
-    .article-body h1 { font-size: 22px; font-weight: 700; margin: 0 0 14px; line-height: 1.4; }
-    .article-body h2 { font-size: 17px; font-weight: 600; margin: 20px 0 8px; padding-left: 10px; border-left: 3px solid var(--c-accent); }
-    .article-body h3 { font-size: 15px; font-weight: 600; margin: 16px 0 6px; }
-    .article-body p  { margin: 8px 0; }
-    .article-body strong { color: var(--c-accent); font-weight: 600; }
-    .article-body ul, .article-body ol { padding-left: 20px; margin: 8px 0; }
-    .article-body li { margin: 3px 0; }
-    .article-body hr { border: none; border-top: 1px dashed var(--c-border); margin: 18px 0; }
-    .article-body blockquote {
-      border-left: 3px solid var(--c-accent);
-      background: var(--c-accent-light);
-      padding: 10px 14px;
-      margin: 12px 0;
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      font-size: 14px;
-    }
-    .article-body code {
-      background: rgba(127,127,127,.1);
-      padding: 1px 5px;
-      border-radius: 4px;
-      font-size: 13px;
-    }
-    .article-placeholder {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 80px; color: var(--c-text2); font-size: 14px;
+      color: var(--ink);
+      caret-color: var(--signal);
+      background: rgba(2, 8, 18, .62);
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
     }
 
-    /* ===== 底部信息 ===== */
-    .footer {
-      text-align: center;
-      font-size: 12px;
-      color: var(--c-text2);
-      padding: 20px 16px 32px;
-      line-height: 1.8;
+    .search-bar input[type="search"]::placeholder { color: rgba(145, 168, 196, .68); }
+    .search-bar input[type="search"]:focus { border-color: var(--signal); box-shadow: 0 0 0 4px rgba(56, 189, 248, .1); background: rgba(3, 12, 26, .88); }
+
+    .file-count { color: var(--mist); font-size: 12px; white-space: nowrap; }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
     }
-    .footer code {
-      background: rgba(127,127,127,.1);
-      padding: 1px 5px;
-      border-radius: 4px;
+
+    .tab-btn,
+    .btn {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      color: var(--mist);
+      background: rgba(2, 8, 18, .36);
+      cursor: pointer;
+      transition: color .18s ease, border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+
+    .tab-btn {
+      padding: 8px 15px;
+      border-radius: 999px;
       font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
     }
 
-    /* ===== 响应式 ===== */
-    @media (max-width: 600px) {
-      .hero { padding: 36px 16px 32px; }
-      .hero h1 { font-size: 20px; }
-      .card { padding: 16px; }
-      .file-item { flex-wrap: wrap; }
-      .file-actions { width: 100%; justify-content: flex-end; }
+    .tab-btn:hover,
+    .btn:hover { color: var(--ink); border-color: var(--line-bright); background: rgba(56, 189, 248, .09); }
+
+    .tab-btn[aria-pressed="true"] {
+      color: #02111B;
+      border-color: transparent;
+      background: var(--signal);
+      box-shadow: 0 0 18px rgba(56, 189, 248, .22);
+    }
+
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 16px;
+    }
+
+    .file-item {
+      position: relative;
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 14px;
+      overflow: hidden;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: rgba(2, 8, 18, .3);
+      transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+
+    .file-item::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      bottom: 10px;
+      left: 0;
+      width: 2px;
+      border-radius: 999px;
+      background: linear-gradient(var(--signal), var(--nebula));
+      opacity: 0;
+      transition: opacity .18s ease;
+    }
+
+    .file-icon {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: var(--signal);
+      background: rgba(56, 189, 248, .07);
+      font-size: 19px;
+    }
+
+    .ext-md .file-icon { color: #B8A5FF; background: rgba(139, 92, 246, .1); }
+    .ext-xlsx .file-icon, .ext-xls .file-icon { color: var(--success); background: rgba(94, 230, 178, .08); }
+
+    .file-info { min-width: 0; }
+
+    .file-name {
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-meta { margin-top: 3px; color: var(--mist); font-size: 10px; letter-spacing: .05em; }
+    .file-actions { display: flex; flex: none; gap: 8px; }
+
+    .btn {
+      padding: 8px 13px;
+      border-radius: 11px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-open { color: var(--signal); border-color: rgba(56, 189, 248, .38); }
+    .btn:active { transform: translateY(1px); }
+
+    .status-message {
+      min-height: 128px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 24px;
+      color: var(--mist);
+      text-align: center;
+    }
+
+    .status-message strong { color: var(--ink); }
+    .status-message--error strong { color: var(--danger); }
+    .status-message .btn { margin-top: 7px; }
+
+    .footer {
+      padding: 24px 16px 6px;
+      color: rgba(145, 168, 196, .7);
+      font: 11px/1.8 ui-monospace, "Cascadia Code", monospace;
+      text-align: center;
+    }
+
+    .footer code { color: var(--signal); }
+
+    @media (hover: hover) and (pointer: fine) {
+      .file-item:hover {
+        border-color: rgba(56, 189, 248, .22);
+        background: rgba(9, 30, 54, .64);
+        transform: translateX(3px);
+      }
+      .file-item:hover::before { opacity: 1; }
+    }
+
+    @media (max-width: 640px) {
+      .page-shell { width: min(100% - 20px, 960px); padding-top: 10px; }
+      .hero { min-height: 300px; padding: 64px 20px 70px; border-radius: 22px; }
+      .home-link { top: 14px; left: 20px; }
+      .hero h1 { font-size: clamp(42px, 16vw, 64px); }
+      .hero::before { width: 340px; right: -170px; }
+      .signal-rail { right: 20px; bottom: 24px; left: 20px; }
+      .main { width: calc(100% - 12px); margin-top: -22px; }
+      .card { padding: 18px 14px; border-radius: 18px; }
+      .card-header { align-items: center; }
+      .search-bar { grid-template-columns: 1fr; gap: 8px; }
+      .file-count { justify-self: end; }
+      .file-item { grid-template-columns: 42px minmax(0, 1fr); gap: 12px; padding: 13px 10px; }
+      .file-icon { width: 42px; height: 42px; }
+      .file-actions { grid-column: 2; width: 100%; }
+      .btn { flex: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .signal-rail::after { animation: none; left: 35%; opacity: .62; }
+      *, *::before, *::after { transition-duration: .001ms !important; }
     }
   </style>
 </head>
 <body>
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <a class="skip-link" href="#file-center">跳到文件列表</a>
 
-<!-- ===== Hero 顶部 ===== -->
-<div class="hero">
-  <div class="hero-icon">🍬</div>
-  <h1>COCKY ZHOU ♡ 文件中心</h1>
-  <p>学院月测题库 · 学习资料共享 · 持续更新中</p>
-</div>
+  <div class="page-shell">
+    <header class="hero">
+      <a class="home-link" href="/">← 蓝色空间号</a>
+      <p class="hero-kicker">COCKY ZHOU / DATA BAY</p>
+      <h1>文件信号站</h1>
+      <p class="hero-description">学院月测题库 · 学习资料共享 · 持续更新中</p>
+      <div class="signal-rail" aria-hidden="true">SIGNAL LOCKED</div>
+    </header>
 
-<!-- ===== 主体 ===== -->
-<div class="main">
+    <main class="main" id="file-center" tabindex="-1">
+      <section class="card" aria-labelledby="files-title">
+        <div class="card-header">
+          <div>
+            <p class="system-label">ARCHIVE CHANNEL 01</p>
+            <h2 id="files-title">资料舱清单</h2>
+          </div>
+          <span class="bay-status" id="bayStatus">CONNECTING</span>
+        </div>
 
-  <!-- 文件列表卡片 -->
-  <div class="card">
-    <div class="search-bar">
-      <input id="q" type="search" placeholder="搜索文件名…" />
-      <span class="file-count" id="fileCount"></span>
-    </div>
+        <div class="search-bar">
+          <div class="search-wrap">
+            <input id="q" type="search" aria-label="搜索文件名" placeholder="搜索文件名或目录…" autocomplete="off">
+          </div>
+          <span class="file-count" id="fileCount" aria-live="polite"></span>
+        </div>
 
-    <div class="tabs" id="tabs">
-      <button class="tab-btn active" data-filter="all">全部</button>
-      <button class="tab-btn" data-filter=".txt">TXT</button>
-      <button class="tab-btn" data-filter=".xlsx">XLSX</button>
-      <button class="tab-btn" data-filter=".md">Markdown</button>
-    </div>
+        <div class="tabs" id="tabs" aria-label="按文件类型筛选">
+          <button class="tab-btn" type="button" data-filter="all" aria-pressed="true">全部</button>
+          <button class="tab-btn" type="button" data-filter=".txt" aria-pressed="false">TXT</button>
+          <button class="tab-btn" type="button" data-filter=".xlsx" aria-pressed="false">XLSX</button>
+          <button class="tab-btn" type="button" data-filter=".md" aria-pressed="false">Markdown</button>
+        </div>
 
-    <div class="file-list" id="list">
-      <div class="empty-msg">正在从 GitHub 读取文件列表…</div>
-    </div>
+        <div class="file-list" id="list">
+          <div class="status-message"><strong>正在接收文件信号</strong><span>连接 GitHub 资料舱…</span></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      DATA SOURCE · <code>quarkbobo/quarkbobo.github.io</code> · <code>source/files</code><br>
+      PUBLIC CHANNEL · <code>/files/</code>
+    </footer>
   </div>
 
-  <!-- 推文预览卡片 -->
-  <div class="card article-section" id="articleSection">
-    <div class="article-head">
-      <span style="font-size:20px">📝</span>
-      <h2>推文预览</h2>
-    </div>
-    <p style="font-size:13px;color:var(--c-text2);margin-bottom:12px;">点击下方标签预览推文，或点击文件列表中的「预览」按钮</p>
-    <div class="article-tabs" id="mdTabs"></div>
-    <div class="article-body" id="articleBody">
-      <div class="article-placeholder">选择一篇推文以预览内容…</div>
-    </div>
-  </div>
+  <script>
+    const OWNER = "quarkbobo";
+    const REPO = "quarkbobo.github.io";
+    const BRANCH = "master";
+    const DIR_API = "source/files";
+    const PREFIX = "/files/";
 
-</div>
+    let allItems = [];
+    let activeTab = "all";
+    let loadVersion = 0;
 
-<!-- 底部 -->
-<div class="footer">
-  数据来源：GitHub API（<code>quarkbobo/quarkbobo.github.io</code>，master 分支，目录 <code>/source/files/</code>）<br>
-  文件访问路径：<code>/files/</code> · 本页面部署于 <code>/COCKY ZHOU(｡•ㅅ•｡)♡/</code>
-</div>
+    const listEl = document.getElementById("list");
+    const qEl = document.getElementById("q");
+    const fileCount = document.getElementById("fileCount");
+    const tabsEl = document.getElementById("tabs");
+    const bayStatus = document.getElementById("bayStatus");
 
-<!-- marked.js：Markdown → HTML -->
-<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+    function fmtBytes(bytes) {
+      if (!Number.isFinite(bytes)) return "";
+      const units = ["B", "KB", "MB", "GB"];
+      let index = 0;
+      let value = bytes;
+      while (value >= 1024 && index < units.length - 1) {
+        value /= 1024;
+        index += 1;
+      }
+      return `${value.toFixed(index === 0 ? 0 : 1)} ${units[index]}`;
+    }
 
-<script>
-/** =========================
- *  配置（按你的仓库填写）
- *  ========================= */
-const OWNER   = "quarkbobo";
-const REPO    = "quarkbobo.github.io";
-const BRANCH  = "master";
-const DIR_API = "source/files";       // GitHub API 读取路径
-const PREFIX  = "/files/";           // 站点文件访问路径
+    function safe(value) {
+      return (value ?? "").toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
 
-/** =========================
- *  状态
- *  ========================= */
-let allItems  = [];
-let activeMd  = null;
-let activeTab = "all";
+    function encodePath(value) {
+      return value.split("/").map(segment => encodeURIComponent(segment)).join("/");
+    }
 
-const listEl    = document.getElementById("list");
-const qEl       = document.getElementById("q");
-const fileCount = document.getElementById("fileCount");
-const tabsEl    = document.getElementById("tabs");
-const mdTabsEl  = document.getElementById("mdTabs");
-const articleEl = document.getElementById("articleBody");
+    function extension(name) {
+      const leaf = name.split("/").pop() || "";
+      const dot = leaf.lastIndexOf(".");
+      return dot >= 0 ? leaf.slice(dot).toLowerCase() : "";
+    }
 
-/** =========================
- *  工具函数
- *  ========================= */
-function fmtBytes(bytes){
-  if(!Number.isFinite(bytes)) return "";
-  const u=["B","KB","MB","GB"]; let i=0,n=bytes;
-  while(n>=1024&&i<u.length-1){n/=1024;i++}
-  return `${n.toFixed(i===0?0:1)} ${u[i]}`;
-}
-function safe(s){ return (s??"").toString().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;") }
-function extClass(name){
-  const e=name.toLowerCase();
-  if(e.endsWith(".txt"))  return "ext-txt";
-  if(e.endsWith(".md"))   return "ext-md";
-  if(e.endsWith(".xlsx")||e.endsWith(".xls")) return "ext-xlsx";
-  return "";
-}
-function fileEmoji(name){
-  const e=name.toLowerCase();
-  if(e.endsWith(".txt"))  return "📄";
-  if(e.endsWith(".md"))   return "📝";
-  if(e.endsWith(".xlsx")||e.endsWith(".xls")) return "📊";
-  return "📄";
-}
-function publicUrl(name){ return PREFIX + encodeURIComponent(name); }
-function rawUrl(name){ return `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${DIR_API}/${encodeURIComponent(name)}`; }
+    function extClass(name) {
+      const ext = extension(name);
+      if (ext === ".txt") return "ext-txt";
+      if (ext === ".md") return "ext-md";
+      if (ext === ".xlsx" || ext === ".xls") return "ext-xlsx";
+      return "";
+    }
 
-/** =========================
- *  渲染文件列表
- *  ========================= */
-function renderList(){
-  const kw = (qEl.value||"").trim().toLowerCase();
-  let items = allItems.filter(it => {
-    if(activeTab==="all") return true;
-    return it.name.toLowerCase().endsWith(activeTab);
-  });
-  if(kw) items = items.filter(it => it.name.toLowerCase().includes(kw));
+    function fileEmoji(name) {
+      const ext = extension(name);
+      if (ext === ".txt") return "◫";
+      if (ext === ".md") return "◇";
+      if (ext === ".xlsx" || ext === ".xls") return "▦";
+      return "□";
+    }
 
-  fileCount.textContent = items.length ? `共 ${items.length} 个文件` : "";
+    function publicUrl(name) {
+      return PREFIX + encodePath(name);
+    }
 
-  if(!items.length){
-    listEl.innerHTML = `<div class="empty-msg">${kw?"没有匹配的文件 🔍":"该分类暂无文件"}</div>`;
-    return;
-  }
+    function apiUrl(apiPath) {
+      return `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodePath(apiPath)}?ref=${encodeURIComponent(BRANCH)}`;
+    }
 
-  listEl.innerHTML = "";
-  for(const it of items){
-    const name  = it.name;
-    const isMd  = name.toLowerCase().endsWith(".md");
-    const ext   = name.split(".").pop().toLowerCase();
-    const cls   = extClass(name);
-    const emoji = fileEmoji(name);
-    const size  = it.size ? fmtBytes(it.size) : "";
+    function renderList() {
+      const keyword = (qEl.value || "").trim().toLocaleLowerCase("zh-Hans-CN");
+      let items = allItems.filter(item => activeTab === "all" || extension(item.name) === activeTab);
+      if (keyword) items = items.filter(item => item.name.toLocaleLowerCase("zh-Hans-CN").includes(keyword));
 
-    const div = document.createElement("div");
-    div.className = `file-item ${cls}`;
-    div.innerHTML = `
-      <div class="file-icon">${emoji}</div>
-      <div class="file-info">
-        <div class="file-name" title="${safe(name)}">${safe(name)}</div>
-        <div class="file-meta">${size ? size+" · " : ""}${ext.toUpperCase()} 文件</div>
-      </div>
-      <div class="file-actions">
-        ${isMd ? `<button class="btn btn-preview" data-preview="${safe(name)}">预览</button>` : ""}
-        <button class="btn" data-open="${safe(name)}">打开</button>
-        <button class="btn" data-dl="${safe(name)}">下载</button>
-      </div>
-    `;
-    listEl.appendChild(div);
-  }
-}
+      fileCount.textContent = items.length ? `共 ${items.length} 个文件` : "";
 
-/** =========================
- *  推文标签栏
- *  ========================= */
-function renderMdTabs(){
-  const mds = allItems.filter(it=>it.name.toLowerCase().endsWith(".md"));
-  mdTabsEl.innerHTML = "";
-  if(!mds.length){ mdTabsEl.innerHTML='<span style="font-size:13px;color:var(--c-text2)">暂无推文文件</span>'; return; }
-  for(const it of mds){
-    const btn = document.createElement("button");
-    btn.className = "art-tab" + (activeMd===it.name?" active":"");
-    btn.textContent = it.name.replace(/\.md$/i,"");
-    btn.addEventListener("click",()=>loadArticle(it.name));
-    mdTabsEl.appendChild(btn);
-  }
-}
+      if (!items.length) {
+        listEl.innerHTML = `<div class="status-message"><strong>${keyword ? "没有匹配的文件" : "该类型暂无文件"}</strong><span>${keyword ? "换一个文件名或目录名试试。" : "请选择其他文件类型。"}</span></div>`;
+        return;
+      }
 
-/** =========================
- *  加载并渲染 .md 推文
- *  ========================= */
-async function loadArticle(name){
-  activeMd = name;
-  renderMdTabs();
-  articleEl.innerHTML = '<div class="article-placeholder">正在加载…</div>';
-  try{
-    const r = await fetch(rawUrl(name));
-    if(!r.ok) throw new Error(`HTTP ${r.status}`);
-    const md = await r.text();
-    articleEl.innerHTML = (typeof marked!=="undefined") ? marked.parse(md) : simpleRender(md);
-    document.getElementById("articleSection").scrollIntoView({behavior:"smooth",block:"start"});
-  }catch(e){
-    articleEl.innerHTML = `<div style="color:#b00020;padding:12px;">加载失败：${safe(e.message)}</div>`;
-  }
-}
+      listEl.innerHTML = "";
+      for (const item of items) {
+        const ext = extension(item.name);
+        const size = item.size ? fmtBytes(item.size) : "";
+        const row = document.createElement("div");
+        row.className = `file-item ${extClass(item.name)}`;
+        row.innerHTML = `
+          <div class="file-icon" aria-hidden="true">${fileEmoji(item.name)}</div>
+          <div class="file-info">
+            <div class="file-name" title="${safe(item.name)}">${safe(item.name)}</div>
+            <div class="file-meta">${size ? `${size} · ` : ""}${safe((ext.slice(1) || "FILE").toUpperCase())}</div>
+          </div>
+          <div class="file-actions">
+            <button class="btn btn-open" type="button" data-open="${safe(item.name)}">打开</button>
+            <button class="btn" type="button" data-dl="${safe(item.name)}">下载</button>
+          </div>`;
+        listEl.appendChild(row);
+      }
+    }
 
-/** 降级渲染（marked 不可用时）*/
-function simpleRender(md){
-  return md.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g,"<em>$1</em>")
-    .replace(/^### (.+)$/gm,"<h3>$1</h3>")
-    .replace(/^## (.+)$/gm,"<h2>$1</h2>")
-    .replace(/^# (.+)$/gm,"<h1>$1</h1>")
-    .replace(/\n{2,}/g,"<br><br>")
-    .replace(/\n/g,"<br>");
-}
+    function setActiveFilter(button) {
+      tabsEl.querySelectorAll(".tab-btn").forEach(candidate => {
+        candidate.setAttribute("aria-pressed", String(candidate === button));
+      });
+      activeTab = button.dataset.filter;
+      renderList();
+    }
 
-/** =========================
- *  GitHub API：读取目录
- *  ========================= */
-async function loadFromGitHub(){
-  const api=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${DIR_API}?ref=${encodeURIComponent(BRANCH)}`;
-  const res = await fetch(api,{headers:{"Accept":"application/vnd.github+json"}});
-  if(!res.ok){ const t=await res.text().catch(()=>""); throw new Error(`GitHub API 失败：HTTP ${res.status}\n${t}`); }
-  const data = await res.json();
-  if(!Array.isArray(data)) throw new Error("返回不是目录列表，请检查配置。");
-  return data.filter(x=>x&&x.type==="file")
-    .filter(x=>(x.name||"").toLowerCase()!=="index.html" && !x.name.endsWith(".py"))
-    .map(x=>({name:x.name,size:x.size||0}))
-    .sort((a,b)=>a.name.localeCompare(b.name,"zh-Hans-CN"));
-}
+    async function readDirectory(apiPath, relativeDirectory = "") {
+      const response = await fetch(apiUrl(apiPath), { headers: { "Accept": "application/vnd.github+json" } });
+      if (!response.ok) throw new Error(`GitHub API 返回 HTTP ${response.status}`);
+      const entries = await response.json();
+      if (!Array.isArray(entries)) throw new Error("GitHub 返回的路径不是文件夹");
 
-/** =========================
- *  事件绑定
- *  ========================= */
-tabsEl.addEventListener("click",e=>{
-  const btn = e.target.closest(".tab-btn");
-  if(!btn) return;
-  tabsEl.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  activeTab = btn.dataset.filter;
-  renderList();
-});
+      const groups = await Promise.all(entries.map(async entry => {
+        if (!entry || !entry.name) return [];
+        const relativePath = relativeDirectory ? `${relativeDirectory}/${entry.name}` : entry.name;
+        if (entry.type === "dir") return readDirectory(`${apiPath}/${entry.name}`, relativePath);
+        if (entry.type !== "file" || entry.name.toLowerCase() === "index.html" || entry.name.toLowerCase().endsWith(".py")) return [];
+        return [{ name: relativePath, size: Number(entry.size) || 0 }];
+      }));
 
-document.addEventListener("click",e=>{
-  const btn = e.target.closest("button, a");
-  if(!btn) return;
-  const preview = btn.dataset.preview;
-  const open    = btn.dataset.open;
-  const dl       = btn.dataset.dl;
-  if(!preview && !open && !dl) return;
-  e.preventDefault(); e.stopPropagation();
-  if(preview){ loadArticle(preview); return; }
-  const name = open || dl;
-  const url  = publicUrl(name);
-  if(open){
-    // .md 文件点击"打开"也触发预览
-    if(name.toLowerCase().endsWith(".md")){ loadArticle(name); return; }
-    window.open(url,"_blank","noopener");
-  } else {
-    const a=document.createElement("a");
-    a.href=url; a.download=name;
-    document.body.appendChild(a); a.click(); a.remove();
-  }
-});
+      return groups.flat();
+    }
 
-qEl.addEventListener("input", renderList);
+    async function loadFromGitHub() {
+      const items = await readDirectory(DIR_API);
+      return items.sort((left, right) => left.name.localeCompare(right.name, "zh-Hans-CN"));
+    }
 
-/** =========================
- *  初始化
- *  ========================= */
-(async()=>{
-  try{
-    allItems = await loadFromGitHub();
-    renderList();
-    renderMdTabs();
-    // 自动加载第一篇 .md
-    const first = allItems.find(it=>it.name.toLowerCase().endsWith(".md"));
-    if(first) loadArticle(first.name);
-  }catch(e){
-    listEl.innerHTML = `<div class="empty-msg" style="color:#b00020">${safe(e.message)}</div>`;
-  }
-})();
-</script>
+    async function initializeFiles() {
+      const version = ++loadVersion;
+      bayStatus.textContent = "CONNECTING";
+      fileCount.textContent = "";
+      listEl.innerHTML = '<div class="status-message"><strong>正在接收文件信号</strong><span>连接 GitHub 资料舱…</span></div>';
+      try {
+        const items = await loadFromGitHub();
+        if (version !== loadVersion) return;
+        allItems = items;
+        bayStatus.textContent = "ONLINE";
+        renderList();
+      } catch (error) {
+        if (version !== loadVersion) return;
+        bayStatus.textContent = "OFFLINE";
+        listEl.innerHTML = `<div class="status-message status-message--error"><strong>文件列表加载失败</strong><span>${safe(error.message)}</span><button class="btn" type="button" data-retry>重新读取</button></div>`;
+      }
+    }
+
+    tabsEl.addEventListener("click", event => {
+      const button = event.target.closest(".tab-btn");
+      if (button) setActiveFilter(button);
+    });
+
+    document.addEventListener("click", event => {
+      const control = event.target.closest("button, a");
+      if (!control) return;
+      if (control.dataset.retry !== undefined) {
+        initializeFiles();
+        return;
+      }
+
+      const open = control.dataset.open;
+      const download = control.dataset.dl;
+      if (!open && !download) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const name = open || download;
+      const url = publicUrl(name);
+      if (open) {
+        window.open(url, "_blank", "noopener");
+        return;
+      }
+
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = name.split("/").pop();
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+    });
+
+    qEl.addEventListener("input", renderList);
+
+    function mountStarfield(canvas) {
+      const context = canvas && canvas.getContext && canvas.getContext("2d");
+      const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+      const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
+      let particles = [];
+      let trail = [];
+      let frameId = 0;
+      let lastTime = 0;
+      let initialized = false;
+      let width = 0;
+      let height = 0;
+      let dpr = 1;
+
+      const snapshot = () => Object.freeze({
+        initialized,
+        reducedMotion: reducedMotion.matches,
+        animating: frameId !== 0
+      });
+
+      const metrics = Object.freeze({ snapshot });
+      window.__fileStarfieldMetrics = metrics;
+      if (!context) return { destroy() {} };
+
+      function seedParticles() {
+        const count = Math.max(28, Math.min(88, Math.round(width * height / 18000)));
+        particles = Array.from({ length: count }, (_, index) => ({
+          x: (Math.sin(index * 91.73) * .5 + .5) * width,
+          y: (Math.sin(index * 47.17 + 2) * .5 + .5) * height,
+          radius: .45 + (index % 5) * .22,
+          speed: 3 + (index % 7) * .7,
+          alpha: .18 + (index % 6) * .055,
+          purple: index % 9 === 0
+        }));
+      }
+
+      function resize() {
+        width = Math.max(1, window.innerWidth);
+        height = Math.max(1, window.innerHeight);
+        dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        context.setTransform(dpr, 0, 0, dpr, 0, 0);
+        seedParticles();
+        draw(0, 0);
+      }
+
+      function draw(time, delta) {
+        context.clearRect(0, 0, width, height);
+        for (const particle of particles) {
+          if (delta) {
+            particle.y += particle.speed * delta / 1000;
+            particle.x += particle.speed * .12 * delta / 1000;
+            if (particle.y > height + 3) particle.y = -3;
+            if (particle.x > width + 3) particle.x = -3;
+          }
+          context.beginPath();
+          context.fillStyle = particle.purple ? `rgba(139,92,246,${particle.alpha})` : `rgba(56,189,248,${particle.alpha})`;
+          context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+          context.fill();
+        }
+
+        const railY = Math.max(110, height * .28);
+        const gradient = context.createLinearGradient(0, railY, width, railY);
+        gradient.addColorStop(0, "rgba(56,189,248,0)");
+        gradient.addColorStop(.45, "rgba(56,189,248,.12)");
+        gradient.addColorStop(.72, "rgba(139,92,246,.1)");
+        gradient.addColorStop(1, "rgba(139,92,246,0)");
+        context.beginPath();
+        context.strokeStyle = gradient;
+        context.lineWidth = 1;
+        context.moveTo(0, railY + Math.sin(time / 2200) * 9);
+        context.lineTo(width, railY - 18 + Math.sin(time / 1800) * 12);
+        context.stroke();
+
+        if (trail.length > 1) {
+          for (let index = 1; index < trail.length; index += 1) {
+            const previous = trail[index - 1];
+            const point = trail[index];
+            context.beginPath();
+            context.strokeStyle = `rgba(${index % 3 ? "56,189,248" : "139,92,246"},${point.life * .5})`;
+            context.lineWidth = .7 + point.life * 1.8;
+            context.moveTo(previous.x, previous.y);
+            context.lineTo(point.x, point.y);
+            context.stroke();
+            point.life -= delta / 430;
+          }
+          trail = trail.filter(point => point.life > 0);
+        }
+      }
+
+      function canAnimate() {
+        return !reducedMotion.matches && !document.hidden;
+      }
+
+      function animate(time) {
+        frameId = 0;
+        if (!canAnimate()) return;
+        const delta = lastTime ? Math.min(50, time - lastTime) : 0;
+        lastTime = time;
+        draw(time, delta);
+        frameId = requestAnimationFrame(animate);
+      }
+
+      function reconcileMotion() {
+        if (frameId) cancelAnimationFrame(frameId);
+        frameId = 0;
+        lastTime = 0;
+        draw(0, 0);
+        if (canAnimate()) frameId = requestAnimationFrame(animate);
+      }
+
+      function handlePointer(event) {
+        if (!finePointer.matches || reducedMotion.matches) return;
+        trail.push({ x: event.clientX, y: event.clientY, life: 1 });
+        if (trail.length > 12) trail.shift();
+      }
+
+      function handlePointerPolicy() {
+        trail = [];
+      }
+
+      resize();
+      initialized = true;
+      reconcileMotion();
+      addEventListener("resize", resize, { passive: true });
+      addEventListener("pointermove", handlePointer, { passive: true });
+      document.addEventListener("visibilitychange", reconcileMotion);
+      reducedMotion.addEventListener("change", reconcileMotion);
+      finePointer.addEventListener("change", handlePointerPolicy);
+
+      return {
+        destroy() {
+          if (frameId) cancelAnimationFrame(frameId);
+          frameId = 0;
+          removeEventListener("resize", resize);
+          removeEventListener("pointermove", handlePointer);
+          document.removeEventListener("visibilitychange", reconcileMotion);
+          reducedMotion.removeEventListener("change", reconcileMotion);
+          finePointer.removeEventListener("change", handlePointerPolicy);
+          trail = [];
+        }
+      };
+    }
+
+    mountStarfield(document.getElementById("starfield"));
+    initializeFiles();
+  </script>
 </body>
 </html>
