@@ -476,7 +476,7 @@
       if (!hasTimestamp) {
         lastTimestamp = timestamp
         hasTimestamp = true
-        updateInteraction(0)
+        try { updateInteraction(0) } catch (error) { fail(); return }
         if (resizeDirty) {
           rebuildProjection(timestamp, false)
         }
@@ -486,7 +486,7 @@
       }
       const elapsed = Math.max(0, timestamp - lastTimestamp)
       lastTimestamp = timestamp
-      updateInteraction(elapsed)
+      try { updateInteraction(elapsed) } catch (error) { fail(); return }
       elapsedSinceDraw += elapsed
       transactionDue = false
       let rebuilt = false

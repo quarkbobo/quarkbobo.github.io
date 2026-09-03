@@ -299,8 +299,9 @@ test('invalid pointer input and canvas corners leave no impact or surface mark',
     h.flushRaf(0)
     dispatchAt(h, type, x, y, event)
     h.flushRaf(50)
+    assert.deepEqual(h.lastOutputImage(), baseline, `${name} immediate`)
     h.flushRaf(770)
-    assert.deepEqual(h.lastOutputImage(), baseline, name)
+    assert.deepEqual(h.lastOutputImage(), baseline, `${name} settled`)
     lifecycle.destroy()
   }
 })
@@ -406,6 +407,48 @@ test('valid left click keeps one surface mark after impact decay and clears it a
   assert.ok(markOnlyDelta > 0)
   h.flushRaf(3050)
   assert.deepEqual(h.lastOutputImage(), baseline)
+  lifecycle.destroy()
+})
+
+test('impact and surface mark energies reach their exact independent decay boundaries', () => {
+  const realCore = require('../themes/fluid-particle/source/js/planet-core.js')
+  const projectedMarkEnergies = []
+  const displacedImpactEnergies = []
+  const core = {
+    ...realCore,
+    renderProjectedFrame (...args) {
+      projectedMarkEnergies.push(args[6])
+      return realCore.renderProjectedFrame(...args)
+    },
+    applyLocalizedGasDisplacement (...args) {
+      displacedImpactEnergies.push(args[5].impactEnergy)
+      return realCore.applyLocalizedGasDisplacement(...args)
+    }
+  }
+  const h = createHarness({ core, fixedPhase: true, clientWidth: 96, clientHeight: 84 })
+  const lifecycle = h.renderer.mount(h.canvas, { scene: h.scene, textureWidth: 64, textureHeight: 32 })
+  h.flushIdle()
+  h.flushRaf(0)
+  dispatchAt(h, 'pointerdown', 0, 0)
+  h.flushRaf(50)
+
+  h.flushRaf(769)
+  assert.ok(projectedMarkEnergies.at(-1) > 0, 'mark remains positive at 719ms')
+  assert.ok(displacedImpactEnergies.at(-1) > 0, 'impact remains positive at 719ms')
+
+  dispatchAt(h, 'pointermove', 0, 0)
+  h.canvas.clientWidth = 112
+  h.triggerResize()
+  h.flushRaf(770)
+  assert.ok(projectedMarkEnergies.at(-1) > 0, 'mark remains positive at 720ms')
+  assert.equal(displacedImpactEnergies.at(-1), 0, 'impact reaches zero at 720ms')
+
+  h.flushRaf(3049)
+  assert.ok(projectedMarkEnergies.at(-1) > 0, 'mark remains positive at 2999ms')
+  h.canvas.clientWidth = 128
+  h.triggerResize()
+  h.flushRaf(3050)
+  assert.equal(projectedMarkEnergies.at(-1), 0, 'mark reaches zero at 3000ms')
   lifecycle.destroy()
 })
 
@@ -1263,6 +1306,36 @@ test('destroy cancels every callback, listener, and owned observer', () => {
   harness.flushRaf(3050)
   assert.deepEqual(harness.lastOutputImage(), lastOutput)
 })
+
+for (const [name, method, primeFirst] of [
+  ['surface capture', 'captureSurfacePoint', false],
+  ['surface mask write', 'writeSurfaceMarkMask', true]
+]) {
+  test(`${name} failure enters fallback without escaping the RAF callback`, () => {
+    const realCore = require('../themes/fluid-particle/source/js/planet-core.js')
+    const core = {
+      ...realCore,
+      [method]: () => { throw new Error(`${name} failure`) }
+    }
+    const harness = createHarness({ core, textureWidth: 64, textureHeight: 32 })
+    const lifecycle = harness.renderer.mount(harness.canvas, { scene: harness.scene, textureWidth: 64, textureHeight: 32 })
+    harness.flushIdle()
+    if (primeFirst) harness.flushRaf(0)
+    dispatchAt(harness, 'pointerdown', 0, 0)
+    assert.doesNotThrow(() => harness.flushRaf(primeFirst ? 50 : 0), name)
+    assert.equal(lifecycle.snapshot().fallback, true, name)
+    assert.equal(harness.scene.classList.contains('planet-fallback'), true, name)
+    assert.equal(harness.scene.classList.contains('particle-fallback'), false, name)
+    assert.equal(harness.pendingRafs(), 0, name)
+    assert.equal(harness.window.listenerCount('pointermove'), 0, name)
+    assert.equal(harness.window.listenerCount('pointerdown'), 0, name)
+    assert.equal(harness.document.listenerCount('visibilitychange'), 0, name)
+    assert.ok(harness.state.mutationObservers.every(observer => observer.disconnected), name)
+    assert.ok(harness.state.intersectionObservers.every(observer => observer.disconnected), name)
+    assert.ok(harness.state.resizeObservers.every(observer => observer.disconnected), name)
+    lifecycle.destroy()
+  })
+}
 
 test('an animation-time render failure freezes only the planet and is never uncaught', () => {
   const realCore = require('../themes/fluid-particle/source/js/planet-core.js')
