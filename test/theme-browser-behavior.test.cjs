@@ -331,7 +331,17 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
             const surface = document.getElementById('planet-surface')
             const ring = document.querySelector('.saturn-ring')
             control.focus({ focusVisible: true })
-            const controlStyle = getComputedStyle(control)
+            const controlComputedStyle = getComputedStyle(control)
+            const controlStyle = {
+              minHeight: controlComputedStyle.minHeight,
+              height: controlComputedStyle.height,
+              touchAction: controlComputedStyle.touchAction,
+              tapHighlightColor: controlComputedStyle.webkitTapHighlightColor,
+              outlineStyle: controlComputedStyle.outlineStyle,
+              outlineWidth: controlComputedStyle.outlineWidth,
+              outlineOffset: controlComputedStyle.outlineOffset,
+              display: controlComputedStyle.display
+            }
             const cardStyle = getComputedStyle(card)
             const cardTitleStyle = getComputedStyle(cardTitle)
             const categoryStyle = getComputedStyle(category)
@@ -359,16 +369,7 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                 scrollMarginTop: getComputedStyle(heading).scrollMarginTop,
                 skipFocus: { pointerLike: pointerLikeSkip, keyboardLike: keyboardLikeSkip },
                 mainFocus,
-                control: {
-                  minHeight: controlStyle.minHeight,
-                  height: controlStyle.height,
-                  touchAction: controlStyle.touchAction,
-                  tapHighlightColor: controlStyle.webkitTapHighlightColor,
-                  outlineStyle: controlStyle.outlineStyle,
-                  outlineWidth: controlStyle.outlineWidth,
-                  outlineOffset: controlStyle.outlineOffset,
-                  display: controlStyle.display
-                },
+                control: controlStyle,
                 card: {
                   contentVisibility: cardStyle.contentVisibility,
                   transitionProperty: cardStyle.transitionProperty,
