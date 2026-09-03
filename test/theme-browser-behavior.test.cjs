@@ -61,6 +61,135 @@ function dumpWithChrome (fixturePath, { reducedMotion = false, viewport, virtual
   }
 }
 
+const deviceMetricsProbeRunner = String.raw`
+const childProcess = require('node:child_process')
+const fs = require('node:fs')
+const path = require('node:path')
+
+const [chromePath, userDataDir, fixtureUrl, widthValue, heightValue] = process.argv.slice(1)
+const width = Number(widthValue)
+const height = Number(heightValue)
+const chrome = childProcess.spawn(chromePath, [
+  '--headless=new',
+  '--disable-gpu',
+  '--hide-scrollbars',
+  '--no-sandbox',
+  '--allow-file-access-from-files',
+  '--no-first-run',
+  '--no-default-browser-check',
+  '--remote-debugging-port=0',
+  '--user-data-dir=' + userDataDir,
+  'about:blank'
+], { stdio: ['ignore', 'ignore', 'pipe'], windowsHide: true })
+
+let chromeError = ''
+let socket
+chrome.stderr.setEncoding('utf8')
+chrome.stderr.on('data', function (chunk) { chromeError += chunk })
+
+const wait = function (milliseconds) {
+  return new Promise(function (resolve) { setTimeout(resolve, milliseconds) })
+}
+
+const main = async function () {
+  const activePortPath = path.join(userDataDir, 'DevToolsActivePort')
+  const activePortDeadline = Date.now() + 10000
+  while (!fs.existsSync(activePortPath) && Date.now() < activePortDeadline) await wait(20)
+  if (!fs.existsSync(activePortPath)) throw new Error('Chrome DevTools port unavailable: ' + chromeError)
+
+  const port = fs.readFileSync(activePortPath, 'utf8').split(/\r?\n/)[0]
+  const targets = await fetch('http://127.0.0.1:' + port + '/json/list').then(function (response) { return response.json() })
+  const page = targets.find(function (target) { return target.type === 'page' })
+  if (!page || !page.webSocketDebuggerUrl) throw new Error('Chrome page target unavailable')
+
+  socket = new WebSocket(page.webSocketDebuggerUrl)
+  await new Promise(function (resolve, reject) {
+    socket.addEventListener('open', resolve, { once: true })
+    socket.addEventListener('error', function () { reject(new Error('Chrome DevTools socket failed')) }, { once: true })
+  })
+
+  let nextId = 1
+  const pending = new Map()
+  socket.addEventListener('message', function (event) {
+    const message = JSON.parse(String(event.data))
+    const request = pending.get(message.id)
+    if (!request) return
+    pending.delete(message.id)
+    if (message.error) request.reject(new Error(message.error.message))
+    else request.resolve(message.result)
+  })
+  const send = function (method, params) {
+    return new Promise(function (resolve, reject) {
+      const id = nextId++
+      pending.set(id, { resolve, reject })
+      socket.send(JSON.stringify({ id, method, params: params || {} }))
+    })
+  }
+
+  await send('Page.enable')
+  await send('Emulation.setDeviceMetricsOverride', {
+    width,
+    height,
+    deviceScaleFactor: 1,
+    mobile: false,
+    screenWidth: width,
+    screenHeight: height
+  })
+  await send('Page.navigate', { url: fixtureUrl })
+
+  const resultDeadline = Date.now() + 10000
+  while (Date.now() < resultDeadline) {
+    const evaluation = await send('Runtime.evaluate', {
+      expression: "document.getElementById('probe-result')?.textContent || ''",
+      returnByValue: true
+    })
+    const result = evaluation && evaluation.result && evaluation.result.value
+    if (result) {
+      process.stdout.write(result)
+      return
+    }
+    await wait(20)
+  }
+  throw new Error('device-metrics probe timed out: ' + chromeError)
+}
+
+main().then(function () {
+  if (socket) socket.close()
+  chrome.kill()
+}, function (error) {
+  process.stderr.write((error && error.stack) || String(error))
+  if (socket) socket.close()
+  chrome.kill()
+  process.exitCode = 1
+})
+`
+
+function runChromeDeviceMetricsProbe (fixturePath, viewport) {
+  assert.ok(chromePath, `Chrome or Edge is installed (${chromeCandidates.join(', ')})`)
+  const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fluid-theme-chrome-device-'))
+  try {
+    const fixtureUrl = new URL(`file:///${fixturePath.replace(/\\/g, '/')}`).href
+    const result = childProcess.spawnSync(process.execPath, [
+      '-e',
+      deviceMetricsProbeRunner,
+      chromePath,
+      userDataDir,
+      fixtureUrl,
+      String(viewport.width),
+      String(viewport.height)
+    ], {
+      encoding: 'utf8',
+      maxBuffer: 10 * 1024 * 1024,
+      timeout: 30000,
+      windowsHide: true
+    })
+    assert.equal(result.status, 0, result.stderr || 'Chrome device-metrics probe failed')
+    return JSON.parse(result.stdout)
+  } finally {
+    fs.rmSync(userDataDir, { recursive: true, force: true })
+  }
+}
+
 function accessibilityMutationStyle (mode) {
   if (mode !== '1') return ''
   return `<style>
@@ -387,9 +516,17 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                 dispatchPointer('pointerdown', centerX, centerY)
                 await wait(50)
                 const impact = capturePlanetFrame()
+                const impactAt50 = {
+                  calls: window.__planetImpactProbe.calls,
+                  count: window.__planetImpactProbe.count,
+                  sum: window.__planetImpactProbe.sum
+                }
                 await wait(720)
                 const markOnly = capturePlanetFrame()
-                await wait(2280)
+                const impactCallsAt770 = window.__planetImpactProbe.calls
+                await wait(80)
+                const impactCallsAfter770 = window.__planetImpactProbe.calls
+                await wait(2200)
                 const final = capturePlanetFrame()
 
                 dispatchPointer('pointerdown', bounds.left + 1, bounds.top + 1)
@@ -417,7 +554,11 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
                   comet: cometInteraction,
                   hoverDifference: patchDifference(baseline, hover),
                   hoverDecayDifference: patchDifference(baseline, hoverDecay),
-                  impactDifference: patchDifference(baseline, impact),
+                  impactFrameDifference: patchDifference(baseline, impact),
+                  impactDifference: { count: impactAt50.count, sum: impactAt50.sum },
+                  impactCallsAt50: impactAt50.calls,
+                  impactCallsAt770,
+                  impactCallsAfter770,
                   markOnlyDifference: patchDifference(baseline, markOnly),
                   finalDifference: patchDifference(baseline, final),
                   cornerDifference: patchDifference(baseline, corner),
@@ -465,9 +606,32 @@ function runChromeProbe ({ reducedMotion = false } = {}) {
       return window.setTimeout(function () { callback(performance.now()) }, 16)
     }
     window.cancelAnimationFrame = function (identifier) { window.clearTimeout(identifier) }
+    const realApplyLocalizedGasDisplacement = window.FluidPlanetCore.applyLocalizedGasDisplacement
+    const impactProbe = { calls: 0, count: 0, sum: 0 }
+    window.__planetImpactProbe = impactProbe
     window.FluidPlanetCore = Object.freeze({
       ...window.FluidPlanetCore,
-      advanceBasePhase: function (phase) { return phase }
+      advanceBasePhase: function (phase) { return phase },
+      applyLocalizedGasDisplacement: function () {
+        const args = arguments
+        const interaction = args[5]
+        const output = args[6]
+        if (!interaction || interaction.impactEnergy <= 0) return realApplyLocalizedGasDisplacement.apply(this, args)
+        if (${JSON.stringify(process.env.FLUID_PLANET_INTERACTION_MUTATION === 'disable-impact')}) return output
+        const before = output.slice()
+        const result = realApplyLocalizedGasDisplacement.apply(this, args)
+        let count = 0
+        let sum = 0
+        for (let index = 0; index < output.length; index += 4) {
+          const delta = Math.abs(output[index] - before[index]) + Math.abs(output[index + 1] - before[index + 1]) + Math.abs(output[index + 2] - before[index + 2])
+          if (delta) count++
+          sum += delta
+        }
+        impactProbe.calls++
+        impactProbe.count = count
+        impactProbe.sum = sum
+        return result
+      }
     })`)
     fs.writeFileSync(fixturePath, fixture)
     return readProbeResult(dumpWithChrome(fixturePath, {
@@ -616,7 +780,7 @@ function runPlanetCompositionProbe (viewport) {
   const fixturePath = path.join(publicRoot, fixtureName)
   const acceptanceWidth = viewport.width
   const viewportHeight = viewport.height
-  const contentWidthConstraint = viewport.width < 500
+  const contentWidthConstraint = viewport.width < 500 && viewport.width !== 390
     ? `<style>body { width: ${viewport.width}px; }</style>`
     : ''
   const desktopViewportConstraint = viewport.width >= 768
@@ -758,6 +922,7 @@ function runPlanetCompositionProbe (viewport) {
   const offlineHome = generatedHome.replace(/\b(href|src)="\//g, '$1="')
   fs.writeFileSync(fixturePath, offlineHome.replace('</head>', `${contentWidthConstraint}${desktopViewportConstraint}${mutation}</head>`).replace('</body>', `${probeScript}</body>`))
   try {
+    if (viewport.width === 390) return runChromeDeviceMetricsProbe(fixturePath, viewport)
     return readProbeResult(dumpWithChrome(fixturePath, { viewport, virtualTimeBudget: 3000 }))
   } finally {
     fs.rmSync(fixturePath, { force: true })
@@ -871,10 +1036,12 @@ test('fine-pointer comet and planet interactions render, decay, and stay blocked
   }
   assert.ok(interaction.hoverDifference.count > 0, JSON.stringify(interaction.hoverDifference))
   assert.ok(interaction.hoverDifference.sum > 0, JSON.stringify(interaction.hoverDifference))
-  assert.ok(interaction.impactDifference.sum > interaction.hoverDifference.sum, JSON.stringify(interaction))
+  assert.ok(interaction.impactFrameDifference.sum > interaction.hoverDifference.sum, JSON.stringify(interaction))
   assert.deepEqual(interaction.hoverDecayDifference, { count: 0, sum: 0 })
+  assert.ok(interaction.impactCallsAt50 > 0, JSON.stringify(interaction))
+  assert.equal(interaction.impactCallsAfter770, interaction.impactCallsAt770, JSON.stringify(interaction))
+  assert.ok(interaction.impactDifference.sum > interaction.markOnlyDifference.sum, JSON.stringify(interaction))
   assert.ok(interaction.markOnlyDifference.sum > 0, JSON.stringify(interaction))
-  assert.ok(interaction.markOnlyDifference.count < interaction.impactDifference.count, JSON.stringify(interaction))
   assert.deepEqual(interaction.finalDifference, { count: 0, sum: 0 })
   assert.deepEqual(interaction.cornerDifference, { count: 0, sum: 0 })
   assert.deepEqual(interaction.pausedPlanetDifference, { count: 0, sum: 0 })
@@ -951,7 +1118,7 @@ test('planet and dust ring keep approved geometry clear of copy at every accepta
     { width: 390, height: 844 }
   ]) {
     const probe = runPlanetCompositionProbe(viewport)
-    if (viewport.width >= 768) {
+    if (viewport.width >= 768 || viewport.width === 390) {
       assert.equal(probe.viewportWidths.inner, viewport.width, `requested=${viewport.width}, measured inner=${probe.viewportWidths.inner}, client=${probe.viewportWidths.client}`)
       assert.equal(probe.viewportWidths.client, viewport.width, `requested=${viewport.width}, measured inner=${probe.viewportWidths.inner}, client=${probe.viewportWidths.client}`)
     } else {
