@@ -1,12 +1,16 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
+const childProcess = require('node:child_process')
 const fs = require('node:fs')
+const os = require('node:os')
 const path = require('node:path')
 const { JSDOM, VirtualConsole } = require('jsdom')
+const { chromeCandidatesFor, windowSizeFor } = require('./browser-launch-policy.cjs')
 
 const root = path.resolve(__dirname, '..')
 const sourcePath = path.join(root, 'source', 'COCKY ZHOU', 'index.html')
 const source = fs.readFileSync(sourcePath, 'utf8')
+const chromePath = chromeCandidatesFor().find(candidate => fs.existsSync(candidate))
 
 const apiItems = [
   { name: 'guide.md', size: 640, type: 'file' },
@@ -79,6 +83,80 @@ async function renderPage ({ reducedMotion = false, finePointer = true } = {}) {
 
   await new Promise(resolve => setTimeout(resolve, 30))
   return { dom, document: dom.window.document, opened, frameCallbacks }
+}
+
+function decodeHtml (value) {
+  return value
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+}
+
+function runChromeProbe ({ viewport, reducedMotion = false }) {
+  assert.ok(chromePath, 'Chrome or Edge is installed')
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'cocky-file-center-'))
+  const fixturePath = path.join(tempRoot, 'index.html')
+  const profilePath = path.join(tempRoot, 'profile')
+  const rootFixture = JSON.stringify(apiItems)
+  const backupFixture = JSON.stringify(backupItems)
+  const fetchFixture = `<script>
+    window.fetch = async function (url) {
+      const entries = String(url).includes('/source/files/backup?') ? ${backupFixture} : ${rootFixture};
+      return { ok: true, status: 200, json: async function () { return entries; } };
+    };
+  </script>`
+  const probe = `<pre id="probe-result"></pre><script>
+    (function waitForFiles(deadline) {
+      if (document.getElementById('bayStatus').textContent !== 'ONLINE' && performance.now() < deadline) {
+        setTimeout(function () { waitForFiles(deadline); }, 20);
+        return;
+      }
+      const tab = document.querySelector('.tab-btn');
+      const search = document.getElementById('q');
+      document.getElementById('probe-result').textContent = JSON.stringify({
+        viewport: { inner: innerWidth, client: document.documentElement.clientWidth },
+        colorScheme: getComputedStyle(document.documentElement).colorScheme,
+        space: getComputedStyle(document.documentElement).getPropertyValue('--space').trim(),
+        canvasPointerEvents: getComputedStyle(document.getElementById('starfield')).pointerEvents,
+        searchHeight: search.getBoundingClientRect().height,
+        tabHeight: tab.getBoundingClientRect().height,
+        tabMinHeight: getComputedStyle(tab).minHeight,
+        noHorizontalOverflow: document.body.scrollWidth <= document.documentElement.clientWidth,
+        fileCount: document.querySelectorAll('.file-item').length,
+        particle: window.__fileStarfieldMetrics.snapshot()
+      });
+    })(performance.now() + 1200);
+  </script>`
+
+  fs.writeFileSync(fixturePath, source.replace('<script>', `${fetchFixture}<script>`).replace('</body>', `${probe}</body>`))
+  try {
+    const [outerWidth, outerHeight] = windowSizeFor(viewport)
+    const args = [
+      '--headless=new',
+      '--disable-gpu',
+      '--no-sandbox',
+      '--allow-file-access-from-files',
+      `--user-data-dir=${profilePath}`,
+      `--window-size=${outerWidth},${outerHeight}`,
+      '--virtual-time-budget=1800',
+      '--dump-dom'
+    ]
+    if (reducedMotion) args.push('--force-prefers-reduced-motion=reduce')
+    args.push(new URL(`file:///${fixturePath.replace(/\\/g, '/')}`).href)
+    const result = childProcess.spawnSync(chromePath, args, {
+      encoding: 'utf8',
+      maxBuffer: 10 * 1024 * 1024,
+      timeout: 30000,
+      windowsHide: true
+    })
+    assert.equal(result.status, 0, result.stderr || 'Chrome probe failed')
+    const encoded = result.stdout.match(/<pre id="probe-result">([\s\S]*?)<\/pre>/)?.[1]
+    assert.ok(encoded, 'Chrome returned the file-center probe')
+    return JSON.parse(decodeHtml(encoded))
+  } finally {
+    fs.rmSync(tempRoot, { recursive: true, force: true })
+  }
 }
 
 test('the rendered file center uses the deep-space data-bay shell', async () => {
@@ -161,4 +239,26 @@ test('the particle field exposes a static reduced-motion state and accessible co
   assert.equal(page.dom.window.getComputedStyle(document.querySelector('.tab-btn')).minHeight, '44px')
 
   page.dom.window.close()
+})
+
+test('the real page stays usable at desktop and mobile widths in Chromium', { timeout: 30000 }, () => {
+  for (const viewport of [{ width: 1280, height: 900 }, { width: 512, height: 844 }]) {
+    const probe = runChromeProbe({ viewport })
+    assert.equal(probe.viewport.inner, viewport.width)
+    assert.ok(probe.viewport.client <= viewport.width && probe.viewport.client >= viewport.width - 20)
+    assert.equal(probe.colorScheme, 'dark')
+    assert.equal(probe.space.toUpperCase(), '#02040B')
+    assert.equal(probe.canvasPointerEvents, 'none')
+    assert.ok(probe.searchHeight >= 44, `${viewport.width}px search height ${probe.searchHeight}`)
+    assert.ok(probe.tabHeight >= 44, `${viewport.width}px tab height ${probe.tabHeight}`)
+    assert.equal(probe.tabMinHeight, '44px')
+    assert.equal(probe.noHorizontalOverflow, true)
+    assert.equal(probe.fileCount, 6)
+    assert.equal(probe.particle.initialized, true)
+  }
+})
+
+test('Chromium renders one static particle frame for reduced motion', { timeout: 30000 }, () => {
+  const probe = runChromeProbe({ viewport: { width: 1280, height: 900 }, reducedMotion: true })
+  assert.deepEqual(probe.particle, { initialized: true, reducedMotion: true, animating: false })
 })
