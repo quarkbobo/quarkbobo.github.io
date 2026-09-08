@@ -1,0 +1,51 @@
+<dialog id="planet-explorer" class="planet-explorer" data-phase="loading" aria-labelledby="planet-explorer-title" aria-describedby="planet-explorer-help">
+  <div id="planet-stage" class="planet-stage">
+    <div class="planet-fallback-note">
+      <span class="planet-fallback-note__orbit" aria-hidden="true">◌</span>
+      <h3>当前设备无法显示 3D 星球</h3>
+      <p>从下方继续浏览记录与游戏。</p>
+    </div>
+  </div>
+
+  <header class="planet-explorer__header">
+    <div class="planet-explorer__identity">
+      <p class="planet-explorer__eyebrow">BLUE SPACE · INNER WORLD</p>
+      <h2 id="planet-explorer-title">星球内部</h2>
+    </div>
+    <button id="planet-close" class="planet-control planet-control--close" type="button" autofocus>
+      <span>返回深空</span><span class="planet-control__close-icon" aria-hidden="true">×</span>
+    </button>
+  </header>
+
+  <div class="planet-explorer__controls" role="group" aria-label="探索视角">
+    <button id="planet-zoom-in" class="planet-control planet-control--zoom" type="button" aria-label="拉近视角" title="拉近视角">+</button>
+    <button id="planet-zoom-out" class="planet-control planet-control--zoom" type="button" aria-label="拉远视角" title="拉远视角">−</button>
+    <span class="planet-controls-divider" aria-hidden="true"></span>
+    <button id="planet-reset" class="planet-control" type="button">视角复位</button>
+    <button id="planet-pause" class="planet-control" type="button" aria-pressed="false">暂停动态</button>
+  </div>
+
+  <footer class="planet-explorer__footer">
+    <div class="planet-explorer__readout">
+      <p id="planet-status" class="planet-status" role="status" aria-live="polite" aria-atomic="true">正在靠近星球</p>
+      <p id="planet-explorer-help" class="planet-explorer__help"><span>拖动环视 · 滚轮或双指缩放</span><span class="planet-keyboard-help">方向键环视 · Esc 返回</span></p>
+    </div>
+    <nav class="planet-destinations" aria-label="星球内的内容入口">
+      <a class="planet-destination" data-planet-node="archives" href="<%= url_for('/archives/') %>">
+        <span class="planet-destination__icon planet-destination__icon--archives" aria-hidden="true"></span>
+        <span class="planet-destination__copy"><span class="planet-destination__name">文章归档</span><span class="planet-destination__description">回看全部记录</span></span>
+        <span class="planet-destination__arrow" aria-hidden="true">↗</span>
+      </a>
+      <a class="planet-destination" data-planet-node="latest" href="<%= url_for('/#latest-posts') %>">
+        <span class="planet-destination__icon planet-destination__icon--latest" aria-hidden="true"></span>
+        <span class="planet-destination__copy"><span class="planet-destination__name">最新记录</span><span class="planet-destination__description">接收最近的信号</span></span>
+        <span class="planet-destination__arrow" aria-hidden="true">↗</span>
+      </a>
+      <a class="planet-destination" data-planet-node="games" href="<%= url_for('/游戏相关/game-concat/') %>">
+        <span class="planet-destination__icon planet-destination__icon--games" aria-hidden="true"></span>
+        <span class="planet-destination__copy"><span class="planet-destination__name">游戏合集</span><span class="planet-destination__description">前往另一片世界</span></span>
+        <span class="planet-destination__arrow" aria-hidden="true">↗</span>
+      </a>
+    </nav>
+  </footer>
+</dialog>

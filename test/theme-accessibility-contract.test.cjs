@@ -5,6 +5,7 @@ const path = require('node:path')
 const vm = require('node:vm')
 const ejs = require('ejs')
 const yaml = require('js-yaml')
+const { DomUtils, parseDocument } = require('htmlparser2')
 const hexoToc = require(path.resolve(__dirname, '..', 'node_modules', 'hexo', 'dist', 'plugins', 'helper', 'toc.js'))
 
 const publicRoot = path.resolve(__dirname, '..', 'public')
@@ -161,9 +162,41 @@ test('generated home exposes a keyboard-native control for the continuous backgr
   assert.match(attributes, /aria-pressed="false"/)
   assert.match(attributes, /aria-controls="space-scene"/)
   assert.match(control[3], /暂停背景动态/)
-  assert.equal((output.match(/<canvas\b/g) || []).length, 2)
+  assert.equal((output.match(/<canvas\b/g) || []).length, 3)
   assert.match(output, /id="space-scene"[^>]*aria-hidden="true"/)
   assert.match(output, /id="space-scene"[^>]*aria-hidden="true"[\s\S]*id="planet-surface"[^>]*aria-hidden="true"/)
+})
+
+test('the interactive planet is named, keyboard reachable, and outside decorative hidden ancestors', () => {
+  const document = parseDocument(built('index.html'))
+  const byId = id => {
+    const matches = DomUtils.findAll(element => element.attribs?.id === id, document.children)
+    assert.equal(matches.length, 1, `unique #${id}`)
+    return matches[0]
+  }
+  const canvas = byId('planet-webgl')
+  assert.equal(canvas.name, 'canvas')
+  assert.equal(canvas.parent.attribs.id, 'planet-viewport')
+  assert.equal(canvas.attribs.role, 'button')
+  assert.equal(canvas.attribs.tabindex, '0')
+  assert.match(canvas.attribs['aria-label'], /星球.*Enter.*进入/)
+  assert.equal(canvas.attribs['aria-haspopup'], 'dialog')
+  assert.equal(canvas.attribs['aria-controls'], 'planet-explorer')
+  for (let ancestor = canvas; ancestor; ancestor = ancestor.parent) {
+    assert.notEqual(ancestor.attribs?.['aria-hidden'], 'true', `${ancestor.name || 'document'} must expose the interactive planet`)
+    assert.equal(ancestor.attribs?.hidden, undefined)
+  }
+  const entry = byId('planet-enter')
+  assert.equal(entry.name, 'button')
+  assert.equal(entry.attribs.type, 'button')
+  assert.equal(entry.attribs['aria-haspopup'], 'dialog')
+  assert.equal(entry.attribs['aria-controls'], 'planet-explorer')
+  const dialog = byId('planet-explorer')
+  assert.equal(dialog.name, 'dialog')
+  assert.equal(dialog.attribs['aria-labelledby'], 'planet-explorer-title')
+  assert.equal(dialog.attribs.open, undefined)
+  assert.ok(DomUtils.textContent(byId('planet-explorer-title')).trim())
+  assert.equal(byId('space-scene').attribs['aria-hidden'], 'true')
 })
 
 test('generated dates use the configured Chinese locale instead of a fixed numeric pattern', () => {

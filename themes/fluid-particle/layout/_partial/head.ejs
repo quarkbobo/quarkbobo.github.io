@@ -9,12 +9,14 @@
   <%- css('css/cursor-comet.css') %>
   <% if (page.path === 'index.html' || page.path === '/') { %>
     <%- css('css/space-scene.css') %>
+    <%- css('css/planet-explorer.css') %>
     <script src="<%= url_for('/js/particle-core.js') %>" defer></script>
     <script src="<%= url_for('/js/particle-flow.js') %>" defer></script>
     <script src="<%= url_for('/js/planet-core.js') %>" defer></script>
     <script src="<%= url_for('/js/planet-surface.js') %>" defer></script>
     <script src="<%= url_for('/js/home-latest-core.js') %>" defer></script>
     <script src="<%= url_for('/js/home-latest.js') %>" defer></script>
+    <script src="<%= url_for('/js/planet-explorer.mjs') %>" type="module"></script>
   <% } %>
   <script src="<%= url_for('/js/cursor-comet-core.js') %>" defer></script>
   <script src="<%= url_for('/js/cursor-comet.js') %>" defer></script>

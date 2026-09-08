@@ -12,3 +12,4 @@ desktop.ini
 .codebuddy/
 __pycache__/
 *.py[cod]
+themes/fluid-particle/source/vendor/three/

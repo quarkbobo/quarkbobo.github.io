@@ -808,7 +808,10 @@ function runArticleDisclosureProbe (viewport) {
 }
 
 function runPlanetCompositionProbe (viewport) {
+  // Keep this as the original sphere's fallback acceptance fixture. The WebGL
+  // controller intentionally destroys that renderer after its first good frame.
   const generatedHome = fs.readFileSync(path.join(publicRoot, 'index.html'), 'utf8')
+    .replace(/<script\b[^>]*src="\/js\/planet-explorer\.mjs"[^>]*><\/script>/, '')
   const fixtureName = `.theme-planet-composition-${process.pid}-${viewport.width}.html`
   const fixturePath = path.join(publicRoot, fixtureName)
   const acceptanceWidth = viewport.width
@@ -862,7 +865,7 @@ function runPlanetCompositionProbe (viewport) {
           return rects
             .filter(function (rect) { return rect.width > 0 && rect.height > 0 })
             .map(function (rect) {
-              return { kind, tagName: child.tagName.toLowerCase(), left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom }
+              return { kind, id: child.id, href: child.getAttribute('href'), tagName: child.tagName.toLowerCase(), left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom }
             })
         })
         const acceptanceViewport = { left: 0, top: 0, right: ${acceptanceWidth}, bottom: ${viewportHeight} }
@@ -1145,7 +1148,7 @@ test('article TOC is collapsed before the article at 320px and stays a visible s
   assert.equal(desktop.innerStars.animationName, 'none')
 })
 
-test('planet and dust ring keep approved geometry clear of copy at every acceptance viewport', () => {
+test('fallback planet and dust ring keep approved geometry clear of copy at every acceptance viewport', () => {
   for (const viewport of [
     { width: 1440, height: 900 },
     { width: 1280, height: 720 },
@@ -1179,8 +1182,10 @@ test('planet and dust ring keep approved geometry clear of copy at every accepta
     assert.equal(probe.planetFallback, false)
     assert.equal(probe.surfaceReady, true)
     assert.equal(probe.copyContentRects.filter(rect => rect.kind === 'text').length >= 4, true, `${viewport.width}px visible copy text`)
-    assert.equal(probe.copyContentRects.filter(rect => rect.kind === 'control').length, 2, `${viewport.width}px visible copy controls`)
-    assert.equal(probe.copyIntersectsPlanetOrRing, false, `${viewport.width}px copy collision`)
+    const controls = probe.copyContentRects.filter(rect => rect.kind === 'control')
+    assert.equal(controls.length, 3, `${viewport.width}px visible copy controls`)
+    assert.deepEqual(controls.map(rect => rect.id || rect.href), ['planet-enter', '#latest-posts', 'motion-toggle'])
+    assert.equal(probe.copyIntersectsPlanetOrRing, false, `${viewport.width}px copy collision ${JSON.stringify({ copy: probe.copyContentRects, planet: probe.planetRect, ring: probe.ringRect, scene: probe.sceneRect })}`)
     assert.ok(probe.ringWidthRatio >= 1.88 && probe.ringWidthRatio <= 1.94, probe.ringWidthRatio)
     assert.ok(probe.ringHeightRatio >= 0.34 && probe.ringHeightRatio <= 0.38, probe.ringHeightRatio)
     assert.ok(probe.beltThicknessRatio >= 0.07 && probe.beltThicknessRatio <= 0.10, probe.beltThicknessRatio)
@@ -1196,8 +1201,9 @@ test('planet and dust ring keep approved geometry clear of copy at every accepta
       assert.equal(probe.mobilePolicy, true)
       assert.equal(probe.layoutMode, 'mobile')
       assert.ok(probe.ringRect.right > probe.sceneRect.right)
-      assert.equal(probe.systemTransform, 'none')
-      assert.equal(probe.systemTranslationX, 0)
+      const planetCenter = (probe.planetRect.left + probe.planetRect.right) / 2
+      const sceneCenter = (probe.sceneRect.left + probe.sceneRect.right) / 2
+      assert.ok(Math.abs(planetCenter - sceneCenter) < 1, `${viewport.width}px fallback stays centered below the copy`)
     }
   }
 })

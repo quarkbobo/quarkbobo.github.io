@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "prebuild": "node tools/copy-three.cjs",
+    "preserver": "node tools/copy-three.cjs",
     "build": "hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
@@ -26,6 +28,7 @@
     "hexo-server": "^3.0.0",
     "hexo-toc": "^1.1.0",
     "hexo-wordcount": "^6.0.1",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "three": "0.180.0"
   }
 }

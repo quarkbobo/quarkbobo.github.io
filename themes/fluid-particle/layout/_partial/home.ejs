@@ -17,12 +17,26 @@ const homeDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN', ho
       <h1 id="home-title"><%= theme.hero.title %></h1>
       <p class="hero-description"><%= theme.hero.description %></p>
       <div class="hero-actions">
+        <button id="planet-enter" class="planet-enter" type="button" aria-haspopup="dialog" aria-controls="planet-explorer">
+          <svg viewBox="0 0 28 28" fill="none" aria-hidden="true"><circle cx="14" cy="14" r="7"/><ellipse cx="14" cy="14" rx="13" ry="4.5" transform="rotate(-28 14 14)"/></svg>
+          <span>进入星球</span><span class="planet-enter__arrow" aria-hidden="true">↗</span>
+        </button>
         <a class="hero-entry" href="#latest-posts">进入最新记录 <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-motion">
         <button id="motion-toggle" class="motion-toggle" type="button" aria-pressed="false" aria-controls="space-scene">暂停背景动态</button>
       </div>
     </div>
-    <div class="hero-scene" data-fluid-scene aria-hidden="true">
+    <div class="hero-scene" data-fluid-scene>
       <%- partial('_partial/space-scene') %>
+      <div id="planet-viewport" class="planet-viewport">
+        <canvas id="planet-webgl" role="button" tabindex="0" aria-label="环形星球，按 Enter 进入星球内部" aria-haspopup="dialog" aria-controls="planet-explorer"></canvas>
+      </div>
+      <div class="planet-caption" aria-hidden="true">
+        <span class="planet-caption__signal"></span>
+        <span>穿过云层，探索星球内部</span>
+        <span class="planet-caption__line"></span>
+      </div>
     </div>
   </section>
 
@@ -50,3 +64,4 @@ const homeDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN', ho
     <div class="catalogue-content"><%- catalogue.content || '' %></div>
   </section>
 </div>
+<%- partial('_partial/planet-explorer') %>
