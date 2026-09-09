@@ -4,7 +4,9 @@
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu">菜单</button>
     <nav id="site-menu" class="site-nav" aria-label="主要导航">
       <% Object.entries(theme.menu).forEach(([label, href]) => { %>
-        <a href="<%= url_for(href) %>"><%= label %></a>
+        <% const currentPath = typeof page !== 'undefined' ? String(page.path || '') : '' %>
+        <% const current = label === '首页' ? ['/', 'index.html'].includes(currentPath) : label === '归档' && /^archives(?:\/|$)/.test(currentPath) %>
+        <a href="<%= url_for(href) %>"<% if (current) { %> aria-current="page"<% } %>><%= label %></a>
       <% }) %>
     </nav>
   </div>

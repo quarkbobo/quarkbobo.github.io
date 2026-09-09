@@ -379,6 +379,8 @@ const articleOutlineContent = transformElements(
 )
 const outline = toc(articleOutlineContent, { min_depth: 2, max_depth: 3, list_number: false })
 articleContent = shieldedArticle.restore(articleContent)
+// Authored zero-width indentation must not create an empty anonymous grid cell.
+if (/(?:^|\/)game-concat(?:\/|$)/.test(String(post.path || ''))) articleContent = articleContent.replace(/\u200b/g, '')
 %>
 <div class="article-layout content-shell">
   <% if (outline && outline.trim()) { %>

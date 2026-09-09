@@ -2,7 +2,7 @@
 <html lang="<%= config.language || 'zh-CN' %>">
   <%- partial('_partial/head') %>
   <% const isHome = page.path === '/' || page.path === 'index.html' %>
-  <body class="<%= isHome ? 'is-home' : 'is-inner' %>">
+  <body class="<%= isHome ? 'is-home' : 'is-inner' %>" data-page-kind="<%= /(?:^|\/)game-concat(?:\/|$)/.test(String(page.path || '')) ? 'games' : 'archive' %>">
     <a class="skip-link" href="#main-content">跳到正文</a>
     <%- partial('_partial/header') %>
     <main id="main-content" tabindex="-1"><%- body %></main>

@@ -42,12 +42,15 @@ const homeDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN', ho
 
   <section id="latest-posts" class="home-section" aria-labelledby="latest-title">
     <div class="section-heading">
+      <div>
       <p class="section-kicker">LATEST ENTRIES</p>
       <h2 id="latest-title">最新记录</h2>
+      </div>
+      <a href="<%= url_for('/archives/') %>">全部归档 <span aria-hidden="true">→</span></a>
     </div>
     <% if (homePosts.length) { %>
       <div class="post-grid" data-latest-grid>
-        <% homePosts.slice(0, 10).forEach(post => { %>
+        <% homePosts.slice(0, 2).forEach(post => { %>
           <%- partial('_partial/post-card', { post, dateFormatter: homeDateFormatter }) %>
         <% }) %>
       </div>
@@ -58,10 +61,12 @@ const homeDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN', ho
 
   <section class="catalogue-section home-section" aria-labelledby="catalogue-title">
     <div class="section-heading">
+      <div>
       <p class="section-kicker">CATALOGUE</p>
-      <h2 id="catalogue-title">博客目录</h2>
+      <h2 id="catalogue-title">按主题找文章</h2>
+      </div>
     </div>
-    <div class="catalogue-content"><%- catalogue.content || '' %></div>
+    <div class="catalogue-content"><%- String(catalogue.content || '').replace(/(<h3\b[\s\S]*?<\/h3>)\s*(<ul\b[\s\S]*?<\/ul>)/g, '<section class="catalogue-topic">$1$2</section>') %></div>
   </section>
 </div>
 <%- partial('_partial/planet-explorer') %>

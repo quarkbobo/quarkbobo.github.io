@@ -1,0 +1,122 @@
+/* Selected direction A: page composition only; planet flight and dialog stay intact. */
+body { background-color: #080f1a; }
+.site-header__inner, .site-footer__inner, .home-shell, .content-shell {
+  width: min(75rem, calc(100% - 5rem));
+}
+.site-brand { white-space: normal; overflow-wrap: anywhere; letter-spacing: .07em; }
+.site-nav a[aria-current="page"] { color: var(--ice-white); box-shadow: inset 0 -2px #8bcad8; }
+.site-header__inner { min-height: 5.6rem; }
+.home-hero {
+  min-height: 0;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  gap: 2rem;
+  padding-block: 3.5rem;
+  overflow: visible;
+}
+.home-hero::after { inset: 0; }
+.home-hero__copy { max-width: none; min-width: 0; }
+.home-hero h1 { font-size: 4.25rem; line-height: 1.25; letter-spacing: .025em; white-space: normal; overflow-wrap: anywhere; }
+.home-hero .site-name { margin-top: 2rem; color: #cbb389; }
+.home-hero .hero-description { font-size: 1.05rem; color: #a7b9c8; margin-top: 1.4rem; }
+.home-hero .hero-actions { margin-top: 2rem; flex-wrap: wrap; }
+.home-hero .hero-scene { position: relative; min-width: 0; min-height: 30rem; }
+.home-hero .planet-viewport { inset: 0; width: 100%; height: 100%; }
+.home-hero .space-scene { inset: 0; width: 100%; height: 100%; }
+.home-hero .saturn-system { width: 78%; right: 11%; left: auto; }
+.home-hero .planet-caption { bottom: .75rem; right: 1rem; font-size: .65rem; }
+.home-section { padding-block: 2rem; border-top: 1px solid #314456; }
+.section-heading { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: .5rem 2rem; margin-bottom: 1.4rem; }
+.section-heading h2 { margin: 0; font-size: 1.65rem; }
+.section-heading .section-kicker { color: #8bcad8; }
+.section-heading > div h2 { margin-top: .4rem; }
+.section-heading > a { display: flex; align-items: center; min-height: 44px; font-size: .85rem; color: #a7b9c8; text-decoration: none; }
+.home-shell .post-grid { gap: 2.5rem; perspective: none; }
+.home-shell .post-card {
+  min-width: 0; padding: 1.25rem 0; border: 0; border-top: 1px solid #314456;
+  border-radius: 0; background: transparent; box-shadow: none; transition: transform 180ms ease;
+}
+.home-shell .post-card:hover { transform: translateY(-2px); box-shadow: none; border-color: #8bcad8; }
+.home-shell .post-card h3 { margin-block: .7rem; font-size: 1.23rem; line-height: 1.6; }
+.home-shell .post-card__date { color: #a7b9c8; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.home-shell .post-card__summary { display: block; overflow: visible; font-size: .95rem; color: #a7b9c8; margin-block: .6rem; }
+.home-shell .post-card__link { min-height: 44px; margin-top: .5rem; }
+.catalogue-content { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+.catalogue-content > :not(.catalogue-topic) { grid-column: 1 / -1; margin: 0; }
+.catalogue-content > h2 { font: .8rem/1.6 var(--font-data); color: #a7b9c8; }
+.catalogue-topic { min-width: 0; border-top: 2px solid #42586b; }
+.catalogue-topic h3 { font-size: 1rem; color: #cbb389; margin: 1rem 0; }
+.catalogue-topic ul { padding: 0; margin: 0; list-style: none; }
+.catalogue-topic li { margin: 0; border-top: 1px solid #203141; }
+.catalogue-topic li a { display: flex; align-items: center; min-height: 54px; padding-block: .6rem; font-size: .875rem; overflow-wrap: anywhere; text-decoration: none; }
+.content-shell { padding-block: 2.5rem 4rem; }
+.article-layout { gap: 3rem; }
+.article-layout:not(:has(.article-toc)) { grid-template-columns: minmax(0, 47.5rem); justify-content: center; }
+.article-header { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #314456; }
+.article-header h1 { font-size: 2.875rem; line-height: 1.35; overflow-wrap: anywhere; }
+.article-header time { margin-top: 1rem; letter-spacing: 0; }
+.article-body { font-size: 1.0625rem; line-height: 1.95; }
+.article-toc { min-width: 0; }
+.article-toc a, .article-toc-disclosure a { display: flex; align-items: center; min-height: 44px; overflow-wrap: anywhere; }
+.archive-shell > h1 { font-size: 3rem; margin-block: .8rem 1.5rem; }
+.archive-years { display: flex; flex-wrap: wrap; gap: 1rem; margin-block: 1.5rem; }
+.archive-years a { min-height: 44px; display: flex; align-items: center; padding: .5rem 1rem; border: 1px solid #314456; color: #cbb389; text-decoration: none; }
+.archive-year { margin: 2rem 0 3rem; }
+.archive-year h2 { font: 1.1rem/1.5 var(--font-data); color: #cbb389; }
+.archive-year .archive-list { margin: 0; }
+.archive-list li { grid-template-columns: 10rem minmax(0, 1fr); align-items: baseline; padding-block: .6rem; }
+.archive-list a { font-size: 1rem; overflow-wrap: anywhere; }
+.archive-list time { font-variant-numeric: tabular-nums; letter-spacing: 0; }
+body[data-page-kind="games"] .article-layout { grid-template-columns: minmax(0, 1fr); }
+body[data-page-kind="games"] .article-shell { max-width: none; }
+body[data-page-kind="games"] .article-body > p { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; font-size: 0; }
+body[data-page-kind="games"] .article-body a {
+  min-height: 10rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  padding: 1.75rem; background: #111e2d; border: 1px solid #314456; color: #e6edf0;
+  font-size: 1.4rem; text-decoration: none; overflow-wrap: anywhere;
+}
+body[data-page-kind="games"] .article-body a::before { color: #cbb389; font: 2.25rem/1.3 var(--font-display); width: 5.5rem; flex: 0 0 5.5rem; text-align: center; }
+body[data-page-kind="games"] .article-body a:nth-child(1)::before { content: '⌁'; }
+body[data-page-kind="games"] .article-body a:nth-child(2)::before { content: '2048'; }
+body[data-page-kind="games"] .article-body a:nth-child(3)::before { content: '馬'; }
+body[data-page-kind="games"] .article-body a:nth-child(4)::before { content: '♞'; }
+body[data-page-kind="games"] .article-body a:hover { border-color: #8bcad8; background: #1a2c3e; }
+@media (max-width: 1000px) {
+  .home-hero h1 { font-size: 3.3rem; }
+  .home-hero .hero-scene { min-height: 26rem; }
+}
+@media (max-width: 760px) {
+  .site-header__inner, .site-footer__inner, .home-shell, .content-shell { width: calc(100% - 2rem); }
+  .site-header__inner { min-height: 4.5rem; gap: .6rem; }
+  .site-brand { font-size: .75rem; letter-spacing: 0; max-width: calc(100% - 4.5rem); }
+  .home-hero { grid-template-columns: minmax(0, 1fr); padding-block: 2rem; gap: 1.4rem; }
+  .home-hero h1 { font-size: 2.2rem; letter-spacing: 0; }
+  .home-hero .site-name { margin-top: 1rem; }
+  .home-hero .hero-eyebrow { font-size: .66rem; letter-spacing: .04em; overflow-wrap: anywhere; }
+  .home-hero .hero-description { font-size: .95rem; margin-top: 1rem; }
+  .home-hero .hero-actions { margin-top: 1.4rem; }
+  .home-hero .hero-scene { min-height: 17rem; }
+  .home-hero .saturn-system { top: 0; bottom: auto; transform: none; }
+  .home-hero .planet-caption { bottom: 0; right: 0; font-size: .6rem; }
+  .home-hero .planet-caption__line { width: 2rem; }
+  .home-section { padding-block: 1.5rem; }
+  .section-heading { align-items: start; }
+  .section-heading h2 { font-size: 1.4rem; }
+  .home-shell .post-grid { gap: .5rem; }
+  .home-shell .post-card h3 { font-size: 1.05rem; }
+  .catalogue-content { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+  .content-shell { padding-block: 1.5rem 3rem; }
+  .article-header h1 { font-size: 1.9rem; }
+  .article-header { margin-bottom: 1.2rem; padding-bottom: 1rem; }
+  .article-body { font-size: 1rem; }
+  .archive-shell > h1 { font-size: 2.4rem; }
+  .archive-list li { grid-template-columns: 6.5rem minmax(0, 1fr); gap: .7rem; }
+  .archive-list time { font-size: .65rem; }
+  .archive-list a { font-size: .9rem; }
+  body[data-page-kind="games"] .article-body > p { grid-template-columns: minmax(0, 1fr); }
+  body[data-page-kind="games"] .article-body a { font-size: 1.25rem; padding: 1.25rem; min-height: 9rem; }
+  body[data-page-kind="games"] .article-body a::before { width: 4.5rem; flex-basis: 4.5rem; font-size: 1.8rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-shell .post-card { transition: none; }
+  .home-shell .post-card:hover { transform: none; }
+}

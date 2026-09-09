@@ -1200,7 +1200,9 @@ test('fallback planet and dust ring keep approved geometry clear of copy at ever
     if (viewport.width === 390) {
       assert.equal(probe.mobilePolicy, true)
       assert.equal(probe.layoutMode, 'mobile')
-      assert.ok(probe.ringRect.right > probe.sceneRect.right)
+      // Selected layout A keeps the complete fallback ring in its own scene.
+      assert.ok(probe.ringRect.left >= probe.sceneRect.left)
+      assert.ok(probe.ringRect.right <= probe.sceneRect.right)
       const planetCenter = (probe.planetRect.left + probe.planetRect.right) / 2
       const sceneCenter = (probe.sceneRect.left + probe.sceneRect.right) / 2
       assert.ok(Math.abs(planetCenter - sceneCenter) < 1, `${viewport.width}px fallback stays centered below the copy`)

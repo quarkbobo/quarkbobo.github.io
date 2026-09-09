@@ -3,20 +3,30 @@ const archivePosts = posts && typeof posts.toArray === 'function' ? posts.toArra
 const archiveDateOptions = { year: 'numeric', month: 'long', day: 'numeric' }
 if (config.timezone) archiveDateOptions.timeZone = config.timezone
 const archiveDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN', archiveDateOptions)
+const yearFormatter = new Intl.DateTimeFormat('en', { year: 'numeric', ...(config.timezone ? { timeZone: config.timezone } : {}) })
+const archiveYears = [...new Set(archivePosts.map(post => yearFormatter.format(new Date(post.date))))]
 %>
 <section class="archive-shell content-shell" aria-labelledby="archive-title">
   <p class="section-kicker">DEEP SPACE ARCHIVE</p>
   <h1 id="archive-title"><%= title %></h1>
-  <ol class="archive-list">
-    <% if (archivePosts.length) { %>
-      <% archivePosts.forEach(post => { %>
+  <% if (archivePosts.length) { %>
+    <nav class="archive-years" aria-label="按年份浏览"><% archiveYears.forEach(year => { %><a href="#archive-<%= year %>"><%= year %></a><% }) %></nav>
+    <% archiveYears.forEach(year => { %>
+    <section class="archive-year" id="archive-<%= year %>">
+      <h2><%= year %></h2>
+      <ol class="archive-list">
+      <% archivePosts.filter(post => yearFormatter.format(new Date(post.date)) === year).forEach(post => { %>
         <li>
           <time datetime="<%= date_xml(post.date) %>"><%= archiveDateFormatter.format(new Date(post.date)) %></time>
           <a href="<%= url_for(post.path) %>"><%= post.title %></a>
         </li>
       <% }) %>
-    <% } else { %>
+      </ol>
+    </section>
+    <% }) %>
+  <% } else { %>
+    <ol class="archive-list">
       <li class="empty-state">档案中还没有记录</li>
-    <% } %>
-  </ol>
+    </ol>
+  <% } %>
 </section>
