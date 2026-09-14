@@ -808,10 +808,10 @@ function runArticleDisclosureProbe (viewport) {
 }
 
 function runPlanetCompositionProbe (viewport) {
-  // Keep this as the original sphere's fallback acceptance fixture. The WebGL
-  // controller intentionally destroys that renderer after its first good frame.
+  // Exercise the retired renderer in isolation; the live homepage no longer loads it.
   const generatedHome = fs.readFileSync(path.join(publicRoot, 'index.html'), 'utf8')
     .replace(/<script\b[^>]*src="\/js\/planet-explorer\.mjs"[^>]*><\/script>/, '')
+    .replace('</head>', '<style>.home-hero .saturn-system { visibility: visible; opacity: 1; }</style><script src="/js/planet-core.js" defer></script><script src="/js/planet-surface.js" defer></script></head>')
   const fixtureName = `.theme-planet-composition-${process.pid}-${viewport.width}.html`
   const fixturePath = path.join(publicRoot, fixtureName)
   const acceptanceWidth = viewport.width

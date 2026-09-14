@@ -481,8 +481,8 @@ test('the generated home owns scene canvases while every themed page owns one cu
   assert.equal(occurrences(home, '<canvas'), 3)
   assert.equal(occurrences(home, '<script src="/js/particle-core.js" defer></script>'), 1)
   assert.equal(occurrences(home, '<script src="/js/particle-flow.js" defer></script>'), 1)
-  assert.equal(occurrences(home, '<script src="/js/planet-core.js" defer></script>'), 1)
-  assert.equal(occurrences(home, '<script src="/js/planet-surface.js" defer></script>'), 1)
+  assert.equal(occurrences(home, '<script src="/js/planet-core.js" defer></script>'), 0)
+  assert.equal(occurrences(home, '<script src="/js/planet-surface.js" defer></script>'), 0)
   assert.equal(occurrences(home, '<script src="/js/planet-explorer.mjs" type="module"></script>'), 1)
   assert.equal(occurrences(home, '<script src="/js/cursor-comet-core.js" defer></script>'), 1)
   assert.equal(occurrences(home, '<script src="/js/cursor-comet.js" defer></script>'), 1)
@@ -501,7 +501,7 @@ test('the generated home owns scene canvases while every themed page owns one cu
   assert.equal(occurrences(post, 'planet-explorer.mjs'), 0)
   assert.equal(occurrences(post, 'planet-explorer.css'), 0)
   assert.equal(occurrences(post, 'home-latest.js'), 0)
-  const sceneScriptOrder = ['particle-core.js', 'particle-flow.js', 'planet-core.js', 'planet-surface.js', 'cursor-comet-core.js', 'cursor-comet.js']
+  const sceneScriptOrder = ['particle-core.js', 'particle-flow.js', 'cursor-comet-core.js', 'cursor-comet.js']
     .map(name => home.indexOf(`/js/${name}`))
   assert.ok(sceneScriptOrder.every(index => index >= 0))
   assert.deepEqual(sceneScriptOrder, [...sceneScriptOrder].sort((left, right) => left - right))

@@ -125,7 +125,7 @@
   visibility: hidden;
 }
 
-.home-hero.planet-webgl-ready .saturn-system {
+.home-hero .saturn-system {
   visibility: hidden;
   opacity: 0;
 }

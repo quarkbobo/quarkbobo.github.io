@@ -156,13 +156,26 @@ export function createExterior(THREE) {
   }
   const dust = particles(THREE, positions, colors, 10);
   rings.add(dust);
+  const asteroids = new THREE.Group();
+  asteroids.name = 'Orbiting asteroids';
+  rings.add(asteroids);
+  const rockGeometry = new THREE.IcosahedronGeometry(1, 0);
+  const rockMaterial = new THREE.MeshStandardMaterial({ color: 0x9b9182, roughness: 1 });
+  for (let i = 0; i < 48; i++) {
+    const angle = rand() * Math.PI * 2, radius = 2.65 + rand() * 0.42;
+    const rock = mesh(THREE, asteroids, rockGeometry, rockMaterial,
+      [Math.cos(angle) * radius, Math.sin(angle) * radius, (rand() - 0.5) * 0.18]);
+    const size = 0.018 + rand() * 0.035;
+    rock.scale.set(size, size * (0.6 + rand() * 0.7), size * 0.7);
+    rock.rotation.set(rand() * Math.PI, rand() * Math.PI, rand() * Math.PI);
+  }
   const sunlight = new THREE.DirectionalLight(0xffe2bb, 2.7);
   sunlight.position.set(-4.5, 3, 3);
   group.add(sunlight, new THREE.HemisphereLight(0x628bda, 0x02040c, 0.32));
   const edgeLight = new THREE.DirectionalLight(0x2767db, 0.35);
   edgeLight.position.set(3, -1, -3);
   group.add(edgeLight);
-  return { group, planet, update(time) { planet.rotation.y = time * 0.025; dust.rotation.z = time * 0.008; }, dispose() { disposeGroup(group); } };
+  return { group, planet, update(time) { planet.rotation.y = time * 0.025; dust.rotation.z = time * 0.008; asteroids.rotation.z = time * 0.045; }, dispose() { disposeGroup(group); } };
 }
 
 export function createInterior(THREE) {

@@ -265,7 +265,7 @@ async function runCase (options, url) {
     if (options.noWebGL) {
       check(await evaluate(`window.__planetQA.webgl === 0 && !document.querySelector('.home-hero').classList.contains('planet-webgl-ready')`), 'disabled WebGL preserves the homepage fallback')
       check(await evaluate(`(() => { const canvas=document.querySelector('#planet-webgl'); const box=canvas.getBoundingClientRect(); return canvas.hidden && getComputedStyle(canvas).display==='none' && box.width===0 && box.height===0; })()`), 'failed WebGL canvas is hidden and has no rendered box')
-      check(await evaluate(`(() => { const el=document.querySelector('.saturn-system'); if (!el) return false; const style=getComputedStyle(el); const box=el.getBoundingClientRect(); return style.display!=='none' && style.visibility!=='hidden' && Number(style.opacity)>0 && box.width>0 && box.height>0; })()`), 'original planet fallback remains rendered')
+      check(await evaluate(`getComputedStyle(document.querySelector('.saturn-system')).visibility === 'hidden'`), 'retired planet stays hidden even without WebGL')
       check(await evaluate(`(() => { const el=document.querySelector('#planet-status'); return Boolean(el?.textContent.trim()) && el.getBoundingClientRect().height > 0; })()`), 'fallback displays a visible status message')
       await capture('fallback')
     } else {

@@ -560,8 +560,6 @@ function setup () {
     changePhase('exterior')
     size()
     hero.classList.add('planet-webgl-ready')
-    // The previous 2D sphere remains as a static fallback, without a second animation loop.
-    window.FluidPlanetSurface?.mount(document.getElementById('planet-surface')).destroy()
     if (dialog.open) startFlight()
     else schedule()
   }).catch(fail)
