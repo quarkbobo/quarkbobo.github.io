@@ -162,9 +162,9 @@ test('generated home exposes a keyboard-native control for the continuous backgr
   assert.match(attributes, /aria-pressed="false"/)
   assert.match(attributes, /aria-controls="space-scene"/)
   assert.match(control[3], /暂停背景动态/)
-  assert.equal((output.match(/<canvas\b/g) || []).length, 3)
+  assert.equal((output.match(/<canvas\b/g) || []).length, 2)
   assert.match(output, /id="space-scene"[^>]*aria-hidden="true"/)
-  assert.match(output, /id="space-scene"[^>]*aria-hidden="true"[\s\S]*id="planet-surface"[^>]*aria-hidden="true"/)
+  assert.match(output, /id="space-scene"[^>]*aria-hidden="true"[\s\S]*id="particle-flow"/)
 })
 
 test('the interactive planet is named, keyboard reachable, and outside decorative hidden ancestors', () => {

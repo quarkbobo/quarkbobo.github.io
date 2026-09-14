@@ -1,6 +1,7 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const{serve,launch}=require('./verify-planet-explorer.cjs');
-const out=path.resolve(__dirname,'../docs/archive-a-implementation');
+const out=path.resolve(__dirname,'../.superpowers/layout-qa');
+fs.mkdirSync(out,{recursive:true});
 const report={consoleErrors:[],views:[]};
 (async()=>{const{server,url}=await serve();let b;try{
  for(const[width,height,zoom]of[[1440,1000,false],[390,844,false],[320,844,false],[768,1000,false],[390,844,true]]){

@@ -6,6 +6,11 @@ const path = require('node:path');
 test('homepage does not load the legacy planet renderer', () => {
   const html = fs.readFileSync(path.join(__dirname, '../public/index.html'), 'utf8');
   assert.doesNotMatch(html, /src="[^"]*\/planet-(?:core|surface)\.js/);
+  assert.doesNotMatch(html, /saturn-system|planet-static-surface|id="planet-surface"/);
+  for (const name of ['planet-core.js', 'planet-surface.js']) {
+    assert.equal(fs.existsSync(path.join(__dirname, '../public/js', name)), false);
+    assert.equal(fs.existsSync(path.join(__dirname, '../themes/fluid-particle/source/js', name)), false);
+  }
 });
 
 test('asteroids orbit deterministically and share disposable assets', async () => {

@@ -125,10 +125,6 @@
   visibility: hidden;
 }
 
-.home-hero .saturn-system {
-  visibility: hidden;
-  opacity: 0;
-}
 
 .planet-caption {
   position: absolute;
@@ -651,13 +647,6 @@
     inset: -18% -15% -5%;
   }
 
-  .hero-scene .saturn-system {
-    top: 50%;
-    right: 50%;
-    bottom: auto;
-    width: 86%;
-    transform: translate(50%, -48%);
-  }
 
   .planet-viewport {
     inset: -8% -16% 0;

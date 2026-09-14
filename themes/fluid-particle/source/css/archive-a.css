@@ -22,7 +22,6 @@ body { background-color: #080f1a; }
 .home-hero .hero-scene { position: relative; min-width: 0; min-height: 30rem; }
 .home-hero .planet-viewport { inset: 0; width: 100%; height: 100%; }
 .home-hero .space-scene { inset: 0; width: 100%; height: 100%; }
-.home-hero .saturn-system { width: 78%; right: 11%; left: auto; }
 .home-hero .planet-caption { bottom: .75rem; right: 1rem; font-size: .65rem; }
 .home-section { padding-block: 2rem; border-top: 1px solid #314456; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: .5rem 2rem; margin-bottom: 1.4rem; }
@@ -95,7 +94,6 @@ body[data-page-kind="games"] .article-body a:hover { border-color: #8bcad8; back
   .home-hero .hero-description { font-size: .95rem; margin-top: 1rem; }
   .home-hero .hero-actions { margin-top: 1.4rem; }
   .home-hero .hero-scene { min-height: 17rem; }
-  .home-hero .saturn-system { top: 0; bottom: auto; transform: none; }
   .home-hero .planet-caption { bottom: 0; right: 0; font-size: .6rem; }
   .home-hero .planet-caption__line { width: 2rem; }
   .home-section { padding-block: 1.5rem; }

@@ -250,8 +250,15 @@ async function runCase (options, url) {
       await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 })
       await until(`!document.querySelector('#planet-explorer')?.open && !document.querySelector('#planet-enter')?.closest('[inert]')`, 'Escape closes the dialog and restores page interaction')
     }
+    await send('Page.addScriptToEvaluateOnNewDocument', { source: `
+      window.__retiredPlanetSeen = false;
+      new MutationObserver(() => {
+        if (document.querySelector('.saturn-system, #planet-surface')) window.__retiredPlanetSeen = true;
+      }).observe(document, { childList: true, subtree: true });
+    ` })
     await send('Page.navigate', { url })
     await until(`document.readyState === 'complete'`, 'homepage loaded', 12000)
+    check(await evaluate(`window.__retiredPlanetSeen === false && !performance.getEntriesByType('resource').some(entry => /planet-(core|surface)\\.js/.test(entry.name))`), 'cold load never inserts or requests the retired planet')
     check(await evaluate(`Boolean(document.querySelector('button#planet-enter'))`), 'homepage exposes the planet entry button')
     if (!options.noWebGL) {
       await until(`document.querySelector('.home-hero')?.classList.contains('planet-webgl-ready') && window.__planetQA.draws > 0`, 'first successful WebGL frame', 12000)
@@ -265,7 +272,7 @@ async function runCase (options, url) {
     if (options.noWebGL) {
       check(await evaluate(`window.__planetQA.webgl === 0 && !document.querySelector('.home-hero').classList.contains('planet-webgl-ready')`), 'disabled WebGL preserves the homepage fallback')
       check(await evaluate(`(() => { const canvas=document.querySelector('#planet-webgl'); const box=canvas.getBoundingClientRect(); return canvas.hidden && getComputedStyle(canvas).display==='none' && box.width===0 && box.height===0; })()`), 'failed WebGL canvas is hidden and has no rendered box')
-      check(await evaluate(`getComputedStyle(document.querySelector('.saturn-system')).visibility === 'hidden'`), 'retired planet stays hidden even without WebGL')
+      check(await evaluate(`!document.querySelector('.saturn-system, #planet-surface')`), 'retired planet is absent even without WebGL')
       check(await evaluate(`(() => { const el=document.querySelector('#planet-status'); return Boolean(el?.textContent.trim()) && el.getBoundingClientRect().height > 0; })()`), 'fallback displays a visible status message')
       await capture('fallback')
     } else {
