@@ -52,3 +52,4 @@
 ## GitHub 上传
 - 2026-09-22用户授权上传GitHub，覆盖前述仅本地交付限制；目标仓库quarkbobo/quarkbobo.github.io，使用当前开发分支codex/planet-interior-upgrade，master及Pages部署保持原样。
 - 上传前重新执行npm test：209通过、0失败、0跳过、exit0；日志github-npm-test.log。提交范围仅本次三体源码、测试、工具与docs/three-body证据，历史未提交资料和新出现的题库文件保留在本机。
+- 功能提交6074eca已成功推送至origin/codex/planet-interior-upgrade，GitHub已创建对应远程分支。提交包1119文件均在本次范围内，872既有文件只读指纹保持不变；未改master、未触发Pages发布。
