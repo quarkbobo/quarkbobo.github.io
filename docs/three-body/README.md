@@ -1,5 +1,7 @@
 # 三体主题发布与本地交付
 
+最新要求已改为单一三体外观：直接访问[首页](https://quarkbobo.github.io/)即显示三体，经典切换入口移除，旧收藏参数与保存偏好不会恢复经典。文章、归档及历史源码保留，旧星球WebGL不再初始化。新版209项Node测试通过，默认入口真实浏览器6阶段/39检查通过，见[单主题验收](only-theme-evidence/2026-09-22T10-44-34-066Z/report.json)。下文双主题说明仅为历史记录，不再代表当前入口。
+
 已发布：[打开三体观测站](https://quarkbobo.github.io/?theme=three-body)。发布提交为`8bcfe93`，[Actions构建、测试和部署均成功](https://github.com/quarkbobo/quarkbobo.github.io/actions/runs/35715671297)。发布前重新实测209项测试通过；线上六份主题资源SHA与该提交一致，实际WebGL四天体和128粒子运行，截图[published-1440.png](published-1440.png)。
 
 额外线上零控制台检查因原站缺少favicon.ico未通过，未修改断言或修复范围外旧问题；旧自定义域名目前为停放页，请使用上方Pages地址。详情与证据见[BLOCKED.md](BLOCKED.md)、[publish-verification.json](publish-verification.json)、[publish-actions.json](publish-actions.json)。其余下文为各阶段原始记录，保留当时交付状态。

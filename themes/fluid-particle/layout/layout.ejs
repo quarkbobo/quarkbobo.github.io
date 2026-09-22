@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="<%= config.language || 'zh-CN' %>">
+<html lang="<%= config.language || 'zh-CN' %>" data-theme="three-body">
   <%- partial('_partial/head') %>
   <% const isHome = page.path === '/' || page.path === 'index.html' %>
   <body class="<%= isHome ? 'is-home' : 'is-inner' %>" data-page-kind="<%= /(?:^|\/)game-concat(?:\/|$)/.test(String(page.path || '')) ? 'games' : 'archive' %>">

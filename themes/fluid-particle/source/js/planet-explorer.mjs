@@ -6,7 +6,7 @@ const canvas = document.getElementById('planet-webgl')
 const dialog = document.getElementById('planet-explorer')
 const enter = document.getElementById('planet-enter')
 
-if (hero && viewport && canvas && dialog && enter) setup()
+if (document.documentElement.dataset.theme !== 'three-body' && hero && viewport && canvas && dialog && enter) setup()
 
 function setup () {
   const stage = document.getElementById('planet-stage')

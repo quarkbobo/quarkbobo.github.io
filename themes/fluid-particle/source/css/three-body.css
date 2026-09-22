@@ -1,7 +1,4 @@
-/* The observation deck is opt-in; existing archive styles remain the default. */
-.three-body-switch { display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-width:44px;min-height:44px;padding:.5rem .8rem;border:1px solid #38546a;border-radius:2px;background:transparent;color:#b8d4dd;font: .78rem/1.4 var(--font-data);cursor:pointer;white-space:nowrap }
-.site-header__inner:has(.three-body-switch) { gap:.8rem }
-.three-body-switch > span:first-child { font-size:1.4rem;line-height:1 }
+/* The observation deck and reading panels are the site's only appearance. */
 #three-body-observatory[hidden] { display:none !important }
 html[data-theme="three-body"] { --tb-void:#050914;--tb-wall:#101c2b;--tb-edge:#33475a;--tb-ink:#e6edf2;--tb-cyan:#92d9e5;--tb-gold:#efb66e }
 html[data-theme="three-body"] body { background:#050914;color:#e6edf2 }
@@ -9,7 +6,6 @@ html[data-theme="three-body"] .home-hero { display:none }
 html[data-theme="three-body"] .site-header { background:#080f1a;backdrop-filter:none }
 html[data-theme="three-body"] .site-header__inner { min-height:4.75rem }
 html[data-theme="three-body"] .site-brand { letter-spacing:.04em }
-html[data-theme="three-body"] .three-body-switch { border-color:#92d9e5;color:#d7edf2 }
 html[data-theme="three-body"] .home-section { margin-top:2rem;background:#080f1a;padding:2rem;border-color:#33475a }
 html[data-theme="three-body"] .article-shell,html[data-theme="three-body"] .archive-shell { background:#0a1320;padding:clamp(1rem,3vw,3rem);border:1px solid #25394b }
 html[data-theme="three-body"] .article-body { color:#e6edf2 }
@@ -110,8 +106,6 @@ html[data-theme="three-body"] .article-body a { color:#bde7ed }
 .tb-fallback-orbit { width:7rem;height:7rem;border:1px solid #5c8195;border-radius:50%;margin-bottom:1.5rem;background:radial-gradient(circle at 30% 28%,#466879,#102230 48%,#030711 65%);box-shadow:0 0 70px #46717c44 }
 @media(max-width:1000px) { .tb-equations small { display:none }.tb-controls { gap:.4rem }.tb-read { gap:.5rem }.tb-heading { width:calc(100% - 4rem) }.tb-deck { padding-inline:2rem } }
 @media(max-width:760px) {
-  .three-body-switch { padding:.3rem;width:44px;flex-shrink:0 }.three-body-switch__label { position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%) }
-  .site-header__inner:has(.three-body-switch) { flex-wrap:wrap;gap:.5rem }.site-header__inner:has(.three-body-switch) .site-brand { flex:1;min-width:0;font-size:.65rem }
   html[data-theme="three-body"] .site-header__inner { min-height:4rem }
   .tb-heading { width:calc(100% - 2.5rem);gap:.8rem;padding:1.1rem 0 1rem }.tb-heading h1 { font-size:1.55rem;letter-spacing:.06em }.tb-eyebrow { font-size:.5rem;letter-spacing:.08em;max-width:12rem }.tb-date strong { font-size:1.4rem }.tb-date > span { display:none }.tb-date p { font-size:.55rem }
   .tb-window { margin:0 .8rem;height:clamp(400px,54svh,580px);min-height:400px;border-radius:40px 40px 3px 3px }

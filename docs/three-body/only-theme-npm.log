@@ -1,0 +1,376 @@
+
+> hexo-site@0.0.0 test
+> npm run test:fresh
+
+
+> hexo-site@0.0.0 test:fresh
+> npm run clean && npm run build && npm run test:node
+
+
+> hexo-site@0.0.0 clean
+> hexo clean
+
+INFO  Validating config
+INFO  Deleted database.
+INFO  Deleted public folder.
+npm notice
+npm notice New minor version of npm available! 11.6.1 -> 11.19.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.19.1
+npm notice To update run: npm install -g npm@11.19.1
+npm notice
+
+> hexo-site@0.0.0 prebuild
+> node tools/copy-three.cjs
+
+
+> hexo-site@0.0.0 build
+> hexo generate
+
+INFO  Validating config
+INFO  Start processing
+INFO  Files loaded in 226 ms
+INFO  Generated: 2048/index.html
+INFO  Generated: archives/index.html
+INFO  Generated: search.json
+INFO  Generated: index.html
+INFO  Generated: tags/8月/index.html
+INFO  Generated: COCKY ZHOU/index.html
+INFO  Generated: files/2026年02月_政治月测题库.txt
+INFO  Generated: tags/题库分享/index.html
+INFO  Generated: snake/index.html
+INFO  Generated: images/wx公众号.jpg
+INFO  Generated: 中国象棋/index.html
+INFO  Generated: 国际象棋/index.html
+INFO  Generated: 国际象棋/assets/Black_Rook.png
+INFO  Generated: files/backup/1月_new_questions.txt
+INFO  Generated: image_transformer/index.html
+INFO  Generated: js/planet-explorer.mjs
+INFO  Generated: 个人博客/zzyc-questions-Sep-free/index.html
+INFO  Generated: 关于我/zzyc_V4_for_U/index.html
+INFO  Generated: 游戏相关/game-concat/index.html
+INFO  Generated: archives/2025/11/index.html
+INFO  Generated: archives/2026/04/index.html
+INFO  Generated: source/_posts/index.html
+INFO  Generated: files/2026年02月_政治月测题库.xlsx
+INFO  Generated: files/2026年01月_政治月测题库.xlsx
+INFO  Generated: files/2026年03月_政治月测题库.txt
+INFO  Generated: files/2026年03月_政治月测题库.xlsx
+INFO  Generated: files/2026年05月_反诈题库.txt
+INFO  Generated: files/2026年04月_政治月测题库.xlsx
+INFO  Generated: files/2026年05月_反诈题库.xlsx
+INFO  Generated: files/6月学生政治理论学习月测（自测）new_questions.txt
+INFO  Generated: files/2026年05月_政治月测题库.txt
+INFO  Generated: files/2026年05月_政治月测题库.xlsx
+INFO  Generated: files/6月学生政治理论学习月测（自测）_final.xlsx
+INFO  Generated: files/7月学生政治理论学习月测（自测）.xlsx
+INFO  Generated: files/6月学生政治理论学习月测（自测）new_questions.xlsx
+INFO  Generated: files/6月学生政治理论学习月测（自测）_final.txt
+INFO  Generated: files/8_new_questions.xlsx
+INFO  Generated: files/8_new_questions.txt
+INFO  Generated: files/8月学生政治理论学习月测（自测）_阅读版.txt
+INFO  Generated: files/8月学生政治理论学习月测（自测）.xlsx
+INFO  Generated: files/backup/1月学生政治理论学习月测（自测）_final.xlsx
+INFO  Generated: files/9月学生政治理论学习月测（自测）(4).xlsx
+INFO  Generated: files/backup/1月_new_questions.xlsx
+INFO  Generated: files/9月学生政治理论学习月测（自测）_阅读版(4).txt
+INFO  Generated: files/backup/202603new_questions(1).txt
+INFO  Generated: files/backup/202604new_questions.txt
+INFO  Generated: files/backup/202603.xlsx
+INFO  Generated: files/backup/202604new_questions.xlsx
+INFO  Generated: files/backup/5.xlsx
+INFO  Generated: tags/政治月测/index.html
+INFO  Generated: 国际象棋/assets/Black_Bishop.png
+INFO  Generated: files/backup/5.txt
+INFO  Generated: files/backup/2月学生政治理论学习月测（自测）.txt
+INFO  Generated: files/backup/2月学生政治理论学习月测（自测）.xlsx
+INFO  Generated: 国际象棋/assets/Black_Knight.png
+INFO  Generated: 国际象棋/assets/Black_King.png
+INFO  Generated: css/space-scene.css
+INFO  Generated: 国际象棋/assets/Black_Pawn.png
+INFO  Generated: 国际象棋/assets/White_King.png
+INFO  Generated: 国际象棋/assets/White_Knight.png
+INFO  Generated: 国际象棋/assets/Black_Queen.png
+INFO  Generated: 国际象棋/assets/White_Pawn.png
+INFO  Generated: 国际象棋/assets/White_Bishop.png
+INFO  Generated: js/planet-world.mjs
+INFO  Generated: 国际象棋/assets/White_Queen.png
+INFO  Generated: js/planet-flight.mjs
+INFO  Generated: 国际象棋/assets/White_Rook.png
+INFO  Generated: js/three-body-core.mjs
+INFO  Generated: js/three-body-events.mjs
+INFO  Generated: js/three-body-overlays.mjs
+INFO  Generated: js/three-body.mjs
+INFO  Generated: 个人博客/My-First-Blog/index.html
+INFO  Generated: js/three-body-scene.mjs
+INFO  Generated: 游戏相关/Image-Transformer/index.html
+INFO  Generated: 个人博客/Hello-World/index.html
+INFO  Generated: archives/2026/09/index.html
+INFO  Generated: archives/2026/05/index.html
+INFO  Generated: archives/2026/08/index.html
+INFO  Generated: files/2026年01月_政治月测题库.txt
+INFO  Generated: files/backup/1月学生政治理论学习月测（自测）_final.txt
+INFO  Generated: files/2026年04月_政治月测题库.txt
+INFO  Generated: files/7月学生政治理论学习月测（自测）_阅读版.txt
+INFO  Generated: css/archive-a.css
+INFO  Generated: js/cursor-comet-core.js
+INFO  Generated: css/main.css
+INFO  Generated: js/home-latest.js
+INFO  Generated: css/cursor-comet.css
+INFO  Generated: css/planet-explorer.css
+INFO  Generated: js/cursor-comet.js
+INFO  Generated: css/post.css
+INFO  Generated: css/three-body.css
+INFO  Generated: js/particle-flow.js
+INFO  Generated: js/site.js
+INFO  Generated: js/particle-core.js
+INFO  Generated: js/home-latest-core.js
+INFO  Generated: archives/2025/index.html
+INFO  Generated: archives/2026/index.html
+INFO  Generated: vendor/three/LICENSE.txt
+INFO  Generated: vendor/three/three.module.min.js
+INFO  Generated: vendor/three/three.core.min.js
+INFO  100 files generated in 69 ms
+npm notice
+npm notice New minor version of npm available! 11.6.1 -> 11.19.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.19.1
+npm notice To update run: npm install -g npm@11.19.1
+npm notice
+
+> hexo-site@0.0.0 test:node
+> node --test test/*.test.cjs
+
+✔ selected A shows two recent entries and keeps every authored catalogue destination (13.8382ms)
+✔ archive A groups all original entries into real years (4.1443ms)
+✔ game index layout preserves the four original destinations (2.8173ms)
+✔ homepage does not load the legacy planet renderer (1.8395ms)
+✔ asteroids orbit deterministically and share disposable assets (240.5881ms)
+✔ shortcut invocation derives the repository from the script location (2783.1641ms)
+✔ Bobo updater generates the catalogue, commits pending work, and pushes master (2538.4083ms)
+✔ Bobo updater discovers current folders, nested posts, root posts, renames, and deletions (3076.6414ms)
+✔ a successful no-change run keeps one commit and exits after the default one-second delay (3810.9971ms)
+✔ a non-master branch is rejected without changing the remote (1532.4895ms)
+✔ an interactive failure keeps the window process alive until Enter is supplied (1521.318ms)
+✔ the updater source contains no destructive or account-changing Git operations (0.409ms)
+✔ Linux browser policy resolves standard GitHub runner Chrome paths without Windows sizing compensation (1.3474ms)
+✔ fine-pointer browser fixture overrides only input capabilities and retains native listener APIs (2.2866ms)
+✔ the rendered file center uses the deep-space data-bay shell (142.9147ms)
+✔ files support filtering and direct opening without an in-page preview (85.5063ms)
+✔ the particle field exposes a static reduced-motion state and accessible controls (76.679ms)
+✔ the real page stays usable at desktop and mobile widths in Chromium (2041.8072ms)
+✔ Chromium renders one static particle frame for reduced motion (1092.6404ms)
+✔ both pooled comet phases retain their trail for 520ms (1.2102ms)
+✔ an eligible inner page mounts and draws without a home scene (3.1623ms)
+✔ fine hover pointer coalesces movement and cycles the fixed eight-node pool (1.462ms)
+✔ one-pixel mouse moves accumulate from the accepted anchor until one segment reaches four pixels (1.05ms)
+✔ hybrid fine-pointer media never lets touch or pen movement create comet state (1.9035ms)
+✔ non-mouse window exits preserve an existing mouse comet while mouse exit clears it (3.6916ms)
+✔ blocked pointer policies start disabled without attaching pointer movement (3.8202ms)
+✔ eligible pointer listener is passive and twenty rapid moves queue only one frame (1.0629ms)
+✔ mount is idempotent and snapshots are frozen records (1.6676ms)
+✔ animation end returns a faded pooled segment to inactive (1.0974ms)
+✔ pause, fallback, hidden, window leave, and blur clear every pooled segment (4.7536ms)
+✔ policy re-enable restores one listener and seeds a fresh point (1.2378ms)
+✔ destroy cancels work and removes every owned observer and listener (1.1121ms)
+✔ segment ignores jitter, caps length, and keeps the current point as its head (1.6374ms)
+✔ speed maps monotonically to one through two-point-five pixels (0.1969ms)
+✔ pool index cycles over exactly eight reusable slots (0.1585ms)
+✔ negative diagonal writes a tail behind the current point and preserves output identity (0.1396ms)
+✔ segment rejects nonfinite points and missing output without mutating output (1.6146ms)
+✔ invalid pool sizes return zero (0.213ms)
+✔ browser script exposes the same frozen API as CommonJS (1.112ms)
+✔ hot geometry functions do not access DOM or allocate storage (0.4693ms)
+✔ GitHub Actions reporter emits escaped annotations for failed tests only (1.8222ms)
+✔ GitHub Actions reporter still emits useful annotations without a source location (0.2451ms)
+✔ Node test runner preserves spec output and adds one annotation for a failure (189.3786ms)
+✔ the new-post window includes its exact zero and 72-hour boundaries (0.7895ms)
+✔ posts older than 72 hours are ordinary and future posts are not new (0.135ms)
+✔ publication state accepts ISO strings and rejects invalid dates and clocks (0.1166ms)
+✔ the public API and its 72-hour constant are immutable (0.1302ms)
+✔ home runtime marks current posts and moves them before ordinary and future cards (2.1419ms)
+✔ Pages workflow builds, tests, and deploys public with job-scoped permissions (4.6028ms)
+✔ seeded particle creation is deterministic and respects layer ratios (8.1269ms)
+✔ layer cutoffs assign exact boundary rolls to the intended layer (0.2517ms)
+✔ cubicBezier includes all four control-point terms (0.1411ms)
+✔ delta-time phase advance is frame-rate independent (0.2055ms)
+✔ all orbit bands move from lower-left toward the Saturn region (1.4315ms)
+✔ pointer displacement is clamped to eight pixels (0.1334ms)
+✔ particle positioning reuses a caller-provided output point (0.1533ms)
+✔ edge fade prevents respawn flashes (0.1672ms)
+✔ quality changes only after a complete 120-frame window and keeps hysteresis (2.2498ms)
+✔ browser script exposes the same pure API without CommonJS (1.1709ms)
+✔ the generated home owns scene canvases while every themed page owns one cursor trail (5.4029ms)
+✔ mount defers initialization and exposes a frozen read-only metrics snapshot (8.4105ms)
+✔ motion control pauses and resumes both the renderer state and its visible label (3.3515ms)
+✔ app initialization reuses one renderer and one listener per global event type (1.6186ms)
+✔ destroyed lifecycle handles cannot mutate a newly mounted scene (6.0985ms)
+▶ mount falls back without Canvas, the particle core, or animation frames
+  ✔ 2d context (2.8113ms)
+  ✔ particle core (2.0495ms)
+  ✔ animation frame (1.729ms)
+✔ mount falls back without Canvas, the particle core, or animation frames (7.3636ms)
+✔ visibility pauses animation and resumes with a reset timestamp (15.0505ms)
+✔ reduced motion draws a fixed particle field without starting animation (3.9424ms)
+✔ live reduced-motion changes switch immediately and preserve requested and visible running state (5.2259ms)
+✔ a paused resize repaints one static frame without restarting animation (4.7165ms)
+✔ paused reduced-motion restoration repaints one static frame without restarting animation (5.4221ms)
+▶ DPR is capped, coarse pointers use the mobile cap, and resize work is coalesced
+  ✔ desktop cap and coalesced resize (4.9718ms)
+  ✔ mobile cap and disabled pointer input (2.7808ms)
+  ✔ narrow viewport disables pointer input and cuts the high-quality budget in half (5.6559ms)
+✔ DPR is capped, coarse pointers use the mobile cap, and resize work is coalesced (13.935ms)
+✔ desktop to mobile resize applies mobile rendering and zeroes pointer displacement (8.2548ms)
+✔ mobile to desktop resize restores desktop rendering and pointer displacement (7.7364ms)
+✔ repeated breakpoint crossings keep one pointer listener and destroy removes it (8.6818ms)
+✔ breakpoint resize preserves the current quality level and switches its policy budget (90.0324ms)
+✔ raw RAF time drives metrics and quality while motion is clamped to 50ms (4.6932ms)
+✔ long-frame metrics count only frames slower than 24ms (4.4829ms)
+✔ every desktop quality level keeps an approximately 84/13/3 layer quota (133.3301ms)
+✔ quality-budget removals fade out while inactive phases keep advancing through wrap (84.9224ms)
+✔ restored quality particles fade in over multiple frames while metrics expose the target quota (134.7275ms)
+✔ mobile-to-desktop additions fade in instead of appearing at full alpha (8.1309ms)
+✔ every supported particle prefix keeps deterministic two-to-four glint groups with readable screen geometry (304.1709ms)
+✔ quality removals keep fading streak trails instead of cutting them off (67.5969ms)
+✔ mobile-to-desktop streak trails share the added particles fade-in alpha (28.885ms)
+✔ streak trails have deterministic quiet intervals and sparse burst frames (309.15ms)
+✔ the hot loop reuses sprites and destroy removes every owned listener and callback (12.713ms)
+✔ pointer events use cached bounds and the hot loop reuses two position outputs (63.925ms)
+✔ scroll and resize coalesce one bounds refresh and keep a stationary pointer canvas-relative (17.3699ms)
+✔ requestIdleCallback falls back to a deferred timer (2.4827ms)
+▶ destroy cancels initialization and coalesced resize work before it runs
+  ✔ pending idle callback (0.8121ms)
+  ✔ pending timer fallback (0.8007ms)
+  ✔ pending resize frame (2.1094ms)
+  ✔ pending scroll bounds frame (1.843ms)
+✔ destroy cancels initialization and coalesced resize work before it runs (5.8606ms)
+✔ orbit bounds keep the camera outside the core and inside the interior dome (4.6636ms)
+✔ approach flies from the same exterior view through the radius 1.5 sphere (2.6197ms)
+✔ one timeline fully covers the scene seam and settles the interior before enabling it (0.7621ms)
+✔ opening transform preserves the planet center and projected scale across a host resize (0.4786ms)
+✔ return is fully covered while the interior changes back to the exterior (0.4569ms)
+✔ expansion hands off to forward motion without a pronounced speed valley (4.4223ms)
+✔ entry retains the actual homepage camera and releases its parallax without a jump (1.3329ms)
+✔ extracts only a Tab-indented first paragraph after front matter (1.5445ms)
+✔ accepts four-space indentation and keeps readable inline link text (0.2488ms)
+✔ ignores invisible source markers before the paragraph indentation (0.1488ms)
+✔ joins wrapped lines in the same first paragraph until a blank line (0.3022ms)
+✔ rejects a first unindented text block instead of searching later content (0.1422ms)
+✔ rejects a first heading block instead of searching later content (0.1552ms)
+✔ rejects a first quote block instead of searching later content (0.1187ms)
+✔ rejects a first list block instead of searching later content (0.1102ms)
+✔ rejects a first image block instead of searching later content (0.2138ms)
+✔ rejects a first fenced code block instead of searching later content (0.4072ms)
+✔ rejects a first html block instead of searching later content (0.1338ms)
+✔ rejects an indented structural block instead of treating it as prose (0.2482ms)
+✔ returns an empty lead for missing or non-string source (0.112ms)
+✔ particle renderer and Canvas visual contract stay unchanged (3.5552ms)
+✔ generated navigation exposes a skip target and a controlled collapsed menu (1.8054ms)
+✔ generated home brand names the approved station and links home (1.236ms)
+✔ generated home exposes a keyboard-native control for the continuous background motion (0.8562ms)
+✔ the interactive planet is named, keyboard reachable, and outside decorative hidden ancestors (9.5516ms)
+✔ generated dates use the configured Chinese locale instead of a fixed numeric pattern (1.3316ms)
+✔ generated long-form article headings and TOC form one complete navigation graph (17.9259ms)
+✔ generated article TOC is a native disclosure before the article body (2.3613ms)
+✔ generated long-form article images use lazy decoding defaults (0.9322ms)
+✔ generated article images use configured intrinsic dimensions when available (18.4428ms)
+✔ article normalization transfers only direct Hexo wrapper IDs (1.3353ms)
+✔ the authored 2048 fragment receives one meaningful themed page heading (0.8175ms)
+✔ generated site script keeps menu visibility and aria-expanded in sync (0.8451ms)
+✔ built theme exposes accessible interaction and compositor-friendly rendering in Chrome (1027.8176ms)
+✔ article entry links meet touch target size without changing card, category, or archive layout (0.2119ms)
+✔ skip link stays hidden for pointer-like focus and reveals for keyboard-like focus in Chrome (0.116ms)
+✔ main landmark retains its visible keyboard focus replacement in Chrome (0.1443ms)
+✔ generated TOC anchors navigate to their unique heading in Chrome (1134.347ms)
+✔ article TOC is collapsed before the article at 320px and stays a visible sticky sidebar on desktop (2011.4669ms)
+✔ root catalogue renders as the designed home without changing its URL (1.926ms)
+✔ normal posts render an article shell and heading-derived contents (27.1703ms)
+✔ archive route and primary navigation render their semantic surfaces (1.5259ms)
+✔ every internal primary navigation link resolves to generated output (1.6248ms)
+✔ complete standalone HTML documents are copied byte-for-byte with one document root (20.085ms)
+✔ COCKY ZHOU generated inline scripts remain syntactically valid (5.6548ms)
+✔ existing fragment pages and standalone applications keep their generated routes (3.3308ms)
+✔ fluid-particle is selected and declares its home-menu contract (6.4013ms)
+✔ every optional offline image cache entry has a valid URL and positive dimensions (0.8381ms)
+✔ article entry links declare a 44px block-size touch target without broadening category selectors (0.8057ms)
+✔ fluid-particle provides every renderer entry point and stylesheet (0.9959ms)
+✔ the existing root catalogue route remains unchanged (0.4124ms)
+✔ article heading and image normalization leaves raw-text containers byte-for-byte intact (18.913ms)
+✔ article images receive cached intrinsic dimensions only from their true source (4.9708ms)
+✔ glyph-only heading permalinks expose the heading name to assistive technology (1.1757ms)
+✔ raw-text protection remains active while the article outline is derived (0.9333ms)
+✔ article outline keeps inline code text without exposing headings from raw blocks (1.4247ms)
+✔ glyph permalinks decode heading entities once and expose distinct browser-readable names (0.8774ms)
+✔ authored heading ids cannot inject attributes and still match every generated anchor (2.2015ms)
+✔ quoted greater-than signs in headings and permalinks stay attribute data in a real HTML parser (7.2799ms)
+✔ direct heading wrapper ids cross quoted data and malformed openings remain untouched (1.9958ms)
+✔ normalizers ignore heading and image strings inside outer quoted attributes (2.4699ms)
+✔ post cards render real category links when the post has categories (1.0684ms)
+✔ post cards render the complete marked lead and leave visual truncation to CSS (0.8219ms)
+✔ the homepage empty state includes a usable return-home link (1.0601ms)
+✔ home excludes the catalogue post while passing every other folder post to cards (0.7141ms)
+✔ post cards expose publication data and an initially hidden NEW ribbon (0.4465ms)
+✔ approved home copy, navigation, footer, title layout, and ribbon styling are declared (0.486ms)
+✔ all three presets are independent reproducible four-body initial conditions with genuine inertial motion (9.9184ms)
+✔ Newtonian forces have the independently calculated magnitude, inverse-square falloff and equal opposite reaction (0.7463ms)
+✔ four-body acceleration includes every active body and divides force by the receiving mass (0.4966ms)
+✔ fixed substeps give the same state for a speed-up batch and equal elapsed smaller frames (9.1648ms)
+✔ velocity-Verlet preserves the reference circular binary energy over forty simulated years (40.6135ms)
+✔ bounded mode reflects overshoot and velocity on all three radius-adjusted walls; free mode does not (0.9847ms)
+✔ swept detection catches a fast planet crossing a star and emits exactly one collision (0.72ms)
+✔ star-star impact pauses free-space physics with a finite last valid state (0.6441ms)
+✔ parameter edits reject invalid numbers and ranges atomically and valid mass changes immediately affect gravity (1.5466ms)
+✔ invalid elapsed time and excess step budget cannot advance or corrupt the last valid body state (0.8509ms)
+✔ radiation uses physical inverse-square distance while the rotating surface normal selects visible suns (0.4359ms)
+✔ stable era requires five continuous low-variation single-sun years and resets on unstable samples (0.5639ms)
+✔ thermal hysteresis needs five continuous danger years and clears only at its exit thresholds (0.4144ms)
+✔ three visible suns kill once after two continuous years, death is latched, and only a new numbered civilization clears it (0.4422ms)
+✔ the triple preset naturally produces a real two-year three-sun death while every star moves (9.4603ms)
+✔ real-time world-space trails fade over eight seconds, do not share live position storage, and remain bounded (1.3621ms)
+✔ fixed seeds produce independent reproducible event schedules and a first wait of 8–14 seconds (6.6002ms)
+✔ natural events begin once, have bounded duration and schedule their next quiet interval (0.757ms)
+✔ repeated advancement or effect rendering at the same time cannot duplicate events or consume randomness (0.7126ms)
+✔ frequency limits scale first and subsequent waits without overlapping two effects (0.4324ms)
+✔ disable clears an active visual and reenabling schedules from the current clock without catchup (0.4479ms)
+✔ frequency changes schedule forward instead of retroactively triggering a burst (0.7839ms)
+✔ long clock jumps skip expired visuals, keep truthful history and replan only one future event (0.4242ms)
+✔ manual triggers replace one active event; the sine envelope is isolated to the chosen effect and stays within 0–2 (0.6087ms)
+✔ seeded random triggers reach all three types and stars, with history bounded to the most recent eight (2.1478ms)
+✔ invalid parameters cannot mutate the schedule, randomness or history (0.7889ms)
+✔ clock reset discards the old active visual and replans from zero while preserving actual history (0.4148ms)
+✔ L1-L3 solve the normalized CR3BP force balance for equal and extreme mass ratios (8.5982ms)
+✔ L4/L5 follow the instantaneous three-dimensional orbital plane and input order does not change the heavier primary (1.7654ms)
+✔ degenerate or invalid Lagrange pairs return no markers; radial motion has a finite deterministic fallback plane (0.5951ms)
+✔ seeded belt initialization is reproducible, bounded, inclined, and relative to the four-body barycenter (2.513ms)
+✔ belt Verlet uses every active source, real softening and interpolated moving positions without back reaction (2.6683ms)
+✔ belt trajectories evolve under forces, stay finite and are never reflected by mode-one box walls (32.599ms)
+✔ swept particle and moving-star crossings stop only the struck particles at first contact (2.05ms)
+✔ invalid belt options return an error without particles or changes to the sources (0.7259ms)
+✔ invalid elapsed times and non-finite source state latch a belt error without advancing particles (3.8299ms)
+✔ near-source integration budget fails safely rather than catching up or corrupting the last valid belt (7.3683ms)
+✔ editable boundary is validated atomically and cannot teleport a body when shrinking (7.6839ms)
+✔ softening is a physical parameter and changing it preserves the current state (0.5579ms)
+✔ a mode switch cannot fold an escaped body into an undersized boundary (0.4796ms)
+✔ natural escape beyond editable initial values does not block unrelated parameter edits (0.5644ms)
+✔ belt accepts fixed-step clock roundoff at late epochs but still rejects two steps (14.747ms)
+ℹ tests 209
+ℹ suites 0
+ℹ pass 209
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15340.2926
+npm notice
+npm notice New minor version of npm available! 11.6.1 -> 11.19.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.19.1
+npm notice To update run: npm install -g npm@11.19.1
+npm notice
+npm notice
+npm notice New minor version of npm available! 11.6.1 -> 11.19.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.19.1
+npm notice To update run: npm install -g npm@11.19.1
+npm notice
+npm notice
+npm notice New minor version of npm available! 11.6.1 -> 11.19.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.19.1
+npm notice To update run: npm install -g npm@11.19.1
+npm notice

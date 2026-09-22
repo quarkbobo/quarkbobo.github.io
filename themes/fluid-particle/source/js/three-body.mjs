@@ -3,7 +3,6 @@ import { lagrangePoints, makeBelt, advanceBelt } from './three-body-overlays.mjs
 import { makeEvents, advanceEvents, triggerEvent, eventEffects } from './three-body-events.mjs'
 
 const root = document.documentElement
-const toggle = document.getElementById('three-body-toggle')
 const host = document.getElementById('three-body-observatory')
 const byId = id => document.getElementById(id)
 const reduced = matchMedia('(prefers-reduced-motion: reduce)')
@@ -11,12 +10,12 @@ const storage = {
   get (key) { try { return localStorage.getItem(key) } catch { return null } },
   set (key, value) { try { localStorage.setItem(key, value) } catch { /* Private browsing may only retain the current session. */ } }
 }
-let active = root.dataset.theme === 'three-body'
+const active = true
 let system = makeSystem('balanced'), initial = structuredClone(system), preset = 'balanced'
 let civilization = createCivilization(), paused = reduced.matches, speed = 1, view = 'station'
 let scene = null, canvas = null, loading = null, sceneFailed = false, visible = true, frame = 0, lastTime = 0, realTime = 0
 let trails = {}, forceMode = null, selectedId = 'star-a', yaw = 0, pitch = 0, zoom = 1
-let savedOldPause = null, lastStatus = '', historyVersion = -1
+let lastStatus = '', historyVersion = -1
 const visualDefaults = { exposure: 1.1, bloom: 1, particles: 1, nebula: 0.6, starScale: 1, trailWidth: 1.4 }
 const visualFields = { exposure: 'exposure', bloom: 'bloom', particles: 'particles', nebula: 'nebula', starScale: 'star-scale', trailWidth: 'trail-width' }
 let visual = { ...visualDefaults }
@@ -191,35 +190,19 @@ async function ensureScene () {
   })()
   return loading
 }
-function changeTheme (next) {
-  active = next
-  root.dataset.theme = active ? 'three-body' : 'archive'
-  storage.set('quark-theme', active ? 'three-body' : 'archive')
+function startObservatory () {
+  root.dataset.theme = 'three-body'
+  storage.set('quark-theme', 'three-body')
   const url = new URL(location.href)
   if (url.searchParams.has('theme')) { url.searchParams.delete('theme'); history.replaceState(null, '', url) }
-  toggle?.setAttribute('aria-pressed', String(active))
-  if (toggle) {
-    toggle.title = active ? '返回经典博客主题' : '切换三体观测主题'
-    toggle.setAttribute('aria-label', toggle.title)
-    toggle.querySelector('.three-body-switch__label').textContent = active ? '经典档案' : '三体观测'
-  }
   if (!host) return
-  host.hidden = !active
+  host.hidden = false
   const oldMotion = byId('motion-toggle')
-  if (active) {
-    // Allocate the optional scene surface only after the visitor selects this theme.
-    byId('three-body-surface')?.replaceWith(canvas)
-    savedOldPause ??= oldMotion?.getAttribute('aria-pressed') === 'true'
-    if (oldMotion?.getAttribute('aria-pressed') !== 'true') oldMotion?.click()
-    document.dispatchEvent(new CustomEvent('three-body-theme', { detail: { active: true } }))
-    visible = true; lastTime = 0
-    ensureScene().then(() => { if (active) { scene?.resize(); draw(1); schedule() } })
-  } else {
-    cancel()
-    if (savedOldPause === false && oldMotion?.getAttribute('aria-pressed') === 'true') oldMotion.click()
-    savedOldPause = null
-    document.dispatchEvent(new CustomEvent('three-body-theme', { detail: { active: false } }))
-  }
+  byId('three-body-surface')?.replaceWith(canvas)
+  if (oldMotion?.getAttribute('aria-pressed') !== 'true') oldMotion?.click()
+  document.dispatchEvent(new CustomEvent('three-body-theme', { detail: { active: true } }))
+  visible = true; lastTime = 0
+  ensureScene().then(() => { scene?.resize(); draw(1); schedule() })
 }
 
 // A fresh copy exposes observations only. Acceptance tools cannot mutate the live simulation.
@@ -231,7 +214,6 @@ window.threeBodySnapshot = () => structuredClone({
   error: system.error, visible, animationScheduled: Boolean(frame)
 })
 
-toggle?.addEventListener('click', () => changeTheme(!active))
 if (host) {
   function syncVisual () {
     for (const [key, id] of Object.entries(visualFields)) {
@@ -401,4 +383,4 @@ if (host) {
   syncFields(); status()
   if (reduced.matches) message('已减少动态，可用单步观测。')
 }
-changeTheme(active)
+startObservatory()

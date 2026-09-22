@@ -25,11 +25,5 @@
   <script src="<%= url_for('/js/site.js') %>" defer></script>
   <%- css('css/archive-a.css') %>
   <%- css('css/three-body.css') %>
-  <script>
-    try {
-      const requestedTheme = new URLSearchParams(location.search).get('theme');
-      document.documentElement.dataset.theme = requestedTheme === 'three-body' || (!requestedTheme && localStorage.getItem('quark-theme') === 'three-body') ? 'three-body' : 'archive';
-    } catch (_) { document.documentElement.dataset.theme = 'archive'; }
-  </script>
   <script src="<%= url_for('/js/three-body.mjs') %>" type="module"></script>
 </head>
