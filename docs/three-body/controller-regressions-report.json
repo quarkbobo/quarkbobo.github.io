@@ -1,0 +1,22 @@
+{
+  "startedAt": "2026-09-22T07:59:48.985Z",
+  "checks": [
+    "Production mode handler clears interrupted continuous danger without a false death",
+    "Real browser speed-only form submission preserves all live positions and velocities",
+    "Real paused camera follows a position edit without advancing physics",
+    "Real paused camera reframes at 390px without advancing physics"
+  ],
+  "mutations": [
+    "Removing the mode reset fails the real-core continuity check",
+    "Serving an in-memory old apply handler fails the same browser position check",
+    "Serving an in-memory old camera branch fails the same paused-camera check"
+  ],
+  "consoleErrors": [],
+  "boundaries": "Speed-only apply and paused cameras run in real Chromium. Mode continuity runs actual extracted event handlers with the real core and inert DOM-output stubs.",
+  "mode": {
+    "simTime": 2.1083333333333334,
+    "tripleYears": 0.10833333333333339
+  },
+  "passed": true,
+  "elapsedMs": 7547.965
+}

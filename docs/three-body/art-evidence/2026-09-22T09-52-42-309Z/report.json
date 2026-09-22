@@ -1,0 +1,114 @@
+{
+  "startedAt": "2026-09-22T09:52:42.309Z",
+  "checks": [
+    "Three stellar surfaces expose three distinct actual tint uniforms",
+    "Particle capacity is fixed at 4000 far, 1000 near and 512 trail points per body",
+    "tb-exposure changes canvas pixels with the parameter panel closed",
+    "tb-bloom changes canvas pixels with the parameter panel closed",
+    "tb-particles changes canvas pixels with the parameter panel closed",
+    "tb-nebula changes canvas pixels with the parameter panel closed",
+    "tb-star-scale changes canvas pixels with the parameter panel closed",
+    "tb-trail-width changes canvas pixels with the parameter panel closed",
+    "Zero particle density hides luminous trail particles through real shader gain",
+    "Density 0/2 changes actual draw ranges and pixels without allocating GPU objects",
+    "Softening and reflection boundary reach the real physical system",
+    "Invalid physical input 0.3/8 is explained",
+    "Invalid physical input -0.1/18 is explained",
+    "Invalid physical input 0.02/5 is explained",
+    "Invalid physical input 0.02/41 is explained",
+    "Invalid physical input /18 is explained",
+    "Lagrange overlay starts disabled",
+    "Belt starts with 128 actual rendered particles",
+    "Five finite world-space Lagrange points reach five real renderer markers",
+    "Belt parameters atomically rebuild 96 actual simulation and rendered particles",
+    "Belt inner >= outer is rejected without changing its particles, settings or the core system",
+    "All belt particles advance from their live positions when the simulation runs",
+    "Lagrange marker coordinates update as the source pair really moves",
+    "All six art sliders preserve the actual latched death, event history and physical state",
+    "390px at 100% text has no document horizontal overflow",
+    "Parameter panel at 100% stays in bounds and scrolls vertically",
+    "tb-exposure remains reachable inside the 100% mobile scrolling panel",
+    "tb-trail-width remains reachable inside the 100% mobile scrolling panel",
+    "tb-softening remains reachable inside the 100% mobile scrolling panel",
+    "tb-boundary remains reachable inside the 100% mobile scrolling panel",
+    "tb-belt-apply remains reachable inside the 100% mobile scrolling panel",
+    "tb-apply remains reachable inside the 100% mobile scrolling panel",
+    "390px at 200% text has no document horizontal overflow",
+    "Parameter panel at 200% stays in bounds and scrolls vertically",
+    "tb-exposure remains reachable inside the 200% mobile scrolling panel",
+    "tb-trail-width remains reachable inside the 200% mobile scrolling panel",
+    "tb-softening remains reachable inside the 200% mobile scrolling panel",
+    "tb-boundary remains reachable inside the 200% mobile scrolling panel",
+    "tb-belt-apply remains reachable inside the 200% mobile scrolling panel",
+    "tb-apply remains reachable inside the 200% mobile scrolling panel",
+    "No browser console/runtime errors occurred during art and observation controls"
+  ],
+  "stages": [
+    {
+      "name": "Native controls and renderer defaults",
+      "startedAt": "2026-09-22T09:52:47.822Z",
+      "passed": true
+    },
+    {
+      "name": "Visual input changes real rendering while physics stays frozen",
+      "startedAt": "2026-09-22T09:52:49.074Z",
+      "passed": true
+    },
+    {
+      "name": "Physical additions apply atomically and reject invalid input",
+      "startedAt": "2026-09-22T09:53:19.106Z",
+      "passed": true
+    },
+    {
+      "name": "Lagrange markers and belt use live physical positions with independent controls",
+      "startedAt": "2026-09-22T09:53:22.862Z",
+      "passed": true
+    },
+    {
+      "name": "Art controls cannot revive a destroyed civilization",
+      "startedAt": "2026-09-22T09:53:29.434Z",
+      "passed": true
+    },
+    {
+      "name": "390px and 200% text retain a scrollable reachable panel",
+      "startedAt": "2026-09-22T09:53:38.653Z",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "desktop-initial.png",
+    "exposure-before.png",
+    "exposure-after.png",
+    "bloom-before.png",
+    "bloom-after.png",
+    "particles-before.png",
+    "particles-after.png",
+    "nebula-before.png",
+    "nebula-after.png",
+    "starScale-before.png",
+    "starScale-after.png",
+    "trailWidth-before.png",
+    "trailWidth-after.png",
+    "particles-zero.png",
+    "particles-full.png",
+    "lagrange-and-belt.png",
+    "mobile-panel-100.png",
+    "mobile-panel-200.png",
+    "mobile-scene.png"
+  ],
+  "consoleErrors": [],
+  "observations": {
+    "starTints": [
+      "#ffb45b",
+      "#80caff",
+      "#ff694a"
+    ],
+    "belt": {
+      "count": 96,
+      "error": null,
+      "capacity": 256
+    }
+  },
+  "passed": true,
+  "elapsedMs": 58192.3151
+}

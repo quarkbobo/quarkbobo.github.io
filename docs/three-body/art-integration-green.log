@@ -1,0 +1,39 @@
+✔ all three presets are independent reproducible four-body initial conditions with genuine inertial motion (6.6135ms)
+✔ Newtonian forces have the independently calculated magnitude, inverse-square falloff and equal opposite reaction (0.35ms)
+✔ four-body acceleration includes every active body and divides force by the receiving mass (0.2714ms)
+✔ fixed substeps give the same state for a speed-up batch and equal elapsed smaller frames (4.8096ms)
+✔ velocity-Verlet preserves the reference circular binary energy over forty simulated years (20.1399ms)
+✔ bounded mode reflects overshoot and velocity on all three radius-adjusted walls; free mode does not (0.6341ms)
+✔ swept detection catches a fast planet crossing a star and emits exactly one collision (1.0763ms)
+✔ star-star impact pauses free-space physics with a finite last valid state (0.7941ms)
+✔ parameter edits reject invalid numbers and ranges atomically and valid mass changes immediately affect gravity (1.2047ms)
+✔ invalid elapsed time and excess step budget cannot advance or corrupt the last valid body state (0.6448ms)
+✔ radiation uses physical inverse-square distance while the rotating surface normal selects visible suns (0.4925ms)
+✔ stable era requires five continuous low-variation single-sun years and resets on unstable samples (0.5174ms)
+✔ thermal hysteresis needs five continuous danger years and clears only at its exit thresholds (0.2856ms)
+✔ three visible suns kill once after two continuous years, death is latched, and only a new numbered civilization clears it (0.3794ms)
+✔ the triple preset naturally produces a real two-year three-sun death while every star moves (7.1533ms)
+✔ real-time world-space trails fade over eight seconds, do not share live position storage, and remain bounded (0.7565ms)
+✔ L1-L3 solve the normalized CR3BP force balance for equal and extreme mass ratios (4.7679ms)
+✔ L4/L5 follow the instantaneous three-dimensional orbital plane and input order does not change the heavier primary (0.5119ms)
+✔ degenerate or invalid Lagrange pairs return no markers; radial motion has a finite deterministic fallback plane (0.3387ms)
+✔ seeded belt initialization is reproducible, bounded, inclined, and relative to the four-body barycenter (1.5118ms)
+✔ belt Verlet uses every active source, real softening and interpolated moving positions without back reaction (1.496ms)
+✔ belt trajectories evolve under forces, stay finite and are never reflected by mode-one box walls (23.7276ms)
+✔ swept particle and moving-star crossings stop only the struck particles at first contact (1.7121ms)
+✔ invalid belt options return an error without particles or changes to the sources (0.3352ms)
+✔ invalid elapsed times and non-finite source state latch a belt error without advancing particles (2.5768ms)
+✔ near-source integration budget fails safely rather than catching up or corrupting the last valid belt (4.5787ms)
+✔ editable boundary is validated atomically and cannot teleport a body when shrinking (4.4491ms)
+✔ softening is a physical parameter and changing it preserves the current state (0.2969ms)
+✔ a mode switch cannot fold an escaped body into an undersized boundary (0.3068ms)
+✔ natural escape beyond editable initial values does not block unrelated parameter edits (0.3615ms)
+✔ belt accepts fixed-step clock roundoff at late epochs but still rejects two steps (10.6718ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118.5595

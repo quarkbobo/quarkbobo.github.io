@@ -1,0 +1,5 @@
+PASS desktop: 42 checks
+PASS mobile: 44 checks
+PASS reduced-motion: 27 checks
+PASS webgl-disabled: 23 checks
+Screenshots and console errors: C:\Users\Lenovo\Desktop\Quarkbobo\.superpowers\planet-qa

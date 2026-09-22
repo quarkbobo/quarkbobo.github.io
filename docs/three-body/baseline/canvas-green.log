@@ -1,0 +1,33 @@
+✔ both pooled comet phases retain their trail for 520ms (1.3397ms)
+✔ an eligible inner page mounts and draws without a home scene (4.9492ms)
+✔ fine hover pointer coalesces movement and cycles the fixed eight-node pool (1.8075ms)
+✔ one-pixel mouse moves accumulate from the accepted anchor until one segment reaches four pixels (1.4325ms)
+✔ hybrid fine-pointer media never lets touch or pen movement create comet state (3.4014ms)
+✔ non-mouse window exits preserve an existing mouse comet while mouse exit clears it (7.146ms)
+✔ blocked pointer policies start disabled without attaching pointer movement (7.228ms)
+✔ eligible pointer listener is passive and twenty rapid moves queue only one frame (1.63ms)
+✔ mount is idempotent and snapshots are frozen records (2.419ms)
+✔ animation end returns a faded pooled segment to inactive (1.8238ms)
+✔ pause, fallback, hidden, window leave, and blur clear every pooled segment (7.4525ms)
+✔ policy re-enable restores one listener and seeds a fresh point (2.0671ms)
+✔ destroy cancels work and removes every owned observer and listener (1.4405ms)
+✔ generated navigation exposes a skip target and a controlled collapsed menu (3.0579ms)
+✔ generated home brand names the approved station and links home (2.1414ms)
+✔ generated home exposes a keyboard-native control for the continuous background motion (2.7624ms)
+✔ the interactive planet is named, keyboard reachable, and outside decorative hidden ancestors (16.9027ms)
+✔ generated dates use the configured Chinese locale instead of a fixed numeric pattern (2.5232ms)
+✔ generated long-form article headings and TOC form one complete navigation graph (30.4474ms)
+✔ generated article TOC is a native disclosure before the article body (3.1695ms)
+✔ generated long-form article images use lazy decoding defaults (1.3755ms)
+✔ generated article images use configured intrinsic dimensions when available (21.7615ms)
+✔ article normalization transfers only direct Hexo wrapper IDs (1.5261ms)
+✔ the authored 2048 fragment receives one meaningful themed page heading (0.8716ms)
+✔ generated site script keeps menu visibility and aria-expanded in sync (1.0244ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 366.3185

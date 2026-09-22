@@ -51,7 +51,8 @@ function setup () {
   canvas.setAttribute('role', 'button')
   canvas.tabIndex = 0
   enter.setAttribute('aria-haspopup', 'dialog')
-  const isPaused = () => reduced.matches || localPaused || motion?.getAttribute('aria-pressed') === 'true'
+  const threeBodyActive = () => document.documentElement.dataset.theme === 'three-body'
+  const isPaused = () => threeBodyActive() || reduced.matches || localPaused || motion?.getAttribute('aria-pressed') === 'true'
   const isTransitioning = () => phase === 'approach' || phase === 'departing'
   const exteriorFov = aspect => Math.max(42, THREE.MathUtils.radToDeg(2 * Math.atan(3.3 / (8 * aspect))))
   const interiorFov = aspect => Math.min(88, Math.max(42, 42 / aspect))
@@ -159,7 +160,7 @@ function setup () {
   }
 
   function schedule () {
-    if (frame || !renderer || contextLost || disposed || document.hidden || (!dialog.open && !visible)) return
+    if (frame || !renderer || contextLost || disposed || document.hidden || threeBodyActive() || (!dialog.open && !visible)) return
     frame = requestAnimationFrame(tick)
   }
 
@@ -415,6 +416,12 @@ function setup () {
     lastTime = 0
     schedule()
   })
+  document.addEventListener('three-body-theme', () => {
+    cancelAnimationFrame(frame)
+    frame = 0
+    lastTime = 0
+    if (!threeBodyActive()) schedule()
+  })
   reduced.addEventListener('change', () => {
     syncControls()
     if (phase === 'approach' && reduced.matches) showInterior()
@@ -548,7 +555,10 @@ function setup () {
     if (disposed) return
     THREE = library
     createInterior = worlds.createInterior
-    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' })
+    const contextOptions = { alpha: true, antialias: true, powerPreference: 'low-power' }
+    const context = canvas.getContext('webgl2', contextOptions)
+    if (!context) { fail(); return }
+    renderer = new THREE.WebGLRenderer({ canvas, context, ...contextOptions })
     renderer.outputColorSpace = THREE.SRGBColorSpace
     renderer.toneMapping = THREE.ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.25

@@ -1,0 +1,13 @@
+?? BLOCKED.md
+?? PROGRESS.md
+?? docs/archive-a-implementation/
+?? docs/layout-proposals/
+?? docs/superpowers/2026-09-08-planet-interior-verification.md
+?? docs/superpowers/plans/2026-09-08-planet-interior.md
+?? docs/superpowers/plans/2026-09-08-planet-transition.md
+?? docs/superpowers/plans/2026-09-09-archive-a.md
+?? docs/superpowers/specs/2026-09-08-planet-interior-design.md
+?? docs/three-body/
+?? docs/transition-polish/
+?? source/files/8_new_questions.txt
+?? source/files/8_new_questions.xlsx

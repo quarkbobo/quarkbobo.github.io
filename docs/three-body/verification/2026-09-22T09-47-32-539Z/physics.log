@@ -1,0 +1,24 @@
+✔ all three presets are independent reproducible four-body initial conditions with genuine inertial motion (10.7613ms)
+✔ Newtonian forces have the independently calculated magnitude, inverse-square falloff and equal opposite reaction (0.8709ms)
+✔ four-body acceleration includes every active body and divides force by the receiving mass (2.3104ms)
+✔ fixed substeps give the same state for a speed-up batch and equal elapsed smaller frames (15.3956ms)
+✔ velocity-Verlet preserves the reference circular binary energy over forty simulated years (40.0584ms)
+✔ bounded mode reflects overshoot and velocity on all three radius-adjusted walls; free mode does not (1.0858ms)
+✔ swept detection catches a fast planet crossing a star and emits exactly one collision (0.9514ms)
+✔ star-star impact pauses free-space physics with a finite last valid state (0.7928ms)
+✔ parameter edits reject invalid numbers and ranges atomically and valid mass changes immediately affect gravity (1.3808ms)
+✔ invalid elapsed time and excess step budget cannot advance or corrupt the last valid body state (0.6724ms)
+✔ radiation uses physical inverse-square distance while the rotating surface normal selects visible suns (0.5461ms)
+✔ stable era requires five continuous low-variation single-sun years and resets on unstable samples (0.4598ms)
+✔ thermal hysteresis needs five continuous danger years and clears only at its exit thresholds (0.3882ms)
+✔ three visible suns kill once after two continuous years, death is latched, and only a new numbered civilization clears it (0.4224ms)
+✔ the triple preset naturally produces a real two-year three-sun death while every star moves (11.9734ms)
+✔ real-time world-space trails fade over eight seconds, do not share live position storage, and remain bounded (2.1595ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 175.9376

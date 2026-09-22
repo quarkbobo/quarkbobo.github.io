@@ -1,0 +1,26 @@
+PASS home 1440
+PASS article 1440
+PASS article-toc 1440
+PASS archive 1440
+PASS games 1440
+PASS home 390
+PASS article 390
+PASS article-toc 390
+PASS archive 390
+PASS games 390
+PASS home 320
+PASS article 320
+PASS article-toc 320
+PASS archive 320
+PASS games 320
+PASS home 768
+PASS article 768
+PASS article-toc 768
+PASS archive 768
+PASS games 768
+PASS home 390 font200
+PASS article 390 font200
+PASS article-toc 390 font200
+PASS archive 390 font200
+PASS games 390 font200
+PASS 25 live-page layouts; console errors 0

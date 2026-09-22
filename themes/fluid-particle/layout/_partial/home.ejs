@@ -9,6 +9,7 @@ const homeDateOptions = { year: 'numeric', month: 'long', day: 'numeric' }
 if (config.timezone) homeDateOptions.timeZone = config.timezone
 const homeDateFormatter = new Intl.DateTimeFormat(config.language || 'zh-CN', homeDateOptions)
 %>
+<%- partial('_partial/three-body') %>
 <div class="home-shell" data-fluid-home>
   <section class="home-hero" aria-labelledby="home-title">
     <div class="home-hero__copy">

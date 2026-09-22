@@ -1,0 +1,3543 @@
+{
+  "startedAt": "2026-09-22T09:47:28.733Z",
+  "command": [
+    "C:\\Program Files\\nodejs\\node.exe",
+    "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs",
+    "--soak"
+  ],
+  "cases": [
+    {
+      "name": "frozen-scope",
+      "checks": [
+        "SHA-256 and additions match the authorized scope"
+      ],
+      "consoleErrors": [],
+      "screenshots": [],
+      "scope": {
+        "frozenFiles": 872,
+        "changedReadOnlyFiles": [],
+        "additions": [
+          "docs/three-body/ART-PLAN.md",
+          "docs/three-body/ART-RESEARCH.md",
+          "docs/three-body/BLOCKED.md",
+          "docs/three-body/CORE.md",
+          "docs/three-body/DESIGN.md",
+          "docs/three-body/EVENTS.md",
+          "docs/three-body/PLAN.md",
+          "docs/three-body/PROGRESS.md",
+          "docs/three-body/README.md",
+          "docs/three-body/SOURCES.md",
+          "docs/three-body/VERIFICATION.md",
+          "docs/three-body/art-1440-lagrange.json",
+          "docs/three-body/art-1440-lagrange.png",
+          "docs/three-body/art-1440.json",
+          "docs/three-body/art-1440.png",
+          "docs/three-body/art-390-lagrange.json",
+          "docs/three-body/art-390-lagrange.png",
+          "docs/three-body/art-390.json",
+          "docs/three-body/art-390.png",
+          "docs/three-body/art-capture.cjs",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/bloom-after.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/bloom-before.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/desktop-initial.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/exposure-after.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/exposure-before.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/lagrange-and-belt.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/mobile-panel-100.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/mobile-panel-200.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/mobile-scene.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/nebula-after.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/nebula-before.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/particles-after.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/particles-before.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/particles-full.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/particles-zero.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/report.json",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/starScale-after.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/starScale-before.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/trailWidth-after.png",
+          "docs/three-body/art-evidence/2026-09-22T09-32-33-610Z/trailWidth-before.png",
+          "docs/three-body/art-verify.cjs",
+          "docs/three-body/baseline.cjs",
+          "docs/three-body/baseline/files.json",
+          "docs/three-body/baseline/status.txt",
+          "docs/three-body/capture-drafts.cjs",
+          "docs/three-body/controller-regressions-report.json",
+          "docs/three-body/controller-regressions.cjs",
+          "docs/three-body/drafts.html",
+          "docs/three-body/drafts/bridge-1440.png",
+          "docs/three-body/drafts/bridge-390.png",
+          "docs/three-body/drafts/panoramic-1440.png",
+          "docs/three-body/drafts/panoramic-390.png",
+          "docs/three-body/drafts/ring-1440.png",
+          "docs/three-body/drafts/ring-390.png",
+          "docs/three-body/fault-check.cjs",
+          "docs/three-body/fault-injection/three-body-core.mjs",
+          "docs/three-body/fault-injection/three-body-core.test.cjs",
+          "docs/three-body/inspect-1440.json",
+          "docs/three-body/inspect-1440.png",
+          "docs/three-body/inspect-390.json",
+          "docs/three-body/inspect-390.png",
+          "docs/three-body/inspect.cjs",
+          "docs/three-body/preview.cjs",
+          "docs/three-body/verification/2026-09-22T07-35-52-159Z/desktop-failure.png",
+          "docs/three-body/verification/2026-09-22T07-35-52-159Z/mobile-failure.png",
+          "docs/three-body/verification/2026-09-22T07-35-52-159Z/no-webgl-failure.png",
+          "docs/three-body/verification/2026-09-22T07-35-52-159Z/reduced-motion-failure.png",
+          "docs/three-body/verification/2026-09-22T07-35-52-159Z/report.json",
+          "docs/three-body/verification/2026-09-22T07-47-27-071Z/desktop-failure.png",
+          "docs/three-body/verification/2026-09-22T07-47-27-071Z/desktop-legacy-default.png",
+          "docs/three-body/verification/2026-09-22T07-47-27-071Z/mobile-failure.png",
+          "docs/three-body/verification/2026-09-22T07-47-27-071Z/no-webgl-failure.png",
+          "docs/three-body/verification/2026-09-22T07-47-27-071Z/reduced-motion-failure.png",
+          "docs/three-body/verification/2026-09-22T07-47-27-071Z/report.json",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-camera-planet.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-camera-star-a.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-camera-star-b.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-camera-star-c.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-camera-station.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-failure.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-force-acceleration.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-force-gravity.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-force-radiation.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00000.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00001.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00002.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00003.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00004.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00005.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00006.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00007.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00008.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00009.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00010.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00011.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00012.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00013.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00014.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00015.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00016.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00017.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00018.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00019.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00020.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00021.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00022.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00023.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00024.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00025.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00026.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00027.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00028.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00029.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00030.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00031.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00032.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00033.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00034.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00035.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00036.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00037.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00038.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00039.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00040.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00041.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00042.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00043.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00044.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00045.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00046.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00047.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00048.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00049.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00050.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00051.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00052.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00053.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00054.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frame-00055.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-frames.json",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-initial.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-legacy-default.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/desktop-recording.html",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-camera-planet.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-camera-star-a.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-camera-star-b.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-camera-star-c.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-camera-station.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-failure.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-force-acceleration.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-force-gravity.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-force-radiation.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00000.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00001.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00002.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00003.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00004.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00005.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00006.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00007.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00008.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00009.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00010.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00011.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00012.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00013.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00014.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00015.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00016.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00017.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00018.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00019.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00020.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00021.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00022.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00023.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00024.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00025.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00026.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00027.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00028.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00029.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00030.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00031.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00032.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00033.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00034.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00035.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00036.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00037.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00038.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00039.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00040.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00041.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00042.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00043.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00044.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00045.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00046.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00047.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00048.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00049.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00050.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00051.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00052.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00053.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00054.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00055.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00056.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00057.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00058.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00059.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00060.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00061.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00062.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00063.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00064.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00065.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00066.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00067.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00068.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00069.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00070.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00071.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00072.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00073.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00074.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00075.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00076.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00077.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00078.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00079.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00080.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00081.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00082.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00083.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00084.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00085.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00086.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00087.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00088.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00089.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00090.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00091.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frame-00092.jpg",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-frames.json",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-initial.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/mobile-recording.html",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/no-webgl-failure.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/no-webgl-fallback.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/no-webgl-initial.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-archives.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-article.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-camera-planet.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-camera-star-a.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-camera-star-b.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-camera-star-c.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-camera-station.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-final-scene.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-font200.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-force-acceleration.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-force-gravity.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-force-radiation.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/reduced-motion-initial.png",
+          "docs/three-body/verification/2026-09-22T07-50-31-259Z/report.json",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-archives.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-article.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-camera-planet.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-camera-star-a.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-camera-star-b.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-camera-star-c.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-camera-station.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-final-scene.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-font200.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-force-acceleration.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-force-gravity.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-force-radiation.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00000.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00001.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00002.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00003.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00004.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00005.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00006.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00007.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00008.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00009.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00010.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00011.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00012.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00013.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00014.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00015.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00016.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00017.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00018.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00019.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00020.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00021.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00022.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00023.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00024.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00025.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00026.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00027.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00028.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00029.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00030.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00031.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00032.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00033.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00034.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00035.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00036.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00037.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00038.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00039.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00040.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00041.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00042.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00043.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00044.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00045.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00046.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00047.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00048.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00049.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00050.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00051.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00052.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00053.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00054.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00055.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00056.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00057.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00058.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00059.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00060.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00061.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00062.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00063.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00064.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00065.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00066.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00067.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00068.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00069.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00070.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00071.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00072.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00073.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00074.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00075.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00076.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00077.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00078.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00079.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00080.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00081.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00082.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00083.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00084.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00085.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00086.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00087.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00088.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00089.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00090.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00091.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00092.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00093.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00094.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00095.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00096.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00097.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00098.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00099.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00100.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00101.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00102.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frame-00103.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-frames.json",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-initial.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-legacy-default.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/desktop-recording.html",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-archives.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-article.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-camera-planet.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-camera-star-a.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-camera-star-b.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-camera-star-c.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-camera-station.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-final-scene.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-font200.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-force-acceleration.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-force-gravity.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-force-radiation.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00000.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00001.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00002.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00003.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00004.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00005.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00006.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00007.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00008.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00009.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00010.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00011.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00012.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00013.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00014.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00015.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00016.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00017.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00018.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00019.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00020.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00021.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00022.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00023.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00024.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00025.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00026.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00027.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00028.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00029.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00030.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00031.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00032.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00033.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00034.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00035.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00036.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00037.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00038.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00039.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00040.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00041.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00042.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00043.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00044.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00045.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00046.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00047.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00048.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00049.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00050.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00051.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00052.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00053.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00054.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00055.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00056.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00057.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00058.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00059.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00060.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00061.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00062.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00063.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00064.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00065.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00066.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00067.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00068.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00069.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00070.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00071.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00072.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00073.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00074.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00075.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00076.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00077.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00078.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00079.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00080.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00081.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00082.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00083.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00084.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00085.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00086.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00087.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00088.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00089.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00090.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00091.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00092.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00093.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00094.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00095.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00096.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00097.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00098.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00099.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00100.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00101.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00102.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00103.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00104.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00105.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00106.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00107.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00108.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00109.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00110.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00111.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00112.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00113.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00114.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00115.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00116.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00117.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00118.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00119.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00120.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00121.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00122.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00123.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00124.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00125.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00126.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00127.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00128.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00129.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00130.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00131.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00132.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00133.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00134.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00135.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00136.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00137.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00138.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00139.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00140.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00141.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00142.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00143.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00144.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00145.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00146.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00147.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00148.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00149.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00150.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00151.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00152.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frame-00153.jpg",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-frames.json",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-initial.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/mobile-recording.html",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/no-webgl-archives.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/no-webgl-article.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/no-webgl-fallback.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/no-webgl-font200.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/no-webgl-initial.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-archives.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-article.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-camera-planet.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-camera-star-a.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-camera-star-b.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-camera-star-c.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-camera-station.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-final-scene.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-font200.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-force-acceleration.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-force-gravity.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-force-radiation.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/reduced-motion-initial.png",
+          "docs/three-body/verification/2026-09-22T07-55-43-091Z/report.json",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/report.json",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-archives.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-article.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-camera-planet.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-camera-star-a.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-camera-star-b.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-camera-star-c.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-camera-station.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-final-scene.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-font200.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-force-acceleration.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-force-gravity.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-force-radiation.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-initial.png",
+          "docs/three-body/verification/2026-09-22T07-56-43-223Z/soak-samples.json",
+          "docs/three-body/verification/2026-09-22T08-06-27-500Z/report.json",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-archives.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-article.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-camera-planet.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-camera-star-a.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-camera-star-b.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-camera-star-c.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-camera-station.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-final-scene.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-font200.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-force-acceleration.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-force-gravity.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-force-radiation.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00000.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00001.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00002.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00003.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00004.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00005.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00006.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00007.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00008.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00009.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00010.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00011.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00012.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00013.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00014.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00015.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00016.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00017.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00018.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00019.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00020.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00021.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00022.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00023.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00024.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00025.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00026.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00027.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00028.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00029.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00030.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00031.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00032.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00033.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00034.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00035.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00036.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00037.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00038.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00039.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00040.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00041.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00042.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00043.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00044.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frame-00045.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-frames.json",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-initial.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-legacy-default.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/desktop-recording.html",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-archives.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-article.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-camera-planet.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-camera-star-a.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-camera-star-b.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-camera-star-c.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-camera-station.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-final-scene.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-font200.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-force-acceleration.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-force-gravity.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-force-radiation.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00000.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00001.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00002.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00003.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00004.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00005.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00006.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00007.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00008.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00009.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00010.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00011.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00012.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00013.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00014.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00015.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00016.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00017.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00018.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00019.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00020.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00021.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00022.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00023.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00024.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00025.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00026.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00027.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00028.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00029.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00030.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00031.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00032.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00033.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00034.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00035.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00036.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00037.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00038.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00039.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00040.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00041.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00042.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00043.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00044.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00045.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00046.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00047.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00048.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00049.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00050.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00051.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00052.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00053.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00054.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00055.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00056.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00057.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00058.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00059.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00060.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00061.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00062.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00063.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00064.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00065.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00066.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00067.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00068.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00069.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00070.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00071.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00072.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00073.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00074.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00075.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00076.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00077.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00078.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00079.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00080.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00081.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00082.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00083.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00084.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00085.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00086.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00087.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00088.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00089.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00090.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00091.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00092.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00093.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00094.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00095.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00096.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00097.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00098.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00099.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00100.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00101.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00102.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00103.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00104.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00105.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00106.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00107.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00108.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00109.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00110.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00111.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00112.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00113.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00114.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00115.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00116.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00117.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00118.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frame-00119.jpg",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-frames.json",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-initial.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/mobile-recording.html",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/no-webgl-archives.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/no-webgl-article.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/no-webgl-fallback.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/no-webgl-font200.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/no-webgl-initial.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-archives.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-article.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-camera-planet.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-camera-star-a.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-camera-star-b.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-camera-star-c.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-camera-station.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-final-scene.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-font200.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-force-acceleration.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-force-gravity.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-force-radiation.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/reduced-motion-initial.png",
+          "docs/three-body/verification/2026-09-22T09-32-40-378Z/report.json",
+          "docs/three-body/verification/verify-three-body-frozen-v1.cjs",
+          "docs/three-body/verification/verify-three-body-frozen-v2.cjs",
+          "test/three-body-core.test.cjs",
+          "test/three-body-events.test.cjs",
+          "test/three-body-overlays.test.cjs",
+          "test/three-body-parameters.test.cjs",
+          "themes/fluid-particle/layout/_partial/three-body.ejs",
+          "themes/fluid-particle/source/css/three-body.css",
+          "themes/fluid-particle/source/js/three-body-core.mjs",
+          "themes/fluid-particle/source/js/three-body-events.mjs",
+          "themes/fluid-particle/source/js/three-body-overlays.mjs",
+          "themes/fluid-particle/source/js/three-body-scene.mjs",
+          "themes/fluid-particle/source/js/three-body.mjs",
+          "tools/verify-three-body.cjs"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "soak",
+      "checks": [
+        "parameters are initially collapsed",
+        "articles and archives remain available",
+        "initial observatory: 1440px viewport has no horizontal overflow ({\"width\":1440,\"client\":1425,\"page\":1425,\"body\":1425})",
+        "homepage retains a real article link",
+        "content link responds: /archives/",
+        "content link responds: /%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+        "content link responds: /%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+        "three-body scene owns exactly one real WebGL context",
+        "#tb-pause: visible input target",
+        "pause freezes simulation, trail clock, and actual draw calls",
+        "#tb-step: visible input target",
+        "single step advances exactly one physics step while paused",
+        "single step genuinely changes body positions",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "#tb-view: option station exists",
+        "#tb-view: visible input target",
+        "#tb-view: option star-a exists",
+        "#tb-view: visible input target",
+        "#tb-view: option star-b exists",
+        "#tb-view: visible input target",
+        "#tb-view: option star-c exists",
+        "#tb-view: visible input target",
+        "#tb-view: option planet exists",
+        "#tb-view: visible input target",
+        "all five viewpoints produce different actual camera transforms",
+        "#tb-view: option station exists",
+        "#tb-view: visible input target",
+        "mouse drag changes the actual camera while paused",
+        "#tb-mode: option 1 exists",
+        "#tb-mode: visible input target",
+        "mode 1 reaches actual solver state",
+        "#tb-mode: option 2 exists",
+        "#tb-mode: visible input target",
+        "mode 2 reaches actual solver state",
+        "[data-force=\"gravity\"]: visible input target",
+        "gravity formula changes the actual overlay mode",
+        "[data-force=\"acceleration\"]: visible input target",
+        "acceleration formula changes the actual overlay mode",
+        "[data-force=\"radiation\"]: visible input target",
+        "radiation formula changes the actual overlay mode",
+        "#tb-parameters summary: visible input target",
+        "parameter form opens through its native disclosure",
+        "#tb-body: option star-a exists",
+        "#tb-body: visible input target",
+        "#tb-mass: visible input target",
+        "#tb-luminosity: visible input target",
+        "#tb-x: visible input target",
+        "#tb-y: visible input target",
+        "#tb-z: visible input target",
+        "#tb-vx: visible input target",
+        "#tb-vy: visible input target",
+        "#tb-vz: visible input target",
+        "#tb-g: visible input target",
+        "#tb-speed: visible input target",
+        "#tb-apply: visible input target",
+        "mass, luminosity, XYZ, velocity XYZ, G and speed all reach the real solver",
+        "#tb-mass: visible input target",
+        "#tb-apply: visible input target",
+        "invalid mass cannot enter the solver",
+        "invalid input is explained or marked invalid by the native form",
+        "#tb-mass: visible input target",
+        "#tb-apply: visible input target",
+        "#tb-step: visible input target",
+        "edited positions and velocities evolve through the solver",
+        "#tb-preset: option chaotic exists",
+        "#tb-preset: visible input target",
+        "#tb-preset: option balanced exists",
+        "#tb-preset: visible input target",
+        "#tb-speed: visible input target",
+        "#tb-apply: visible input target",
+        "#tb-parameters summary: visible input target",
+        "#tb-pause: visible input target",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "10x simulation retains an independent real-time trail clock",
+        "every body retains a substantial eight-second trail at 10x speed",
+        "#tb-pause: visible input target",
+        "pause preserves trail samples without aging or appending",
+        "#tb-preset: option balanced exists",
+        "#tb-preset: visible input target",
+        "#tb-pause: visible input target",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "four real bodies have finite three-dimensional state",
+        "all world-space trail samples are finite, at most 512, and expire after eight active seconds",
+        "soak really ran for at least 600 wall-clock seconds",
+        "GPU geometry and texture counts do not grow after warmup"
+      ],
+      "consoleErrors": [],
+      "screenshots": [
+        "soak-initial.png",
+        "soak-camera-station.png",
+        "soak-camera-star-a.png",
+        "soak-camera-star-b.png",
+        "soak-camera-star-c.png",
+        "soak-camera-planet.png",
+        "soak-force-gravity.png",
+        "soak-force-acceleration.png",
+        "soak-force-radiation.png",
+        "soak-failure.png"
+      ],
+      "lastSnapshot": {
+        "active": true,
+        "paused": true,
+        "mode": 2,
+        "view": "station",
+        "preset": "balanced",
+        "G": 1,
+        "speed": 10,
+        "simTime": 2780.925,
+        "realTime": 278.09250000000094,
+        "forceMode": "radiation",
+        "softening": 0.01,
+        "boundary": 12,
+        "visual": {
+          "exposure": 1.1,
+          "bloom": 1,
+          "particles": 1,
+          "nebula": 0.6,
+          "starScale": 1,
+          "trailWidth": 1.4
+        },
+        "observations": {
+          "lagrangeEnabled": false,
+          "lagrangePair": "a-b",
+          "beltEnabled": true,
+          "fitBelt": false,
+          "beltSettings": {
+            "count": 128,
+            "inner": 14,
+            "outer": 24,
+            "inclination": 12,
+            "seed": 7301
+          }
+        },
+        "lagrange": [],
+        "belt": {
+          "particles": [
+            {
+              "position": [
+                11.564378997136172,
+                8.964925204616906,
+                2.608724225487787
+              ],
+              "velocity": [
+                -0.15966885818373946,
+                0.20434798696758896,
+                0.00554952351886615
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -1.0755074822696065,
+                17.07254792011828,
+                0.09923546552439942
+              ],
+              "velocity": [
+                -0.2412849179361876,
+                -0.015189919425341473,
+                -0.0023695583246156034
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                18.120890215679747,
+                10.467421131422155,
+                -0.33811658775166115
+              ],
+              "velocity": [
+                -0.10936788255658443,
+                0.18923319983033,
+                -0.003085106180518934
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -14.677786198844558,
+                -15.429705162335242,
+                0.135683481184846
+              ],
+              "velocity": [
+                0.15700797636018735,
+                -0.14934245109871186,
+                0.0016870546483419753
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -15.769055593138097,
+                -16.267380414003625,
+                -4.4306469747987185
+              ],
+              "velocity": [
+                0.14831978853315392,
+                -0.14582042240127652,
+                0.007506215503367816
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -15.784733696439536,
+                0.6186585965287668,
+                -1.9545141606800809
+              ],
+              "velocity": [
+                -0.009200616465442768,
+                -0.2504328503511286,
+                -0.0049110862460694975
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -3.9301356873809135,
+                -15.18431469866785,
+                -0.7771257526076137
+              ],
+              "velocity": [
+                0.24042863267015724,
+                -0.059774897224121486,
+                -0.04795718804578583
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                0.4142480236015871,
+                16.365943056976697,
+                -0.449685049107756
+              ],
+              "velocity": [
+                -0.2470139372105179,
+                0.006327015445952115,
+                0.0025790611956694643
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                15.566031792564141,
+                -12.189839495950576,
+                -0.8590555010696148
+              ],
+              "velocity": [
+                0.13839520964322855,
+                0.17707307528599384,
+                -0.004916216628504072
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -15.123379658007819,
+                11.78508346933095,
+                1.3299161537170063
+              ],
+              "velocity": [
+                -0.14068591112758122,
+                -0.179107309799735,
+                -0.012683017149697846
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                11.472380968439731,
+                -12.069420446395391,
+                1.2286721062695447
+              ],
+              "velocity": [
+                0.17738269623267783,
+                0.16860901186816404,
+                0.00017449357188938918
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -4.650431081063845,
+                -17.942556326291562,
+                -0.8271948724580368
+              ],
+              "velocity": [
+                0.22474765469463304,
+                -0.058080171833394596,
+                -0.0037213497533900063
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                3.386226243596015,
+                13.826446504158659,
+                -0.5202021596983448
+              ],
+              "velocity": [
+                -0.25586582578993344,
+                0.06370473587405769,
+                0.025919660978754616
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                14.821779704704623,
+                -6.056466617165027,
+                -0.3939545955423724
+              ],
+              "velocity": [
+                0.09421444637731985,
+                0.23122226919507968,
+                -0.009970367973581687
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                5.7517291395749135,
+                -14.5379538844687,
+                1.517493119841322
+              ],
+              "velocity": [
+                0.23469284182884753,
+                0.09260850792794444,
+                -0.0023119552130224834
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -0.09032766901191987,
+                -23.321465570187215,
+                -0.9491898729299286
+              ],
+              "velocity": [
+                0.20696875398731232,
+                -0.000909790695376685,
+                0.002646698921406287
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -16.22328738429392,
+                -8.553042948084501,
+                2.877246066217062
+              ],
+              "velocity": [
+                0.11031393822753321,
+                -0.20348522545173944,
+                0.01711470748577852
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                14.381810154228958,
+                11.513221808657343,
+                -0.8050797463408182
+              ],
+              "velocity": [
+                -0.14554942183806002,
+                0.18178264049465456,
+                -0.0004174488991966547
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -20.62130037061787,
+                5.0031993572429,
+                3.699131600169233
+              ],
+              "velocity": [
+                -0.05108678793558029,
+                -0.2093188892298694,
+                -0.0016800348918702779
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -19.3743096406447,
+                8.770190379473592,
+                3.082610504173381
+              ],
+              "velocity": [
+                -0.08423020761731122,
+                -0.19640956816869545,
+                0.029404732859523584
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                4.463711353284456,
+                22.48407292263472,
+                -0.5971712482541557
+              ],
+              "velocity": [
+                -0.2048282131251083,
+                0.04068458429165924,
+                0.0007688026040860503
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -19.36044826220456,
+                8.706996955270847,
+                1.5941521120113316
+              ],
+              "velocity": [
+                -0.09010246101325256,
+                -0.19305231494980463,
+                -0.03985106857156547
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                19.135895632684793,
+                -8.835054861510033,
+                -0.373853815527406
+              ],
+              "velocity": [
+                0.09128635801722979,
+                0.1977497542899178,
+                -0.0007286313224687213
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                6.414659436465466,
+                -15.918859185934622,
+                0.1125424587790254
+              ],
+              "velocity": [
+                0.2215572058755375,
+                0.08952117012108901,
+                0.03417248449441209
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                8.03289148699769,
+                -14.804186788892851,
+                -1.1323884351697564
+              ],
+              "velocity": [
+                0.21407787080291804,
+                0.11541970414485521,
+                0.00951151941714293
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                13.669620107474742,
+                11.99370570042361,
+                -2.336728973112982
+              ],
+              "velocity": [
+                -0.14920701562344862,
+                0.176545094540977,
+                0.03332282260898049
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                21.901909850654086,
+                -7.820291060848958,
+                -0.3345607606867892
+              ],
+              "velocity": [
+                0.06967528473888354,
+                0.1952717088673852,
+                -0.003156989249470709
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                12.097623888031606,
+                -7.731703621775792,
+                1.658505192201801
+              ],
+              "velocity": [
+                0.14174044135882458,
+                0.22159296739825532,
+                -0.0007119546842449253
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -3.2276506541328533,
+                -15.452071489542643,
+                0.014851924132344636
+              ],
+              "velocity": [
+                0.2463697170604106,
+                -0.051462936774131086,
+                0.0012581053914731029
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                0.46106494111882074,
+                22.67566926206109,
+                -0.5868299453276832
+              ],
+              "velocity": [
+                -0.20989488966847547,
+                0.004309361888810348,
+                0.0016094391244674234
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -21.635248635436984,
+                7.76514873400672,
+                -4.0043841845486865
+              ],
+              "velocity": [
+                -0.0665009343757153,
+                -0.19512252297718455,
+                -0.01907555984561855
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -3.07726013769739,
+                -21.11113580462583,
+                0.3209675814407513
+              ],
+              "velocity": [
+                0.21420389104827398,
+                -0.03126628067912853,
+                -0.002813992377787806
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                2.24246735188892,
+                -18.598908006717043,
+                1.2409713935261923
+              ],
+              "velocity": [
+                0.22910718354879292,
+                0.027757978973905938,
+                0.00199592263402931
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -13.960768188333262,
+                -17.942616903548842,
+                -1.4893612716325635
+              ],
+              "velocity": [
+                0.16370755591297173,
+                -0.1290942741794657,
+                0.020686769944241977
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -20.648477389781394,
+                11.070164738619564,
+                -3.621605108070993
+              ],
+              "velocity": [
+                -0.0996247923059972,
+                -0.17800597848610916,
+                0.023897013842928097
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -0.668782696773633,
+                -18.471074651724397,
+                -2.5309714060520134
+              ],
+              "velocity": [
+                0.23126449425817883,
+                -0.00723529217155492,
+                -0.008302781638626994
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                10.134662271562172,
+                15.193177234445132,
+                1.2291652615895752
+              ],
+              "velocity": [
+                -0.19264865010085466,
+                0.13035884168975417,
+                -0.022905895772354804
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                20.288054373014038,
+                -9.391196130048673,
+                -4.748463412604649
+              ],
+              "velocity": [
+                0.08790814274638897,
+                0.1898081192830716,
+                0.000202864769554824
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                18.902649838854153,
+                3.50466393112793,
+                -2.599850031504322
+              ],
+              "velocity": [
+                -0.04184051140213906,
+                0.2231265590444417,
+                -0.003414420615592944
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                1.8845970913079324,
+                -16.721113909745892,
+                0.9486097634148741
+              ],
+              "velocity": [
+                0.2400177286180104,
+                0.028742584891980408,
+                0.030035271953892505
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                11.301509292808829,
+                -10.502092059657027,
+                1.8819737167250536
+              ],
+              "velocity": [
+                0.17406396264313911,
+                0.18273673029686036,
+                -0.025548267196308844
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -16.85437572385098,
+                5.800009045281207,
+                1.4100831624347403
+              ],
+              "velocity": [
+                -0.07695867824283671,
+                -0.2236212480445391,
+                -0.0000782168393595486
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -13.578348688919583,
+                -11.787364384047326,
+                -0.8337403974605408
+              ],
+              "velocity": [
+                0.154706357900012,
+                -0.1776352225754569,
+                -0.008212710036526934
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -17.92782992140493,
+                3.8597300487951904,
+                -2.250831525936927
+              ],
+              "velocity": [
+                -0.051215820669326534,
+                -0.2260270242871449,
+                0.02034071708942451
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -23.239989833730803,
+                -0.08333473639947622,
+                -0.36311531190018176
+              ],
+              "velocity": [
+                0.0007807549783032962,
+                -0.20740874708304277,
+                -0.002348864238173966
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -10.63629746362325,
+                -9.581157876163292,
+                1.3769478778907398
+              ],
+              "velocity": [
+                0.1761654646618696,
+                -0.19617194798329363,
+                -0.00410065725532819
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -4.890658836487526,
+                15.825937223044003,
+                0.000788941132191738
+              ],
+              "velocity": [
+                -0.23475585157864023,
+                -0.07255498035764125,
+                0.0002747304800596554
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                3.5075845763787528,
+                -19.531531550312074,
+                2.0558432701501337
+              ],
+              "velocity": [
+                0.2200249124533299,
+                0.04044693804551,
+                0.008874331323589543
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -6.14797691397639,
+                -17.217307252291796,
+                2.6701926812659185
+              ],
+              "velocity": [
+                0.21775253681188755,
+                -0.08027955557420316,
+                -0.016267335839512405
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                12.116928297468768,
+                13.853417964101137,
+                -0.10780588968971576
+              ],
+              "velocity": [
+                -0.1752463659637904,
+                0.15318154475802395,
+                -0.012527671974075966
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -20.130860794500784,
+                -10.15931968970053,
+                0.15055830918616653
+              ],
+              "velocity": [
+                0.09488620424823671,
+                -0.18796603338184525,
+                0.0035675919804596715
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -2.1851482336490275,
+                -15.680373376578729,
+                -0.3065010318105777
+              ],
+              "velocity": [
+                0.24827217701021356,
+                -0.03493714511911054,
+                0.01706537913046476
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                5.560482820893485,
+                22.872649953032774,
+                1.4640818495502559
+              ],
+              "velocity": [
+                -0.19828633805317164,
+                0.046235983424218266,
+                0.03076588534653539
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                21.469321342011618,
+                2.0204182564014124,
+                -1.9033932897958452
+              ],
+              "velocity": [
+                -0.02046364424826367,
+                0.2139201049212412,
+                -0.0037440187900109854
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                9.7649519666231,
+                14.904143261922727,
+                -0.02929979448304594
+              ],
+              "velocity": [
+                -0.19815439935705753,
+                0.1298332405676919,
+                0.0008991507105027848
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                9.21829483703901,
+                -19.936645145510873,
+                -3.365104309110202
+              ],
+              "velocity": [
+                0.19302451644135987,
+                0.08677895852343269,
+                0.014644595743429948
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                14.678696186737659,
+                -0.49686801194548164,
+                0.03756932586328053
+              ],
+              "velocity": [
+                0.008573386969269433,
+                0.2569940348754773,
+                0.04436564954076566
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                11.521909384583164,
+                17.71329516594932,
+                0.1221479726443625
+              ],
+              "velocity": [
+                -0.1823260159417566,
+                0.11862025184687312,
+                -0.0032384848833251385
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                11.446183731995731,
+                -16.079929242186985,
+                -3.480306133993584
+              ],
+              "velocity": [
+                0.18020400078825427,
+                0.13126673216843104,
+                -0.013827029623435827
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                4.357155666600469,
+                18.40046153220875,
+                -0.23621591769893682
+              ],
+              "velocity": [
+                -0.22376338771085388,
+                0.05295276802405271,
+                -0.0026239130527012937
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                4.183940012374727,
+                19.267618147013124,
+                0.6552350989962719
+              ],
+              "velocity": [
+                -0.21887724545687007,
+                0.04825478689645084,
+                -0.021340923857569038
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -7.933196788610469,
+                -16.521937680370247,
+                -1.4547734227636286
+              ],
+              "velocity": [
+                0.20842555083717668,
+                -0.09651894261922038,
+                -0.04043331293345189
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                18.01472542366994,
+                2.1548696352328416,
+                -0.029514579572111867
+              ],
+              "velocity": [
+                -0.02787936231594745,
+                0.23294290370063936,
+                -0.008880398065817896
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                2.2622451976296647,
+                21.753364499064652,
+                3.0649696654766623
+              ],
+              "velocity": [
+                -0.2095548294378902,
+                0.01717681459718989,
+                0.03276223869573381
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                22.03788566688041,
+                -2.9397640785954424,
+                2.9665599471108024
+              ],
+              "velocity": [
+                0.028050875337050068,
+                0.20927440797326324,
+                -0.0010047935535107471
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                10.152574878819864,
+                20.741539332586697,
+                3.1344984377301333
+              ],
+              "velocity": [
+                -0.185858572263813,
+                0.09142284020699189,
+                -0.002966320162509796
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -7.170981343621222,
+                22.430632392278255,
+                -0.10925317496301301
+              ],
+              "velocity": [
+                -0.19612553464061783,
+                -0.06273890869866004,
+                -0.007975002529880324
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -18.72779355262102,
+                -7.228456941574727,
+                0.5305318700647025
+              ],
+              "velocity": [
+                0.08036799188616175,
+                -0.20817954597116814,
+                0.0005485966387909292
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -10.198695446200622,
+                15.985917176693913,
+                -0.6203769180610826
+              ],
+              "velocity": [
+                -0.19257171287087846,
+                -0.12358504385524152,
+                -0.018775169573426835
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                14.168662928305743,
+                -13.862621782293987,
+                1.3904645135002762
+              ],
+              "velocity": [
+                0.15717054361651095,
+                0.1599026005320245,
+                -0.007354353631776348
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                4.039414898074846,
+                15.27547797718585,
+                2.8483207900242506
+              ],
+              "velocity": [
+                -0.2413463253940266,
+                0.0598400423167748,
+                0.021373674429682892
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -22.3229069162402,
+                -1.0112769865388807,
+                -4.070762163209209
+              ],
+              "velocity": [
+                0.012505988589412882,
+                -0.20878599418825078,
+                -0.0167121248224655
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                13.543364501165783,
+                -8.550765902377172,
+                -0.4708306976481674
+              ],
+              "velocity": [
+                0.13214145367917055,
+                0.2106285912247028,
+                -0.02418039601296979
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                22.869345600443104,
+                -5.525393805387258,
+                -2.1600769916090234
+              ],
+              "velocity": [
+                0.046863622504976034,
+                0.19977377795972534,
+                -0.014854625786464248
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                21.690599282579402,
+                5.462170829911412,
+                1.555778989855942
+              ],
+              "velocity": [
+                -0.051267536681208245,
+                0.2048239039181842,
+                -0.00435357840296426
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                5.543395455257216,
+                17.46889943041054,
+                3.556646348828124
+              ],
+              "velocity": [
+                -0.22095572859489504,
+                0.06828016011180009,
+                0.00902460630213911
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                17.379752168326483,
+                6.22401080249161,
+                1.8175123467022867
+              ],
+              "velocity": [
+                -0.07662564524574561,
+                0.21859938512145996,
+                -0.015876438536732606
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -18.966323641823806,
+                -11.34613316930403,
+                0.4820111659665998
+              ],
+              "velocity": [
+                0.10647596808990657,
+                -0.1796904662509862,
+                -0.040136084972402654
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -23.345923078603963,
+                -1.935543593128847,
+                2.7278411983037567
+              ],
+              "velocity": [
+                0.012739334472283443,
+                -0.20257085875227013,
+                -0.03470605131910598
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -23.25135011065379,
+                -1.3577478531356433,
+                -3.4049764083660587
+              ],
+              "velocity": [
+                0.010470540746518035,
+                -0.20558399778569098,
+                0.010478214479283956
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -15.739636929904032,
+                -10.74529401639381,
+                1.173285994364758
+              ],
+              "velocity": [
+                0.1264683268565414,
+                -0.18845697071062623,
+                -0.029387148049983308
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -17.516177038031135,
+                -11.55618725055654,
+                3.294597225095193
+              ],
+              "velocity": [
+                0.1168649829160021,
+                -0.18201120307659432,
+                -0.017095493654070884
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                2.660565438006268,
+                16.585168087079957,
+                2.0910471636839056
+              ],
+              "velocity": [
+                -0.23733762281492415,
+                0.04201312653795765,
+                -0.03136288825114433
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                17.708918337659615,
+                7.245508021941768,
+                2.8207299809479056
+              ],
+              "velocity": [
+                -0.0840987771494031,
+                0.2108280254659337,
+                -0.013575598698010604
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                10.758524972031726,
+                20.194321029689355,
+                2.8765048236834554
+              ],
+              "velocity": [
+                -0.1840917280384797,
+                0.09516969402011492,
+                0.02039588618481495
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                19.311066331760337,
+                11.055343381747816,
+                -1.9103044390790105
+              ],
+              "velocity": [
+                -0.10586838590270523,
+                0.18280480077690275,
+                -0.012275316637134064
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -9.846065706564152,
+                -13.60842763970495,
+                0.25275570243131296
+              ],
+              "velocity": [
+                0.19767153815326166,
+                -0.14297603161118208,
+                0.003340779213783397
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -7.871898782874815,
+                18.584919520960767,
+                3.2026245285577515
+              ],
+              "velocity": [
+                -0.2038882917326402,
+                -0.08573954302766496,
+                -0.0035977517726041366
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                20.45382761452411,
+                8.464945329728272,
+                4.369555531140954
+              ],
+              "velocity": [
+                -0.08146504420456283,
+                0.19404737218928222,
+                0.00541592440759983
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                3.620029706194879,
+                14.04128749168608,
+                1.0064005532410742
+              ],
+              "velocity": [
+                -0.25072047155928945,
+                0.06732615611433702,
+                -0.03743761485974399
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -4.009310456139706,
+                20.809212839779843,
+                -1.330858730186685
+              ],
+              "velocity": [
+                -0.21094527074328095,
+                -0.038506178323953484,
+                0.03339870735627428
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -3.4347992132628944,
+                22.093809066638254,
+                -0.3656597266480287
+              ],
+              "velocity": [
+                -0.20895959519016,
+                -0.03248053749818942,
+                0.0003177486568755788
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -15.837982376160241,
+                5.857905549506748,
+                -1.7207489911885714
+              ],
+              "velocity": [
+                -0.08444571119130859,
+                -0.227538267199928,
+                0.00261334410323533
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                16.63054117215769,
+                -7.573653556217305,
+                0.3810479904916094
+              ],
+              "velocity": [
+                0.09543797469283305,
+                0.21116865900822046,
+                0.03181153995971198
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                10.546736076557403,
+                -20.12881062893665,
+                1.2647580517538703
+              ],
+              "velocity": [
+                0.18574941039117113,
+                0.09691622988615203,
+                -0.006521957200736731
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -3.379394857399346,
+                22.579157974968513,
+                -0.6781059883156283
+              ],
+              "velocity": [
+                -0.20658077476719944,
+                -0.030521331541426836,
+                0.013229307484488756
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                17.186061617312227,
+                -3.469922723242132,
+                -0.479144195801491
+              ],
+              "velocity": [
+                0.047589363838617935,
+                0.23335711622911914,
+                0.01716276275624557
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                5.1570801421099794,
+                14.50419281507793,
+                -0.37914166041192005
+              ],
+              "velocity": [
+                -0.2400540395244841,
+                0.08514193196810572,
+                -0.008139942855232764
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -16.16356146246863,
+                -15.755710513064336,
+                4.002943547880859
+              ],
+              "velocity": [
+                0.1473830491943586,
+                -0.14711263858069829,
+                0.016079850630833795
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                2.2235722740855706,
+                -14.153020381976567,
+                -1.1311323856677886
+              ],
+              "velocity": [
+                0.25870577175673853,
+                0.037848995588422425,
+                0.03499044970688928
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                12.67134030172509,
+                -16.231578344194862,
+                -2.905261804114844
+              ],
+              "velocity": [
+                0.17372552594551569,
+                0.13303651788248866,
+                0.01443182945304226
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -8.21444156647652,
+                15.609675441735066,
+                -1.442597479526175
+              ],
+              "velocity": [
+                -0.21006156552598082,
+                -0.1110968494599971,
+                -0.006058441891806523
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -21.944601388800997,
+                8.795599360791778,
+                -3.431931095204182
+              ],
+              "velocity": [
+                -0.07517857464676017,
+                -0.19016811180067703,
+                -0.006667980237884751
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -16.27676293294389,
+                9.736983828651022,
+                -1.161444338412416
+              ],
+              "velocity": [
+                -0.1168238052634754,
+                -0.19694208780136116,
+                -0.01386672220775775
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -20.105435153768557,
+                -6.885338873980213,
+                -0.6597379602202111
+              ],
+              "velocity": [
+                0.07032509986368345,
+                -0.20514067682857548,
+                -0.0022064712043192427
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                13.514315499978874,
+                -3.73202465040451,
+                0.7032171579286434
+              ],
+              "velocity": [
+                0.0714597000064855,
+                0.2571311883210801,
+                -0.006933185221092773
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                20.750446797826765,
+                10.49567148101327,
+                2.024261264399719
+              ],
+              "velocity": [
+                -0.09323617845722691,
+                0.18478075903820526,
+                -0.0023262807918472397
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -8.362965660183693,
+                -16.15219758148636,
+                -1.5079357364651749
+              ],
+              "velocity": [
+                0.2068914009972184,
+                -0.10389542469669918,
+                -0.03455187170715786
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -6.2454648100807155,
+                12.542802723603833,
+                1.725889462312394
+              ],
+              "velocity": [
+                -0.23807837621886294,
+                -0.11355757281875786,
+                -0.03543611504495153
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -3.600813243059274,
+                19.75268612347753,
+                -1.1744114532627397
+              ],
+              "velocity": [
+                -0.21857649654337113,
+                -0.038571415021445815,
+                0.021396497385102253
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                15.016474265717175,
+                4.855416629389698,
+                -1.7111450897455553
+              ],
+              "velocity": [
+                -0.07800348460049021,
+                0.23843223803059044,
+                -0.00793147424266515
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -20.232416413465835,
+                -0.3833525855963466,
+                0.8956212715448494
+              ],
+              "velocity": [
+                0.004286163911313708,
+                -0.22214355882754822,
+                0.0017402041022159004
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -12.593564769905406,
+                16.437175989063014,
+                0.5650527984205634
+              ],
+              "velocity": [
+                -0.17248581291984832,
+                -0.13086560011158943,
+                -0.03739962906756048
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                18.740067224562065,
+                -13.919590199285832,
+                2.2056128932088215
+              ],
+              "velocity": [
+                0.12399013717849318,
+                0.16434122232529927,
+                -0.016331948566859534
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -0.7308409077441548,
+                16.802171789629824,
+                2.2444443094360924
+              ],
+              "velocity": [
+                -0.2423484580414793,
+                -0.011652768270701436,
+                0.008240344367042376
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -17.227206656161677,
+                -11.050264632353267,
+                -0.4779165191369656
+              ],
+              "velocity": [
+                0.11918841239537802,
+                -0.18604583363448532,
+                0.005340574930588438
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -4.2668829673805435,
+                16.05521822055985,
+                -1.218575030235502
+              ],
+              "velocity": [
+                -0.23537470607313357,
+                -0.06427279462732614,
+                -0.022474318908980565
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                5.923111736564333,
+                13.811549996735058,
+                0.35203939436623327
+              ],
+              "velocity": [
+                -0.2368677437362435,
+                0.10126976873906249,
+                0.012734265877028297
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -6.5379465026006205,
+                -14.48797294920993,
+                2.381883471186242
+              ],
+              "velocity": [
+                0.22754979789120686,
+                -0.10212063107201443,
+                0.003481333286810825
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -11.71820429885477,
+                9.276037791497389,
+                -0.32132921524413216
+              ],
+              "velocity": [
+                -0.15990137951746505,
+                -0.20092450110580948,
+                0.031003393534579038
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -2.056084431957293,
+                -20.39108975385936,
+                -0.015415576214170081
+              ],
+              "velocity": [
+                0.21978045388941875,
+                -0.022161304313503237,
+                -0.0001937421293128515
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                15.9281883552566,
+                -2.217660188576886,
+                2.0140422745486464
+              ],
+              "velocity": [
+                0.03627987194492768,
+                0.24514550501181498,
+                -0.01698016365934479
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                17.400714379111648,
+                -10.716468326494763,
+                0.851449556294777
+              ],
+              "velocity": [
+                0.11575552965312305,
+                0.1883344834608598,
+                0.004763372068817644
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -9.192528578840449,
+                -11.441975805533422,
+                -2.861508886674441
+              ],
+              "velocity": [
+                0.2025185989444533,
+                -0.16058300396513867,
+                -0.00844867768989653
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -16.733663254784126,
+                -15.817926515575477,
+                0.7312154451602739
+              ],
+              "velocity": [
+                0.14319885990715986,
+                -0.15111617140439476,
+                0.008058204936297886
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                -21.910482944114786,
+                9.229102414726556,
+                -0.1384836410497023
+              ],
+              "velocity": [
+                -0.07961747077620218,
+                -0.1889999535456212,
+                0.0011249039295286823
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                10.812836220539042,
+                12.38036144338545,
+                -0.7254697134593106
+              ],
+              "velocity": [
+                -0.18531810203445695,
+                0.16024201432547272,
+                -0.02755251941466905
+              ],
+              "active": true
+            },
+            {
+              "position": [
+                18.287683930045063,
+                -0.12385175262017167,
+                0.2661613170481225
+              ],
+              "velocity": [
+                0.002057182550349313,
+                0.2313618128832457,
+                -0.03381556606944159
+              ],
+              "active": true
+            }
+          ],
+          "error": null
+        },
+        "events": {
+          "seed": 7301,
+          "randomState": 2211131584,
+          "nextAt": 319.2435325269783,
+          "active": {
+            "id": 8,
+            "type": "flare",
+            "starId": "star-b",
+            "startedAt": 278.09250000000094,
+            "duration": 8.280552779324353
+          },
+          "history": [
+            {
+              "id": 1,
+              "type": "dust",
+              "starId": "star-c",
+              "startedAt": 8.420000000000003,
+              "duration": 9.69741762522608
+            },
+            {
+              "id": 2,
+              "type": "dust",
+              "starId": "star-b",
+              "startedAt": 44.487699999999975,
+              "duration": 7.891238403506577
+            },
+            {
+              "id": 3,
+              "type": "flare",
+              "starId": "star-b",
+              "startedAt": 88.36169999999949,
+              "duration": 8.204867915250361
+            },
+            {
+              "id": 4,
+              "type": "flare",
+              "starId": "star-a",
+              "startedAt": 133.58409999999938,
+              "duration": 7.903932114131749
+            },
+            {
+              "id": 5,
+              "type": "flare",
+              "starId": "star-b",
+              "startedAt": 183.69890000000024,
+              "duration": 6.123090767301619
+            },
+            {
+              "id": 6,
+              "type": "aurora",
+              "starId": "star-c",
+              "startedAt": 213.63000000000093,
+              "duration": 9.190500346012414
+            },
+            {
+              "id": 7,
+              "type": "aurora",
+              "starId": "star-c",
+              "startedAt": 246.15350000000092,
+              "duration": 6.112433166243136
+            },
+            {
+              "id": 8,
+              "type": "flare",
+              "starId": "star-b",
+              "startedAt": 278.09250000000094,
+              "duration": 8.280552779324353
+            }
+          ],
+          "sequence": 8,
+          "lastTime": 278.09250000000094,
+          "enabled": true,
+          "frequency": 1,
+          "intensity": 1
+        },
+        "eventSettings": {
+          "enabled": true,
+          "frequency": 1,
+          "intensity": 1
+        },
+        "effects": {
+          "flare": {
+            "starId": null,
+            "strength": 0
+          },
+          "dust": 0,
+          "aurora": 0
+        },
+        "bodies": [
+          {
+            "id": "star-a",
+            "name": "恒星 A",
+            "mass": 1,
+            "radius": 0.32,
+            "luminosity": 20,
+            "position": [
+              0.000042801659203821004,
+              0.000006428530053593492,
+              0
+            ],
+            "velocity": [
+              -0.0000016803788451925938,
+              0.0000018644149832182426,
+              0
+            ],
+            "active": true,
+            "trail": [
+              {
+                "position": [
+                  -0.00008957722186074307,
+                  0.00002856600939937054,
+                  0
+                ],
+                "time": 270.16110000000106
+              },
+              {
+                "position": [
+                  -0.00008883454805632487,
+                  0.000022824366519772276,
+                  0
+                ],
+                "time": 270.315500000001
+              },
+              {
+                "position": [
+                  -0.00008767611804334836,
+                  0.00001705808482412258,
+                  0
+                ],
+                "time": 270.482500000001
+              },
+              {
+                "position": [
+                  -0.00008621527916738967,
+                  0.000011638038188046578,
+                  0
+                ],
+                "time": 270.653600000001
+              },
+              {
+                "position": [
+                  -0.00008469837027337154,
+                  0.000007016417743867361,
+                  0
+                ],
+                "time": 270.81230000000096
+              },
+              {
+                "position": [
+                  -0.00008356918769086903,
+                  0.000003955502167337491,
+                  0
+                ],
+                "time": 270.925000000001
+              },
+              {
+                "position": [
+                  -0.00008133826101059499,
+                  -0.0000015536536962258874,
+                  0
+                ],
+                "time": 271.146200000001
+              },
+              {
+                "position": [
+                  -0.00007684008262768608,
+                  -0.000012113835221063014,
+                  0
+                ],
+                "time": 271.63050000000095
+              },
+              {
+                "position": [
+                  -0.00007205741517382736,
+                  -0.00002523733818699328,
+                  0
+                ],
+                "time": 272.2608000000009
+              },
+              {
+                "position": [
+                  -0.00006382893794038503,
+                  -0.00004524780872768953,
+                  0
+                ],
+                "time": 273.074900000001
+              },
+              {
+                "position": [
+                  -0.00004209057647247756,
+                  -0.00006918918371985035,
+                  0
+                ],
+                "time": 274.00150000000093
+              },
+              {
+                "position": [
+                  0.000005545957296821362,
+                  -0.00007869683757290138,
+                  0
+                ],
+                "time": 275.16620000000097
+              },
+              {
+                "position": [
+                  0.00004884845059789825,
+                  -0.000045283376065663534,
+                  0
+                ],
+                "time": 276.464400000001
+              },
+              {
+                "position": [
+                  0.000042801659203821004,
+                  0.000006428530053593492,
+                  0
+                ],
+                "time": 278.09250000000094
+              }
+            ]
+          },
+          {
+            "id": "star-b",
+            "name": "恒星 B",
+            "mass": 0.00001,
+            "radius": 0.2,
+            "luminosity": 0.05,
+            "position": [
+              -7.4324782338545425,
+              -2.961478425768582,
+              0
+            ],
+            "velocity": [
+              0.1308334503866972,
+              -0.32841627765892994,
+              0
+            ],
+            "active": true,
+            "trail": [
+              {
+                "position": [
+                  7.998337887134793,
+                  0.12062052170514942,
+                  0
+                ],
+                "time": 270.16110000000106
+              },
+              {
+                "position": [
+                  7.971392418935405,
+                  0.66642596972957,
+                  0
+                ],
+                "time": 270.315500000001
+              },
+              {
+                "position": [
+                  7.900442301543449,
+                  1.2527924534328565,
+                  0
+                ],
+                "time": 270.482500000001
+              },
+              {
+                "position": [
+                  7.78337287259927,
+                  1.8452334557461023,
+                  0
+                ],
+                "time": 270.653600000001
+              },
+              {
+                "position": [
+                  7.634803164148947,
+                  2.386414006054459,
+                  0
+                ],
+                "time": 270.81230000000096
+              },
+              {
+                "position": [
+                  7.506207909987129,
+                  2.764353805049668,
+                  0
+                ],
+                "time": 270.925000000001
+              },
+              {
+                "position": [
+                  7.201015302973434,
+                  3.4827478546036073,
+                  0
+                ],
+                "time": 271.146200000001
+              },
+              {
+                "position": [
+                  6.29604552189556,
+                  4.933860413457315,
+                  0
+                ],
+                "time": 271.63050000000095
+              },
+              {
+                "position": [
+                  4.697102396709707,
+                  6.474573170742456,
+                  0
+                ],
+                "time": 272.2608000000009
+              },
+              {
+                "position": [
+                  2.115955876993778,
+                  7.714071170218718,
+                  0
+                ],
+                "time": 273.074900000001
+              },
+              {
+                "position": [
+                  -1.1313181181202325,
+                  7.9188317083469135,
+                  0
+                ],
+                "time": 274.00150000000093
+              },
+              {
+                "position": [
+                  -4.883517868257997,
+                  6.336085922106592,
+                  0
+                ],
+                "time": 275.16620000000097
+              },
+              {
+                "position": [
+                  -7.5412850057094225,
+                  2.670685953202747,
+                  0
+                ],
+                "time": 276.464400000001
+              },
+              {
+                "position": [
+                  -7.4324782338545425,
+                  -2.961478425768582,
+                  0
+                ],
+                "time": 278.09250000000094
+              }
+            ]
+          },
+          {
+            "id": "star-c",
+            "name": "恒星 C",
+            "mass": 0.000004,
+            "radius": 0.16,
+            "luminosity": 0.02,
+            "position": [
+              6.53386928983091,
+              8.477249491053662,
+              0
+            ],
+            "velocity": [
+              -0.24206462685353963,
+              0.18657638075771962,
+              0
+            ],
+            "active": true,
+            "trail": [
+              {
+                "position": [
+                  2.3263158184225317,
+                  -10.442243829608165,
+                  0
+                ],
+                "time": 270.16110000000106
+              },
+              {
+                "position": [
+                  2.7852658410746263,
+                  -10.329395833478246,
+                  0
+                ],
+                "time": 270.315500000001
+              },
+              {
+                "position": [
+                  3.2751891457285343,
+                  -10.184764786942518,
+                  0
+                ],
+                "time": 270.482500000001
+              },
+              {
+                "position": [
+                  3.7683809141223414,
+                  -10.01288783081441,
+                  0
+                ],
+                "time": 270.653600000001
+              },
+              {
+                "position": [
+                  4.218663806804062,
+                  -9.83177155625017,
+                  0
+                ],
+                "time": 270.81230000000096
+              },
+              {
+                "position": [
+                  4.533714319355891,
+                  -9.690610363696562,
+                  0
+                ],
+                "time": 270.925000000001
+              },
+              {
+                "position": [
+                  5.1359252951814,
+                  -9.385524692144214,
+                  0
+                ],
+                "time": 271.146200000001
+              },
+              {
+                "position": [
+                  6.382501861808271,
+                  -8.58703377096026,
+                  0
+                ],
+                "time": 271.63050000000095
+              },
+              {
+                "position": [
+                  7.8172051107901455,
+                  -7.305847742031639,
+                  0
+                ],
+                "time": 272.2608000000009
+              },
+              {
+                "position": [
+                  9.29141094393518,
+                  -5.307359151144984,
+                  0
+                ],
+                "time": 273.074900000001
+              },
+              {
+                "position": [
+                  10.357094222584148,
+                  -2.6916484176971496,
+                  0
+                ],
+                "time": 274.00150000000093
+              },
+              {
+                "position": [
+                  10.669123451010362,
+                  0.8379440845303947,
+                  0
+                ],
+                "time": 275.16620000000097
+              },
+              {
+                "position": [
+                  9.641079621716981,
+                  4.647241830306399,
+                  0
+                ],
+                "time": 276.464400000001
+              },
+              {
+                "position": [
+                  6.53386928983091,
+                  8.477249491053662,
+                  0
+                ],
+                "time": 278.09250000000094
+              }
+            ]
+          },
+          {
+            "id": "planet",
+            "name": "文明行星",
+            "mass": 0.000003,
+            "radius": 0.09,
+            "luminosity": 0,
+            "position": [
+              1.7958819918625868,
+              -3.574247920010856,
+              0
+            ],
+            "velocity": [
+              0.44676761624662265,
+              0.22448075678002455,
+              0
+            ],
+            "active": true,
+            "trail": [
+              {
+                "position": [
+                  0.09619323862774007,
+                  3.9989202340366528,
+                  0
+                ],
+                "time": 270.16110000000106
+              },
+              {
+                "position": [
+                  -0.6734798323830969,
+                  3.9429857056480717,
+                  0
+                ],
+                "time": 270.315500000001
+              },
+              {
+                "position": [
+                  -1.4763538516072896,
+                  3.71768326313932,
+                  0
+                ],
+                "time": 270.482500000001
+              },
+              {
+                "position": [
+                  -2.2306577383045387,
+                  3.3203928592829874,
+                  0
+                ],
+                "time": 270.653600000001
+              },
+              {
+                "position": [
+                  -2.841438865051723,
+                  2.8155094735625,
+                  0
+                ],
+                "time": 270.81230000000096
+              },
+              {
+                "position": [
+                  -3.209249562082186,
+                  2.3878004123502468,
+                  0
+                ],
+                "time": 270.925000000001
+              },
+              {
+                "position": [
+                  -3.738531066561812,
+                  1.4227579729550102,
+                  0
+                ],
+                "time": 271.146200000001
+              },
+              {
+                "position": [
+                  -3.8834600127742593,
+                  -0.9588779431904666,
+                  0
+                ],
+                "time": 271.63050000000095
+              },
+              {
+                "position": [
+                  -2.0608097454167043,
+                  -3.428334184069284,
+                  0
+                ],
+                "time": 272.2608000000009
+              },
+              {
+                "position": [
+                  1.8345784649626082,
+                  -3.5544887899406117,
+                  0
+                ],
+                "time": 273.074900000001
+              },
+              {
+                "position": [
+                  3.991793587841962,
+                  0.2558201024215073,
+                  0
+                ],
+                "time": 274.00150000000093
+              },
+              {
+                "position": [
+                  0.20424252730034023,
+                  3.9947340046023925,
+                  0
+                ],
+                "time": 275.16620000000097
+              },
+              {
+                "position": [
+                  -3.9999730091621433,
+                  -0.004150262499370732,
+                  0
+                ],
+                "time": 276.464400000001
+              },
+              {
+                "position": [
+                  1.7958819918625868,
+                  -3.574247920010856,
+                  0
+                ],
+                "time": 278.09250000000094
+              }
+            ]
+          }
+        ],
+        "civilization": {
+          "state": "乱纪元",
+          "dead": false,
+          "number": 1,
+          "reason": null,
+          "events": []
+        },
+        "renderer": {
+          "available": true,
+          "frames": 3184,
+          "geometries": 15,
+          "textures": 1,
+          "camera": {
+            "position": [
+              8.335605838395175,
+              4.487315523288227,
+              20.778266824207357
+            ],
+            "quaternion": [
+              -0.04408811274871431,
+              0.19846821203985773,
+              0.008937102900802235,
+              0.9790744278734377
+            ]
+          },
+          "width": 1359,
+          "height": 511,
+          "drawCalls": 39,
+          "triangles": 26826,
+          "bodyCount": 4,
+          "trailPointCount": 56,
+          "forceArrowCount": 3,
+          "forcePairs": [],
+          "selectedVectors": null,
+          "currentView": "station",
+          "cameraPosition": [
+            8.335605838395175,
+            4.487315523288227,
+            20.778266824207357
+          ],
+          "target": [
+            -0.44930447201181645,
+            2.451500785521403,
+            0
+          ],
+          "projections": {
+            "star-a": {
+              "x": 691.0315422867671,
+              "y": 323.96601372555307,
+              "visible": true
+            },
+            "star-b": {
+              "x": 522.1249821157008,
+              "y": 381.4272885647674,
+              "visible": true
+            },
+            "star-c": {
+              "x": 889.1541782007891,
+              "y": 67.84742065603257,
+              "visible": true
+            },
+            "planet": {
+              "x": 738.0865675046842,
+              "y": 427.74902461987597,
+              "visible": true
+            }
+          },
+          "renderer": {
+            "available": true,
+            "frames": 3184,
+            "geometries": 15,
+            "textures": 1,
+            "camera": {
+              "position": [
+                8.335605838395175,
+                4.487315523288227,
+                20.778266824207357
+              ],
+              "quaternion": [
+                -0.04408811274871431,
+                0.19846821203985773,
+                0.008937102900802235,
+                0.9790744278734377
+              ]
+            }
+          },
+          "visual": {
+            "exposure": 1.1,
+            "bloom": 1,
+            "particles": 1,
+            "nebula": 0.6,
+            "starScale": 1,
+            "trailWidth": 1.4
+          },
+          "visualUniforms": {
+            "exposure": 1.1,
+            "nebula": 0.6,
+            "stars": [
+              {
+                "id": "star-a",
+                "tint": "#ffb45b",
+                "brightness": 1.6806853850536214,
+                "coronaStrength": 1,
+                "haloOpacity": 0.44124611797498103,
+                "displayRadius": 0.624
+              },
+              {
+                "id": "star-b",
+                "tint": "#80caff",
+                "brightness": 0.9617096394006637,
+                "coronaStrength": 1,
+                "haloOpacity": 0.25006230589874906,
+                "displayRadius": 0.54
+              },
+              {
+                "id": "star-c",
+                "tint": "#ff694a",
+                "brightness": 0.9547526305510831,
+                "coronaStrength": 1,
+                "haloOpacity": 0.24636396103067892,
+                "displayRadius": 0.512
+              }
+            ],
+            "trails": [
+              {
+                "id": "star-a",
+                "pointSize": 5.6,
+                "gain": 1.4,
+                "drawCount": 14
+              },
+              {
+                "id": "star-b",
+                "pointSize": 5.6,
+                "gain": 1.4,
+                "drawCount": 14
+              },
+              {
+                "id": "star-c",
+                "pointSize": 5.6,
+                "gain": 1.4,
+                "drawCount": 14
+              },
+              {
+                "id": "planet",
+                "pointSize": 5.6,
+                "gain": 1.4,
+                "drawCount": 14
+              }
+            ]
+          },
+          "particles": {
+            "allocated": {
+              "far": 4000,
+              "near": 1000,
+              "trailPerBody": 512
+            },
+            "drawn": {
+              "far": 2000,
+              "near": 500,
+              "trails": 56
+            }
+          },
+          "effects": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "effectUniforms": {
+            "stars": [
+              {
+                "id": "star-a",
+                "flareStrength": 0,
+                "coronaStrength": 1,
+                "haloOpacity": 0.44124611797498103,
+                "flareOpacity": 0.0882492235949962
+              },
+              {
+                "id": "star-b",
+                "flareStrength": 0,
+                "coronaStrength": 1,
+                "haloOpacity": 0.25006230589874906,
+                "flareOpacity": 0.05001246117974981
+              },
+              {
+                "id": "star-c",
+                "flareStrength": 0,
+                "coronaStrength": 1,
+                "haloOpacity": 0.24636396103067892,
+                "flareOpacity": 0.049272792206135785
+              }
+            ],
+            "planetAurora": 0,
+            "atmosphereAurora": 0,
+            "dustStrength": 0
+          },
+          "dustParticles": {
+            "allocated": 192,
+            "active": 0,
+            "space": "world",
+            "decorative": true,
+            "sample": []
+          },
+          "fitBelt": false,
+          "beltIncludedInFit": false,
+          "beltCount": 128,
+          "beltCapacity": 256,
+          "beltSample": [
+            11.56437873840332,
+            8.964924812316895,
+            2.6087241172790527,
+            -1.0755075216293335,
+            17.072547912597656,
+            0.09923546761274338,
+            18.12088966369629,
+            10.467421531677246,
+            -0.3381165862083435
+          ],
+          "lagrangeProjections": {},
+          "lagrangeCount": 0,
+          "lagrangeCapacity": 5,
+          "lagrangeGuideSegments": 0
+        },
+        "error": "本次时间间隔超过计算预算，已保留最后状态；请降低倍率后重置轨道。",
+        "visible": true,
+        "animationScheduled": false
+      },
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: actual WebGL rendering continues throughout the ten-minute soak\n    at checks (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:63:51)\n    at browserCase (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:283:9)\n    at async stage (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:36:9)\n    at async main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:360:36)"
+    }
+  ],
+  "completedAt": "2026-09-22T09:57:51.467Z",
+  "passed": false
+}

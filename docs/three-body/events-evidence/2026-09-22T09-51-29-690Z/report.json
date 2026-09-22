@@ -1,0 +1,326 @@
+{
+  "startedAt": "2026-09-22T09:51:29.690Z",
+  "checks": [
+    "First event is scheduled 8–14 foreground seconds from initial time zero",
+    "Dust is a fixed pool of 192 decorative world-space particles",
+    "flare: paused age-zero event is queued without displaying a false envelope",
+    "flare: continuous event advancement records exactly once",
+    "flare: intensity zero changes real canvas pixels and all effect uniforms without moving physics",
+    "flare: intensity two visibly restores the actual effect",
+    "dust: paused age-zero event is queued without displaying a false envelope",
+    "dust: continuous event advancement records exactly once",
+    "dust: intensity zero changes real canvas pixels and all effect uniforms without moving physics",
+    "dust: intensity two visibly restores the actual effect",
+    "Dust world coordinates stay fixed when camera changes at the same event clock",
+    "aurora: paused age-zero event is queued without displaying a false envelope",
+    "aurora: continuous event advancement records exactly once",
+    "aurora: intensity zero changes real canvas pixels and all effect uniforms without moving physics",
+    "aurora: intensity two visibly restores the actual effect",
+    "Disable immediately clears active effects and scheduled time while retaining history",
+    "Reset clears event state and frequency one schedules the documented interval",
+    "Frequency three schedules first automatic event in 8/3–14/3 foreground seconds",
+    "Theme hiding freezes the event clock across a whole first-event wait without catch-up events",
+    "First automatic event starts on the scheduled foreground clock",
+    "Automatic event records once and pause freezes active progress, scheduling and physics",
+    "Reset removes an active automatic event and starts a clean event history",
+    "Triggering, changing strength/frequency and toggling events preserve physical bodies and the latched civilization death",
+    "Actual plus key zooms in by reducing camera-to-target distance",
+    "Include-belt framing expands the real station camera without moving any physical or belt particles",
+    "All four physical bodies remain visible alongside the full rendered belt",
+    "Include-belt option leaves follow camera unchanged",
+    "No browser console/runtime errors throughout real event and belt-framing operations"
+  ],
+  "stages": [
+    {
+      "name": "Event native controls, clock and fixed renderer resources",
+      "startedAt": "2026-09-22T09:51:34.154Z",
+      "passed": true
+    },
+    {
+      "name": "Manual flare: envelope, real uniforms and paused pixel changes",
+      "startedAt": "2026-09-22T09:51:34.166Z",
+      "passed": true
+    },
+    {
+      "name": "Manual dust: envelope, real uniforms and paused pixel changes",
+      "startedAt": "2026-09-22T09:51:41.048Z",
+      "passed": true
+    },
+    {
+      "name": "Manual aurora: envelope, real uniforms and paused pixel changes",
+      "startedAt": "2026-09-22T09:51:48.251Z",
+      "passed": true
+    },
+    {
+      "name": "Disable, frequency, hidden theme and first automatic event",
+      "startedAt": "2026-09-22T09:51:55.039Z",
+      "passed": true
+    },
+    {
+      "name": "Event controls preserve an actual latched civilization death",
+      "startedAt": "2026-09-22T09:52:09.359Z",
+      "passed": true
+    },
+    {
+      "name": "Paused overview keyboard zoom and complete belt framing",
+      "startedAt": "2026-09-22T09:52:16.959Z",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "flare-intensity-one.png",
+    "flare-intensity-zero.png",
+    "flare-intensity-two.png",
+    "dust-intensity-one.png",
+    "dust-intensity-zero.png",
+    "dust-intensity-two.png",
+    "aurora-intensity-one.png",
+    "aurora-intensity-zero.png",
+    "aurora-intensity-two.png",
+    "desktop-complete-belt.png",
+    "final-complete-belt.png"
+  ],
+  "consoleErrors": [],
+  "observations": {
+    "initial": {
+      "nextAt": 8.393529459834099,
+      "realTime": 1.5235999999999998,
+      "geometries": 12,
+      "textures": 1
+    },
+    "flare": {
+      "event": {
+        "id": 1,
+        "type": "flare",
+        "starId": "star-b",
+        "startedAt": 1.5235999999999998,
+        "duration": 9.498520450666547
+      },
+      "strengthOne": 0.5513907213529686,
+      "strengthTwo": 1.1027814427059373,
+      "actualUniforms": {
+        "stars": [
+          {
+            "id": "star-a",
+            "flareStrength": 0,
+            "coronaStrength": 1,
+            "haloOpacity": 0.44124611797498103,
+            "flareOpacity": 0.0882492235949962
+          },
+          {
+            "id": "star-b",
+            "flareStrength": 1.1027814427059373,
+            "coronaStrength": 2.102781442705937,
+            "haloOpacity": 0.44856296558581776,
+            "flareOpacity": 0.24410199509599478
+          },
+          {
+            "id": "star-c",
+            "flareStrength": 0,
+            "coronaStrength": 1,
+            "haloOpacity": 0.24636396103067892,
+            "flareOpacity": 0.049272792206135785
+          }
+        ],
+        "planetAurora": 0,
+        "atmosphereAurora": 0,
+        "dustStrength": 0
+      },
+      "dustParticles": {
+        "allocated": 192,
+        "active": 0,
+        "space": "world",
+        "decorative": true,
+        "sample": []
+      },
+      "images": {
+        "one": "b9756fb120ffa9f69f30a8fd5a6c217d0daca0b031deefe99bcb50d452c22f68",
+        "zero": "dd03fb5a35c4f93be65590e039474d06bd2507eaf8b3d03926c218d6667e4434",
+        "two": "1525a9c2185af13ab4d8e8bef616e6bfd42d362a3e1ccc498a14c973f9cba062"
+      }
+    },
+    "dust": {
+      "event": {
+        "id": 2,
+        "type": "dust",
+        "starId": "star-a",
+        "startedAt": 3.2893999999999997,
+        "duration": 8.635392340831459
+      },
+      "strengthOne": 0.5583391595636086,
+      "strengthTwo": 1.1166783191272172,
+      "actualUniforms": {
+        "stars": [
+          {
+            "id": "star-a",
+            "flareStrength": 0,
+            "coronaStrength": 1,
+            "haloOpacity": 0.44124611797498103,
+            "flareOpacity": 0.0882492235949962
+          },
+          {
+            "id": "star-b",
+            "flareStrength": 0,
+            "coronaStrength": 1,
+            "haloOpacity": 0.25006230589874906,
+            "flareOpacity": 0.05001246117974981
+          },
+          {
+            "id": "star-c",
+            "flareStrength": 0,
+            "coronaStrength": 1,
+            "haloOpacity": 0.24636396103067892,
+            "flareOpacity": 0.049272792206135785
+          }
+        ],
+        "planetAurora": 0,
+        "atmosphereAurora": 0,
+        "dustStrength": 0.8933426553017738
+      },
+      "dustParticles": {
+        "allocated": 192,
+        "active": 107,
+        "space": "world",
+        "decorative": true,
+        "sample": [
+          22.506017684936523,
+          16.129114151000977,
+          -3.9201302528381348,
+          7.275142669677734,
+          -8.867928504943848,
+          6.067862510681152,
+          4.483651161193848,
+          -8.162008285522461,
+          -3.5441360473632812
+        ]
+      },
+      "images": {
+        "one": "0540159e8102c92a35b6e21b0d779a506938befd7f626ad8c8c3f40d80b136a5",
+        "zero": "a943aa7afd11231e4220228b35fbb87a9f46b2c4818e4a9e54721ad29c3d31ed",
+        "two": "3525fc13a17d5824f697b7499aed4e8f0fc5e4f7c8f817d02d28400d8c76baa4"
+      }
+    },
+    "aurora": {
+      "event": {
+        "id": 3,
+        "type": "aurora",
+        "starId": "star-b",
+        "startedAt": 4.917700000000002,
+        "duration": 8.547868676483631
+      },
+      "strengthOne": 0.5908810486318528,
+      "strengthTwo": 1.1817620972637055,
+      "actualUniforms": {
+        "stars": [
+          {
+            "id": "star-a",
+            "flareStrength": 0,
+            "coronaStrength": 1,
+            "haloOpacity": 0.44124611797498103,
+            "flareOpacity": 0.0882492235949962
+          },
+          {
+            "id": "star-b",
+            "flareStrength": 0,
+            "coronaStrength": 1,
+            "haloOpacity": 0.25006230589874906,
+            "flareOpacity": 0.05001246117974981
+          },
+          {
+            "id": "star-c",
+            "flareStrength": 0,
+            "coronaStrength": 1,
+            "haloOpacity": 0.24636396103067892,
+            "flareOpacity": 0.049272792206135785
+          }
+        ],
+        "planetAurora": 1.1817620972637055,
+        "atmosphereAurora": 1.1817620972637055,
+        "dustStrength": 0
+      },
+      "dustParticles": {
+        "allocated": 192,
+        "active": 0,
+        "space": "world",
+        "decorative": true,
+        "sample": []
+      },
+      "images": {
+        "one": "85de9bc75fb374f3db571ed996f99a8a2e96bd2997402efbeb768a23597e168e",
+        "zero": "7e64c68f16a022ffaaab8fb2cc02bafdc0d0ce66486ffb2a449697f52dd1bd7c",
+        "two": "05ef273a74a9eb6cd5685a72b5293c1653f2defbd2d6a4aeacf886258d717128"
+      }
+    },
+    "automatic": {
+      "scheduled": 3.612285868419955,
+      "event": {
+        "id": 1,
+        "type": "dust",
+        "starId": "star-a",
+        "startedAt": 3.681767999999993,
+        "duration": 7.790736252442002
+      },
+      "hiddenClock": 0.34229999999999927,
+      "restoredClock": 0.7011999999999934,
+      "history": [
+        {
+          "id": 1,
+          "type": "dust",
+          "starId": "star-a",
+          "startedAt": 3.681767999999993,
+          "duration": 7.790736252442002
+        }
+      ]
+    },
+    "framing": {
+      "originalDistance": 12.256688961110214,
+      "plusDistance": 11.142444510100194,
+      "restoredDistance": 12.256688961110214,
+      "fittedDistance": 70.07347365640688,
+      "camera": {
+        "position": [
+          0.3602528641242664,
+          0.20659480972256183,
+          69.87264103699829
+        ],
+        "quaternion": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "bodies": {
+        "star-a": {
+          "x": 675.8755722702705,
+          "y": 286.07836122325983,
+          "visible": true
+        },
+        "star-b": {
+          "x": 756.3562475031442,
+          "y": 286.07836122325983,
+          "visible": true
+        },
+        "star-c": {
+          "x": 568.2326691463019,
+          "y": 286.07836122325983,
+          "visible": true
+        },
+        "planet": {
+          "x": 635.6352346538337,
+          "y": 286.07836122325983,
+          "visible": true
+        }
+      }
+    }
+  },
+  "fixtureCorrections": [
+    {
+      "previousRun": "2026-09-22T09-49-16-578Z",
+      "cause": "Nonexistent tb-view option follow",
+      "correction": "Use actual native option planet at both follow-view checks"
+    }
+  ],
+  "passed": true,
+  "elapsedMs": 56418.6661
+}

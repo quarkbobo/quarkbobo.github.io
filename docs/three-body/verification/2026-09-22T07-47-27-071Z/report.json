@@ -1,0 +1,923 @@
+{
+  "startedAt": "2026-09-22T07:47:27.071Z",
+  "command": [
+    "C:\\Program Files\\nodejs\\node.exe",
+    "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs"
+  ],
+  "cases": [
+    {
+      "name": "frozen-scope",
+      "checks": [
+        "SHA-256 and additions match the authorized scope"
+      ],
+      "consoleErrors": [],
+      "screenshots": [],
+      "scope": {
+        "frozenFiles": 872,
+        "changedReadOnlyFiles": [],
+        "additions": [
+          "docs/three-body/BLOCKED.md",
+          "docs/three-body/CORE.md",
+          "docs/three-body/DESIGN.md",
+          "docs/three-body/PLAN.md",
+          "docs/three-body/PROGRESS.md",
+          "docs/three-body/SOURCES.md",
+          "docs/three-body/VERIFICATION.md",
+          "docs/three-body/baseline.cjs",
+          "docs/three-body/baseline/files.json",
+          "docs/three-body/baseline/status.txt",
+          "docs/three-body/capture-drafts.cjs",
+          "docs/three-body/drafts.html",
+          "docs/three-body/drafts/bridge-1440.png",
+          "docs/three-body/drafts/bridge-390.png",
+          "docs/three-body/drafts/panoramic-1440.png",
+          "docs/three-body/drafts/panoramic-390.png",
+          "docs/three-body/drafts/ring-1440.png",
+          "docs/three-body/drafts/ring-390.png",
+          "docs/three-body/verification/2026-09-22T07-35-52-159Z/desktop-failure.png",
+          "docs/three-body/verification/2026-09-22T07-35-52-159Z/mobile-failure.png",
+          "docs/three-body/verification/2026-09-22T07-35-52-159Z/no-webgl-failure.png",
+          "docs/three-body/verification/2026-09-22T07-35-52-159Z/reduced-motion-failure.png",
+          "docs/three-body/verification/2026-09-22T07-35-52-159Z/report.json",
+          "test/three-body-core.test.cjs",
+          "themes/fluid-particle/layout/_partial/three-body.ejs",
+          "themes/fluid-particle/source/css/three-body.css",
+          "themes/fluid-particle/source/js/three-body-core.mjs",
+          "themes/fluid-particle/source/js/three-body-scene.mjs",
+          "themes/fluid-particle/source/js/three-body.mjs",
+          "tools/verify-three-body.cjs"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "physics",
+      "checks": [
+        "frozen Node physics tests pass"
+      ],
+      "consoleErrors": [],
+      "screenshots": [],
+      "passed": true
+    },
+    {
+      "name": "desktop",
+      "checks": [
+        "fresh default retains the legacy homepage",
+        "theme toggle is reachable using keyboard Tab"
+      ],
+      "consoleErrors": [],
+      "screenshots": [
+        "desktop-legacy-default.png",
+        "desktop-failure.png"
+      ],
+      "lastSnapshot": {
+        "active": false,
+        "paused": false,
+        "mode": 1,
+        "view": "station",
+        "preset": "balanced",
+        "G": 1,
+        "speed": 1,
+        "simTime": 0,
+        "realTime": 0,
+        "forceMode": null,
+        "bodies": [
+          {
+            "id": "star-a",
+            "name": "恒星 A",
+            "mass": 1,
+            "radius": 0.32,
+            "luminosity": 20,
+            "position": [
+              -0.000025199571607282686,
+              0,
+              0
+            ],
+            "velocity": [
+              0,
+              -8.126844092662943e-7,
+              0
+            ],
+            "active": true,
+            "trail": []
+          },
+          {
+            "id": "star-b",
+            "name": "恒星 B",
+            "mass": 0.00001,
+            "radius": 0.2,
+            "luminosity": 0.05,
+            "position": [
+              7.999974800428393,
+              0,
+              0
+            ],
+            "velocity": [
+              0,
+              0.3535525779088645,
+              0
+            ],
+            "active": true,
+            "trail": []
+          },
+          {
+            "id": "star-c",
+            "name": "恒星 C",
+            "mass": 0.000004,
+            "radius": 0.16,
+            "luminosity": 0.02,
+            "position": [
+              -10.700025199571607,
+              0,
+              0
+            ],
+            "velocity": [
+              0,
+              -0.3057097329422808,
+              0
+            ],
+            "active": true,
+            "trail": []
+          },
+          {
+            "id": "planet",
+            "name": "文明行星",
+            "mass": 0.000003,
+            "radius": 0.09,
+            "luminosity": 0,
+            "position": [
+              -4.000025199571607,
+              0,
+              0
+            ],
+            "velocity": [
+              0,
+              -0.5000008126844092,
+              0
+            ],
+            "active": true,
+            "trail": []
+          }
+        ],
+        "civilization": {
+          "state": "乱纪元",
+          "dead": false,
+          "number": 1,
+          "reason": null,
+          "events": []
+        },
+        "renderer": {
+          "available": false,
+          "frames": 0,
+          "geometries": 0,
+          "textures": 0,
+          "camera": {
+            "position": [],
+            "quaternion": []
+          }
+        },
+        "error": null,
+        "visible": false,
+        "animationScheduled": false
+      },
+      "passed": false,
+      "error": "Error: Timed out: theme activation creates a read-only real-state snapshot\n    at until (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-planet-explorer.cjs:124:13)\n    at async browserCase (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:153:5)\n    at async stage (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:36:9)\n    at async main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:359:36)"
+    },
+    {
+      "name": "mobile",
+      "checks": [
+        "parameters are initially collapsed"
+      ],
+      "consoleErrors": [],
+      "screenshots": [
+        "mobile-failure.png"
+      ],
+      "lastSnapshot": {
+        "active": true,
+        "paused": false,
+        "mode": 1,
+        "view": "station",
+        "preset": "balanced",
+        "G": 1,
+        "speed": 1,
+        "simTime": 0.5166666666666666,
+        "realTime": 0.5206000000000002,
+        "forceMode": null,
+        "bodies": [
+          {
+            "id": "star-a",
+            "name": "恒星 A",
+            "mass": 1,
+            "radius": 0.32,
+            "luminosity": 20,
+            "position": [
+              -0.000025208397739127437,
+              -4.2028977373630444e-7,
+              0
+            ],
+            "velocity": [
+              -3.413518424400298e-8,
+              -8.150231482770038e-7,
+              0
+            ],
+            "active": true,
+            "trail": [
+              {
+                "position": [
+                  -0.000025199629060174848,
+                  -3.3862059621518966e-8,
+                  0
+                ],
+                "time": 0.04579999999999995
+              },
+              {
+                "position": [
+                  -0.000025202227532053406,
+                  -2.303270178527558e-7,
+                  0
+                ],
+                "time": 0.2874000000000001
+              },
+              {
+                "position": [
+                  -0.000025203155965386326,
+                  -2.676127934089792e-7,
+                  0
+                ],
+                "time": 0.33270000000000005
+              },
+              {
+                "position": [
+                  -0.00002520422313266349,
+                  -3.049106862348308e-7,
+                  0
+                ],
+                "time": 0.3789000000000001
+              },
+              {
+                "position": [
+                  -0.000025205428943980555,
+                  -3.4222238204719087e-7,
+                  0
+                ],
+                "time": 0.4248
+              },
+              {
+                "position": [
+                  -0.000025206902377767326,
+                  -3.829437725630983e-7,
+                  0
+                ],
+                "time": 0.4713
+              },
+              {
+                "position": [
+                  -0.000025207976192854045,
+                  -4.101026862865274e-7,
+                  0
+                ],
+                "time": 0.5054000000000002
+              }
+            ]
+          },
+          {
+            "id": "star-b",
+            "name": "恒星 B",
+            "mass": 0.00001,
+            "radius": 0.2,
+            "luminosity": 0.05,
+            "position": [
+              7.997889388140889,
+              0.1826529601361601,
+              0
+            ],
+            "velocity": [
+              -0.00807221290512737,
+              0.35346041477449247,
+              0
+            ],
+            "active": true,
+            "trail": [
+              {
+                "position": [
+                  7.999961237067907,
+                  0.014731349170817143,
+                  0
+                ],
+                "time": 0.04579999999999995
+              },
+              {
+                "position": [
+                  7.999347638656957,
+                  0.10017061325131985,
+                  0
+                ],
+                "time": 0.2874000000000001
+              },
+              {
+                "position": [
+                  7.999128325789306,
+                  0.11637361956191183,
+                  0
+                ],
+                "time": 0.33270000000000005
+              },
+              {
+                "position": [
+                  7.998876193064275,
+                  0.13257614839986817,
+                  0
+                ],
+                "time": 0.3789000000000001
+              },
+              {
+                "position": [
+                  7.9985912415163485,
+                  0.14877813328737213,
+                  0
+                ],
+                "time": 0.4248
+              },
+              {
+                "position": [
+                  7.998242956927758,
+                  0.16645232740618623,
+                  0
+                ],
+                "time": 0.4713
+              },
+              {
+                "position": [
+                  7.997989070413094,
+                  0.17823467728053013,
+                  0
+                ],
+                "time": 0.5054000000000002
+              }
+            ]
+          },
+          {
+            "id": "star-c",
+            "name": "恒星 C",
+            "mass": 0.000004,
+            "radius": 0.16,
+            "luminosity": 0.02,
+            "position": [
+              -10.698859411452856,
+              -0.15794429278514127,
+              0
+            ],
+            "velocity": [
+              0.004512646233816234,
+              -0.30567642578207965,
+              0
+            ],
+            "active": true,
+            "trail": [
+              {
+                "position": [
+                  -10.700017617566186,
+                  -0.01273790256071249,
+                  0
+                ],
+                "time": 0.04579999999999995
+              },
+              {
+                "position": [
+                  -10.69967460951434,
+                  -0.086616811863295,
+                  0
+                ],
+                "time": 0.2874000000000001
+              },
+              {
+                "position": [
+                  -10.699552010045553,
+                  -0.10062797062962209,
+                  0
+                ],
+                "time": 0.33270000000000005
+              },
+              {
+                "position": [
+                  -10.699411062935637,
+                  -0.11463895684121747,
+                  0
+                ],
+                "time": 0.3789000000000001
+              },
+              {
+                "position": [
+                  -10.699251768426317,
+                  -0.1286497464723351,
+                  0
+                ],
+                "time": 0.4248
+              },
+              {
+                "position": [
+                  -10.699057067786619,
+                  -0.14393399182131364,
+                  0
+                ],
+                "time": 0.4713
+              },
+              {
+                "position": [
+                  -10.698915137223509,
+                  -0.15412332746251756,
+                  0
+                ],
+                "time": 0.5054000000000002
+              }
+            ]
+          },
+          {
+            "id": "planet",
+            "name": "文明行星",
+            "mass": 0.000003,
+            "radius": 0.09,
+            "luminosity": 0,
+            "position": [
+              -3.9916861654899995,
+              -0.2581542188282433,
+              0
+            ],
+            "velocity": [
+              0.03226890945333722,
+              -0.4989584321131994,
+              0
+            ],
+            "active": true,
+            "trail": [
+              {
+                "position": [
+                  -3.999970946746492,
+                  -0.02083327394793416,
+                  0
+                ],
+                "time": 0.04579999999999995
+              },
+              {
+                "position": [
+                  -3.997516805486269,
+                  -0.14163728906908757,
+                  0
+                ],
+                "time": 0.2874000000000001
+              },
+              {
+                "position": [
+                  -3.9966397507748357,
+                  -0.16453717323055034,
+                  0
+                ],
+                "time": 0.33270000000000005
+              },
+              {
+                "position": [
+                  -3.9956315154122257,
+                  -0.18743165679966023,
+                  0
+                ],
+                "time": 0.3789000000000001
+              },
+              {
+                "position": [
+                  -3.9944921324925473,
+                  -0.21031998831239646,
+                  0
+                ],
+                "time": 0.4248
+              },
+              {
+                "position": [
+                  -3.993099640121255,
+                  -0.23528117807116955,
+                  0
+                ],
+                "time": 0.4713
+              },
+              {
+                "position": [
+                  -3.992084654127615,
+                  -0.2519169255562341,
+                  0
+                ],
+                "time": 0.5054000000000002
+              }
+            ]
+          }
+        ],
+        "civilization": {
+          "state": "乱纪元",
+          "dead": false,
+          "number": 1,
+          "reason": null,
+          "events": []
+        },
+        "renderer": {
+          "available": true,
+          "frames": 12,
+          "geometries": 8,
+          "textures": 1,
+          "camera": {
+            "position": [
+              -1.3503617152978153,
+              -0.03160779108267515,
+              36.77400918962876
+            ],
+            "quaternion": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "width": 362,
+          "height": 454,
+          "drawCalls": 21,
+          "triangles": 14892,
+          "bodyCount": 4,
+          "trailPointCount": 28,
+          "forceArrowCount": 0,
+          "currentView": "station",
+          "cameraPosition": [
+            -1.3503617152978153,
+            -0.03160779108267515,
+            36.77400918962876
+          ],
+          "target": [
+            -1.3503617152978153,
+            -0.03160779108267515,
+            0
+          ],
+          "projections": {
+            "star-a": {
+              "x": 201.63085988097822,
+              "y": 226.51709278783298,
+              "visible": true
+            },
+            "star-b": {
+              "x": 323.8254791762923,
+              "y": 223.72645780233205,
+              "visible": true
+            },
+            "star-c": {
+              "x": 38.170753303721106,
+              "y": 228.93020824894978,
+              "visible": true
+            },
+            "planet": {
+              "x": 140.64502599636134,
+              "y": 230.46124657333348,
+              "visible": true
+            }
+          },
+          "renderer": {
+            "available": true,
+            "frames": 12,
+            "geometries": 8,
+            "textures": 1,
+            "camera": {
+              "position": [
+                -1.3503617152978153,
+                -0.03160779108267515,
+                36.77400918962876
+              ],
+              "quaternion": [
+                0,
+                0,
+                0,
+                1
+              ]
+            }
+          }
+        },
+        "error": null,
+        "visible": true,
+        "animationScheduled": true
+      },
+      "passed": false,
+      "error": "Error: SyntaxError: missing ) after argument list\n    at evaluate (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-planet-explorer.cjs:115:41)\n    at async browserCase (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:156:12)\n    at async stage (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:36:9)\n    at async main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:359:36)"
+    },
+    {
+      "name": "reduced-motion",
+      "checks": [
+        "parameters are initially collapsed"
+      ],
+      "consoleErrors": [],
+      "screenshots": [
+        "reduced-motion-failure.png"
+      ],
+      "lastSnapshot": {
+        "active": true,
+        "paused": true,
+        "mode": 1,
+        "view": "station",
+        "preset": "balanced",
+        "G": 1,
+        "speed": 1,
+        "simTime": 0,
+        "realTime": 0,
+        "forceMode": null,
+        "bodies": [
+          {
+            "id": "star-a",
+            "name": "恒星 A",
+            "mass": 1,
+            "radius": 0.32,
+            "luminosity": 20,
+            "position": [
+              -0.000025199571607282686,
+              0,
+              0
+            ],
+            "velocity": [
+              0,
+              -8.126844092662943e-7,
+              0
+            ],
+            "active": true,
+            "trail": []
+          },
+          {
+            "id": "star-b",
+            "name": "恒星 B",
+            "mass": 0.00001,
+            "radius": 0.2,
+            "luminosity": 0.05,
+            "position": [
+              7.999974800428393,
+              0,
+              0
+            ],
+            "velocity": [
+              0,
+              0.3535525779088645,
+              0
+            ],
+            "active": true,
+            "trail": []
+          },
+          {
+            "id": "star-c",
+            "name": "恒星 C",
+            "mass": 0.000004,
+            "radius": 0.16,
+            "luminosity": 0.02,
+            "position": [
+              -10.700025199571607,
+              0,
+              0
+            ],
+            "velocity": [
+              0,
+              -0.3057097329422808,
+              0
+            ],
+            "active": true,
+            "trail": []
+          },
+          {
+            "id": "planet",
+            "name": "文明行星",
+            "mass": 0.000003,
+            "radius": 0.09,
+            "luminosity": 0,
+            "position": [
+              -4.000025199571607,
+              0,
+              0
+            ],
+            "velocity": [
+              0,
+              -0.5000008126844092,
+              0
+            ],
+            "active": true,
+            "trail": []
+          }
+        ],
+        "civilization": {
+          "state": "乱纪元",
+          "dead": false,
+          "number": 1,
+          "reason": null,
+          "events": []
+        },
+        "renderer": {
+          "available": true,
+          "frames": 2,
+          "geometries": 8,
+          "textures": 1,
+          "camera": {
+            "position": [
+              -1.3500251995716073,
+              0,
+              11.026704329449506
+            ],
+            "quaternion": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "width": 1359,
+          "height": 511,
+          "drawCalls": 21,
+          "triangles": 14892,
+          "bodyCount": 4,
+          "trailPointCount": 0,
+          "forceArrowCount": 0,
+          "currentView": "station",
+          "cameraPosition": [
+            -1.3500251995716073,
+            0,
+            11.026704329449506
+          ],
+          "target": [
+            -1.3500251995716073,
+            0,
+            0
+          ],
+          "projections": {
+            "star-a": {
+              "x": 756.922891501185,
+              "y": 255.5,
+              "visible": true
+            },
+            "star-b": {
+              "x": 1215.7252115082072,
+              "y": 255.5,
+              "visible": true
+            },
+            "star-c": {
+              "x": 143.27478849179295,
+              "y": 255.5,
+              "visible": true
+            },
+            "planet": {
+              "x": 527.521731497674,
+              "y": 255.5,
+              "visible": true
+            }
+          },
+          "renderer": {
+            "available": true,
+            "frames": 2,
+            "geometries": 8,
+            "textures": 1,
+            "camera": {
+              "position": [
+                -1.3500251995716073,
+                0,
+                11.026704329449506
+              ],
+              "quaternion": [
+                0,
+                0,
+                0,
+                1
+              ]
+            }
+          }
+        },
+        "error": null,
+        "visible": true,
+        "animationScheduled": false
+      },
+      "passed": false,
+      "error": "Error: SyntaxError: missing ) after argument list\n    at evaluate (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-planet-explorer.cjs:115:41)\n    at async browserCase (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:156:12)\n    at async stage (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:36:9)\n    at async main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:359:36)"
+    },
+    {
+      "name": "no-webgl",
+      "checks": [
+        "parameters are initially collapsed"
+      ],
+      "consoleErrors": [
+        "THREE.WebGLRenderer: A WebGL context could not be created. Reason:  disabled by enterprise policy or commandline switch",
+        "THREE.WebGLRenderer: A WebGL context could not be created. Reason:  disabled by enterprise policy or commandline switch",
+        "THREE.WebGLRenderer: Error creating WebGL context."
+      ],
+      "screenshots": [
+        "no-webgl-failure.png"
+      ],
+      "lastSnapshot": {
+        "active": true,
+        "paused": true,
+        "mode": 1,
+        "view": "station",
+        "preset": "balanced",
+        "G": 1,
+        "speed": 1,
+        "simTime": 0,
+        "realTime": 0,
+        "forceMode": null,
+        "bodies": [
+          {
+            "id": "star-a",
+            "name": "恒星 A",
+            "mass": 1,
+            "radius": 0.32,
+            "luminosity": 20,
+            "position": [
+              -0.000025199571607282686,
+              0,
+              0
+            ],
+            "velocity": [
+              0,
+              -8.126844092662943e-7,
+              0
+            ],
+            "active": true,
+            "trail": []
+          },
+          {
+            "id": "star-b",
+            "name": "恒星 B",
+            "mass": 0.00001,
+            "radius": 0.2,
+            "luminosity": 0.05,
+            "position": [
+              7.999974800428393,
+              0,
+              0
+            ],
+            "velocity": [
+              0,
+              0.3535525779088645,
+              0
+            ],
+            "active": true,
+            "trail": []
+          },
+          {
+            "id": "star-c",
+            "name": "恒星 C",
+            "mass": 0.000004,
+            "radius": 0.16,
+            "luminosity": 0.02,
+            "position": [
+              -10.700025199571607,
+              0,
+              0
+            ],
+            "velocity": [
+              0,
+              -0.3057097329422808,
+              0
+            ],
+            "active": true,
+            "trail": []
+          },
+          {
+            "id": "planet",
+            "name": "文明行星",
+            "mass": 0.000003,
+            "radius": 0.09,
+            "luminosity": 0,
+            "position": [
+              -4.000025199571607,
+              0,
+              0
+            ],
+            "velocity": [
+              0,
+              -0.5000008126844092,
+              0
+            ],
+            "active": true,
+            "trail": []
+          }
+        ],
+        "civilization": {
+          "state": "乱纪元",
+          "dead": false,
+          "number": 1,
+          "reason": null,
+          "events": []
+        },
+        "renderer": {
+          "available": false,
+          "frames": 0,
+          "geometries": 0,
+          "textures": 0,
+          "camera": {
+            "position": [],
+            "quaternion": []
+          }
+        },
+        "error": null,
+        "visible": true,
+        "animationScheduled": false
+      },
+      "passed": false,
+      "error": "Error: SyntaxError: missing ) after argument list\n    at evaluate (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-planet-explorer.cjs:115:41)\n    at async browserCase (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:156:12)\n    at async stage (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:36:9)\n    at async main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:359:36)"
+    }
+  ],
+  "completedAt": "2026-09-22T07:47:50.673Z",
+  "passed": false
+}

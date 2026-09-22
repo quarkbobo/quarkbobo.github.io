@@ -1,0 +1,50 @@
+{
+  "readAt": "2026-09-22T10:06:39.926Z",
+  "approximateSoakElapsedMs": 590000,
+  "source": "Read-only CDP Runtime.evaluate of window.threeBodySnapshot() in the same soak browser; captured tool output transcribed after completion.",
+  "note": "Supplementary summary at approximately 590 seconds, not the final 600-second snapshot. The frozen verifier was unchanged. Full particle arrays were checked in-browser but not persisted.",
+  "snapshot": {
+    "simTime": 6023.004166666667,
+    "realTime": 602.3005999999995,
+    "paused": false,
+    "error": null,
+    "visible": true,
+    "animationScheduled": true,
+    "frames": 3377,
+    "geometries": 15,
+    "textures": 1,
+    "belt": {
+      "count": 128,
+      "active": 128,
+      "finite": true,
+      "error": null
+    },
+    "events": {
+      "historyCount": 8,
+      "historyValid": true,
+      "latest": {
+        "id": 16,
+        "type": "aurora",
+        "starId": "star-c",
+        "startedAt": 572.7535000000001,
+        "duration": 8.407202427275479
+      },
+      "active": null,
+      "nextAt": 610.9390312259869,
+      "lastTime": 602.3005999999995
+    },
+    "dust": {
+      "allocated": 192,
+      "active": 0,
+      "space": "world",
+      "decorative": true,
+      "sample": []
+    },
+    "tails": [
+      { "id": "star-a", "count": 26, "maxAge": 7.760400000000118 },
+      { "id": "star-b", "count": 26, "maxAge": 7.760400000000118 },
+      { "id": "star-c", "count": 26, "maxAge": 7.760400000000118 },
+      { "id": "planet", "count": 26, "maxAge": 7.760400000000118 }
+    ]
+  }
+}

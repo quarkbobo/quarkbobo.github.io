@@ -1,0 +1,20 @@
+✖ editable boundary is validated atomically and cannot teleport a body when shrinking (4.5545ms)
+✔ softening is a physical parameter and changing it preserves the current state (0.419ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 65.7234
+
+✖ failing tests:
+
+test at test\three-body-parameters.test.cjs:5:1
+✖ editable boundary is validated atomically and cannot teleport a body when shrinking (4.5545ms)
+  RangeError: 未知系统参数
+      at Module.setParameters (file:///C:/Users/Lenovo/Desktop/Quarkbobo/themes/fluid-particle/source/js/three-body-core.mjs:78:98)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-parameters.test.cjs:11:5)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)

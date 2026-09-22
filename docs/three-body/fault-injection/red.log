@@ -1,0 +1,83 @@
+✔ all three presets are independent reproducible four-body initial conditions with genuine inertial motion (9.0599ms)
+✖ Newtonian forces have the independently calculated magnitude, inverse-square falloff and equal opposite reaction (0.6928ms)
+✖ four-body acceleration includes every active body and divides force by the receiving mass (0.7231ms)
+✔ fixed substeps give the same state for a speed-up batch and equal elapsed smaller frames (5.9582ms)
+✖ velocity-Verlet preserves the reference circular binary energy over forty simulated years (28.0885ms)
+✔ bounded mode reflects overshoot and velocity on all three radius-adjusted walls; free mode does not (0.7124ms)
+✔ swept detection catches a fast planet crossing a star and emits exactly one collision (0.7122ms)
+✔ star-star impact pauses free-space physics with a finite last valid state (0.6202ms)
+✔ parameter edits reject invalid numbers and ranges atomically and valid mass changes immediately affect gravity (2.7824ms)
+✔ invalid elapsed time and excess step budget cannot advance or corrupt the last valid body state (0.8592ms)
+✔ radiation uses physical inverse-square distance while the rotating surface normal selects visible suns (0.5286ms)
+✔ stable era requires five continuous low-variation single-sun years and resets on unstable samples (0.6891ms)
+✔ thermal hysteresis needs five continuous danger years and clears only at its exit thresholds (0.2928ms)
+✔ three visible suns kill once after two continuous years, death is latched, and only a new numbered civilization clears it (0.3424ms)
+✔ the triple preset naturally produces a real two-year three-sun death while every star moves (8.6384ms)
+✔ real-time world-space trails fade over eight seconds, do not share live position storage, and remain bounded (1.371ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 13
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 132.3395
+
+✖ failing tests:
+
+test at docs\three-body\fault-injection\three-body-core.test.cjs:32:1
+✖ Newtonian forces have the independently calculated magnitude, inverse-square falloff and equal opposite reaction (0.6928ms)
+  AssertionError [ERR_ASSERTION]: -0.14400000000000002 != 0.144
+      at near (C:\Users\Lenovo\Desktop\Quarkbobo\docs\three-body\fault-injection\three-body-core.test.cjs:11:62)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\docs\three-body\fault-injection\three-body-core.test.cjs:36:3)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at docs\three-body\fault-injection\three-body-core.test.cjs:44:1
+✖ four-body acceleration includes every active body and divides force by the receiving mass (0.7231ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   -1,
+  +   -1,
+  +   -0.5
+  -   1,
+  -   1,
+  -   0.5
+    ]
+  
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\docs\three-body\fault-injection\three-body-core.test.cjs:47:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ -1, -1, -0.5 ],
+    expected: [ 1, 1, 0.5 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at docs\three-body\fault-injection\three-body-core.test.cjs:65:1
+✖ velocity-Verlet preserves the reference circular binary energy over forty simulated years (28.0885ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(Math.abs((c.energy(s) - initial) / initial) <= 0.001)
+  
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\docs\three-body\fault-injection\three-body-core.test.cjs:73:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

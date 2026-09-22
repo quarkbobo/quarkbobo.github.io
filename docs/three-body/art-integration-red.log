@@ -1,0 +1,60 @@
+✔ editable boundary is validated atomically and cannot teleport a body when shrinking (4.1949ms)
+✔ softening is a physical parameter and changing it preserves the current state (0.2742ms)
+✖ a mode switch cannot fold an escaped body into an undersized boundary (0.4596ms)
+✖ natural escape beyond editable initial values does not block unrelated parameter edits (0.3381ms)
+✖ belt accepts fixed-step clock roundoff at late epochs but still rejects two steps (3.6684ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 2
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 60.5099
+
+✖ failing tests:
+
+test at test\three-body-parameters.test.cjs:30:1
+✖ a mode switch cannot fold an escaped body into an undersized boundary (0.4596ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-parameters.test.cjs:35:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at test\three-body-parameters.test.cjs:41:1
+✖ natural escape beyond editable initial values does not block unrelated parameter edits (0.3381ms)
+  RangeError: position须在 -100—100 之间
+      at range (file:///C:/Users/Lenovo/Desktop/Quarkbobo/themes/fluid-particle/source/js/three-body-core.mjs:14:68)
+      at file:///C:/Users/Lenovo/Desktop/Quarkbobo/themes/fluid-particle/source/js/three-body-core.mjs:22:46
+      at Array.forEach (<anonymous>)
+      at validateBody (file:///C:/Users/Lenovo/Desktop/Quarkbobo/themes/fluid-particle/source/js/three-body-core.mjs:22:29)
+      at Module.updateBody (file:///C:/Users/Lenovo/Desktop/Quarkbobo/themes/fluid-particle/source/js/three-body-core.mjs:73:3)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-parameters.test.cjs:48:5)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at test\three-body-parameters.test.cjs:55:1
+✖ belt accepts fixed-step clock roundoff at late epochs but still rejects two steps (3.6684ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '环带每次只能推进一个固定时间步'
+  - null
+  
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-parameters.test.cjs:64:14)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '环带每次只能推进一个固定时间步',
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

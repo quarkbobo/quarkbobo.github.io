@@ -1,6 +1,7 @@
 <header class="site-header">
   <div class="site-header__inner">
     <a class="site-brand" href="<%= url_for('/') %>" aria-label="政治月测后宫版V3/太空站 首页">政治月测后宫版V3/太空站</a>
+    <button id="three-body-toggle" class="three-body-switch" type="button" aria-pressed="false" title="切换三体观测主题"><span aria-hidden="true">✧</span><span class="three-body-switch__label">三体观测</span></button>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu">菜单</button>
     <nav id="site-menu" class="site-nav" aria-label="主要导航">
       <% Object.entries(theme.menu).forEach(([label, href]) => { %>

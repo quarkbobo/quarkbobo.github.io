@@ -1,0 +1,328 @@
+✖ all three presets are independent reproducible four-body initial conditions with genuine inertial motion (0.9375ms)
+✖ Newtonian forces have the independently calculated magnitude, inverse-square falloff and equal opposite reaction (0.7176ms)
+✖ four-body acceleration includes every active body and divides force by the receiving mass (0.1893ms)
+✖ fixed substeps give the same state for a speed-up batch and equal elapsed smaller frames (0.2011ms)
+✖ velocity-Verlet preserves the reference circular binary energy over forty simulated years (0.1937ms)
+✖ bounded mode reflects overshoot and velocity on all three radius-adjusted walls; free mode does not (0.184ms)
+✖ swept detection catches a fast planet crossing a star and emits exactly one collision (0.1729ms)
+✖ star-star impact pauses free-space physics with a finite last valid state (0.1704ms)
+✖ parameter edits reject invalid numbers and ranges atomically and valid mass changes immediately affect gravity (0.2277ms)
+✖ invalid elapsed time and excess step budget cannot advance or corrupt the last valid body state (0.2614ms)
+✖ radiation uses physical inverse-square distance while the rotating surface normal selects visible suns (0.2225ms)
+✖ stable era requires five continuous low-variation single-sun years and resets on unstable samples (0.185ms)
+✖ thermal hysteresis needs five continuous danger years and clears only at its exit thresholds (0.1855ms)
+✖ three visible suns kill once after two continuous years, death is latched, and only a new numbered civilization clears it (0.2128ms)
+✖ the triple preset naturally produces a real two-year three-sun death while every star moves (0.1712ms)
+✖ real-time world-space trails fade over eight seconds, do not share live position storage, and remain bounded (0.1735ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 0
+ℹ fail 16
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 61.5231
+
+✖ failing tests:
+
+test at test\three-body-core.test.cjs:18:1
+✖ all three presets are independent reproducible four-body initial conditions with genuine inertial motion (0.9375ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:19:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:32:1
+✖ Newtonian forces have the independently calculated magnitude, inverse-square falloff and equal opposite reaction (0.7176ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:33:31)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:44:1
+✖ four-body acceleration includes every active body and divides force by the receiving mass (0.1893ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:45:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:52:1
+✖ fixed substeps give the same state for a speed-up batch and equal elapsed smaller frames (0.2011ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:53:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:65:1
+✖ velocity-Verlet preserves the reference circular binary energy over forty simulated years (0.1937ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:66:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:77:1
+✖ bounded mode reflects overshoot and velocity on all three radius-adjusted walls; free mode does not (0.184ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:78:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:88:1
+✖ swept detection catches a fast planet crossing a star and emits exactly one collision (0.1729ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:89:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:105:1
+✖ star-star impact pauses free-space physics with a finite last valid state (0.1704ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:106:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:118:1
+✖ parameter edits reject invalid numbers and ranges atomically and valid mass changes immediately affect gravity (0.2277ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:119:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:135:1
+✖ invalid elapsed time and excess step budget cannot advance or corrupt the last valid body state (0.2614ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:136:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:147:1
+✖ radiation uses physical inverse-square distance while the rotating surface normal selects visible suns (0.2225ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:148:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:158:1
+✖ stable era requires five continuous low-variation single-sun years and resets on unstable samples (0.185ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:159:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:171:1
+✖ thermal hysteresis needs five continuous danger years and clears only at its exit thresholds (0.1855ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:172:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:186:1
+✖ three visible suns kill once after two continuous years, death is latched, and only a new numbered civilization clears it (0.2128ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:187:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:207:1
+✖ the triple preset naturally produces a real two-year three-sun death while every star moves (0.1712ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:208:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\three-body-core.test.cjs:222:1
+✖ real-time world-space trails fade over eight seconds, do not share live position storage, and remain bounded (0.1735ms)
+  AssertionError [ERR_ASSERTION]: the three-body physics implementation must exist
+      at load (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:8:10)
+      at TestContext.<anonymous> (C:\Users\Lenovo\Desktop\Quarkbobo\test\three-body-core.test.cjs:223:19)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

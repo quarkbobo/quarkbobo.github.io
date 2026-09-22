@@ -1,0 +1,296 @@
+[
+  {
+    "elapsedMs": 140,
+    "frames": 164,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 12598840,
+    "trailCounts": [
+      71,
+      71,
+      71,
+      71
+    ],
+    "simTime": 127.825
+  },
+  {
+    "elapsedMs": 30120,
+    "frames": 435,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 13933112,
+    "trailCounts": [
+      66,
+      66,
+      66,
+      66
+    ],
+    "simTime": 427.675
+  },
+  {
+    "elapsedMs": 60025,
+    "frames": 715,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 23109392,
+    "trailCounts": [
+      100,
+      100,
+      100,
+      100
+    ],
+    "simTime": 727.3625
+  },
+  {
+    "elapsedMs": 90076,
+    "frames": 1146,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 27773428,
+    "trailCounts": [
+      108,
+      108,
+      108,
+      108
+    ],
+    "simTime": 1027.8041666666666
+  },
+  {
+    "elapsedMs": 120030,
+    "frames": 1423,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 16007996,
+    "trailCounts": [
+      80,
+      80,
+      80,
+      80
+    ],
+    "simTime": 1327.325
+  },
+  {
+    "elapsedMs": 150023,
+    "frames": 1795,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 5712036,
+    "trailCounts": [
+      110,
+      110,
+      110,
+      110
+    ],
+    "simTime": 1627.425
+  },
+  {
+    "elapsedMs": 180020,
+    "frames": 2248,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 20328596,
+    "trailCounts": [
+      121,
+      121,
+      121,
+      121
+    ],
+    "simTime": 1927.6583333333333
+  },
+  {
+    "elapsedMs": 210022,
+    "frames": 2699,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 18756232,
+    "trailCounts": [
+      114,
+      114,
+      114,
+      114
+    ],
+    "simTime": 2227.804166666667
+  },
+  {
+    "elapsedMs": 240055,
+    "frames": 3025,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 5582156,
+    "trailCounts": [
+      62,
+      62,
+      62,
+      62
+    ],
+    "simTime": 2527.2
+  },
+  {
+    "elapsedMs": 270025,
+    "frames": 3184,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 4936296,
+    "trailCounts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "simTime": 2780.925
+  },
+  {
+    "elapsedMs": 300027,
+    "frames": 3184,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 4655744,
+    "trailCounts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "simTime": 2780.925
+  },
+  {
+    "elapsedMs": 330033,
+    "frames": 3184,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 4780840,
+    "trailCounts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "simTime": 2780.925
+  },
+  {
+    "elapsedMs": 360011,
+    "frames": 3184,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 4905792,
+    "trailCounts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "simTime": 2780.925
+  },
+  {
+    "elapsedMs": 390016,
+    "frames": 3184,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 5030744,
+    "trailCounts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "simTime": 2780.925
+  },
+  {
+    "elapsedMs": 420014,
+    "frames": 3184,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 5271612,
+    "trailCounts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "simTime": 2780.925
+  },
+  {
+    "elapsedMs": 450007,
+    "frames": 3184,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 4560120,
+    "trailCounts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "simTime": 2780.925
+  },
+  {
+    "elapsedMs": 480008,
+    "frames": 3184,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 4684992,
+    "trailCounts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "simTime": 2780.925
+  },
+  {
+    "elapsedMs": 510015,
+    "frames": 3184,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 4809900,
+    "trailCounts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "simTime": 2780.925
+  },
+  {
+    "elapsedMs": 540007,
+    "frames": 3184,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 4934772,
+    "trailCounts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "simTime": 2780.925
+  },
+  {
+    "elapsedMs": 570007,
+    "frames": 3184,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 5059804,
+    "trailCounts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "simTime": 2780.925
+  },
+  {
+    "elapsedMs": 600017,
+    "frames": 3184,
+    "geometries": 15,
+    "textures": 1,
+    "heap": 5184676,
+    "trailCounts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "simTime": 2780.925
+  }
+]

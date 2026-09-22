@@ -1,0 +1,90 @@
+<section id="three-body-observatory" aria-labelledby="tb-title" hidden>
+  <div class="tb-heading">
+    <div><p class="tb-eyebrow">THREE-BODY OBSERVATORY / 蓝色空间号</p><h1 id="tb-title">在群星之间</h1></div>
+    <div class="tb-date"><strong id="tb-year">2000</strong><span>模拟年</span><p id="tb-era">乱纪元 · 第1号文明</p></div>
+  </div>
+  <div class="tb-window">
+    <div id="three-body-surface" aria-hidden="true"></div>
+    <div class="tb-fallback" hidden><span class="tb-fallback-orbit"></span><strong>星海暂时静止</strong><p>三体观测需要 WebGL 2。仍可阅读文章，或用单步查看下方物理读数。</p></div>
+    <div class="tb-window-edge" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="tb-body-labels" aria-hidden="true"><span data-body-label="star-a">恒星 A · 金橙</span><span data-body-label="star-b">恒星 B · 冰蓝</span><span data-body-label="star-c">恒星 C · 珊瑚</span><span data-body-label="planet">文明行星</span><span data-lagrange-label="L1" hidden>L1</span><span data-lagrange-label="L2" hidden>L2</span><span data-lagrange-label="L3" hidden>L3</span><span data-lagrange-label="L4" hidden>L4</span><span data-lagrange-label="L5" hidden>L5</span></div>
+    <output id="tb-force-readout" aria-label="当前力与辐照读数" hidden></output>
+    <output id="tb-event-status" aria-live="polite" hidden></output>
+    <div class="tb-telemetry" aria-label="实时观测数据"><span><i class="tb-signal"></i>观测信号 <b id="tb-suns">1</b> 日</span><span>辐照 <b id="tb-flux">—</b> I₀</span><span id="tb-boundary-label">人为边界 ±12</span></div>
+    <div class="tb-view-caption"><span id="tb-view-name">空间站总览</span><span>拖动环视 · ± 缩放</span></div>
+    <div class="tb-legend" aria-label="天体颜色"><span style="--star:#ffb45b">恒星 A</span><span style="--star:#80caff">恒星 B</span><span style="--star:#ff694a">恒星 C</span><span style="--star:#73c8bc">行星</span></div>
+    <details id="tb-parameters">
+      <summary>观测控制 <span aria-hidden="true">↗</span></summary>
+      <details id="tb-look" class="tb-panel-section">
+        <summary>光学与粒子 <span>即时预览</span></summary>
+        <div class="tb-sliders">
+          <label for="tb-exposure">曝光 <output id="tb-exposure-value" for="tb-exposure">1.10</output><input id="tb-exposure" type="range" min="0.6" max="1.8" step="0.05" value="1.1"></label>
+          <label for="tb-bloom">日冕与耀斑 <output id="tb-bloom-value" for="tb-bloom">1.00</output><input id="tb-bloom" type="range" min="0" max="2" step="0.05" value="1"></label>
+          <label for="tb-particles">星尘密度 <output id="tb-particles-value" for="tb-particles">1.00</output><input id="tb-particles" type="range" min="0" max="2" step="0.1" value="1"></label>
+          <label for="tb-nebula">星云亮度 <output id="tb-nebula-value" for="tb-nebula">0.60</output><input id="tb-nebula" type="range" min="0" max="1" step="0.05" value="0.6"></label>
+          <label for="tb-star-scale">恒星展示倍率 <output id="tb-star-scale-value" for="tb-star-scale">1.00</output><input id="tb-star-scale" type="range" min="0.65" max="1.5" step="0.05" value="1"></label>
+          <label for="tb-trail-width">尾迹辉光 <output id="tb-trail-width-value" for="tb-trail-width">1.40</output><input id="tb-trail-width" type="range" min="0.5" max="3" step="0.1" value="1.4"></label>
+          <button id="tb-reset-visual" type="button">恢复画面默认值</button>
+          <p class="tb-panel-help">只改变观测画面，球体展示大小不改变碰撞半径。尾迹仍在运行 8 秒后淡出。</p>
+        </div>
+      </details>
+      <details id="tb-event-tools" class="tb-panel-section">
+        <summary>随机空间天气 <span>观测特效</span></summary>
+        <div class="tb-reference-content">
+          <label class="tb-check"><input id="tb-events-enabled" type="checkbox" checked>启用随机事件</label>
+          <div class="tb-sliders tb-sliders--compact">
+            <label for="tb-event-frequency">发生频率 <output id="tb-event-frequency-value" for="tb-event-frequency">1.00×</output><input id="tb-event-frequency" type="range" min="0.25" max="3" step="0.25" value="1"></label>
+            <label for="tb-event-intensity">事件强度 <output id="tb-event-intensity-value" for="tb-event-intensity">1.00×</output><input id="tb-event-intensity" type="range" min="0" max="2" step="0.1" value="1"></label>
+          </div>
+          <label>手动触发<select id="tb-event-type"><option value="random">随机选择</option><option value="flare">恒星耀斑</option><option value="dust">星尘风暴</option><option value="aurora">行星极光</option></select></label>
+          <button id="tb-event-trigger" type="button">触发一次 <span aria-hidden="true">✧</span></button>
+          <p class="tb-panel-help">首次约 8–14 秒，后续间隔约 20–45 秒，频率越高间隔越短。只计前台运行时间；暂停时冻结。三种事件是观测特效，不改变引力、辐照读数或文明判定。</p>
+        </div>
+      </details>
+      <form id="tb-form" novalidate>
+        <div class="tb-panel-title"><strong>轨道实验</strong><small>归一化单位 · 应用后立即生效</small></div>
+        <label>天体<select id="tb-body"><option value="star-a">恒星 A</option><option value="star-b">恒星 B</option><option value="star-c">恒星 C</option><option value="planet">行星</option></select></label>
+        <div class="tb-field-pair"><label>质量<input id="tb-mass" type="number" min="0.000001" max="10" step="any" required></label><label>光度<input id="tb-luminosity" type="number" min="0" max="20" step="any" required></label></div>
+        <fieldset><legend>位置 · 距离单位</legend><div class="tb-vector"><label>X<input id="tb-x" type="number" min="-100" max="100" step="any" required></label><label>Y<input id="tb-y" type="number" min="-100" max="100" step="any" required></label><label>Z<input id="tb-z" type="number" min="-100" max="100" step="any" required></label></div></fieldset>
+        <fieldset><legend>初速度 · 距离单位 / 年</legend><div class="tb-vector"><label>X<input id="tb-vx" type="number" min="-20" max="20" step="any" required></label><label>Y<input id="tb-vy" type="number" min="-20" max="20" step="any" required></label><label>Z<input id="tb-vz" type="number" min="-20" max="20" step="any" required></label></div></fieldset>
+        <div class="tb-field-pair"><label>引力强度 G<input id="tb-g" type="number" min="0.1" max="5" step="any" value="1" required></label><label>时间倍率<input id="tb-speed" type="number" min="0.1" max="10" step="any" value="1" required></label></div>
+        <div class="tb-field-pair"><label>软化长度 ε<input id="tb-softening" type="number" min="0" max="0.2" step="any" value="0.01" required></label><label>边界半径<input id="tb-boundary" type="number" min="6" max="40" step="any" value="12" required></label></div>
+        <button id="tb-apply" type="submit">应用参数 <span aria-hidden="true">↗</span></button>
+        <p class="tb-panel-help">质量 0.000001–10；位置 ±100；速度 ±20；光度 0–20；G 0.1–5；倍率 0.1–10。ε 0–0.2；边界 6–40，仅约束模式生效，须容纳当前四天体。1 倍速为每秒 1 模拟年。</p>
+      </form>
+      <details id="tb-reference-tools" class="tb-panel-section">
+        <summary>参考点与碎冰带 <span>L1—L5</span></summary>
+        <div class="tb-reference-content">
+          <label class="tb-check"><input id="tb-lagrange" type="checkbox">显示拉格朗日点</label>
+          <label>参考恒星对<select id="tb-lagrange-pair"><option value="a-b">恒星 A / B</option><option value="a-c">恒星 A / C</option><option value="b-c">恒星 B / C</option></select></label>
+          <p class="tb-panel-help">按两体质量、位置和瞬时轨道平面计算 L1—L5。采用圆轨道近似，忽略其他天体与软化项，不保证四体系统中的稳定性。</p>
+          <label class="tb-check"><input id="tb-belt" type="checkbox" checked>显示柯伊伯带意象</label>
+          <label class="tb-check"><input id="tb-belt-fit" type="checkbox">总览包含整个碎冰带</label>
+          <form id="tb-belt-form" novalidate>
+            <div class="tb-field-pair"><label>碎冰数量<input id="tb-belt-count" type="number" min="64" max="256" step="1" value="128" required></label><label>倾角 · 度<input id="tb-belt-inclination" type="number" min="0" max="60" step="any" value="12" required></label></div>
+            <div class="tb-field-pair"><label>内半径<input id="tb-belt-inner" type="number" min="6" max="50" step="any" value="14" required></label><label>外半径<input id="tb-belt-outer" type="number" min="8" max="60" step="any" value="24" required></label></div>
+            <button id="tb-belt-apply" type="submit">重建碎冰带 <span aria-hidden="true">↗</span></button>
+            <p class="tb-panel-help">外半径须大于内半径。碎冰为受四体引力影响的无质量试验粒子，不反作用、不受人为边界约束；单位同轨道，不代表太阳系比例。缩小镜头可查看外环。</p>
+          </form>
+        </div>
+      </details>
+    </details>
+  </div>
+  <div class="tb-deck">
+    <div class="tb-controls">
+      <label><span class="tb-sr">观测模式</span><select id="tb-mode" aria-label="观测模式"><option value="1">模式 1 · 约束</option><option value="2">模式 2 · 自由</option></select></label>
+      <label><span class="tb-sr">观察视角</span><select id="tb-view" aria-label="观察视角"><option value="station">空间站总览</option><option value="star-a">跟随恒星 A</option><option value="star-b">跟随恒星 B</option><option value="star-c">跟随恒星 C</option><option value="planet">跟随行星</option></select></label>
+      <label><span class="tb-sr">轨道预设</span><select id="tb-preset" aria-label="轨道预设"><option value="balanced">层级星系</option><option value="chaotic">混沌轨道</option><option value="triple">三日凌空</option></select></label>
+      <div class="tb-playback"><button id="tb-pause" type="button" aria-pressed="false">暂停</button><button id="tb-step" type="button" title="推进 1/240 模拟年">单步</button><button id="tb-reset" type="button">重置轨道</button></div>
+      <a class="tb-read" href="#latest-posts">继续阅读 <span aria-hidden="true">↓</span></a>
+    </div>
+    <div class="tb-equations" aria-label="物理关系，聚焦或点按显示">
+      <button type="button" data-force="gravity" aria-pressed="false" aria-label="显示三组恒星间的引力"><span>F = Gm₁m₂ / r²</span><small>万有引力</small></button>
+      <button type="button" data-force="acceleration" aria-pressed="false" aria-label="显示所选天体的合力与加速度"><span>F = ma</span><small>合力与加速度</small></button>
+      <button type="button" data-force="radiation" aria-pressed="false" aria-label="显示行星受到的三源辐射"><span>I = Σ L / 4πr²</span><small>三源辐照</small></button>
+    </div>
+  </div>
+  <div class="tb-logline"><p id="tb-status" role="status" aria-live="polite">观测开始 · 第1号文明</p><button id="tb-new" type="button">新文明 <span aria-hidden="true">↗</span></button></div>
+  <p id="tb-message" role="status" aria-live="polite"></p>
+  <details class="tb-notes"><summary>观测说明与文明记录</summary><div><p>轨道来自四体牛顿引力积分，显示球径作了放大；引力使用 ε = <span id="tb-softening-label">0.01</span> 的软化近似。箭头共同缩放，表示真实方向与相对大小。三色恒星为冷热色彩的审美映射，不由质量或光度推导温度。</p><p id="tb-force-description">点按公式，观察力如何联系这些天体。</p><p>参考地表点每 20 模拟年自转一周，太阳需在地平线上方且单星辐照 ≥ 0.08 I₀；I₀ = 1 / 4π。不模拟日食。三日连续凌空 2 年毁灭文明，是本主题的剧情规则。</p><p>单日辐照 0.5–2 I₀ 且稳定 5 年进入恒纪元；双日提示高温风险，但不直接判死。辐照高于 4 或低于 0.12 持续 5 年会毁灭文明，分别在低于 3.5 / 高于 0.16 时解除危险；普通夜晚不等于严寒。</p><ol id="tb-history"></ol></div></details>
+</section>

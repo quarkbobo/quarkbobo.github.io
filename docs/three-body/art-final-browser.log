@@ -1,0 +1,7 @@
+PASS frozen-scope: 1 checks
+PASS physics: 1 checks
+PASS desktop: 104 checks
+PASS mobile: 102 checks
+PASS reduced-motion: 84 checks
+PASS no-webgl: 17 checks
+Evidence: C:\Users\Lenovo\Desktop\Quarkbobo\docs\three-body\verification\2026-09-22T09-47-32-539Z

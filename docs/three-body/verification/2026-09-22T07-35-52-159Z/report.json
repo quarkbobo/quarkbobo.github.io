@@ -1,0 +1,102 @@
+{
+  "startedAt": "2026-09-22T07:35:52.159Z",
+  "command": [
+    "C:\\Program Files\\nodejs\\node.exe",
+    "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs"
+  ],
+  "cases": [
+    {
+      "name": "frozen-scope",
+      "checks": [
+        "SHA-256 and additions match the authorized scope"
+      ],
+      "consoleErrors": [],
+      "screenshots": [],
+      "scope": {
+        "frozenFiles": 872,
+        "changedReadOnlyFiles": [],
+        "additions": [
+          "docs/three-body/BLOCKED.md",
+          "docs/three-body/CORE.md",
+          "docs/three-body/DESIGN.md",
+          "docs/three-body/PLAN.md",
+          "docs/three-body/PROGRESS.md",
+          "docs/three-body/SOURCES.md",
+          "docs/three-body/VERIFICATION.md",
+          "docs/three-body/baseline.cjs",
+          "docs/three-body/baseline/files.json",
+          "docs/three-body/baseline/status.txt",
+          "docs/three-body/capture-drafts.cjs",
+          "docs/three-body/drafts.html",
+          "docs/three-body/drafts/bridge-1440.png",
+          "docs/three-body/drafts/bridge-390.png",
+          "docs/three-body/drafts/panoramic-1440.png",
+          "docs/three-body/drafts/panoramic-390.png",
+          "docs/three-body/drafts/ring-1440.png",
+          "docs/three-body/drafts/ring-390.png",
+          "test/three-body-core.test.cjs",
+          "tools/verify-three-body.cjs"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "physics",
+      "checks": [],
+      "consoleErrors": [],
+      "screenshots": [],
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Physics tests failed (exit 1); see physics.log\n\n1 !== 0\n\n    at C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:346:12\n    at stage (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:36:15)\n    at main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:343:60)"
+    },
+    {
+      "name": "desktop",
+      "checks": [],
+      "consoleErrors": [],
+      "screenshots": [
+        "desktop-failure.png"
+      ],
+      "lastSnapshot": null,
+      "passed": false,
+      "error": "Error: Timed out: global theme toggle exists\n    at until (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-planet-explorer.cjs:124:13)\n    at async browserCase (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:145:5)\n    at async stage (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:36:9)\n    at async main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:358:36)"
+    },
+    {
+      "name": "mobile",
+      "checks": [],
+      "consoleErrors": [],
+      "screenshots": [
+        "mobile-failure.png"
+      ],
+      "lastSnapshot": null,
+      "passed": false,
+      "error": "Error: Timed out: global theme toggle exists\n    at until (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-planet-explorer.cjs:124:13)\n    at async browserCase (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:145:5)\n    at async stage (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:36:9)\n    at async main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:358:36)"
+    },
+    {
+      "name": "reduced-motion",
+      "checks": [],
+      "consoleErrors": [],
+      "screenshots": [
+        "reduced-motion-failure.png"
+      ],
+      "lastSnapshot": null,
+      "passed": false,
+      "error": "Error: Timed out: global theme toggle exists\n    at until (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-planet-explorer.cjs:124:13)\n    at async browserCase (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:145:5)\n    at async stage (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:36:9)\n    at async main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:358:36)"
+    },
+    {
+      "name": "no-webgl",
+      "checks": [],
+      "consoleErrors": [
+        "THREE.WebGLRenderer: A WebGL context could not be created. Reason:  disabled by enterprise policy or commandline switch",
+        "THREE.WebGLRenderer: A WebGL context could not be created. Reason:  disabled by enterprise policy or commandline switch",
+        "THREE.WebGLRenderer: Error creating WebGL context."
+      ],
+      "screenshots": [
+        "no-webgl-failure.png"
+      ],
+      "lastSnapshot": null,
+      "passed": false,
+      "error": "Error: Timed out: global theme toggle exists\n    at until (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-planet-explorer.cjs:124:13)\n    at async browserCase (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:145:5)\n    at async stage (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:36:9)\n    at async main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-three-body.cjs:358:36)"
+    }
+  ],
+  "completedAt": "2026-09-22T07:36:22.028Z",
+  "passed": false
+}
