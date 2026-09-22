@@ -1,4 +1,8 @@
-# 三体主题本地交付
+# 三体主题发布与本地交付
+
+已发布：[打开三体观测站](https://quarkbobo.github.io/?theme=three-body)。发布提交为`8bcfe93`，[Actions构建、测试和部署均成功](https://github.com/quarkbobo/quarkbobo.github.io/actions/runs/35715671297)。发布前重新实测209项测试通过；线上六份主题资源SHA与该提交一致，实际WebGL四天体和128粒子运行，截图[published-1440.png](published-1440.png)。
+
+额外线上零控制台检查因原站缺少favicon.ico未通过，未修改断言或修复范围外旧问题；旧自定义域名目前为停放页，请使用上方Pages地址。详情与证据见[BLOCKED.md](BLOCKED.md)、[publish-verification.json](publish-verification.json)、[publish-actions.json](publish-actions.json)。其余下文为各阶段原始记录，保留当时交付状态。
 
 2026-09-22追加授权上传GitHub：交付分支为[三体主题开发分支](https://github.com/quarkbobo/quarkbobo.github.io/tree/codex/planet-interior-upgrade)，上传前复跑npm test为209通过、0失败、0跳过。以下“仅本地交付”描述保留为此前验收记录；本次上传不触发master的Pages部署。
 

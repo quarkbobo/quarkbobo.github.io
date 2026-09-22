@@ -1,0 +1,56 @@
+{
+  "base": "https://quarkbobo.github.io/",
+  "commit": "8bcfe93730a40d2b36c51a76780a9288fc5ab890",
+  "checkedAt": "2026-09-22T10:26:41.286Z",
+  "assets": [
+    {
+      "file": "js/three-body.mjs",
+      "status": 200,
+      "mime": "text/javascript; charset=utf-8",
+      "sha256": "ec5b14ff91dd568ff0dfc4e024ce31b0ad77ccb71ec38752a66adf7d29ec7cf0"
+    },
+    {
+      "file": "js/three-body-core.mjs",
+      "status": 200,
+      "mime": "text/javascript; charset=utf-8",
+      "sha256": "48dd680de61e630f679a915bf4b5b1f3ca392b1e7e6379956302b934bae6b730"
+    },
+    {
+      "file": "js/three-body-scene.mjs",
+      "status": 200,
+      "mime": "text/javascript; charset=utf-8",
+      "sha256": "adc541d2178f6d977ae7aa4b7658229fba9d426f2028af455d981c70dcc29e41"
+    },
+    {
+      "file": "js/three-body-overlays.mjs",
+      "status": 200,
+      "mime": "text/javascript; charset=utf-8",
+      "sha256": "9762bc969236aca27796ae91db78e43438366dbc131aa861d1acedec59a913fa"
+    },
+    {
+      "file": "js/three-body-events.mjs",
+      "status": 200,
+      "mime": "text/javascript; charset=utf-8",
+      "sha256": "f5f19db197d24e389830be8a9df189d3af2bc24a5388c73f4146a8e08eae8b4c"
+    },
+    {
+      "file": "css/three-body.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "a617acae703efe3a7bdd99fc15ec1443148312564053982c3450ce5f361a35b0"
+    },
+    {
+      "file": "/",
+      "status": 200,
+      "mime": "text/html; charset=utf-8"
+    },
+    {
+      "file": "archives/",
+      "status": 200,
+      "mime": "text/html; charset=utf-8"
+    }
+  ],
+  "consoleErrors": [],
+  "passed": false,
+  "error": "AssertionError [ERR_ASSERTION]: vendor/three/three.module.js\n\n404 !== 200\n\n    at C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\docs\\three-body\\publish-verify.cjs:25:12\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}

@@ -1,0 +1,13 @@
+AssertionError [ERR_ASSERTION]: vendor/three/three.module.js
+
+404 !== 200
+
+    at C:\Users\Lenovo\Desktop\Quarkbobo\docs\three-body\publish-verify.cjs:25:12
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 404,
+  expected: 200,
+  operator: 'strictEqual',
+  diff: 'simple'
+}

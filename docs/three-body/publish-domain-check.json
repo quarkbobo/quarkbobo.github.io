@@ -1,0 +1,61 @@
+{
+  "checkedAtUtc": "2026-09-22T10:28:55.1619012Z",
+  "scope": "Unauthenticated public HTTP GET and read-only inspection of the current locally generated homepage and theme templates.",
+  "configuredUrl": "https://quark567.patrickliucloud.top",
+  "pagesUrl": "https://quarkbobo.github.io/",
+  "tlsValidation": "Default PowerShell Invoke-WebRequest TLS validation; no authentication or certificate bypass.",
+  "requests": [
+    {
+      "url": "https://quark567.patrickliucloud.top/",
+      "method": "GET",
+      "status": 200,
+      "mime": "text/html",
+      "title": "Redirecting...",
+      "parkingIndicators": [
+        "Redirecting...",
+        "router.parklogic.com"
+      ]
+    },
+    {
+      "url": "https://quark567.patrickliucloud.top/js/three-body.mjs",
+      "method": "GET",
+      "status": 200,
+      "mime": "text/html",
+      "title": "Redirecting...",
+      "parkingIndicators": [
+        "Redirecting...",
+        "router.parklogic.com"
+      ]
+    }
+  ],
+  "domainConclusion": "The configured custom domain serves a parking/redirect page. Its JavaScript asset URL also returns HTML, so HTTP 200 alone does not indicate a functioning blog.",
+  "navigationInspection": {
+    "generatedFile": "public/index.html",
+    "sourceFiles": [
+      "themes/fluid-particle/layout/_partial/head.ejs",
+      "themes/fluid-particle/layout/_partial/header.ejs",
+      "themes/fluid-particle/layout/_partial/post-card.ejs",
+      "themes/fluid-particle/layout/_partial/home.ejs"
+    ],
+    "anchorCount": 25,
+    "absoluteHttpLinkCount": 0,
+    "oldDomainAnchorLinkCount": 0,
+    "canonicalPresent": false,
+    "ogUrlPresent": false,
+    "hrefExamples": [
+      "#main-content",
+      "/",
+      "/archives/",
+      "/#guan-yu-wo",
+      "#latest-posts",
+      "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/"
+    ],
+    "conclusion": "Current homepage navigation and article hrefs are relative/root-relative, with no custom-domain href, canonical link, or og:url metadata. They resolve on quarkbobo.github.io when the homepage is opened there; the old configured url does not redirect these navigation/article links."
+  },
+  "exclusions": [
+    "Did not execute page scripts or request advertising-routing destinations.",
+    "Did not persist the encoded parking payload, IP/geo/tracking values, or complete response HTML.",
+    "Did not change production files, domain configuration, authentication, or _config.yml.",
+    "This JSON records HTTP and source evidence; post-publication browser verification is handled separately."
+  ]
+}

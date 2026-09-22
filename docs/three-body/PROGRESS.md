@@ -57,3 +57,7 @@
 ## Pages 发布
 - 2026-09-22用户明确要求发布，授权将已验收版本快进至master并触发现有Pages工作流。远程master b161cdc为当前版本祖先，无需强制推送或改动CI。
 - 发布前npm test再次实测209通过、0失败、0跳过、exit0；日志publish-npm-test.log。GitHub CLI凭据失效不影响SSH推送及公开Actions API核验；历史未提交资料保持原样。
+- 发布提交8bcfe93730a40d2b36c51a76780a9288fc5ab890已快进至master；Actions 35715671297和Pages部署6588478652均success，入口https://quarkbobo.github.io/?theme=three-body。完整API证据publish-actions.json。
+- 线上六个新JS/CSS资源逐字节SHA与发布提交一致；首页、归档、两份Three模块均200且MIME正确。真实Chrome观测到四体、128碎冰带粒子、模拟时间推进、error=null，键盘焦点正常；截图published-1440.png。
+- 线上额外零控制台检查未通过：仅有既有/favicon.ico的404；不修改旧问题，已记BLOCKED。第一次发布检查错误使用非min的Three路径，按实际copy-three.cjs更正，首轮报告保留，断言未放宽。
+- 既有自定义域名当前为停放页，已记BLOCKED；Pages发布完成，线上严格零资源错误验收仍有上述旧favicon问题。后续交付记录仅提交到开发分支，不再次触发Pages部署。
