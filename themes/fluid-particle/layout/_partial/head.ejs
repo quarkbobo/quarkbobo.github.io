@@ -8,6 +8,10 @@
   <%- css('css/post.css') %>
   <%- css('css/cursor-comet.css') %>
   <% if (page.path === 'index.html' || page.path === '/') { %>
+    <link rel="modulepreload" href="<%= url_for('/vendor/three/three.core.min.js') %>">
+    <link rel="modulepreload" href="<%= url_for('/vendor/three/three.module.min.js') %>">
+    <link rel="modulepreload" href="<%= url_for('/js/planet-world.mjs') %>">
+    <link rel="modulepreload" href="<%= url_for('/js/planet-flight.mjs') %>">
     <%- css('css/space-scene.css') %>
     <%- css('css/planet-explorer.css') %>
     <script src="<%= url_for('/js/particle-core.js') %>" defer></script>
