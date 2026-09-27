@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-09-27T04:31:39.720Z",
+  "commit": "b0c0e68ece952a42815dca601ed42e86f9179b31",
+  "passed": true,
+  "assets": [
+    {
+      "file": "js/three-body-scene.mjs",
+      "status": 200,
+      "sha256": "8e7ca739525088810e84efdc966b45406b916a2adcdfe3e97105a99f36ac171a",
+      "matchesCommit": true
+    },
+    {
+      "file": "css/three-body.css",
+      "status": 200,
+      "sha256": "7f96b469171a77edb90528cb062fd272a13ebc1614fd2d2edec4f6d23159f12b",
+      "matchesCommit": true
+    },
+    {
+      "file": "images/three-body/favicon.svg",
+      "status": 200,
+      "sha256": "f3f732d6425f01f61fe2e31810e2f295f6de897525f64debf8ad5ac855164b57",
+      "matchesCommit": true
+    }
+  ],
+  "readOnlyFiles": 883,
+  "changed": []
+}
