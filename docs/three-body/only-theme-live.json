@@ -1,0 +1,25 @@
+{
+  "url": "https://quarkbobo.github.io/",
+  "commit": "47f84ab304aa31897a416c1c0e61482b111336e5",
+  "checkedAt": "2026-09-22T10:49:08.165Z",
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 () https://quarkbobo.github.io/favicon.ico"
+  ],
+  "state": {
+    "theme": "three-body",
+    "toggle": false,
+    "active": true,
+    "bodies": 4,
+    "simTime": 2.0541666666666667,
+    "frames": 19,
+    "legacyHero": "none",
+    "legacyReady": false,
+    "overflow": false,
+    "error": null
+  },
+  "existingConsoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 () https://quarkbobo.github.io/favicon.ico"
+  ],
+  "newConsoleErrors": [],
+  "passed": true
+}
