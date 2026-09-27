@@ -1,0 +1,414 @@
+
+> hexo-site@0.0.0 test
+> npm run test:fresh
+
+
+> hexo-site@0.0.0 test:fresh
+> npm run clean && npm run build && npm run test:node
+
+
+> hexo-site@0.0.0 clean
+> hexo clean
+
+INFO  Validating config
+INFO  Deleted database.
+INFO  Deleted public folder.
+npm notice
+npm notice New minor version of npm available! 11.6.1 -> 11.20.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.20.0
+npm notice To update run: npm install -g npm@11.20.0
+npm notice
+
+> hexo-site@0.0.0 prebuild
+> node tools/copy-three.cjs
+
+
+> hexo-site@0.0.0 build
+> hexo generate
+
+INFO  Validating config
+INFO  Start processing
+INFO  Files loaded in 2.71 s
+INFO  Generated: search.json
+INFO  Generated: 2048/index.html
+INFO  Generated: archives/index.html
+INFO  Generated: image_transformer/index.html
+INFO  Generated: images/wx公众号.jpg
+INFO  Generated: snake/index.html
+INFO  Generated: files/2026年01月_政治月测题库.xlsx
+INFO  Generated: files/backup/1月_new_questions.txt
+INFO  Generated: COCKY ZHOU/index.html
+INFO  Generated: 国际象棋/index.html
+INFO  Generated: 中国象棋/index.html
+INFO  Generated: 国际象棋/assets/Black_Bishop.png
+INFO  Generated: js/planet-explorer.mjs
+INFO  Generated: index.html
+INFO  Generated: 关于我/zzyc_V4_for_U/index.html
+INFO  Generated: images/three-body/favicon.svg
+INFO  Generated: 个人博客/zzyc-questions-Sep-free/index.html
+INFO  Generated: files/2026年02月_政治月测题库.txt
+INFO  Generated: 游戏相关/Image-Transformer/index.html
+INFO  Generated: files/2026年03月_政治月测题库.txt
+INFO  Generated: css/cursor-comet.css
+INFO  Generated: files/2026年03月_政治月测题库.xlsx
+INFO  Generated: files/2026年02月_政治月测题库.xlsx
+INFO  Generated: files/2026年05月_反诈题库.txt
+INFO  Generated: files/2026年04月_政治月测题库.xlsx
+INFO  Generated: files/2026年05月_反诈题库.xlsx
+INFO  Generated: files/2026年05月_政治月测题库.txt
+INFO  Generated: files/2026年05月_政治月测题库.xlsx
+INFO  Generated: files/6月学生政治理论学习月测（自测）new_questions.txt
+INFO  Generated: files/6月学生政治理论学习月测（自测）_final.txt
+INFO  Generated: files/6月学生政治理论学习月测（自测）_final.xlsx
+INFO  Generated: files/7月学生政治理论学习月测（自测）.xlsx
+INFO  Generated: files/8_new_questions.txt
+INFO  Generated: files/8月学生政治理论学习月测（自测）_阅读版.txt
+INFO  Generated: files/backup/1月_new_questions.xlsx
+INFO  Generated: files/9月学生政治理论学习月测（自测）(4).xlsx
+INFO  Generated: files/6月学生政治理论学习月测（自测）new_questions.xlsx
+INFO  Generated: files/backup/202603new_questions(1).txt
+INFO  Generated: files/8_new_questions.xlsx
+INFO  Generated: files/9月学生政治理论学习月测（自测）_阅读版(4).txt
+INFO  Generated: files/8月学生政治理论学习月测（自测）.xlsx
+INFO  Generated: files/backup/1月学生政治理论学习月测（自测）_final.xlsx
+INFO  Generated: files/backup/202604new_questions.txt
+INFO  Generated: files/backup/2月学生政治理论学习月测（自测）.txt
+INFO  Generated: 国际象棋/assets/Black_King.png
+INFO  Generated: files/backup/2月学生政治理论学习月测（自测）.xlsx
+INFO  Generated: files/backup/202604new_questions.xlsx
+INFO  Generated: 国际象棋/assets/Black_Queen.png
+INFO  Generated: files/backup/202603.xlsx
+INFO  Generated: files/backup/5.xlsx
+INFO  Generated: 国际象棋/assets/Black_Rook.png
+INFO  Generated: files/backup/5.txt
+INFO  Generated: 国际象棋/assets/Black_Pawn.png
+INFO  Generated: 国际象棋/assets/Black_Knight.png
+INFO  Generated: 国际象棋/assets/White_Bishop.png
+INFO  Generated: 国际象棋/assets/White_King.png
+INFO  Generated: 国际象棋/assets/White_Rook.png
+INFO  Generated: 国际象棋/assets/White_Pawn.png
+INFO  Generated: js/three-body-core.mjs
+INFO  Generated: 国际象棋/assets/White_Knight.png
+INFO  Generated: 国际象棋/assets/White_Queen.png
+INFO  Generated: js/three-body-events.mjs
+INFO  Generated: js/planet-world.mjs
+INFO  Generated: js/planet-flight.mjs
+INFO  Generated: js/three-body-overlays.mjs
+INFO  Generated: archives/2025/11/index.html
+INFO  Generated: js/three-body.mjs
+INFO  Generated: tags/政治月测/index.html
+INFO  Generated: js/three-body-scene.mjs
+INFO  Generated: archives/2026/04/index.html
+INFO  Generated: source/_posts/index.html
+INFO  Generated: 个人博客/My-First-Blog/index.html
+INFO  Generated: 游戏相关/game-concat/index.html
+INFO  Generated: css/main.css
+INFO  Generated: js/home-latest-core.js
+INFO  Generated: css/archive-a.css
+INFO  Generated: css/post.css
+INFO  Generated: js/particle-core.js
+INFO  Generated: js/home-latest.js
+INFO  Generated: css/three-body.css
+INFO  Generated: js/particle-flow.js
+INFO  Generated: js/cursor-comet-core.js
+INFO  Generated: js/site.js
+INFO  Generated: js/cursor-comet.js
+INFO  Generated: files/backup/1月学生政治理论学习月测（自测）_final.txt
+INFO  Generated: files/2026年04月_政治月测题库.txt
+INFO  Generated: css/planet-explorer.css
+INFO  Generated: 个人博客/Hello-World/index.html
+INFO  Generated: files/7月学生政治理论学习月测（自测）_阅读版.txt
+INFO  Generated: files/2026年01月_政治月测题库.txt
+INFO  Generated: css/space-scene.css
+INFO  Generated: tags/题库分享/index.html
+INFO  Generated: archives/2026/09/index.html
+INFO  Generated: archives/2026/05/index.html
+INFO  Generated: tags/8月/index.html
+INFO  Generated: archives/2026/08/index.html
+INFO  Generated: archives/2025/index.html
+INFO  Generated: archives/2026/index.html
+INFO  Generated: vendor/three/LICENSE.txt
+INFO  Generated: vendor/three/three.core.min.js
+INFO  Generated: vendor/three/three.module.min.js
+INFO  101 files generated in 79 ms
+npm notice
+npm notice New minor version of npm available! 11.6.1 -> 11.20.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.20.0
+npm notice To update run: npm install -g npm@11.20.0
+npm notice
+
+> hexo-site@0.0.0 test:node
+> node --test test/*.test.cjs
+
+✔ selected A shows two recent entries and keeps every authored catalogue destination (21.2235ms)
+✔ archive A groups all original entries into real years (5.5062ms)
+✔ game index layout preserves the four original destinations (4.5454ms)
+✔ homepage does not load the legacy planet renderer (1.8361ms)
+✔ asteroids orbit deterministically and share disposable assets (722.8438ms)
+✔ shortcut invocation derives the repository from the script location (3357.5833ms)
+✔ Bobo updater generates the catalogue, commits pending work, and pushes master (2468.6058ms)
+✔ Bobo updater discovers current folders, nested posts, root posts, renames, and deletions (3106.1584ms)
+✔ a successful no-change run keeps one commit and exits after the default one-second delay (4046.2806ms)
+✔ a non-master branch is rejected without changing the remote (1534.9989ms)
+✔ an interactive failure keeps the window process alive until Enter is supplied (1573.2899ms)
+✔ the updater source contains no destructive or account-changing Git operations (0.8418ms)
+✔ Linux browser policy resolves standard GitHub runner Chrome paths without Windows sizing compensation (0.9235ms)
+✔ fine-pointer browser fixture overrides only input capabilities and retains native listener APIs (3.3781ms)
+✔ default game replies as black, locks human input, and undo restores the entire turn (46.9366ms)
+✔ restart and undo invalidate even already-delivered AI callbacks (8.0815ms)
+✔ local mode never queues a computer move and undoes one ply (6.2888ms)
+✔ opening legal moves match standard perft counts and search leaves position intact (68.5695ms)
+✔ pinned pieces cannot expose their king and kings cannot be captured (4.3181ms)
+✔ castling requires a same-color unmoved rook on its home square and a safe path (3.6611ms)
+✔ en passant removes the pawn, expires after one move, and cannot expose check (5.9199ms)
+✔ promotion changes the piece, notation stays pawn notation, and undo restores it (6.2704ms)
+✔ mate finishes after drawing the final move and can be undone (9.9276ms)
+✔ stalemate ends in a draw and AI selects a forced mate when available (11.8514ms)
+✔ position keys distinguish king and knight and ignore unusable en passant targets (5.0769ms)
+✔ resigning while black thinks is a white resignation and cancels the reply (5.4993ms)
+✔ keyboard moves preserve the computer-thinking announcement (7.4734ms)
+✔ castling and undo preserve the rook and king rights exactly (5.3199ms)
+✔ threefold repetition stops play and undo restores a live second repetition (10.5213ms)
+✔ black AI promotes without opening a human choice dialog (8.4918ms)
+✔ changing mode cancels pending AI work and resets the board (4.8761ms)
+✔ capturing the last opposing minor piece recognizes dead material (5.6657ms)
+✔ dead material does not confuse two knights or opposite-color bishops with a forced draw (3.5476ms)
+✔ the rendered file center uses the deep-space data-bay shell (113.8008ms)
+✔ files support filtering and direct opening without an in-page preview (69.1765ms)
+✔ the particle field exposes a static reduced-motion state and accessible controls (68.7972ms)
+✔ the real page stays usable at desktop and mobile widths in Chromium (1795.0143ms)
+✔ Chromium renders one static particle frame for reduced motion (848.5333ms)
+✔ both pooled comet phases retain their trail for 520ms (1.4101ms)
+✔ an eligible inner page mounts and draws without a home scene (4.7888ms)
+✔ fine hover pointer coalesces movement and cycles the fixed eight-node pool (2.2508ms)
+✔ one-pixel mouse moves accumulate from the accepted anchor until one segment reaches four pixels (1.9188ms)
+✔ hybrid fine-pointer media never lets touch or pen movement create comet state (3.5854ms)
+✔ non-mouse window exits preserve an existing mouse comet while mouse exit clears it (5.5345ms)
+✔ blocked pointer policies start disabled without attaching pointer movement (7.2439ms)
+✔ eligible pointer listener is passive and twenty rapid moves queue only one frame (2.0106ms)
+✔ mount is idempotent and snapshots are frozen records (2.2885ms)
+✔ animation end returns a faded pooled segment to inactive (2.0949ms)
+✔ pause, fallback, hidden, window leave, and blur clear every pooled segment (8.85ms)
+✔ policy re-enable restores one listener and seeds a fresh point (1.7034ms)
+✔ destroy cancels work and removes every owned observer and listener (1.9267ms)
+✔ segment ignores jitter, caps length, and keeps the current point as its head (2.6667ms)
+✔ speed maps monotonically to one through two-point-five pixels (0.3184ms)
+✔ pool index cycles over exactly eight reusable slots (0.2096ms)
+✔ negative diagonal writes a tail behind the current point and preserves output identity (0.2196ms)
+✔ segment rejects nonfinite points and missing output without mutating output (1.5066ms)
+✔ invalid pool sizes return zero (0.2045ms)
+✔ browser script exposes the same frozen API as CommonJS (1.7405ms)
+✔ hot geometry functions do not access DOM or allocate storage (0.7185ms)
+✔ 2048 merges each source tile once, with actual slide origins and score (3.8381ms)
+✔ 2048 respects right, up and down edge ordering (3.1283ms)
+✔ 2048 marks blocked moves unchanged so they cannot spawn a new tile (1.5352ms)
+✔ 2048 victory requires a 2048 tile, not a cumulative score (1.5098ms)
+✔ 2048 only ends when no empty cell or horizontal or vertical merge remains (1.543ms)
+✔ 2048 application only spawns after valid moves and preserves the best score on restart (5.337ms)
+✔ 2048 victory pauses play, allows continuing, and does not repeat the victory dialog (4.204ms)
+✔ 2048 reset cancels both an in-flight slide and an older queued direction (2.1414ms)
+✔ 2048 stays playable when the browser denies local storage (2.7929ms)
+✔ GitHub Actions reporter emits escaped annotations for failed tests only (3.4862ms)
+✔ GitHub Actions reporter still emits useful annotations without a source location (0.3982ms)
+✔ Node test runner preserves spec output and adds one annotation for a failure (280.0606ms)
+✔ the new-post window includes its exact zero and 72-hour boundaries (1.3843ms)
+✔ posts older than 72 hours are ordinary and future posts are not new (0.2539ms)
+✔ publication state accepts ISO strings and rejects invalid dates and clocks (0.4367ms)
+✔ the public API and its 72-hour constant are immutable (0.3235ms)
+✔ home runtime marks current posts and moves them before ordinary and future cards (3.8372ms)
+✔ Pages workflow builds, tests, and deploys public with job-scoped permissions (8.3042ms)
+✔ seeded particle creation is deterministic and respects layer ratios (9.8681ms)
+✔ layer cutoffs assign exact boundary rolls to the intended layer (0.4282ms)
+✔ cubicBezier includes all four control-point terms (0.2876ms)
+✔ delta-time phase advance is frame-rate independent (0.4398ms)
+✔ all orbit bands move from lower-left toward the Saturn region (2.2654ms)
+✔ pointer displacement is clamped to eight pixels (0.331ms)
+✔ particle positioning reuses a caller-provided output point (0.3661ms)
+✔ edge fade prevents respawn flashes (0.3495ms)
+✔ quality changes only after a complete 120-frame window and keeps hysteresis (3.0788ms)
+✔ browser script exposes the same pure API without CommonJS (1.9125ms)
+✔ the generated home owns scene canvases while every themed page owns one cursor trail (6.8168ms)
+✔ mount defers initialization and exposes a frozen read-only metrics snapshot (10.5571ms)
+✔ motion control pauses and resumes both the renderer state and its visible label (6.6421ms)
+✔ app initialization reuses one renderer and one listener per global event type (3.2687ms)
+✔ destroyed lifecycle handles cannot mutate a newly mounted scene (9.1943ms)
+▶ mount falls back without Canvas, the particle core, or animation frames
+  ✔ 2d context (3.5686ms)
+  ✔ particle core (2.1244ms)
+  ✔ animation frame (1.9989ms)
+✔ mount falls back without Canvas, the particle core, or animation frames (8.5583ms)
+✔ visibility pauses animation and resumes with a reset timestamp (14.7937ms)
+✔ reduced motion draws a fixed particle field without starting animation (6.2609ms)
+✔ live reduced-motion changes switch immediately and preserve requested and visible running state (10.9781ms)
+✔ a paused resize repaints one static frame without restarting animation (10.551ms)
+✔ paused reduced-motion restoration repaints one static frame without restarting animation (9.9881ms)
+▶ DPR is capped, coarse pointers use the mobile cap, and resize work is coalesced
+  ✔ desktop cap and coalesced resize (10.2591ms)
+  ✔ mobile cap and disabled pointer input (5.6605ms)
+  ✔ narrow viewport disables pointer input and cuts the high-quality budget in half (10.717ms)
+✔ DPR is capped, coarse pointers use the mobile cap, and resize work is coalesced (27.6829ms)
+✔ desktop to mobile resize applies mobile rendering and zeroes pointer displacement (16.4148ms)
+✔ mobile to desktop resize restores desktop rendering and pointer displacement (15.4134ms)
+✔ repeated breakpoint crossings keep one pointer listener and destroy removes it (16.7435ms)
+✔ breakpoint resize preserves the current quality level and switches its policy budget (175.2574ms)
+✔ raw RAF time drives metrics and quality while motion is clamped to 50ms (6.5773ms)
+✔ long-frame metrics count only frames slower than 24ms (7.6938ms)
+✔ every desktop quality level keeps an approximately 84/13/3 layer quota (193.4348ms)
+✔ quality-budget removals fade out while inactive phases keep advancing through wrap (112.2593ms)
+✔ restored quality particles fade in over multiple frames while metrics expose the target quota (237.9491ms)
+✔ mobile-to-desktop additions fade in instead of appearing at full alpha (9.2281ms)
+✔ every supported particle prefix keeps deterministic two-to-four glint groups with readable screen geometry (452.7726ms)
+✔ quality removals keep fading streak trails instead of cutting them off (107.7684ms)
+✔ mobile-to-desktop streak trails share the added particles fade-in alpha (39.9209ms)
+✔ streak trails have deterministic quiet intervals and sparse burst frames (321.4397ms)
+✔ the hot loop reuses sprites and destroy removes every owned listener and callback (9.4063ms)
+✔ pointer events use cached bounds and the hot loop reuses two position outputs (78.7682ms)
+✔ scroll and resize coalesce one bounds refresh and keep a stationary pointer canvas-relative (18.7781ms)
+✔ requestIdleCallback falls back to a deferred timer (2.3698ms)
+▶ destroy cancels initialization and coalesced resize work before it runs
+  ✔ pending idle callback (0.9095ms)
+  ✔ pending timer fallback (0.8997ms)
+  ✔ pending resize frame (1.8492ms)
+  ✔ pending scroll bounds frame (1.9178ms)
+✔ destroy cancels initialization and coalesced resize work before it runs (5.9197ms)
+✔ orbit bounds keep the camera outside the core and inside the interior dome (9.0651ms)
+✔ approach flies from the same exterior view through the radius 1.5 sphere (3.7404ms)
+✔ one timeline fully covers the scene seam and settles the interior before enabling it (1.0342ms)
+✔ opening transform preserves the planet center and projected scale across a host resize (0.6906ms)
+✔ return is fully covered while the interior changes back to the exterior (0.6215ms)
+✔ expansion hands off to forward motion without a pronounced speed valley (8.1374ms)
+✔ entry retains the actual homepage camera and releases its parallax without a jump (2.1889ms)
+✔ extracts only a Tab-indented first paragraph after front matter (2.413ms)
+✔ accepts four-space indentation and keeps readable inline link text (0.3797ms)
+✔ ignores invisible source markers before the paragraph indentation (0.2402ms)
+✔ joins wrapped lines in the same first paragraph until a blank line (0.3384ms)
+✔ rejects a first unindented text block instead of searching later content (0.2461ms)
+✔ rejects a first heading block instead of searching later content (0.3161ms)
+✔ rejects a first quote block instead of searching later content (0.2109ms)
+✔ rejects a first list block instead of searching later content (0.1826ms)
+✔ rejects a first image block instead of searching later content (0.2181ms)
+✔ rejects a first fenced code block instead of searching later content (0.361ms)
+✔ rejects a first html block instead of searching later content (0.1706ms)
+✔ rejects an indented structural block instead of treating it as prose (0.4906ms)
+✔ returns an empty lead for missing or non-string source (0.2479ms)
+✔ particle renderer and Canvas visual contract stay unchanged (5.8508ms)
+✔ generated navigation exposes a skip target and a controlled collapsed menu (3.6301ms)
+✔ generated home brand names the approved station and links home (2.5966ms)
+✔ generated home exposes a keyboard-native control for the continuous background motion (2.4347ms)
+✔ the interactive planet is named, keyboard reachable, and outside decorative hidden ancestors (25.5438ms)
+✔ generated dates use the configured Chinese locale instead of a fixed numeric pattern (2.7612ms)
+✔ generated long-form article headings and TOC form one complete navigation graph (42.6964ms)
+✔ generated article TOC is a native disclosure before the article body (5.0147ms)
+✔ generated long-form article images use lazy decoding defaults (2.0309ms)
+✔ generated article images use configured intrinsic dimensions when available (30.9282ms)
+✔ article normalization transfers only direct Hexo wrapper IDs (2.456ms)
+✔ the authored 2048 fragment receives one meaningful themed page heading (1.3837ms)
+✔ generated site script keeps menu visibility and aria-expanded in sync (1.4428ms)
+✔ built theme exposes accessible interaction and compositor-friendly rendering in Chrome (1445.6895ms)
+✔ article entry links meet touch target size without changing card, category, or archive layout (0.2052ms)
+✔ skip link stays hidden for pointer-like focus and reveals for keyboard-like focus in Chrome (0.1097ms)
+✔ main landmark retains its visible keyboard focus replacement in Chrome (0.1ms)
+✔ generated TOC anchors navigate to their unique heading in Chrome (901.184ms)
+✔ article TOC is collapsed before the article at 320px and stays a visible sticky sidebar on desktop (1845.7103ms)
+✔ root catalogue renders as the designed home without changing its URL (3.8519ms)
+✔ normal posts render an article shell and heading-derived contents (47.4475ms)
+✔ archive route and primary navigation render their semantic surfaces (3.2132ms)
+✔ every internal primary navigation link resolves to generated output (2.5164ms)
+✔ complete standalone HTML documents are copied byte-for-byte with one document root (37.2796ms)
+✔ COCKY ZHOU generated inline scripts remain syntactically valid (16.1354ms)
+✔ existing fragment pages and standalone applications keep their generated routes (12.3785ms)
+✔ fluid-particle is selected and declares its home-menu contract (13.7076ms)
+✔ every optional offline image cache entry has a valid URL and positive dimensions (2.8286ms)
+✔ article entry links declare a 44px block-size touch target without broadening category selectors (1.7071ms)
+✔ fluid-particle provides every renderer entry point and stylesheet (1.9188ms)
+✔ the existing root catalogue route remains unchanged (1.8672ms)
+✔ article heading and image normalization leaves raw-text containers byte-for-byte intact (32.6802ms)
+✔ article images receive cached intrinsic dimensions only from their true source (8.0283ms)
+✔ glyph-only heading permalinks expose the heading name to assistive technology (1.889ms)
+✔ raw-text protection remains active while the article outline is derived (1.9995ms)
+✔ article outline keeps inline code text without exposing headings from raw blocks (2.4953ms)
+✔ glyph permalinks decode heading entities once and expose distinct browser-readable names (1.6206ms)
+✔ authored heading ids cannot inject attributes and still match every generated anchor (3.7393ms)
+✔ quoted greater-than signs in headings and permalinks stay attribute data in a real HTML parser (13.1037ms)
+✔ direct heading wrapper ids cross quoted data and malformed openings remain untouched (4.759ms)
+✔ normalizers ignore heading and image strings inside outer quoted attributes (4.4987ms)
+✔ post cards render real category links when the post has categories (1.7467ms)
+✔ post cards render the complete marked lead and leave visual truncation to CSS (1.2586ms)
+✔ the homepage empty state includes a usable return-home link (1.7208ms)
+✔ home excludes the catalogue post while passing every other folder post to cards (1.4951ms)
+✔ post cards expose publication data and an initially hidden NEW ribbon (0.8477ms)
+✔ approved home copy, navigation, footer, title layout, and ribbon styling are declared (1.6871ms)
+✔ all three presets are independent reproducible four-body initial conditions with genuine inertial motion (17.5026ms)
+✔ Newtonian forces have the independently calculated magnitude, inverse-square falloff and equal opposite reaction (1.3631ms)
+✔ four-body acceleration includes every active body and divides force by the receiving mass (1.1971ms)
+✔ fixed substeps give the same state for a speed-up batch and equal elapsed smaller frames (17.861ms)
+✔ velocity-Verlet preserves the reference circular binary energy over forty simulated years (65.2909ms)
+✔ bounded mode reflects overshoot and velocity on all three radius-adjusted walls; free mode does not (1.2551ms)
+✔ swept detection catches a fast planet crossing a star and emits exactly one collision (1.146ms)
+✔ star-star impact pauses free-space physics with a finite last valid state (1.0751ms)
+✔ parameter edits reject invalid numbers and ranges atomically and valid mass changes immediately affect gravity (2.075ms)
+✔ invalid elapsed time and excess step budget cannot advance or corrupt the last valid body state (1.6383ms)
+✔ radiation uses physical inverse-square distance while the rotating surface normal selects visible suns (1.6706ms)
+✔ stable era requires five continuous low-variation single-sun years and resets on unstable samples (1.1742ms)
+✔ thermal hysteresis needs five continuous danger years and clears only at its exit thresholds (0.7891ms)
+✔ three visible suns kill once after two continuous years, death is latched, and only a new numbered civilization clears it (0.8438ms)
+✔ the triple preset naturally produces a real two-year three-sun death while every star moves (19.1398ms)
+✔ real-time world-space trails fade over eight seconds, do not share live position storage, and remain bounded (2.8941ms)
+✔ fixed seeds produce independent reproducible event schedules and a first wait of 8–14 seconds (13.3948ms)
+✔ natural events begin once, have bounded duration and schedule their next quiet interval (1.5683ms)
+✔ repeated advancement or effect rendering at the same time cannot duplicate events or consume randomness (1.4022ms)
+✔ frequency limits scale first and subsequent waits without overlapping two effects (0.7894ms)
+✔ disable clears an active visual and reenabling schedules from the current clock without catchup (0.8609ms)
+✔ frequency changes schedule forward instead of retroactively triggering a burst (0.7656ms)
+✔ long clock jumps skip expired visuals, keep truthful history and replan only one future event (0.7832ms)
+✔ manual triggers replace one active event; the sine envelope is isolated to the chosen effect and stays within 0–2 (1.1332ms)
+✔ seeded random triggers reach all three types and stars, with history bounded to the most recent eight (2.7456ms)
+✔ invalid parameters cannot mutate the schedule, randomness or history (1.3989ms)
+✔ clock reset discards the old active visual and replans from zero while preserving actual history (0.7484ms)
+✔ L1-L3 solve the normalized CR3BP force balance for equal and extreme mass ratios (16.0441ms)
+✔ L4/L5 follow the instantaneous three-dimensional orbital plane and input order does not change the heavier primary (3.1966ms)
+✔ degenerate or invalid Lagrange pairs return no markers; radial motion has a finite deterministic fallback plane (0.9189ms)
+✔ seeded belt initialization is reproducible, bounded, inclined, and relative to the four-body barycenter (5.3625ms)
+✔ belt Verlet uses every active source, real softening and interpolated moving positions without back reaction (3.9953ms)
+✔ belt trajectories evolve under forces, stay finite and are never reflected by mode-one box walls (57.8428ms)
+✔ swept particle and moving-star crossings stop only the struck particles at first contact (3.3059ms)
+✔ invalid belt options return an error without particles or changes to the sources (0.9622ms)
+✔ invalid elapsed times and non-finite source state latch a belt error without advancing particles (7.4592ms)
+✔ near-source integration budget fails safely rather than catching up or corrupting the last valid belt (13.0612ms)
+✔ editable boundary is validated atomically and cannot teleport a body when shrinking (15.9924ms)
+✔ softening is a physical parameter and changing it preserves the current state (0.8767ms)
+✔ a mode switch cannot fold an escaped body into an undersized boundary (0.8548ms)
+✔ natural escape beyond editable initial values does not block unrelated parameter edits (0.9266ms)
+✔ belt accepts fixed-step clock roundoff at late epochs but still rejects two steps (28.8871ms)
+✔ human red starts at the bottom and a move receives one legal computer reply (173.6571ms)
+✔ moving a blocker cannot expose either general to a rook or the flying general (2.0689ms)
+✔ horse legs, elephant eyes and river, palace, cannon screens, and pawn direction apply (2.6362ms)
+✔ both checkmate and stalemate end with a loss, and the final move is undoable (6.1213ms)
+✔ undo restores a complete human/computer turn and cancels pending replies (59.9524ms)
+✔ restart and local mode cancel old replies without moving new pieces (2.7346ms)
+✔ move entry rejects the wrong side and invalid coordinates without changing the board (1.0128ms)
+✔ capture history keeps the original square and undo restores the captured piece (1.4842ms)
+✔ scaled canvas clicks move red and ignore input while the computer is thinking (2.2374ms)
+ℹ tests 246
+ℹ suites 0
+ℹ pass 246
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16167.0308
+npm notice
+npm notice New minor version of npm available! 11.6.1 -> 11.20.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.20.0
+npm notice To update run: npm install -g npm@11.20.0
+npm notice
+npm notice
+npm notice New minor version of npm available! 11.6.1 -> 11.20.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.20.0
+npm notice To update run: npm install -g npm@11.20.0
+npm notice
+npm notice
+npm notice New minor version of npm available! 11.6.1 -> 11.20.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.20.0
+npm notice To update run: npm install -g npm@11.20.0
+npm notice

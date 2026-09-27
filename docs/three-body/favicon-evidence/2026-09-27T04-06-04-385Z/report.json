@@ -1,0 +1,245 @@
+{
+  "startedAt": "2026-09-27T04:06:04.385Z",
+  "mode": "built-browser",
+  "checks": [
+    "index.html: explicit same-origin SVG favicon",
+    "archives/index.html: explicit same-origin SVG favicon",
+    "关于我/zzyc_V4_for_U/index.html: explicit same-origin SVG favicon",
+    "Self-contained three-color SVG is under 4 KiB and served with the SVG MIME type",
+    "Real browser requests the explicit SVG successfully",
+    "Home, archive and article have no implicit favicon request, no local HTTP errors and no console errors"
+  ],
+  "requests": [
+    {
+      "pathname": "/images/three-body/favicon.svg",
+      "status": 200
+    },
+    {
+      "pathname": "/",
+      "status": 200
+    },
+    {
+      "pathname": "/css/main.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/post.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/cursor-comet.css",
+      "status": 200
+    },
+    {
+      "pathname": "/vendor/three/three.core.min.js",
+      "status": 200
+    },
+    {
+      "pathname": "/vendor/three/three.module.min.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/planet-world.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/css/space-scene.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/planet-explorer.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/archive-a.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/three-body.css",
+      "status": 200
+    },
+    {
+      "pathname": "/js/planet-flight.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/js/planet-explorer.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/js/particle-core.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/particle-flow.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/home-latest-core.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/home-latest.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/cursor-comet-core.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/cursor-comet.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/site.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body-core.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body-overlays.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body-events.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body-scene.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/images/three-body/favicon.svg",
+      "status": 200
+    },
+    {
+      "pathname": "/archives/",
+      "status": 200
+    },
+    {
+      "pathname": "/css/main.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/post.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/cursor-comet.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/archive-a.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/three-body.css",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/js/cursor-comet-core.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/cursor-comet.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/site.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body-core.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body-overlays.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body-events.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/关于我/zzyc_V4_for_U/",
+      "status": 200
+    },
+    {
+      "pathname": "/css/main.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/post.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/cursor-comet.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/archive-a.css",
+      "status": 200
+    },
+    {
+      "pathname": "/css/three-body.css",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/js/cursor-comet-core.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/cursor-comet.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/site.js",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body-core.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body-overlays.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/js/three-body-events.mjs",
+      "status": 200
+    },
+    {
+      "pathname": "/images/three-body/favicon.svg",
+      "status": 200
+    },
+    {
+      "pathname": "/favicon.ico",
+      "status": 404
+    }
+  ],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found) http://127.0.0.1:65340/favicon.ico"
+  ],
+  "fixtureCorrections": [
+    {
+      "previousRun": "2026-09-27T03-45-44-939Z",
+      "correction": "Move only the new favicon into themes/fluid-particle/source/images/three-body; source HTTP checks now serve that authorized theme source root. Browser URL and assertions remain unchanged."
+    }
+  ],
+  "passed": true,
+  "elapsedMs": 2909.7479
+}

@@ -1,0 +1,28 @@
+SOAK 0/20 elapsed=38ms frames=101 GPU=16/1 heap=12660920
+SOAK 1/20 elapsed=30055ms frames=602 GPU=16/1 heap=4886596
+SOAK 2/20 elapsed=60157ms frames=1005 GPU=16/1 heap=22105464
+SOAK 3/20 elapsed=90121ms frames=1383 GPU=16/1 heap=6517816
+SOAK 4/20 elapsed=120115ms frames=1736 GPU=16/1 heap=7580296
+SOAK 5/20 elapsed=150094ms frames=2072 GPU=16/1 heap=36874520
+SOAK 6/20 elapsed=180126ms frames=2402 GPU=16/1 heap=25455860
+SOAK 7/20 elapsed=210078ms frames=2740 GPU=16/1 heap=4976580
+SOAK 8/20 elapsed=240157ms frames=3061 GPU=16/1 heap=21411072
+SOAK 9/20 elapsed=270213ms frames=3388 GPU=16/1 heap=21537516
+SOAK 10/20 elapsed=300148ms frames=3705 GPU=16/1 heap=5073840
+SOAK 11/20 elapsed=330178ms frames=4035 GPU=16/1 heap=25305440
+SOAK 12/20 elapsed=360189ms frames=4361 GPU=16/1 heap=11378900
+SOAK 13/20 elapsed=390138ms frames=4685 GPU=16/1 heap=36240772
+SOAK 14/20 elapsed=420155ms frames=5010 GPU=16/1 heap=33362824
+SOAK 15/20 elapsed=450153ms frames=5332 GPU=16/1 heap=5567764
+SOAK 16/20 elapsed=480159ms frames=5658 GPU=16/1 heap=32970532
+SOAK 17/20 elapsed=510185ms frames=5960 GPU=16/1 heap=30352600
+SOAK 18/20 elapsed=540116ms frames=6272 GPU=16/1 heap=27199056
+SOAK 19/20 elapsed=570140ms frames=6588 GPU=16/1 heap=9176472
+SOAK 20/20 elapsed=600165ms frames=6889 GPU=16/1 heap=18504436
+{
+  "passed": true,
+  "checks": 129,
+  "samples": 21,
+  "soakElapsedMs": 600169.7215999999,
+  "report": "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\docs\\three-body\\perf-soak-evidence\\2026-09-27T04-10-20-738Z\\report.json"
+}

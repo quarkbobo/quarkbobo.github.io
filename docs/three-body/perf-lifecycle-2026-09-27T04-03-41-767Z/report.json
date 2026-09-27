@@ -1,0 +1,347 @@
+{
+  "startedAt": "2026-09-27T04:03:41.767Z",
+  "expectedTextures": 1,
+  "maximumGeometries": 16,
+  "checks": [
+    "three-body-scene.mjs: built bytes match source",
+    "three-body-core.mjs: built bytes match source",
+    "three-body-overlays.mjs: built bytes match source",
+    "cycle 1: actual uploaded geometry count is between 1 and 16",
+    "cycle 1: warmed geometry counts remain stable",
+    "cycle 1: exactly 1 warmed textures remain stable",
+    "cycle 1: actual render frames advance",
+    "cycle 1: real texture storage allocations match expected count",
+    "cycle 1: uploaded native textures were deleted",
+    "cycle 1: dispose releases all reported textures and geometry",
+    "cycle 1: repeated dispose is idempotent",
+    "cycle 1: render and dispose leave physical bodies, belt and trails unchanged",
+    "cycle 1: WebGL error state is clear",
+    "cycle 1: real GL pixels and PNG contain a nonuniform visible image",
+    "cycle 1: browser console has no errors",
+    "cycle 2: actual uploaded geometry count is between 1 and 16",
+    "cycle 2: warmed geometry counts remain stable",
+    "cycle 2: exactly 1 warmed textures remain stable",
+    "cycle 2: actual render frames advance",
+    "cycle 2: real texture storage allocations match expected count",
+    "cycle 2: uploaded native textures were deleted",
+    "cycle 2: dispose releases all reported textures and geometry",
+    "cycle 2: repeated dispose is idempotent",
+    "cycle 2: render and dispose leave physical bodies, belt and trails unchanged",
+    "cycle 2: WebGL error state is clear",
+    "cycle 2: real GL pixels and PNG contain a nonuniform visible image",
+    "cycle 2: browser console has no errors",
+    "cycle 3: actual uploaded geometry count is between 1 and 16",
+    "cycle 3: warmed geometry counts remain stable",
+    "cycle 3: exactly 1 warmed textures remain stable",
+    "cycle 3: actual render frames advance",
+    "cycle 3: real texture storage allocations match expected count",
+    "cycle 3: uploaded native textures were deleted",
+    "cycle 3: dispose releases all reported textures and geometry",
+    "cycle 3: repeated dispose is idempotent",
+    "cycle 3: render and dispose leave physical bodies, belt and trails unchanged",
+    "cycle 3: WebGL error state is clear",
+    "cycle 3: real GL pixels and PNG contain a nonuniform visible image",
+    "cycle 3: browser console has no errors"
+  ],
+  "consoleErrors": [],
+  "cycles": [
+    {
+      "index": 1,
+      "warmed": {
+        "available": true,
+        "frames": 9,
+        "geometries": 16,
+        "textures": 1,
+        "drawCalls": 33
+      },
+      "samples": [
+        {
+          "available": true,
+          "frames": 10,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 11,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 12,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 13,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 14,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 15,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        }
+      ],
+      "image": {
+        "width": 1376,
+        "height": 513,
+        "nonzero": 705888,
+        "minimum": 2,
+        "maximum": 765,
+        "distinctColors": 256
+      },
+      "glError": 0,
+      "physicsUnchanged": true,
+      "disposed": {
+        "available": false,
+        "frames": 15,
+        "geometries": 0,
+        "textures": 0,
+        "drawCalls": 33
+      },
+      "disposedAgain": {
+        "available": false,
+        "frames": 15,
+        "geometries": 0,
+        "textures": 0,
+        "drawCalls": 33
+      },
+      "storage": [
+        {
+          "target": 3553,
+          "levels": 1,
+          "format": 32856,
+          "width": 96,
+          "height": 96,
+          "depth": 1,
+          "liveAfterDispose": false
+        }
+      ],
+      "screenshot": "cycle-1.png"
+    },
+    {
+      "index": 2,
+      "warmed": {
+        "available": true,
+        "frames": 9,
+        "geometries": 16,
+        "textures": 1,
+        "drawCalls": 33
+      },
+      "samples": [
+        {
+          "available": true,
+          "frames": 10,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 11,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 12,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 13,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 14,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 15,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        }
+      ],
+      "image": {
+        "width": 1376,
+        "height": 513,
+        "nonzero": 705888,
+        "minimum": 2,
+        "maximum": 765,
+        "distinctColors": 256
+      },
+      "glError": 0,
+      "physicsUnchanged": true,
+      "disposed": {
+        "available": false,
+        "frames": 15,
+        "geometries": 0,
+        "textures": 0,
+        "drawCalls": 33
+      },
+      "disposedAgain": {
+        "available": false,
+        "frames": 15,
+        "geometries": 0,
+        "textures": 0,
+        "drawCalls": 33
+      },
+      "storage": [
+        {
+          "target": 3553,
+          "levels": 1,
+          "format": 32856,
+          "width": 96,
+          "height": 96,
+          "depth": 1,
+          "liveAfterDispose": false
+        }
+      ],
+      "screenshot": "cycle-2.png"
+    },
+    {
+      "index": 3,
+      "warmed": {
+        "available": true,
+        "frames": 9,
+        "geometries": 16,
+        "textures": 1,
+        "drawCalls": 33
+      },
+      "samples": [
+        {
+          "available": true,
+          "frames": 10,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 11,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 12,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 13,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 14,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        },
+        {
+          "available": true,
+          "frames": 15,
+          "geometries": 16,
+          "textures": 1,
+          "drawCalls": 33
+        }
+      ],
+      "image": {
+        "width": 1376,
+        "height": 513,
+        "nonzero": 705888,
+        "minimum": 2,
+        "maximum": 765,
+        "distinctColors": 256
+      },
+      "glError": 0,
+      "physicsUnchanged": true,
+      "disposed": {
+        "available": false,
+        "frames": 15,
+        "geometries": 0,
+        "textures": 0,
+        "drawCalls": 33
+      },
+      "disposedAgain": {
+        "available": false,
+        "frames": 15,
+        "geometries": 0,
+        "textures": 0,
+        "drawCalls": 33
+      },
+      "storage": [
+        {
+          "target": 3553,
+          "levels": 1,
+          "format": 32856,
+          "width": 96,
+          "height": 96,
+          "depth": 1,
+          "liveAfterDispose": false
+        }
+      ],
+      "screenshot": "cycle-3.png"
+    }
+  ],
+  "method": "Three real createScene/render/dispose cycles on one WebGL2 canvas; unchanged four-year production physics fixture. Native texStorage handles are checked with gl.isTexture after disposal. Default renderer fallback texImage textures are outside that ledger. No render-performance claims.",
+  "assets": [
+    {
+      "name": "three-body-scene.mjs",
+      "source": "8e7ca739525088810e84efdc966b45406b916a2adcdfe3e97105a99f36ac171a",
+      "built": "8e7ca739525088810e84efdc966b45406b916a2adcdfe3e97105a99f36ac171a"
+    },
+    {
+      "name": "three-body-core.mjs",
+      "source": "48dd680de61e630f679a915bf4b5b1f3ca392b1e7e6379956302b934bae6b730",
+      "built": "48dd680de61e630f679a915bf4b5b1f3ca392b1e7e6379956302b934bae6b730"
+    },
+    {
+      "name": "three-body-overlays.mjs",
+      "source": "9762bc969236aca27796ae91db78e43438366dbc131aa861d1acedec59a913fa",
+      "built": "9762bc969236aca27796ae91db78e43438366dbc131aa861d1acedec59a913fa"
+    }
+  ],
+  "fixtureHash": "611ca68a450ca83bc60d6926adb6f0707d6334e6526f741cfac174732f466a8b",
+  "hardware": {
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+    "devicePixelRatio": 1
+  },
+  "observedWarmedGeometries": 16,
+  "passed": true,
+  "completedAt": "2026-09-27T04:03:44.367Z"
+}

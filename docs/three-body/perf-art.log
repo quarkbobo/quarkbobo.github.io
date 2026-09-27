@@ -1,0 +1,38 @@
+PASS Native controls and renderer defaults
+PASS Visual input changes real rendering while physics stays frozen
+PASS Physical additions apply atomically and reject invalid input
+PASS Lagrange markers and belt use live physical positions with independent controls
+PASS Art controls cannot revive a destroyed civilization
+PASS 390px and 200% text retain a scrollable reachable panel
+{
+  "passed": true,
+  "checks": 41,
+  "stages": [
+    {
+      "name": "Native controls and renderer defaults",
+      "passed": true
+    },
+    {
+      "name": "Visual input changes real rendering while physics stays frozen",
+      "passed": true
+    },
+    {
+      "name": "Physical additions apply atomically and reject invalid input",
+      "passed": true
+    },
+    {
+      "name": "Lagrange markers and belt use live physical positions with independent controls",
+      "passed": true
+    },
+    {
+      "name": "Art controls cannot revive a destroyed civilization",
+      "passed": true
+    },
+    {
+      "name": "390px and 200% text retain a scrollable reachable panel",
+      "passed": true
+    }
+  ],
+  "elapsedMs": 24231.5325,
+  "report": "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\docs\\three-body\\art-evidence\\2026-09-27T04-05-21-878Z\\report.json"
+}

@@ -1,0 +1,25 @@
+{
+  "startedAt": "2026-09-27T03:50:11.321Z",
+  "mode": "source-http",
+  "checks": [
+    "index.html: explicit same-origin SVG favicon",
+    "archives/index.html: explicit same-origin SVG favicon",
+    "关于我/zzyc_V4_for_U/index.html: explicit same-origin SVG favicon",
+    "Self-contained three-color SVG is under 4 KiB and served with the SVG MIME type"
+  ],
+  "requests": [
+    {
+      "pathname": "/images/three-body/favicon.svg",
+      "status": 200
+    }
+  ],
+  "consoleErrors": [],
+  "fixtureCorrections": [
+    {
+      "previousRun": "2026-09-27T03-45-44-939Z",
+      "correction": "Move only the new favicon into themes/fluid-particle/source/images/three-body; source HTTP checks now serve that authorized theme source root. Browser URL and assertions remain unchanged."
+    }
+  ],
+  "passed": true,
+  "elapsedMs": 37.424099999999996
+}

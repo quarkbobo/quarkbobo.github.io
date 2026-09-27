@@ -1,0 +1,70 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three-body fixed-state rendering benchmark</title>
+<style>html,body{margin:0;background:#050914}canvas{display:block;width:calc(100vw - 64px);height:513px;margin:32px}@media(max-width:760px){canvas{width:calc(100vw - 26px);height:456px;margin:13px}}</style>
+<canvas id="perf-canvas"></canvas>
+<script type="module">
+import { createScene } from '/js/three-body-scene.mjs'
+import { makeSystem, step, sampleTrails, RULES } from '/js/three-body-core.mjs'
+import { makeBelt, advanceBelt } from '/js/three-body-overlays.mjs'
+
+const canvas = document.querySelector('canvas')
+const scene = await createScene(canvas)
+const gl = canvas.getContext('webgl2')
+const pixel = new Uint8Array(4)
+const extension = gl.getExtension('WEBGL_debug_renderer_info')
+const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve))
+const stats = values => {
+  const sorted = [...values].sort((a,b) => a-b)
+  return { n: values.length, min: sorted[0], median: sorted[Math.floor(sorted.length/2)], p95: sorted[Math.floor((sorted.length-1)*0.95)], max: sorted.at(-1), mean: values.reduce((a,b)=>a+b,0)/values.length }
+}
+const system = makeSystem('balanced')
+const belt = makeBelt(system, { count:128,inner:14,outer:24,inclination:12,seed:7301 })
+const trails = {}
+// Use the unchanged production fixed step and integrated particle trajectories.
+for (let frame=1; frame<=240; frame++) {
+  for (let sub=0;sub<4;sub++) {
+    const before=structuredClone(system)
+    step(system,RULES.DT)
+    advanceBelt(belt,before,system,RULES.DT)
+  }
+  sampleTrails(trails,system.bodies,frame/60)
+}
+if(system.error || belt.error) throw new Error(system.error || belt.error)
+const options={view:'station',deltaSeconds:0,paused:true,runningSeconds:4,selectedId:'star-a',trails,belt}
+window.perfScene={
+  hardware:{ userAgent:navigator.userAgent, concurrency:navigator.hardwareConcurrency, devicePixelRatio, renderer:extension?gl.getParameter(extension.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER), vendor:extension?gl.getParameter(extension.UNMASKED_VENDOR_WEBGL):gl.getParameter(gl.VENDOR), attributes:gl.getContextAttributes() },
+  dimensions:()=>({css:canvas.getBoundingClientRect().toJSON(),buffer:[gl.drawingBufferWidth,gl.drawingBufferHeight]}),
+  diagnostics:()=>scene.diagnostics(),
+  async setView(view) {
+    options.view=view
+    for(let i=0;i<12;i++){await nextFrame();scene.render(system,options);gl.finish()}
+    return {view,dimensions:this.dimensions(),diagnostics:scene.diagnostics()}
+  },
+  async sample(count=24) {
+    const submit=[],completed=[],intervals=[]; let previous=0
+    const unchanged=JSON.stringify(system)
+    for(let i=0;i<count;i++) {
+      const frameTime=await nextFrame()
+      if(previous) intervals.push(frameTime-previous)
+      previous=frameTime
+      const begin=performance.now();scene.render(system,options);const submitted=performance.now();gl.finish();gl.readPixels(0,0,1,1,gl.RGBA,gl.UNSIGNED_BYTE,pixel);const end=performance.now()
+      submit.push(submitted-begin);completed.push(end-begin)
+    }
+    if(JSON.stringify(system)!==unchanged) throw new Error('Renderer changed physics')
+    return {submitMs:stats(submit),completeMs:stats(completed),rafIntervalMs:stats(intervals),raw:{submit,completed,intervals},diagnostics:scene.diagnostics()}
+  },
+  physicsSample() {
+    const s=makeSystem('balanced'),b=makeBelt(s,{count:128,inner:14,outer:24,inclination:12,seed:7301})
+    const clone=[],core=[],ice=[]
+    for(let i=0;i<240;i++) {
+      const t0=performance.now(),before=structuredClone(s),t1=performance.now();step(s,RULES.DT);const t2=performance.now();advanceBelt(b,before,s,RULES.DT);const t3=performance.now()
+      clone.push(t1-t0);core.push(t2-t1);ice.push(t3-t2)
+    }
+    return {simulatedYears:s.time,fixedStep:RULES.DT,steps:240,particles:b.particles.length,cloneMs:stats(clone),coreMs:stats(core),beltMs:stats(ice),totals:{clone:clone.reduce((a,b)=>a+b,0),core:core.reduce((a,b)=>a+b,0),belt:ice.reduce((a,b)=>a+b,0)},error:s.error||b.error}
+  }
+}
+await window.perfScene.setView('station')
+window.perfReady=true
+</script>

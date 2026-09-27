@@ -66,12 +66,12 @@ function starMaterial(color) {
       ${noiseShader}
       void main() {
         vec3 n = normalize(vNormal), eye = normalize(cameraPosition - vWorld);
-        float granules = terrain(vLocal * 8.0 + vec3(time * 0.025, 0, 0));
+        float granules = terrain(vLocal * 18.0 + vec3(time * 0.025, 0, 0));
         float facing = max(0.0, dot(n, eye));
-        float limb = 0.3 + 0.7 * pow(facing, 0.55);
-        float whiteCore = pow(facing, 12.0) * 0.6;
-        vec3 light = mix(tint * 0.95, vec3(2.4, 2.3, 2.15), whiteCore);
-        light *= limb * (0.87 + granules * 0.22);
+        float limb = 0.24 + 0.76 * pow(facing, 0.55);
+        float hot = smoothstep(0.32, 0.75, granules);
+        vec3 light = mix(tint, vec3(1.6, 1.5, 1.4), hot * 0.10);
+        light *= limb * (0.7 + granules * 0.65);
         gl_FragColor = vec4(light * brightness, 1.0);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
@@ -99,18 +99,12 @@ function coronaMaterial(color) {
 
 function nebulaMaterial() {
   return new THREE.ShaderMaterial({
-    uniforms: { strength: { value: 0.6 } }, side: THREE.BackSide, depthWrite: false,
-    vertexShader: `varying vec3 direction; void main() { direction = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    uniforms: { strength: { value: 0.6 } }, side: THREE.BackSide, depthWrite: false, vertexColors: true,
+    vertexShader: `varying vec3 nebulaColor; void main() { nebulaColor = color; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: `
-      varying vec3 direction; uniform float strength;
+      varying vec3 nebulaColor; uniform float strength;
       void main() {
-        vec3 p = normalize(direction);
-        float warp = sin(p.x * 5.0 + p.z * 3.0) * 0.13 + sin(p.z * 11.0 - p.x * 2.0) * 0.035;
-        float band = exp(-pow((p.y + p.x * 0.25 - warp + 0.05) * 3.6, 2.0));
-        float cloud = 0.46 + sin(p.x * 8.0 + sin(p.z * 5.0) * 2.0) * 0.2 + sin(p.x * 19.0 - p.z * 15.0) * 0.08;
-        float dust = smoothstep(0.24, 0.7, cloud) * band;
-        vec3 tint = mix(vec3(0.043, 0.009, 0.024), vec3(0.007, 0.024, 0.060), smoothstep(-0.7, 0.7, p.x));
-        gl_FragColor = vec4(vec3(0.001, 0.0021, 0.0048) + tint * dust * strength, 1.0);
+        gl_FragColor = vec4(vec3(0.001, 0.0021, 0.0048) + nebulaColor * strength, 1.0);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
       }`
@@ -175,6 +169,23 @@ function atmosphereMaterial(lights) {
         #include <colorspace_fragment>
       }`
   })
+}
+
+function nebulaGeometry(sphere) {
+  // The distant cloud is static and low frequency: bake once at its vertices, not every pixel/frame.
+  const geometry = sphere.clone(), positions = geometry.attributes.position
+  const colors = new Float32Array(positions.count * 3)
+  for (let i = 0; i < positions.count; i++) {
+    const px = positions.getX(i), py = positions.getY(i), pz = positions.getZ(i)
+    const warp = Math.sin(px * 5 + pz * 3) * 0.13 + Math.sin(pz * 11 - px * 2) * 0.035
+    const band = Math.exp(-(((py + px * 0.25 - warp + 0.05) * 3.6) ** 2))
+    const cloud = 0.46 + Math.sin(px * 8 + Math.sin(pz * 5) * 2) * 0.2 + Math.sin(px * 19 - pz * 15) * 0.08
+    const dust = THREE.MathUtils.smoothstep(cloud, 0.24, 0.7) * band
+    const blend = THREE.MathUtils.smoothstep(px, -0.7, 0.7)
+    colors.set([(0.043 - 0.036 * blend) * dust, (0.009 + 0.015 * blend) * dust, (0.024 + 0.036 * blend) * dust], i * 3)
+  }
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+  return geometry
 }
 
 function glowTexture() {
@@ -303,7 +314,7 @@ export async function createScene(canvas) {
     const trail = makeTrail(COLORS[i]); scene.add(trail.line, trail.particles); return trail
   })
   const farStars = starfield(PARTICLE_CAPACITY.far, 360, 2.1, 20260922), nearStars = starfield(PARTICLE_CAPACITY.near, 125, 1.7, 317)
-  const nebula = new THREE.Mesh(sphere, nebulaMaterial())
+  const nebula = new THREE.Mesh(nebulaGeometry(sphere), nebulaMaterial())
   nebula.scale.setScalar(900); nebula.renderOrder = -10
   const dust = dustField()
   scene.add(nebula, farStars, nearStars, dust.points)

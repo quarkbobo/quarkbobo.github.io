@@ -1,5 +1,32 @@
 # 三体主题发布与本地交付
 
+## 2026-09-27：图标、画面与性能
+
+本轮补充三恒星SVG图标，改善恒星粒面与边缘渐暗，预计算低频星云颜色，并给画布和移动标签独立合成提示。三种星色、粒子数量、画布分辨率、物理步长和玩法保持原样。窄屏归档改为日期与标题上下排列，修复200%字号时标题被挤压。
+
+最终同页A/B/A实测：桌面总览约8.5→16.3fps，手机尺寸约13.0→22.1fps，分别为1.92倍、1.70倍。这里比较的是合成提示开/关，使用Chrome 153 / ANGLE SwiftShader软件WebGL；不是实机手机或独显帧率保证。各窗口、原始帧计数、设备、截图和环境漂移说明见[性能记录](perf-final-summary.md)。性能采样后只新增窄屏归档规则，首页合成与场景代码未再改动。
+
+| 本轮命令 | 实测 | 证据 |
+| --- | --- | --- |
+| `npm test` | 246通过、0失败、0跳过；最新构建101文件 | perf-final-npm-test.log |
+| `node docs/three-body/only-theme-verify.cjs` | 6阶段39检查通过，含桌面/手机、暂停/单步、滚动停渲染、减少动态与无WebGL | [报告](only-theme-evidence/2026-09-27T04-04-00-192Z/report.json) |
+| `node docs/three-body/art-verify.cjs` | 6阶段41检查通过，含参数实效、参考点、环带、手机与200%字号 | [报告](art-evidence/2026-09-27T04-05-21-878Z/report.json) |
+| `node docs/three-body/favicon-verify.cjs --browser` | 6检查通过；严格服务器下三页面无隐式ICO请求、图标200/MIME正确、控制台错误0 | [报告](favicon-evidence/2026-09-27T04-06-04-385Z/report.json) |
+| `node docs/three-body/perf-lifecycle.cjs` | 39检查通过；三轮16几何/1纹理，销毁后0/0，原生纹理已删除 | [报告](perf-lifecycle-2026-09-27T04-03-41-767Z/report.json) |
+| `node docs/three-body/perf-layout.cjs` | 原25项布局断言全过、控制台错误0；仅改用三体就绪条件 | [报告](perf-layout-2026-09-27T04-09-11-586Z/layout-report.json) |
+| `node docs/three-body/perf-soak.cjs` | 600.170真实秒、21采样129检查全过、控制台与本站HTTP错误0 | [报告](perf-soak-evidence/2026-09-27T04-10-20-738Z/report.json) |
+| 只读指纹复核 | 883文件不变，原核心测试/原验证器/单主题验收SHA均未改变 | [报告](perf-scope.json) |
+
+本地246项含用户其它任务新增的37项游戏测试；那些游戏文件和测试不纳入本次提交，仓库已有209项保留。原`node tools/verify-archive-a.cjs`仍等待已移除的旧星球，真实运行exit1，日志perf-archive.log保留；原文件未修改。兼容脚本保留全部25项页面/尺寸/字号/裁切断言，先发现归档裁切exit1，修复三体CSS后exit0；[失败报告](perf-layout-2026-09-27T04-06-53-568Z/layout-report.json)未删除。原双主题综合验收也保持历史原件，当前默认入口由单主题检查覆盖。
+
+图标检查先红（无声明，exit1）后绿（真实请求200，exit0），见[favicon-evidence](favicon-evidence/2026-09-27T03-45-15-176Z/report.json)。三维纹理候选未采用，原始测量与撤回代码保留；未将跨时间、存在环境漂移的数据当成提速证明。前几轮历史数字见下文，不替代以上本轮实测。
+
+十分钟耐久：模式2、10倍速，真实帧101→6889，16几何/1纹理全程恒定；尾迹最多124/512点、逐点实际最大年龄7.9984秒；128个碎冰带粒子始终有限。SwiftShader平均11.31fps，30秒区间10.03—16.69fps；该长跑与上方短时A/B/A口径不同，不混用。JS heap首12,660,920、末18,504,436字节，采样范围4,886,596—36,874,520，包含GC波动，不宣称堆完全不增长。
+
+本地全部新验收已完成，线上发布状态由现有[Pages工作流](https://github.com/quarkbobo/quarkbobo.github.io/actions/workflows/pages.yml)核验。本地预览：[三体观测站](http://127.0.0.1:4173/)。
+
+## 此前交付记录
+
 最新要求已改为单一三体外观：直接访问[首页](https://quarkbobo.github.io/)即显示三体，经典切换入口移除，旧收藏参数与保存偏好不会恢复经典。文章、归档及历史源码保留，旧星球WebGL不再初始化。新版209项Node测试通过，默认入口真实浏览器6阶段/39检查通过，见[单主题验收](only-theme-evidence/2026-09-22T10-44-34-066Z/report.json)。下文双主题说明仅为历史记录，不再代表当前入口。
 
 已发布：[打开三体观测站](https://quarkbobo.github.io/?theme=three-body)。发布提交为`8bcfe93`，[Actions构建、测试和部署均成功](https://github.com/quarkbobo/quarkbobo.github.io/actions/runs/35715671297)。发布前重新实测209项测试通过；线上六份主题资源SHA与该提交一致，实际WebGL四天体和128粒子运行，截图[published-1440.png](published-1440.png)。

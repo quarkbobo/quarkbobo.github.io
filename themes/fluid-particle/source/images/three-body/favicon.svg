@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">三体观测站</title>
+  <defs>
+    <radialGradient id="gold" cx="38%" cy="34%">
+      <stop stop-color="#fff5dc"/>
+      <stop offset=".48" stop-color="#ffb45b"/>
+      <stop offset="1" stop-color="#ce7330"/>
+    </radialGradient>
+    <radialGradient id="blue" cx="38%" cy="34%">
+      <stop stop-color="#effbff"/>
+      <stop offset=".48" stop-color="#80caff"/>
+      <stop offset="1" stop-color="#368dc3"/>
+    </radialGradient>
+    <radialGradient id="coral" cx="38%" cy="34%">
+      <stop stop-color="#fff1df"/>
+      <stop offset=".48" stop-color="#ff694a"/>
+      <stop offset="1" stop-color="#bd3e36"/>
+    </radialGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#050914"/>
+  <ellipse cx="32" cy="33" rx="24" ry="17" transform="rotate(-35 32 33)" fill="none" stroke="#425c73" stroke-width="1.5"/>
+  <circle cx="19" cy="35" r="11" fill="url(#gold)"/>
+  <circle cx="43" cy="18" r="8" fill="url(#blue)"/>
+  <circle cx="44" cy="46" r="8" fill="url(#coral)"/>
+</svg>

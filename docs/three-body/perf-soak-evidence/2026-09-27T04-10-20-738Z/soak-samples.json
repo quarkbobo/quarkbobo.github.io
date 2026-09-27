@@ -1,0 +1,569 @@
+[
+  {
+    "index": 0,
+    "elapsedMs": 38.457800000000134,
+    "frames": 101,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 12660920,
+    "simTime": 34.4,
+    "realTime": 3.4400999999999993,
+    "trailCounts": [
+      71,
+      71,
+      71,
+      71
+    ],
+    "trailMaxAges": [
+      3.435799999999999,
+      3.435799999999999,
+      3.435799999999999,
+      3.435799999999999
+    ],
+    "beltCount": 128,
+    "draws": 3389,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-00.json"
+  },
+  {
+    "index": 1,
+    "elapsedMs": 30054.7699,
+    "frames": 602,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 4886596,
+    "simTime": 334.3375,
+    "realTime": 33.43380000000007,
+    "trailCounts": [
+      124,
+      124,
+      124,
+      124
+    ],
+    "trailMaxAges": [
+      7.948200000000032,
+      7.948200000000032,
+      7.948200000000032,
+      7.948200000000032
+    ],
+    "beltCount": 128,
+    "draws": 19922,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-01.json"
+  },
+  {
+    "index": 2,
+    "elapsedMs": 60156.98390000001,
+    "frames": 1005,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 22105464,
+    "simTime": 634.5666666666666,
+    "realTime": 63.4568000000001,
+    "trailCounts": [
+      102,
+      102,
+      102,
+      102
+    ],
+    "trailMaxAges": [
+      7.998400000000039,
+      7.998400000000039,
+      7.998400000000039,
+      7.998400000000039
+    ],
+    "beltCount": 128,
+    "draws": 33254,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-02.json"
+  },
+  {
+    "index": 3,
+    "elapsedMs": 90120.7889,
+    "frames": 1383,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 6517816,
+    "simTime": 934.2125,
+    "realTime": 93.42140000000025,
+    "trailCounts": [
+      97,
+      97,
+      97,
+      97
+    ],
+    "trailMaxAges": [
+      7.944100000000091,
+      7.944100000000091,
+      7.944100000000091,
+      7.944100000000091
+    ],
+    "beltCount": 128,
+    "draws": 45728,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-03.json"
+  },
+  {
+    "index": 4,
+    "elapsedMs": 120115.2243,
+    "frames": 1736,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 7580296,
+    "simTime": 1233.8166666666666,
+    "realTime": 123.38170000000059,
+    "trailCounts": [
+      95,
+      95,
+      95,
+      95
+    ],
+    "trailMaxAges": [
+      7.944000000000102,
+      7.944000000000102,
+      7.944000000000102,
+      7.944000000000102
+    ],
+    "beltCount": 128,
+    "draws": 57377,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-04.json"
+  },
+  {
+    "index": 5,
+    "elapsedMs": 150093.5461,
+    "frames": 2072,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 36874520,
+    "simTime": 1533.6708333333333,
+    "realTime": 153.3672000000003,
+    "trailCounts": [
+      92,
+      92,
+      92,
+      92
+    ],
+    "trailMaxAges": [
+      7.935699999999883,
+      7.935699999999883,
+      7.935699999999883,
+      7.935699999999883
+    ],
+    "beltCount": 128,
+    "draws": 68465,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-05.json"
+  },
+  {
+    "index": 6,
+    "elapsedMs": 180126.4179,
+    "frames": 2402,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 25455860,
+    "simTime": 1834.3999999999999,
+    "realTime": 183.4402999999997,
+    "trailCounts": [
+      88,
+      88,
+      88,
+      88
+    ],
+    "trailMaxAges": [
+      7.981699999999819,
+      7.981699999999819,
+      7.981699999999819,
+      7.981699999999819
+    ],
+    "beltCount": 128,
+    "draws": 79355,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-06.json"
+  },
+  {
+    "index": 7,
+    "elapsedMs": 210078.095,
+    "frames": 2740,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 4976580,
+    "simTime": 2134.3791666666666,
+    "realTime": 213.43809999999894,
+    "trailCounts": [
+      91,
+      91,
+      91,
+      91
+    ],
+    "trailMaxAges": [
+      7.918899999999752,
+      7.918899999999752,
+      7.918899999999752,
+      7.918899999999752
+    ],
+    "beltCount": 128,
+    "draws": 90476,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-07.json"
+  },
+  {
+    "index": 8,
+    "elapsedMs": 240157.3869,
+    "frames": 3061,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 21411072,
+    "simTime": 2434.0666666666666,
+    "realTime": 243.40689999999853,
+    "trailCounts": [
+      91,
+      91,
+      91,
+      91
+    ],
+    "trailMaxAges": [
+      7.956499999999892,
+      7.956499999999892,
+      7.956499999999892,
+      7.956499999999892
+    ],
+    "beltCount": 128,
+    "draws": 101102,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-08.json"
+  },
+  {
+    "index": 9,
+    "elapsedMs": 270212.97939999995,
+    "frames": 3388,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 21537516,
+    "simTime": 2734.0875,
+    "realTime": 273.40899999999823,
+    "trailCounts": [
+      89,
+      89,
+      89,
+      89
+    ],
+    "trailMaxAges": [
+      7.977399999999818,
+      7.977399999999818,
+      7.977399999999818,
+      7.977399999999818
+    ],
+    "beltCount": 128,
+    "draws": 111893,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-09.json"
+  },
+  {
+    "index": 10,
+    "elapsedMs": 300147.82019999996,
+    "frames": 3705,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 5073840,
+    "simTime": 3034.275,
+    "realTime": 303.4278999999984,
+    "trailCounts": [
+      87,
+      87,
+      87,
+      87
+    ],
+    "trailMaxAges": [
+      7.927400000000091,
+      7.927400000000091,
+      7.927400000000091,
+      7.927400000000091
+    ],
+    "beltCount": 128,
+    "draws": 122354,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-10.json"
+  },
+  {
+    "index": 11,
+    "elapsedMs": 330178.05,
+    "frames": 4035,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 25305440,
+    "simTime": 3334.508333333333,
+    "realTime": 333.45089999999794,
+    "trailCounts": [
+      87,
+      87,
+      87,
+      87
+    ],
+    "trailMaxAges": [
+      7.944099999999821,
+      7.944099999999821,
+      7.944099999999821,
+      7.944099999999821
+    ],
+    "beltCount": 128,
+    "draws": 133244,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-11.json"
+  },
+  {
+    "index": 12,
+    "elapsedMs": 360189.45749999996,
+    "frames": 4361,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 11378900,
+    "simTime": 3634.1916666666666,
+    "realTime": 363.4194999999975,
+    "trailCounts": [
+      87,
+      87,
+      87,
+      87
+    ],
+    "trailMaxAges": [
+      7.943999999999846,
+      7.943999999999846,
+      7.943999999999846,
+      7.943999999999846
+    ],
+    "beltCount": 128,
+    "draws": 144002,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-12.json"
+  },
+  {
+    "index": 13,
+    "elapsedMs": 390137.52479999996,
+    "frames": 4685,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 36240772,
+    "simTime": 3933.920833333333,
+    "realTime": 393.39239999999734,
+    "trailCounts": [
+      89,
+      89,
+      89,
+      89
+    ],
+    "trailMaxAges": [
+      7.939799999999877,
+      7.939799999999877,
+      7.939799999999877,
+      7.939799999999877
+    ],
+    "beltCount": 128,
+    "draws": 154694,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-13.json"
+  },
+  {
+    "index": 14,
+    "elapsedMs": 420155.1029,
+    "frames": 5010,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 33362824,
+    "simTime": 4234.404166666666,
+    "realTime": 423.4404999999968,
+    "trailCounts": [
+      85,
+      85,
+      85,
+      85
+    ],
+    "trailMaxAges": [
+      7.93569999999994,
+      7.93569999999994,
+      7.93569999999994,
+      7.93569999999994
+    ],
+    "beltCount": 128,
+    "draws": 165419,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-14.json"
+  },
+  {
+    "index": 15,
+    "elapsedMs": 450152.8271,
+    "frames": 5332,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 5567764,
+    "simTime": 4534.216666666666,
+    "realTime": 453.4216999999963,
+    "trailCounts": [
+      86,
+      86,
+      86,
+      86
+    ],
+    "trailMaxAges": [
+      7.935699999999713,
+      7.935699999999713,
+      7.935699999999713,
+      7.935699999999713
+    ],
+    "beltCount": 128,
+    "draws": 176045,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-15.json"
+  },
+  {
+    "index": 16,
+    "elapsedMs": 480158.63389999996,
+    "frames": 5658,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 32970532,
+    "simTime": 4834.279166666666,
+    "realTime": 483.4279999999961,
+    "trailCounts": [
+      91,
+      91,
+      91,
+      91
+    ],
+    "trailMaxAges": [
+      7.918900000000008,
+      7.918900000000008,
+      7.918900000000008,
+      7.918900000000008
+    ],
+    "beltCount": 128,
+    "draws": 186803,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-16.json"
+  },
+  {
+    "index": 17,
+    "elapsedMs": 510185.163,
+    "frames": 5960,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 30352600,
+    "simTime": 5134.633333333333,
+    "realTime": 513.4635999999962,
+    "trailCounts": [
+      77,
+      77,
+      77,
+      77
+    ],
+    "trailMaxAges": [
+      7.9482000000004405,
+      7.9482000000004405,
+      7.9482000000004405,
+      7.9482000000004405
+    ],
+    "beltCount": 128,
+    "draws": 196769,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-17.json"
+  },
+  {
+    "index": 18,
+    "elapsedMs": 540116.1585,
+    "frames": 6272,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 27199056,
+    "simTime": 5433.654166666666,
+    "realTime": 543.3654999999976,
+    "trailCounts": [
+      83,
+      83,
+      83,
+      83
+    ],
+    "trailMaxAges": [
+      7.990000000000123,
+      7.990000000000123,
+      7.990000000000123,
+      7.990000000000123
+    ],
+    "beltCount": 128,
+    "draws": 207065,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-18.json"
+  },
+  {
+    "index": 19,
+    "elapsedMs": 570140.4155,
+    "frames": 6588,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 9176472,
+    "simTime": 5733.758333333333,
+    "realTime": 573.375899999998,
+    "trailCounts": [
+      82,
+      82,
+      82,
+      82
+    ],
+    "trailMaxAges": [
+      7.989899999999807,
+      7.989899999999807,
+      7.989899999999807,
+      7.989899999999807
+    ],
+    "beltCount": 128,
+    "draws": 217493,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-19.json"
+  },
+  {
+    "index": 20,
+    "elapsedMs": 600164.9523,
+    "frames": 6889,
+    "geometries": 16,
+    "textures": 1,
+    "heap": 18504436,
+    "simTime": 6034.320833333333,
+    "realTime": 603.4322999999988,
+    "trailCounts": [
+      84,
+      84,
+      84,
+      84
+    ],
+    "trailMaxAges": [
+      7.898200000000429,
+      7.898200000000429,
+      7.898200000000429,
+      7.898200000000429
+    ],
+    "beltCount": 128,
+    "draws": 227426,
+    "contexts": 1,
+    "documentHidden": false,
+    "snapshotFile": "sample-20.json"
+  }
+]

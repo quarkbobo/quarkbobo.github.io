@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-09-27T04:18:38.459Z",
+  "readOnlyFiles": 883,
+  "changed": [],
+  "originalCoreTest": "1d71d40eb8ca5c4dd8fd8845f70ec2ce3d3e14a2c835005b3ab4bc38442e8abb",
+  "originalVerifier": "dda1ed3511787f93804b0f1db3e8958565dbbfc5acf800e512fe84e3276b918b",
+  "singleThemeVerifier": "30f6db76a546028da6cc84266860a4a91cebf5007bae17b7d23a5ba20a1da530",
+  "stagedProductionFiles": [
+    "themes/fluid-particle/layout/_partial/head.ejs",
+    "themes/fluid-particle/source/css/three-body.css",
+    "themes/fluid-particle/source/images/three-body/favicon.svg",
+    "themes/fluid-particle/source/js/three-body-scene.mjs"
+  ]
+}

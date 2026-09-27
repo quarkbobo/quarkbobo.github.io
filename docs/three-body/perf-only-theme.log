@@ -1,0 +1,38 @@
+PASS desktop: default root and real lifecycle
+PASS desktop: old saved preference and old query cannot restore classic
+PASS mobile: default root and real lifecycle
+PASS mobile: old saved preference and old query cannot restore classic
+PASS reduced-motion: default root remains usable
+PASS no-webgl: default root remains usable
+{
+  "passed": true,
+  "stages": [
+    {
+      "name": "desktop: default root and real lifecycle",
+      "passed": true
+    },
+    {
+      "name": "desktop: old saved preference and old query cannot restore classic",
+      "passed": true
+    },
+    {
+      "name": "mobile: default root and real lifecycle",
+      "passed": true
+    },
+    {
+      "name": "mobile: old saved preference and old query cannot restore classic",
+      "passed": true
+    },
+    {
+      "name": "reduced-motion: default root remains usable",
+      "passed": true
+    },
+    {
+      "name": "no-webgl: default root remains usable",
+      "passed": true
+    }
+  ],
+  "checks": 39,
+  "elapsedMs": 19819.7449,
+  "report": "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\docs\\three-body\\only-theme-evidence\\2026-09-27T04-04-00-192Z\\report.json"
+}

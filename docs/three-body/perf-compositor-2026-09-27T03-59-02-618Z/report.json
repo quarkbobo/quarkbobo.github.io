@@ -1,0 +1,404 @@
+{
+  "date": "2026-09-27T03:59:02.618Z",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "view": "station",
+  "method": "One continuously running production homepage; A/B/A with 3 consecutive 2.5-second windows per phase. B only adds will-change:transform to the canvas and body label spans. No simulation, particles, timing, or event setting changes. Software WebGL via existing launch helper.",
+  "consoleErrors": [],
+  "phases": [
+    {
+      "phase": "A1",
+      "samples": [
+        {
+          "elapsedMs": 2502.7000000001863,
+          "frames": 14,
+          "fps": 5.593958524792807,
+          "simDelta": 2.3249999999999997,
+          "realDelta": 2.3251999999999997,
+          "realStart": 1.1021,
+          "realEnd": 3.4273,
+          "view": "station",
+          "error": null,
+          "eventsBefore": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "eventsAfter": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "dimensions": {
+            "width": 1359,
+            "height": 511
+          },
+          "canvasWillChange": "auto",
+          "labelWillChange": "auto",
+          "mainThread": {
+            "scriptMs": 233.673,
+            "taskMs": 321.035,
+            "layoutMs": 59.641,
+            "recalcStyleMs": 3.0820000000000003,
+            "heapBytes": 5457892
+          }
+        },
+        {
+          "elapsedMs": 2502.899999999441,
+          "frames": 17,
+          "fps": 6.792121139479722,
+          "simDelta": 2.591666666666667,
+          "realDelta": 2.5923000000000007,
+          "realStart": 3.4273,
+          "realEnd": 6.0196000000000005,
+          "view": "station",
+          "error": null,
+          "eventsBefore": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "eventsAfter": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "dimensions": {
+            "width": 1359,
+            "height": 511
+          },
+          "canvasWillChange": "auto",
+          "labelWillChange": "auto",
+          "mainThread": {
+            "scriptMs": 144.726,
+            "taskMs": 181.11000000000004,
+            "layoutMs": 10.650999999999994,
+            "recalcStyleMs": 2.4779999999999998,
+            "heapBytes": 7882136
+          }
+        },
+        {
+          "elapsedMs": 2500.7000000001863,
+          "frames": 15,
+          "fps": 5.9983204702678785,
+          "simDelta": 2.4916666666666663,
+          "realDelta": 2.4923,
+          "realStart": 6.0196000000000005,
+          "realEnd": 8.5119,
+          "view": "station",
+          "error": null,
+          "eventsBefore": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "eventsAfter": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "dimensions": {
+            "width": 1359,
+            "height": 511
+          },
+          "canvasWillChange": "auto",
+          "labelWillChange": "auto",
+          "mainThread": {
+            "scriptMs": 139.476,
+            "taskMs": 181.63399999999996,
+            "layoutMs": 13.402000000000012,
+            "recalcStyleMs": 2.7520000000000002,
+            "heapBytes": 8138164
+          }
+        }
+      ],
+      "fpsRange": [
+        5.593958524792807,
+        6.792121139479722
+      ],
+      "meanFps": 6.128133378180135
+    },
+    {
+      "phase": "B",
+      "samples": [
+        {
+          "elapsedMs": 2505.7000000001863,
+          "frames": 29,
+          "fps": 11.573612164264615,
+          "simDelta": 2.6083333333333343,
+          "realDelta": 2.6049000000000024,
+          "realStart": 8.5119,
+          "realEnd": 11.116800000000003,
+          "view": "station",
+          "error": null,
+          "eventsBefore": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "eventsAfter": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0.7472326038832586,
+            "aurora": 0
+          },
+          "dimensions": {
+            "width": 1359,
+            "height": 511
+          },
+          "canvasWillChange": "transform",
+          "labelWillChange": "transform",
+          "mainThread": {
+            "scriptMs": 170.184,
+            "taskMs": 230.00599999999994,
+            "layoutMs": 15.803999999999998,
+            "recalcStyleMs": 4.724000000000001,
+            "heapBytes": 8393352
+          }
+        },
+        {
+          "elapsedMs": 2505.4000000003725,
+          "frames": 30,
+          "fps": 11.974135866526519,
+          "simDelta": 2.495833333333332,
+          "realDelta": 2.4962999999999926,
+          "realStart": 11.116800000000003,
+          "realEnd": 13.613099999999996,
+          "view": "station",
+          "error": null,
+          "eventsBefore": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0.7472326038832586,
+            "aurora": 0
+          },
+          "eventsAfter": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0.9966564498772204,
+            "aurora": 0
+          },
+          "dimensions": {
+            "width": 1359,
+            "height": 511
+          },
+          "canvasWillChange": "transform",
+          "labelWillChange": "transform",
+          "mainThread": {
+            "scriptMs": 185.16,
+            "taskMs": 255.39199999999994,
+            "layoutMs": 19.357,
+            "recalcStyleMs": 5.039,
+            "heapBytes": 9150404
+          }
+        },
+        {
+          "elapsedMs": 2506.5999999996275,
+          "frames": 33,
+          "fps": 13.165243756484841,
+          "simDelta": 2.4333333333333336,
+          "realDelta": 2.433800000000007,
+          "realStart": 13.692399999999997,
+          "realEnd": 16.126200000000004,
+          "view": "station",
+          "error": null,
+          "eventsBefore": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0.9942287609200671,
+            "aurora": 0
+          },
+          "eventsAfter": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0.6247805855918419,
+            "aurora": 0
+          },
+          "dimensions": {
+            "width": 1359,
+            "height": 511
+          },
+          "canvasWillChange": "transform",
+          "labelWillChange": "transform",
+          "mainThread": {
+            "scriptMs": 165.37200000000007,
+            "taskMs": 237.2909999999999,
+            "layoutMs": 18.12599999999999,
+            "recalcStyleMs": 4.847999999999998,
+            "heapBytes": 6508484
+          }
+        }
+      ],
+      "fpsRange": [
+        11.573612164264615,
+        13.165243756484841
+      ],
+      "meanFps": 12.237663929091992
+    },
+    {
+      "phase": "A2",
+      "samples": [
+        {
+          "elapsedMs": 2502.5,
+          "frames": 18,
+          "fps": 7.192807192807193,
+          "simDelta": 2.408333333333335,
+          "realDelta": 2.4087000000000067,
+          "realStart": 16.213800000000003,
+          "realEnd": 18.62250000000001,
+          "view": "station",
+          "error": null,
+          "eventsBefore": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0.6023736125597978,
+            "aurora": 0
+          },
+          "eventsAfter": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "dimensions": {
+            "width": 1359,
+            "height": 511
+          },
+          "canvasWillChange": "auto",
+          "labelWillChange": "auto",
+          "mainThread": {
+            "scriptMs": 170.57200000000017,
+            "taskMs": 220.08399999999995,
+            "layoutMs": 12.883000000000006,
+            "recalcStyleMs": 3.7899999999999983,
+            "heapBytes": 6669048
+          }
+        },
+        {
+          "elapsedMs": 2512.7999999998137,
+          "frames": 17,
+          "fps": 6.765361349889072,
+          "simDelta": 2.5749999999999993,
+          "realDelta": 2.575700000000001,
+          "realStart": 18.62250000000001,
+          "realEnd": 21.19820000000001,
+          "view": "station",
+          "error": null,
+          "eventsBefore": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "eventsAfter": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "dimensions": {
+            "width": 1359,
+            "height": 511
+          },
+          "canvasWillChange": "auto",
+          "labelWillChange": "auto",
+          "mainThread": {
+            "scriptMs": 168.1929999999998,
+            "taskMs": 213.99900000000005,
+            "layoutMs": 11.708999999999998,
+            "recalcStyleMs": 3.276000000000001,
+            "heapBytes": 8965288
+          }
+        },
+        {
+          "elapsedMs": 2508.399999999441,
+          "frames": 16,
+          "fps": 6.378568011482844,
+          "simDelta": 2.5,
+          "realDelta": 2.5005000000000024,
+          "realStart": 21.19820000000001,
+          "realEnd": 23.698700000000013,
+          "view": "station",
+          "error": null,
+          "eventsBefore": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "eventsAfter": {
+            "flare": {
+              "starId": null,
+              "strength": 0
+            },
+            "dust": 0,
+            "aurora": 0
+          },
+          "dimensions": {
+            "width": 1359,
+            "height": 511
+          },
+          "canvasWillChange": "auto",
+          "labelWillChange": "auto",
+          "mainThread": {
+            "scriptMs": 161.0990000000001,
+            "taskMs": 209.97900000000013,
+            "layoutMs": 12.06099999999999,
+            "recalcStyleMs": 3.049999999999997,
+            "heapBytes": 10422392
+          }
+        }
+      ],
+      "fpsRange": [
+        6.378568011482844,
+        7.192807192807193
+      ],
+      "meanFps": 6.778912184726369
+    }
+  ],
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+  "stylesRemoved": true
+}

@@ -1,0 +1,379 @@
+{
+  "originalScript": "tools/verify-archive-a.cjs",
+  "originalSha256": "15454a7b8c7efeea94faf2503b266112d45cfc27369e68c5f2cf253d93d452f0",
+  "copiedFromSha256": "15454a7b8c7efeea94faf2503b266112d45cfc27369e68c5f2cf253d93d452f0",
+  "adaptation": [
+    "Resolve the existing serve/launch helper from docs/three-body.",
+    "Write timestamped evidence inside docs/three-body.",
+    "Replace only the obsolete home .planet-webgl-ready wait with the real threeBodySnapshot renderer availability and positive frame count.",
+    "All 25 viewport/route/font cases, layout assertions, thresholds, and zero-console assertion are copied unchanged. No fake legacy DOM class is added."
+  ],
+  "consoleErrors": [],
+  "views": [
+    {
+      "name": "home",
+      "width": 1440,
+      "zoom": false,
+      "inner": 1440,
+      "page": 1425,
+      "client": 1425,
+      "latestY": 1065.4375,
+      "body": null,
+      "cards": 2,
+      "topics": 3,
+      "clipped": []
+    },
+    {
+      "name": "article",
+      "width": 1440,
+      "zoom": false,
+      "inner": 1440,
+      "page": 1425,
+      "client": 1425,
+      "body": {
+        "x": 376.6875,
+        "y": 334,
+        "width": 671.625,
+        "height": 711.65625
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "article-toc",
+      "width": 1440,
+      "zoom": false,
+      "inner": 1440,
+      "page": 1425,
+      "client": 1425,
+      "body": {
+        "x": 156.6875,
+        "y": 334,
+        "width": 671.625,
+        "height": 635.453125
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "archive",
+      "width": 1440,
+      "zoom": false,
+      "inner": 1440,
+      "page": 1425,
+      "client": 1425,
+      "body": null,
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "games",
+      "width": 1440,
+      "zoom": false,
+      "inner": 1440,
+      "page": 1440,
+      "client": 1440,
+      "body": {
+        "x": 164.1875,
+        "y": 334,
+        "width": 1111.625,
+        "height": 340
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "home",
+      "width": 390,
+      "zoom": false,
+      "inner": 390,
+      "page": 390,
+      "client": 390,
+      "latestY": 944.15625,
+      "body": null,
+      "cards": 2,
+      "topics": 3,
+      "clipped": []
+    },
+    {
+      "name": "article",
+      "width": 390,
+      "zoom": false,
+      "inner": 390,
+      "page": 390,
+      "client": 390,
+      "body": {
+        "x": 33,
+        "y": 286,
+        "width": 324,
+        "height": 1050.75
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "article-toc",
+      "width": 390,
+      "zoom": false,
+      "inner": 390,
+      "page": 390,
+      "client": 390,
+      "body": {
+        "x": 33,
+        "y": 370.953125,
+        "width": 324,
+        "height": 586.625
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "archive",
+      "width": 390,
+      "zoom": false,
+      "inner": 390,
+      "page": 390,
+      "client": 390,
+      "body": null,
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "games",
+      "width": 390,
+      "zoom": false,
+      "inner": 390,
+      "page": 390,
+      "client": 390,
+      "body": {
+        "x": 33,
+        "y": 244.953125,
+        "width": 324,
+        "height": 636
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "home",
+      "width": 320,
+      "zoom": false,
+      "inner": 320,
+      "page": 320,
+      "client": 320,
+      "latestY": 944.15625,
+      "body": null,
+      "cards": 2,
+      "topics": 3,
+      "clipped": []
+    },
+    {
+      "name": "article",
+      "width": 320,
+      "zoom": false,
+      "inner": 320,
+      "page": 320,
+      "client": 320,
+      "body": {
+        "x": 33,
+        "y": 286,
+        "width": 254,
+        "height": 1331.4375
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "article-toc",
+      "width": 320,
+      "zoom": false,
+      "inner": 320,
+      "page": 320,
+      "client": 320,
+      "body": {
+        "x": 33,
+        "y": 370.953125,
+        "width": 254,
+        "height": 586.625
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "archive",
+      "width": 320,
+      "zoom": false,
+      "inner": 320,
+      "page": 320,
+      "client": 320,
+      "body": null,
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "games",
+      "width": 320,
+      "zoom": false,
+      "inner": 320,
+      "page": 320,
+      "client": 320,
+      "body": {
+        "x": 33,
+        "y": 244.953125,
+        "width": 254,
+        "height": 636
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "home",
+      "width": 768,
+      "zoom": false,
+      "inner": 768,
+      "page": 753,
+      "client": 753,
+      "latestY": 1045.671875,
+      "body": null,
+      "cards": 2,
+      "topics": 3,
+      "clipped": []
+    },
+    {
+      "name": "article",
+      "width": 768,
+      "zoom": false,
+      "inner": 768,
+      "page": 753,
+      "client": 753,
+      "body": {
+        "x": 64.03125,
+        "y": 375.9375,
+        "width": 624.9375,
+        "height": 711.65625
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "article-toc",
+      "width": 768,
+      "zoom": false,
+      "inner": 768,
+      "page": 753,
+      "client": 753,
+      "body": {
+        "x": 64.03125,
+        "y": 439.84375,
+        "width": 624.9375,
+        "height": 596.390625
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "archive",
+      "width": 768,
+      "zoom": false,
+      "inner": 768,
+      "page": 753,
+      "client": 753,
+      "body": null,
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "games",
+      "width": 768,
+      "zoom": false,
+      "inner": 768,
+      "page": 768,
+      "client": 768,
+      "body": {
+        "x": 64.03125,
+        "y": 313.84375,
+        "width": 639.9375,
+        "height": 340
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "home",
+      "width": 390,
+      "zoom": true,
+      "inner": 390,
+      "page": 390,
+      "client": 390,
+      "latestY": 1520.8125,
+      "body": null,
+      "cards": 2,
+      "topics": 3,
+      "clipped": []
+    },
+    {
+      "name": "article",
+      "width": 390,
+      "zoom": true,
+      "inner": 390,
+      "page": 390,
+      "client": 390,
+      "body": {
+        "x": 33,
+        "y": 286,
+        "width": 324,
+        "height": 1050.75
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "article-toc",
+      "width": 390,
+      "zoom": true,
+      "inner": 390,
+      "page": 390,
+      "client": 390,
+      "body": {
+        "x": 65,
+        "y": 775.03125,
+        "width": 260,
+        "height": 1451.90625
+      },
+      "cards": 0,
+      "topics": 0,
+      "clipped": []
+    },
+    {
+      "name": "archive",
+      "width": 390,
+      "zoom": true,
+      "inner": 390,
+      "page": 390,
+      "client": 390,
+      "body": null,
+      "cards": 0,
+      "topics": 0,
+      "clipped": [
+        "<a href=\"/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/\">Hello World</a>"
+      ]
+    }
+  ]
+}

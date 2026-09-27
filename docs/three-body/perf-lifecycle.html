@@ -1,0 +1,87 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three-body renderer lifecycle verification</title>
+<link rel="icon" href="data:,">
+<style>html,body{margin:0;background:#050914}canvas{display:block;width:calc(100vw - 64px);height:513px;margin:32px}</style>
+<canvas id="lifecycle-canvas"></canvas>
+<script type="module">
+import { createScene } from '/js/three-body-scene.mjs'
+import { makeSystem, step, sampleTrails, RULES } from '/js/three-body-core.mjs'
+import { makeBelt, advanceBelt, lagrangePoints } from '/js/three-body-overlays.mjs'
+
+// Same fixed four-year physical fixture as perf-scene.html; no animation clock.
+const system = makeSystem('balanced'), trails = {}
+const belt = makeBelt(system, { count:128, inner:14, outer:24, inclination:12, seed:7301 })
+for (let frame = 1; frame <= 240; frame++) {
+  for (let sub = 0; sub < 4; sub++) {
+    const before = structuredClone(system)
+    step(system, RULES.DT); advanceBelt(belt, before, system, RULES.DT)
+  }
+  sampleTrails(trails, system.bodies, frame / 60)
+}
+if (system.error || belt.error) throw new Error(system.error || belt.error)
+const fingerprint = () => JSON.stringify({ system, belt, trails })
+const initial = fingerprint(), canvas = document.querySelector('canvas')
+const gl = canvas.getContext('webgl2', { alpha:false, antialias:true, powerPreference:'high-performance' })
+if (!gl) throw new Error('WebGL2 unavailable')
+const uploads = []
+// Observe real immutable texture storage, retaining handles to verify deletion.
+// Renderer-created 1x1 fallback texImage textures are outside this storage ledger.
+for (const method of ['texStorage2D', 'texStorage3D']) {
+  const original = gl[method]
+  gl[method] = function (target, levels, format, width, height, depth = 1) {
+    const binding = target === gl.TEXTURE_3D ? gl.TEXTURE_BINDING_3D : target === gl.TEXTURE_2D_ARRAY ? gl.TEXTURE_BINDING_2D_ARRAY : target === gl.TEXTURE_CUBE_MAP ? gl.TEXTURE_BINDING_CUBE_MAP : gl.TEXTURE_BINDING_2D
+    const texture = gl.getParameter(binding)
+    const value = original.apply(this, arguments)
+    uploads.push({ texture, target, levels, format, width, height, depth })
+    return value
+  }
+}
+const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve))
+const extension = gl.getExtension('WEBGL_debug_renderer_info')
+const hardware = { renderer:gl.getParameter(extension ? extension.UNMASKED_RENDERER_WEBGL : gl.RENDERER), vendor:gl.getParameter(extension ? extension.UNMASKED_VENDOR_WEBGL : gl.VENDOR), userAgent:navigator.userAgent, devicePixelRatio }
+const options = { view:'station', deltaSeconds:0, paused:true, runningSeconds:4, selectedId:'star-a', trails, belt, lagrange:lagrangePoints(system,'star-a','star-b'), lagrangePrimaries:['star-a','star-b'] }
+const resource = scene => { const d = scene.diagnostics(); return { available:d.available, frames:d.frames, geometries:d.geometries, textures:d.textures, drawCalls:d.drawCalls } }
+function pixels () {
+  const bytes = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4)
+  gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, bytes)
+  let nonzero = 0, minimum = 765, maximum = 0
+  const colors = new Set()
+  for (let i = 0; i < bytes.length; i += 4) {
+    const light = bytes[i] + bytes[i + 1] + bytes[i + 2]
+    if (light) nonzero++
+    minimum = Math.min(minimum, light); maximum = Math.max(maximum, light)
+    if (colors.size < 256) colors.add((bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2])
+  }
+  return { width:gl.drawingBufferWidth, height:gl.drawingBufferHeight, nonzero, minimum, maximum, distinctColors:colors.size }
+}
+window.lifecycle = {
+  hardware,
+  async cycle (index) {
+    const start = uploads.length, scene = await createScene(canvas)
+    try {
+      // Warm all retained geometry/material paths before checking stability.
+      for (const [view, forceMode, effects] of [
+        ['station','gravity',{flare:{starId:'star-a',strength:1},dust:0,aurora:0}],
+        ['planet','radiation',{flare:{starId:null,strength:0},dust:0,aurora:1}],
+        ['star-a','acceleration',{flare:{starId:null,strength:0},dust:1,aurora:0}]
+      ]) for (let frame = 0; frame < 3; frame++) {
+        await nextFrame(); scene.render(system, { ...options, view, forceMode, effects }); gl.finish()
+      }
+      const warmed = resource(scene), samples = []
+      for (let frame = 0; frame < 6; frame++) {
+        await nextFrame(); scene.render(system, options); gl.finish(); samples.push(resource(scene))
+      }
+      const image = pixels(), png = canvas.toDataURL('image/png'), error = gl.getError()
+      const physicsUnchanged = fingerprint() === initial
+      const allocated = uploads.slice(start)
+      scene.dispose()
+      const disposed = resource(scene)
+      scene.dispose()
+      return { index, warmed, samples, image, png, glError:error, physicsUnchanged:physicsUnchanged && fingerprint() === initial, disposed, disposedAgain:resource(scene), storage:allocated.map(({ texture, ...record }) => ({ ...record, liveAfterDispose:gl.isTexture(texture) })) }
+    } finally { scene.dispose() }
+  }
+}
+window.lifecycleReady = true
+</script>

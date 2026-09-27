@@ -1,0 +1,10 @@
+{
+  "startedAt": "2026-09-27T03:45:15.176Z",
+  "mode": "source-http",
+  "checks": [],
+  "requests": [],
+  "consoleErrors": [],
+  "elapsedMs": 5.694200000000009,
+  "passed": false,
+  "error": "AssertionError [ERR_ASSERTION]: index.html: exactly one explicit favicon\n\n0 !== 1\n\n    at iconContract (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\docs\\three-body\\favicon-verify.cjs:19:10)\n    at main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\docs\\three-body\\favicon-verify.cjs:50:9)\n    at Object.<anonymous> (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\docs\\three-body\\favicon-verify.cjs:94:1)\n    at Module._compile (node:internal/modules/cjs/loader:1760:14)\n    at Object..js (node:internal/modules/cjs/loader:1893:10)\n    at Module.load (node:internal/modules/cjs/loader:1480:32)\n    at Module._load (node:internal/modules/cjs/loader:1299:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)"
+}

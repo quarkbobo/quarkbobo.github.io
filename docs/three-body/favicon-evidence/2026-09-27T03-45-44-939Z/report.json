@@ -1,0 +1,19 @@
+{
+  "startedAt": "2026-09-27T03:45:44.939Z",
+  "mode": "source-http",
+  "checks": [
+    "index.html: explicit same-origin SVG favicon",
+    "archives/index.html: explicit same-origin SVG favicon",
+    "关于我/zzyc_V4_for_U/index.html: explicit same-origin SVG favicon",
+    "Self-contained three-color SVG is under 4 KiB and served with the SVG MIME type"
+  ],
+  "requests": [
+    {
+      "pathname": "/images/three-body/favicon.svg",
+      "status": 200
+    }
+  ],
+  "consoleErrors": [],
+  "passed": true,
+  "elapsedMs": 114.39829999999999
+}
