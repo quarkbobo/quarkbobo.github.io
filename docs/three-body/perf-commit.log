@@ -1,0 +1,264 @@
+warning: in the working copy of 'docs/three-body/BLOCKED.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/PERFORMANCE.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/PROGRESS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/favicon-evidence/2026-09-27T03-45-15-176Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/favicon-evidence/2026-09-27T03-45-44-939Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/favicon-evidence/2026-09-27T03-50-11-321Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/favicon-evidence/2026-09-27T04-06-04-385Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/favicon-verify.cjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-after-2026-09-27T03-52-15-216Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-after-v2-2026-09-27T03-55-50-857Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-baseline-2026-09-27T03-44-54-344Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-baseline-notes.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-baseline-repeat-2026-09-27T03-57-49-888Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-baseline-scene.mjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-baseline-sync-2026-09-27T03-47-01-297Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-benchmark.cjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-comparison.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-comparison.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-compositor-2026-09-27T03-59-02-618Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-compositor-final-2026-09-27T04-02-10-097Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-compositor-final.cjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-compositor.cjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-diagnostic-followup.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-final-summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/layout-report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/layout-report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-layout.cjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-lifecycle-2026-09-27T04-03-41-767Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-lifecycle.cjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-lifecycle.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-live-verify.cjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-rejected-texture-scene.mjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-review.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-scene.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-scope.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/report.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-00.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-01.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-02.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-03.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-04.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-05.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-06.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-07.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-08.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-09.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-10.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-11.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-12.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-13.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-14.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-15.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-16.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-17.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-18.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-19.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-20.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/soak-samples.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-soak.cjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/three-body/perf-start-fingerprints.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'themes/fluid-particle/layout/_partial/head.ejs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'themes/fluid-particle/source/css/three-body.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'themes/fluid-particle/source/images/three-body/favicon.svg', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'themes/fluid-particle/source/js/three-body-scene.mjs', LF will be replaced by CRLF the next time Git touches it
+[codex/planet-interior-upgrade 33de344] perf(three-body): fix favicon and reduce scene compositing cost
+ 201 files changed, 171613 insertions(+), 21 deletions(-)
+ create mode 100644 docs/three-body/PERFORMANCE.md
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/bloom-after.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/bloom-before.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/desktop-initial.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/exposure-after.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/exposure-before.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/lagrange-and-belt.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/mobile-panel-100.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/mobile-panel-200.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/mobile-scene.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/nebula-after.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/nebula-before.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/particles-after.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/particles-before.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/particles-full.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/particles-zero.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/report.json
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/starScale-after.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/starScale-before.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/trailWidth-after.png
+ create mode 100644 docs/three-body/art-evidence/2026-09-27T04-05-21-878Z/trailWidth-before.png
+ create mode 100644 docs/three-body/favicon-evidence/2026-09-27T03-45-15-176Z/report.json
+ create mode 100644 docs/three-body/favicon-evidence/2026-09-27T03-45-44-939Z/report.json
+ create mode 100644 docs/three-body/favicon-evidence/2026-09-27T03-50-11-321Z/report.json
+ create mode 100644 docs/three-body/favicon-evidence/2026-09-27T04-06-04-385Z/favicon-browser.png
+ create mode 100644 docs/three-body/favicon-evidence/2026-09-27T04-06-04-385Z/report.json
+ create mode 100644 docs/three-body/favicon-verify.cjs
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/desktop-archive.png
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/desktop-article.png
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/desktop-default-root.png
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/desktop-old-preference-forced-three-body.png
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/desktop-reading.png
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/mobile-archive.png
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/mobile-article.png
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/mobile-default-root.png
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/mobile-old-preference-forced-three-body.png
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/mobile-reading.png
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/no-webgl-default.png
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/reduced-motion-default.png
+ create mode 100644 docs/three-body/only-theme-evidence/2026-09-27T04-04-00-192Z/report.json
+ create mode 100644 docs/three-body/perf-after-2026-09-27T03-52-15-216Z/fixed-1440-planet.png
+ create mode 100644 docs/three-body/perf-after-2026-09-27T03-52-15-216Z/fixed-1440-star-a.png
+ create mode 100644 docs/three-body/perf-after-2026-09-27T03-52-15-216Z/fixed-1440-station.png
+ create mode 100644 docs/three-body/perf-after-2026-09-27T03-52-15-216Z/fixed-390-planet.png
+ create mode 100644 docs/three-body/perf-after-2026-09-27T03-52-15-216Z/fixed-390-star-a.png
+ create mode 100644 docs/three-body/perf-after-2026-09-27T03-52-15-216Z/fixed-390-station.png
+ create mode 100644 docs/three-body/perf-after-2026-09-27T03-52-15-216Z/homepage-1440.png
+ create mode 100644 docs/three-body/perf-after-2026-09-27T03-52-15-216Z/homepage-390.png
+ create mode 100644 docs/three-body/perf-after-2026-09-27T03-52-15-216Z/report.json
+ create mode 100644 docs/three-body/perf-after-v2-2026-09-27T03-55-50-857Z/fixed-1440-planet.png
+ create mode 100644 docs/three-body/perf-after-v2-2026-09-27T03-55-50-857Z/fixed-1440-star-a.png
+ create mode 100644 docs/three-body/perf-after-v2-2026-09-27T03-55-50-857Z/fixed-1440-station.png
+ create mode 100644 docs/three-body/perf-after-v2-2026-09-27T03-55-50-857Z/fixed-390-planet.png
+ create mode 100644 docs/three-body/perf-after-v2-2026-09-27T03-55-50-857Z/fixed-390-star-a.png
+ create mode 100644 docs/three-body/perf-after-v2-2026-09-27T03-55-50-857Z/fixed-390-station.png
+ create mode 100644 docs/three-body/perf-after-v2-2026-09-27T03-55-50-857Z/homepage-1440.png
+ create mode 100644 docs/three-body/perf-after-v2-2026-09-27T03-55-50-857Z/homepage-390.png
+ create mode 100644 docs/three-body/perf-after-v2-2026-09-27T03-55-50-857Z/report.json
+ create mode 100644 docs/three-body/perf-archive.log
+ create mode 100644 docs/three-body/perf-art.log
+ create mode 100644 docs/three-body/perf-baseline-2026-09-27T03-44-54-344Z/fixed-1440-planet.png
+ create mode 100644 docs/three-body/perf-baseline-2026-09-27T03-44-54-344Z/fixed-1440-star-a.png
+ create mode 100644 docs/three-body/perf-baseline-2026-09-27T03-44-54-344Z/fixed-1440-station.png
+ create mode 100644 docs/three-body/perf-baseline-2026-09-27T03-44-54-344Z/fixed-390-planet.png
+ create mode 100644 docs/three-body/perf-baseline-2026-09-27T03-44-54-344Z/fixed-390-star-a.png
+ create mode 100644 docs/three-body/perf-baseline-2026-09-27T03-44-54-344Z/fixed-390-station.png
+ create mode 100644 docs/three-body/perf-baseline-2026-09-27T03-44-54-344Z/homepage-1440.png
+ create mode 100644 docs/three-body/perf-baseline-2026-09-27T03-44-54-344Z/homepage-390.png
+ create mode 100644 docs/three-body/perf-baseline-2026-09-27T03-44-54-344Z/report.json
+ create mode 100644 docs/three-body/perf-baseline-notes.md
+ create mode 100644 docs/three-body/perf-baseline-repeat-2026-09-27T03-57-49-888Z/fixed-1440-planet.png
+ create mode 100644 docs/three-body/perf-baseline-repeat-2026-09-27T03-57-49-888Z/fixed-1440-star-a.png
+ create mode 100644 docs/three-body/perf-baseline-repeat-2026-09-27T03-57-49-888Z/fixed-1440-station.png
+ create mode 100644 docs/three-body/perf-baseline-repeat-2026-09-27T03-57-49-888Z/fixed-390-planet.png
+ create mode 100644 docs/three-body/perf-baseline-repeat-2026-09-27T03-57-49-888Z/fixed-390-star-a.png
+ create mode 100644 docs/three-body/perf-baseline-repeat-2026-09-27T03-57-49-888Z/fixed-390-station.png
+ create mode 100644 docs/three-body/perf-baseline-repeat-2026-09-27T03-57-49-888Z/homepage-1440.png
+ create mode 100644 docs/three-body/perf-baseline-repeat-2026-09-27T03-57-49-888Z/homepage-390.png
+ create mode 100644 docs/three-body/perf-baseline-repeat-2026-09-27T03-57-49-888Z/report.json
+ create mode 100644 docs/three-body/perf-baseline-scene.mjs
+ create mode 100644 docs/three-body/perf-baseline-sync-2026-09-27T03-47-01-297Z/fixed-1440-planet.png
+ create mode 100644 docs/three-body/perf-baseline-sync-2026-09-27T03-47-01-297Z/fixed-1440-star-a.png
+ create mode 100644 docs/three-body/perf-baseline-sync-2026-09-27T03-47-01-297Z/fixed-1440-station.png
+ create mode 100644 docs/three-body/perf-baseline-sync-2026-09-27T03-47-01-297Z/fixed-390-planet.png
+ create mode 100644 docs/three-body/perf-baseline-sync-2026-09-27T03-47-01-297Z/fixed-390-star-a.png
+ create mode 100644 docs/three-body/perf-baseline-sync-2026-09-27T03-47-01-297Z/fixed-390-station.png
+ create mode 100644 docs/three-body/perf-baseline-sync-2026-09-27T03-47-01-297Z/homepage-1440.png
+ create mode 100644 docs/three-body/perf-baseline-sync-2026-09-27T03-47-01-297Z/homepage-390.png
+ create mode 100644 docs/three-body/perf-baseline-sync-2026-09-27T03-47-01-297Z/report.json
+ create mode 100644 docs/three-body/perf-benchmark.cjs
+ create mode 100644 docs/three-body/perf-comparison.json
+ create mode 100644 docs/three-body/perf-comparison.md
+ create mode 100644 docs/three-body/perf-compositor-2026-09-27T03-59-02-618Z/report.json
+ create mode 100644 docs/three-body/perf-compositor-final-2026-09-27T04-02-10-097Z/production-1440.png
+ create mode 100644 docs/three-body/perf-compositor-final-2026-09-27T04-02-10-097Z/production-390.png
+ create mode 100644 docs/three-body/perf-compositor-final-2026-09-27T04-02-10-097Z/report.json
+ create mode 100644 docs/three-body/perf-compositor-final.cjs
+ create mode 100644 docs/three-body/perf-compositor.cjs
+ create mode 100644 docs/three-body/perf-diagnostic-followup.md
+ create mode 100644 docs/three-body/perf-favicon.log
+ create mode 100644 docs/three-body/perf-final-npm-test.log
+ create mode 100644 docs/three-body/perf-final-summary.md
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/1440-archive.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/1440-article-toc.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/1440-article.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/1440-games.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/1440-home.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/320-archive.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/320-article-toc.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/320-article.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/320-games.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/320-home.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/390-archive.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/390-article-font200.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/390-article-toc-font200.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/390-article-toc.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/390-article.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/390-games.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/390-home-font200.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/390-home.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/768-archive.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/768-article-toc.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/768-article.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/768-games.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/768-home.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-06-53-568Z/layout-report.json
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/1440-archive.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/1440-article-toc.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/1440-article.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/1440-games.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/1440-home.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/320-archive.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/320-article-toc.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/320-article.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/320-games.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/320-home.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/390-archive-font200.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/390-archive.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/390-article-font200.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/390-article-toc-font200.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/390-article-toc.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/390-article.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/390-games-font200.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/390-games.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/390-home-font200.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/390-home.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/768-archive.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/768-article-toc.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/768-article.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/768-games.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/768-home.png
+ create mode 100644 docs/three-body/perf-layout-2026-09-27T04-09-11-586Z/layout-report.json
+ create mode 100644 docs/three-body/perf-layout.cjs
+ create mode 100644 docs/three-body/perf-lifecycle-2026-09-27T04-03-41-767Z/cycle-1.png
+ create mode 100644 docs/three-body/perf-lifecycle-2026-09-27T04-03-41-767Z/cycle-2.png
+ create mode 100644 docs/three-body/perf-lifecycle-2026-09-27T04-03-41-767Z/cycle-3.png
+ create mode 100644 docs/three-body/perf-lifecycle-2026-09-27T04-03-41-767Z/report.json
+ create mode 100644 docs/three-body/perf-lifecycle.cjs
+ create mode 100644 docs/three-body/perf-lifecycle.html
+ create mode 100644 docs/three-body/perf-live-verify.cjs
+ create mode 100644 docs/three-body/perf-npm-test.log
+ create mode 100644 docs/three-body/perf-only-theme.log
+ create mode 100644 docs/three-body/perf-rejected-texture-scene.mjs
+ create mode 100644 docs/three-body/perf-review.md
+ create mode 100644 docs/three-body/perf-scene.html
+ create mode 100644 docs/three-body/perf-scope.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/report.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-00.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-01.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-02.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-03.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-04.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-05.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-06.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-07.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-08.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-09.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-10.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-11.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-12.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-13.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-14.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-15.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-16.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-17.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-18.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-19.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/sample-20.json
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/soak-final.png
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/soak-initial.png
+ create mode 100644 docs/three-body/perf-soak-evidence/2026-09-27T04-10-20-738Z/soak-samples.json
+ create mode 100644 docs/three-body/perf-soak-run.log
+ create mode 100644 docs/three-body/perf-soak.cjs
+ create mode 100644 docs/three-body/perf-start-fingerprints.json
+ create mode 100644 themes/fluid-particle/source/images/three-body/favicon.svg

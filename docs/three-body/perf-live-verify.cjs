@@ -11,11 +11,18 @@ const root = path.resolve(__dirname, '../..')
 const base = 'https://quarkbobo.github.io/'
 const out = path.join(__dirname, 'perf-live-evidence', new Date().toISOString().replace(/[:.]/g, '-'))
 const report = { startedAt: new Date().toISOString(), base, requestedCommit: process.argv[2] ?? null, assets: [], pages: [], checks: [], consoleErrors: [], networkErrors: [], requests: [], screenshots: [] }
+report.fixtureCorrection = {
+  invalidatedRun: 'perf-live-evidence/2026-09-27T04-24-38-006Z/report.json',
+  reason: 'Navigation fixture false green: the first archive link was the root catalogue (/), so the article check observed home before its renderer initialized.',
+  correction: 'Choose an observed same-origin archive link whose pathname is neither root nor archives; click its actual href selector, require visible article shell/body with content, and verify no renderer remains after 650 ms. All asset/error/favicon checks remain.',
+  additionalFixtureFailure: { run: 'perf-live-evidence/2026-09-27T04-26-43-623Z/report.json', cause: 'A regex literal lost escapes inside Runtime.evaluate source.', correction: 'Use equivalent pathname string comparisons and startsWith instead of an embedded regex.' }
+}
 const sha = value => createHash('sha256').update(value).digest('hex')
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 const check = (condition, label) => { assert.ok(condition, label); report.checks.push(label) }
 async function main () {
   fs.mkdirSync(out, { recursive: true })
+  console.log('FIXTURE CORRECTION: ' + JSON.stringify(report.fixtureCorrection))
   assert.match(report.requestedCommit || '', /^[0-9a-f]{7,40}$/i, 'Pass the actual published commit SHA explicitly')
   report.commit = execFileSync('git', ['rev-parse', '--verify', `${report.requestedCommit}^{commit}`], { cwd: root, encoding: 'utf8' }).trim()
   const assets = [
@@ -96,14 +103,29 @@ async function main () {
     await inspectPage('archive')
     check(await evaluate('document.querySelectorAll(".archive-list a[href]").length>0'), 'Published archive retains real article links')
     await screenshot('archive')
-    const articleUrl = await clickNavigation('.archive-list a[href]')
+    const articleLink = await evaluate(`(()=>{const a=[...document.querySelectorAll('.archive-list a[href]')].find(a=>{const u=new URL(a.href);return u.origin===location.origin&&u.pathname!=='/'&&u.pathname!=='/archives'&&!u.pathname.startsWith('/archives/')});return a?{href:a.href,selector:'.archive-list a[href="'+CSS.escape(a.getAttribute('href'))+'"]',text:a.textContent.trim()}:null})()`)
+    assert.ok(articleLink, 'Archive exposes a real non-root article destination')
+    report.selectedArticleLink = articleLink
+    const articleUrl = await clickNavigation(articleLink.selector)
+    assert.notEqual(new URL(articleUrl).pathname, '/', 'Article destination is not the root catalogue')
+    assert.doesNotMatch(new URL(articleUrl).pathname, /^\/archives(?:\/|$)/, 'Article destination is not an archive listing')
+    const article = await evaluate(`(()=>{const shell=document.querySelector('.article-shell'),body=document.querySelector('.article-body');return{pathname:location.pathname,shellVisible:!!shell&&shell.checkVisibility({checkVisibilityCSS:true}),bodyVisible:!!body&&body.checkVisibility({checkVisibilityCSS:true}),bodyLength:body?.textContent.trim().length??0}})()`)
+    assert.equal(article.pathname, new URL(articleUrl).pathname)
+    check(article.pathname !== '/' && article.shellVisible && article.bodyVisible && article.bodyLength > 20, 'Native navigation reaches a real visible article shell and authored body')
     await inspectPage('article')
-    assert.equal((await evaluate('window.threeBodySnapshot()')).renderer.available, false, 'article does not allocate the observation renderer')
+    const articleBefore = await evaluate('window.threeBodySnapshot()')
+    assert.equal(articleBefore.renderer.available, false, 'article does not allocate the observation renderer')
+    await wait(650)
+    const articleAfter = await evaluate('window.threeBodySnapshot()')
+    assert.equal(articleAfter.renderer.available, false, 'article still has no renderer after initialization time has passed')
+    report.articleObservation = { ...article, waitedMs: 650, rendererBefore: articleBefore.renderer, rendererAfter: articleAfter.renderer }
     report.articleUrl = articleUrl
     await screenshot('article')
     await clickNavigation('.site-brand')
     await until('window.threeBodySnapshot().renderer.available && window.threeBodySnapshot().renderer.frames>0', 'home navigation restores the real scene', 30000)
     await inspectPage('returned-home')
+    const returned = await evaluate('window.threeBodySnapshot()')
+    await until(`window.threeBodySnapshot().renderer.frames>${returned.renderer.frames + 1} && window.threeBodySnapshot().simTime>${returned.simTime + 0.1}`, 'returned home actually keeps rendering and integrating', 15000)
     await wait(350)
     check(report.requests.some(request => request.url === new URL('images/three-body/favicon.svg', base).href && request.status === 200), 'Real published browser request retrieves the SVG favicon with 200')
     assert.deepEqual([...requests.values()].filter(url => new URL(url).origin === new URL(base).origin && new URL(url).pathname === '/favicon.ico'), [], 'No implicit favicon.ico request is hidden or exempted')

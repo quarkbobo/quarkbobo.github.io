@@ -1,0 +1,529 @@
+{
+  "startedAt": "2026-09-27T04:26:43.623Z",
+  "base": "https://quarkbobo.github.io/",
+  "requestedCommit": "33de34494c2c2fbf6bb7baec15a46f854442c8c4",
+  "assets": [
+    {
+      "file": "js/three-body-scene.mjs",
+      "url": "https://quarkbobo.github.io/js/three-body-scene.mjs",
+      "status": 200,
+      "mime": "text/javascript; charset=utf-8",
+      "expectedSha256": "8e7ca739525088810e84efdc966b45406b916a2adcdfe3e97105a99f36ac171a",
+      "actualSha256": "8e7ca739525088810e84efdc966b45406b916a2adcdfe3e97105a99f36ac171a",
+      "expectedBytes": 41343,
+      "actualBytes": 41343,
+      "equalBytes": true,
+      "cache": {
+        "age": "0",
+        "etag": "W/\"6ab89a44-a17f\"",
+        "lastModified": "Sun, 27 Sep 2026 04:23:32 GMT",
+        "cacheControl": "max-age=600"
+      }
+    },
+    {
+      "file": "css/three-body.css",
+      "url": "https://quarkbobo.github.io/css/three-body.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "expectedSha256": "7f96b469171a77edb90528cb062fd272a13ebc1614fd2d2edec4f6d23159f12b",
+      "actualSha256": "7f96b469171a77edb90528cb062fd272a13ebc1614fd2d2edec4f6d23159f12b",
+      "expectedBytes": 15281,
+      "actualBytes": 15281,
+      "equalBytes": true,
+      "cache": {
+        "age": "0",
+        "etag": "W/\"6ab89a44-3bb1\"",
+        "lastModified": "Sun, 27 Sep 2026 04:23:32 GMT",
+        "cacheControl": "max-age=600"
+      }
+    },
+    {
+      "file": "images/three-body/favicon.svg",
+      "url": "https://quarkbobo.github.io/images/three-body/favicon.svg",
+      "status": 200,
+      "mime": "image/svg+xml",
+      "expectedSha256": "f3f732d6425f01f61fe2e31810e2f295f6de897525f64debf8ad5ac855164b57",
+      "actualSha256": "f3f732d6425f01f61fe2e31810e2f295f6de897525f64debf8ad5ac855164b57",
+      "expectedBytes": 1104,
+      "actualBytes": 1104,
+      "equalBytes": true,
+      "cache": {
+        "age": "0",
+        "etag": "W/\"6ab89a44-450\"",
+        "lastModified": "Sun, 27 Sep 2026 04:23:32 GMT",
+        "cacheControl": "max-age=600"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "home",
+      "url": "https://quarkbobo.github.io/",
+      "theme": "three-body",
+      "toggle": false,
+      "mainText": 3217,
+      "readable": true,
+      "navLinks": [
+        {
+          "text": "首页",
+          "href": "https://quarkbobo.github.io/"
+        },
+        {
+          "text": "归档",
+          "href": "https://quarkbobo.github.io/archives/"
+        },
+        {
+          "text": "关于",
+          "href": "https://quarkbobo.github.io/#guan-yu-wo"
+        }
+      ],
+      "favicon": "https://quarkbobo.github.io/images/three-body/favicon.svg",
+      "willChange": "transform",
+      "labelWillChange": [
+        "transform",
+        "transform",
+        "transform",
+        "transform",
+        "transform",
+        "transform",
+        "transform",
+        "transform",
+        "transform"
+      ],
+      "width": 1440,
+      "pageWidth": 1425,
+      "clientWidth": 1425
+    },
+    {
+      "name": "archive",
+      "url": "https://quarkbobo.github.io/archives/",
+      "theme": "three-body",
+      "toggle": false,
+      "mainText": 583,
+      "readable": true,
+      "navLinks": [
+        {
+          "text": "首页",
+          "href": "https://quarkbobo.github.io/"
+        },
+        {
+          "text": "归档",
+          "href": "https://quarkbobo.github.io/archives/"
+        },
+        {
+          "text": "关于",
+          "href": "https://quarkbobo.github.io/#guan-yu-wo"
+        }
+      ],
+      "favicon": "https://quarkbobo.github.io/images/three-body/favicon.svg",
+      "willChange": null,
+      "labelWillChange": [],
+      "width": 1440,
+      "pageWidth": 1425,
+      "clientWidth": 1425
+    }
+  ],
+  "checks": [
+    "js/three-body-scene.mjs: HTTP 200, MIME and every byte match the published Git commit",
+    "css/three-body.css: HTTP 200, MIME and every byte match the published Git commit",
+    "images/three-body/favicon.svg: HTTP 200, MIME and every byte match the published Git commit",
+    "home: actual public page has readable content and navigation under the only theme",
+    "home: public desktop layout has no horizontal overflow",
+    "Actual projected labels use computed will-change: transform",
+    "All four published bodies really move with finite physical state",
+    "archive: actual public page has readable content and navigation under the only theme",
+    "archive: public desktop layout has no horizontal overflow",
+    "Published archive retains real article links"
+  ],
+  "consoleErrors": [],
+  "networkErrors": [],
+  "requests": [
+    {
+      "url": "https://quarkbobo.github.io/",
+      "status": 200,
+      "mime": "text/html"
+    },
+    {
+      "url": "https://quarkbobo.github.io/css/main.css",
+      "status": 200,
+      "mime": "text/css"
+    },
+    {
+      "url": "https://quarkbobo.github.io/css/three-body.css",
+      "status": 200,
+      "mime": "text/css"
+    },
+    {
+      "url": "https://quarkbobo.github.io/css/post.css",
+      "status": 200,
+      "mime": "text/css"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/site.js",
+      "status": 200,
+      "mime": "application/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/css/planet-explorer.css",
+      "status": 200,
+      "mime": "text/css"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/planet-world.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/css/archive-a.css",
+      "status": 200,
+      "mime": "text/css"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/home-latest-core.js",
+      "status": 200,
+      "mime": "application/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/cursor-comet.js",
+      "status": 200,
+      "mime": "application/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/cursor-comet-core.js",
+      "status": 200,
+      "mime": "application/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/particle-flow.js",
+      "status": 200,
+      "mime": "application/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/three-body.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/css/space-scene.css",
+      "status": 200,
+      "mime": "text/css"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/home-latest.js",
+      "status": 200,
+      "mime": "application/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/particle-core.js",
+      "status": 200,
+      "mime": "application/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/css/cursor-comet.css",
+      "status": 200,
+      "mime": "text/css"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/planet-explorer.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/vendor/three/three.module.min.js",
+      "status": 200,
+      "mime": "application/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/planet-flight.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/vendor/three/three.core.min.js",
+      "status": 200,
+      "mime": "application/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/three-body-events.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/three-body-overlays.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/three-body-core.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/three-body-scene.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/images/three-body/favicon.svg",
+      "status": 200,
+      "mime": "image/svg+xml"
+    },
+    {
+      "url": "https://quarkbobo.github.io/archives/",
+      "status": 200,
+      "mime": "text/html"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/three-body.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/css/post.css",
+      "status": 200,
+      "mime": "text/css"
+    },
+    {
+      "url": "https://quarkbobo.github.io/css/three-body.css",
+      "status": 200,
+      "mime": "text/css"
+    },
+    {
+      "url": "https://quarkbobo.github.io/css/archive-a.css",
+      "status": 200,
+      "mime": "text/css"
+    },
+    {
+      "url": "https://quarkbobo.github.io/css/main.css",
+      "status": 200,
+      "mime": "text/css"
+    },
+    {
+      "url": "https://quarkbobo.github.io/css/cursor-comet.css",
+      "status": 200,
+      "mime": "text/css"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/three-body-core.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/three-body-overlays.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/three-body-events.mjs",
+      "status": 200,
+      "mime": "text/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/cursor-comet-core.js",
+      "status": 200,
+      "mime": "application/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/cursor-comet.js",
+      "status": 200,
+      "mime": "application/javascript"
+    },
+    {
+      "url": "https://quarkbobo.github.io/js/site.js",
+      "status": 200,
+      "mime": "application/javascript"
+    }
+  ],
+  "screenshots": [
+    "home-1440.png",
+    "archive-1440.png",
+    "failure-1440.png"
+  ],
+  "fixtureCorrection": {
+    "invalidatedRun": "perf-live-evidence/2026-09-27T04-24-38-006Z/report.json",
+    "reason": "Navigation fixture false green: the first archive link was the root catalogue (/), so the article check observed home before its renderer initialized.",
+    "correction": "Choose an observed same-origin archive link whose pathname is neither root nor archives; click its actual href selector, require visible article shell/body with content, and verify no renderer remains after 650 ms. All asset/error/favicon checks remain."
+  },
+  "commit": "33de34494c2c2fbf6bb7baec15a46f854442c8c4",
+  "motion": {
+    "before": {
+      "frames": 4,
+      "simTime": 0.11666666666666667,
+      "realTime": 0.11679999999999972
+    },
+    "after": {
+      "frames": 7,
+      "simTime": 0.5958333333333333,
+      "realTime": 0.5968999999999997,
+      "geometries": 13,
+      "textures": 1,
+      "bodyCount": 4
+    }
+  },
+  "failurePage": {
+    "url": "https://quarkbobo.github.io/archives/",
+    "theme": "three-body",
+    "snapshot": {
+      "active": true,
+      "paused": false,
+      "mode": 1,
+      "view": "station",
+      "preset": "balanced",
+      "G": 1,
+      "speed": 1,
+      "simTime": 0,
+      "realTime": 0,
+      "forceMode": null,
+      "softening": 0.01,
+      "boundary": 12,
+      "visual": {
+        "exposure": 1.1,
+        "bloom": 1,
+        "particles": 1,
+        "nebula": 0.6,
+        "starScale": 1,
+        "trailWidth": 1.4
+      },
+      "observations": {
+        "lagrangeEnabled": false,
+        "lagrangePair": "a-b",
+        "beltEnabled": true,
+        "fitBelt": false,
+        "beltSettings": {
+          "count": 128,
+          "inner": 14,
+          "outer": 24,
+          "inclination": 12,
+          "seed": 7301
+        }
+      },
+      "lagrange": [],
+      "belt": null,
+      "events": {
+        "seed": 7301,
+        "randomState": 281699360,
+        "nextAt": 8.393529459834099,
+        "active": null,
+        "history": [],
+        "sequence": 0,
+        "lastTime": 0,
+        "enabled": true,
+        "frequency": 1,
+        "intensity": 1
+      },
+      "eventSettings": {
+        "enabled": true,
+        "frequency": 1,
+        "intensity": 1
+      },
+      "effects": {
+        "flare": {
+          "starId": null,
+          "strength": 0
+        },
+        "dust": 0,
+        "aurora": 0
+      },
+      "bodies": [
+        {
+          "id": "star-a",
+          "name": "恒星 A",
+          "mass": 1,
+          "radius": 0.32,
+          "luminosity": 20,
+          "position": [
+            -0.000025199571607282686,
+            0,
+            0
+          ],
+          "velocity": [
+            0,
+            -8.126844092662943e-7,
+            0
+          ],
+          "active": true,
+          "trail": []
+        },
+        {
+          "id": "star-b",
+          "name": "恒星 B",
+          "mass": 0.00001,
+          "radius": 0.2,
+          "luminosity": 0.05,
+          "position": [
+            7.999974800428393,
+            0,
+            0
+          ],
+          "velocity": [
+            0,
+            0.3535525779088645,
+            0
+          ],
+          "active": true,
+          "trail": []
+        },
+        {
+          "id": "star-c",
+          "name": "恒星 C",
+          "mass": 0.000004,
+          "radius": 0.16,
+          "luminosity": 0.02,
+          "position": [
+            -10.700025199571607,
+            0,
+            0
+          ],
+          "velocity": [
+            0,
+            -0.3057097329422808,
+            0
+          ],
+          "active": true,
+          "trail": []
+        },
+        {
+          "id": "planet",
+          "name": "文明行星",
+          "mass": 0.000003,
+          "radius": 0.09,
+          "luminosity": 0,
+          "position": [
+            -4.000025199571607,
+            0,
+            0
+          ],
+          "velocity": [
+            0,
+            -0.5000008126844092,
+            0
+          ],
+          "active": true,
+          "trail": []
+        }
+      ],
+      "civilization": {
+        "state": "乱纪元",
+        "dead": false,
+        "number": 1,
+        "reason": null,
+        "events": []
+      },
+      "renderer": {
+        "available": false,
+        "frames": 0,
+        "geometries": 0,
+        "textures": 0,
+        "camera": {
+          "position": [],
+          "quaternion": []
+        }
+      },
+      "error": null,
+      "visible": true,
+      "animationScheduled": false
+    }
+  },
+  "passed": false,
+  "error": "Error: SyntaxError: Invalid regular expression flags\n    at evaluate (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-planet-explorer.cjs:115:41)\n    at async main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\docs\\three-body\\perf-live-verify.cjs:105:25)"
+}

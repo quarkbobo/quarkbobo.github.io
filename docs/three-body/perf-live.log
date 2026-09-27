@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "commit": "33de34494c2c2fbf6bb7baec15a46f854442c8c4",
+  "checks": 15,
+  "report": "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\docs\\three-body\\perf-live-evidence\\2026-09-27T04-24-38-006Z\\report.json"
+}
+FIXTURE CORRECTION: {"invalidatedRun":"perf-live-evidence/2026-09-27T04-24-38-006Z/report.json","reason":"Navigation fixture false green: the first archive link was the root catalogue (/), so the article check observed home before its renderer initialized.","correction":"Choose an observed same-origin archive link whose pathname is neither root nor archives; click its actual href selector, require visible article shell/body with content, and verify no renderer remains after 650 ms. All asset/error/favicon checks remain."}
+{
+  "passed": false,
+  "commit": "33de34494c2c2fbf6bb7baec15a46f854442c8c4",
+  "checks": 10,
+  "report": "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\docs\\three-body\\perf-live-evidence\\2026-09-27T04-26-43-623Z\\report.json",
+  "error": "Error: SyntaxError: Invalid regular expression flags\n    at evaluate (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\tools\\verify-planet-explorer.cjs:115:41)\n    at async main (C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\docs\\three-body\\perf-live-verify.cjs:105:25)"
+}
+FIXTURE CORRECTION: {"invalidatedRun":"perf-live-evidence/2026-09-27T04-24-38-006Z/report.json","reason":"Navigation fixture false green: the first archive link was the root catalogue (/), so the article check observed home before its renderer initialized.","correction":"Choose an observed same-origin archive link whose pathname is neither root nor archives; click its actual href selector, require visible article shell/body with content, and verify no renderer remains after 650 ms. All asset/error/favicon checks remain.","additionalFixtureFailure":{"run":"perf-live-evidence/2026-09-27T04-26-43-623Z/report.json","cause":"A regex literal lost escapes inside Runtime.evaluate source.","correction":"Use equivalent pathname string comparisons and startsWith instead of an embedded regex."}}
+{
+  "passed": true,
+  "commit": "33de34494c2c2fbf6bb7baec15a46f854442c8c4",
+  "checks": 16,
+  "report": "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\docs\\three-body\\perf-live-evidence\\2026-09-27T04-27-27-360Z\\report.json"
+}
