@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>星球过渡 · 前后对比</title>
+  <style>
+    :root { color-scheme: dark; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; color: #e3edf5; background: #050b14; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 1440px; margin: auto; padding: 32px clamp(16px, 3vw, 48px) 40px; }
+    header { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin-bottom: 24px; }
+    h1 { margin: 0 0 8px; font-size: clamp(22px, 3vw, 30px); font-weight: 500; letter-spacing: .03em; }
+    p { margin: 0; color: #9cacbd; font-size: 13px; line-height: 1.8; }
+    label { display: grid; gap: 8px; color: #9cacbd; font-size: 12px; }
+    select, button { min-height: 44px; border: 1px solid #2a3c50; border-radius: 4px; background: #0b1725; color: #d8e8f1; font: inherit; }
+    select { padding: 0 12px; font-size: 13px; }
+    button { padding: 8px 13px; cursor: pointer; font-size: 13px; white-space: nowrap; }
+    button:hover { border-color: #7dc4d7; }
+    button[aria-pressed="true"] { border-color: #7dc4d7; color: #bceaf6; background: #13303e; }
+    :focus-visible { outline: 2px solid #bceaf6; outline-offset: 4px; }
+    .timeline { display: flex; gap: 8px; flex-wrap: wrap; padding-bottom: 20px; border-bottom: 1px solid #223246; }
+    .readout { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 20px; margin: 20px 0 16px; }
+    h2 { margin: 0; font-size: 16px; font-weight: 500; }
+    .comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+    figure { min-width: 0; margin: 0; overflow: hidden; border: 1px solid #223246; border-radius: 5px; background: #09121f; }
+    figcaption { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; font-size: 13px; border-bottom: 1px solid #223246; }
+    .caption-detail { color: #9cacbd; font-size: 11px; }
+    a { color: #9fd9e9; text-underline-offset: 3px; }
+    .frame { display: flex; align-items: flex-start; justify-content: center; background: #030811; }
+    img { display: block; width: 100%; height: auto; }
+    .comparison[data-viewport="mobile"] img { max-width: 390px; }
+    .missing { padding: 32px 18px; overflow-wrap: anywhere; }
+    [hidden] { display: none !important; }
+    footer { margin-top: 22px; padding-top: 18px; border-top: 1px solid #223246; }
+    @media (max-width: 640px) {
+      main { padding-top: 24px; }
+      .comparison { gap: 8px; }
+      figcaption { align-items: flex-start; padding: 10px; }
+      .caption-detail { display: block; margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>星球过渡 · 前后对比</h1>
+        <p>同一视口、同一时间点，检查展开、云雾、落镜与返回。</p>
+      </div>
+      <label for="viewport">截图视口
+        <select id="viewport">
+          <option value="desktop">桌面 · 1440 × 1000</option>
+          <option value="mobile">手机 · 390 × 844</option>
+        </select>
+      </label>
+    </header>
+
+    <nav class="timeline" aria-label="选择关键帧" id="timeline"></nav>
+    <div class="readout" aria-live="polite" aria-atomic="true">
+      <h2 id="frame-title">首页</h2>
+      <p id="frame-note">检查进入前的星球位置与页面构图。</p>
+    </div>
+
+    <section class="comparison" id="comparison" data-viewport="desktop" aria-label="优化前后关键帧">
+      <figure>
+        <figcaption><span>优化前 <span class="caption-detail">任务开始时的基线</span></span><a id="before-link" target="_blank" rel="noopener">原图</a></figcaption>
+        <div class="frame">
+          <img id="before" alt="优化前：首页，桌面视口">
+          <p class="missing" id="before-missing" hidden></p>
+        </div>
+      </figure>
+      <figure>
+        <figcaption><span>优化后 <span class="caption-detail">最终验收截图</span></span><a id="after-link" target="_blank" rel="noopener">原图</a></figcaption>
+        <div class="frame">
+          <img id="after" alt="优化后：首页，桌面视口">
+          <p class="missing" id="after-missing" hidden></p>
+        </div>
+      </figure>
+    </section>
+
+    <footer>
+      <p>这些关键帧由冻结验收脚本使用受控时间生成，只用于视觉检查。图像保持原始比例，点击“原图”可查看完整分辨率。</p>
+      <p>性能请查看独立实测日志。静态截图无法证明动画流畅度，也不能替代实际点击体验。</p>
+    </footer>
+    <noscript><p>请启用 JavaScript，以切换本地截图。</p></noscript>
+  </main>
+  <script>
+    const frames = [
+      ['home', '首页', '检查进入前的星球位置与页面构图。'],
+      ['entry-0ms', '进入 · 0ms', '检查点击后第一帧是否承接首页位置、大小和视角。'],
+      ['entry-560ms', '进入 · 560ms', '容器展开完成，观察星球放大与镜头推进的衔接。'],
+      ['entry-1400ms', '进入 · 1400ms', '镜头接近星球，检查云雾遮罩的层次与覆盖。'],
+      ['entry-1580ms', '进入 · 1580ms', '场景切换时刻，检查云雾是否完整覆盖画面。'],
+      ['entry-2200ms', '进入 · 2200ms', '云雾散开，检查落镜构图与标签淡入。'],
+      ['entry-2600ms', '进入 · 2600ms', '进入结束，检查内部场景、空间标签和操作入口。'],
+      ['return-300ms', '返回 · 300ms', '返回过程，检查外部星球重新显现时的画面。'],
+      ['return-500ms', '返回 · 500ms', '检查星球收回首页位置时的比例与遮罩。']
+    ];
+    const viewport = document.getElementById('viewport');
+    const timeline = document.getElementById('timeline');
+    let selected = frames[0];
+    const buttons = frames.map(frame => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = frame[1];
+      button.addEventListener('click', () => { selected = frame; render(); });
+      timeline.append(button);
+      return button;
+    });
+    const sides = [['before', 'baseline', '优化前'], ['after', 'final', '优化后']];
+    sides.forEach(([id]) => {
+      const image = document.getElementById(id);
+      const missing = document.getElementById(id + '-missing');
+      image.addEventListener('load', () => { image.hidden = false; missing.hidden = true; });
+      image.addEventListener('error', () => {
+        image.hidden = true;
+        missing.textContent = '截图尚未就绪：' + image.getAttribute('src');
+        missing.hidden = false;
+      });
+    });
+    function render() {
+      const [key, title, note] = selected;
+      const mode = viewport.value;
+      document.getElementById('comparison').dataset.viewport = mode;
+      document.getElementById('frame-title').textContent = title;
+      document.getElementById('frame-note').textContent = note;
+      buttons.forEach((button, index) => button.setAttribute('aria-pressed', String(frames[index] === selected)));
+      sides.forEach(([id, directory, label]) => {
+        const image = document.getElementById(id);
+        const src = directory + '/frames/transition-' + mode + '-' + key + '.png';
+        image.alt = label + '：' + title + '，' + (mode === 'desktop' ? '桌面 1440 × 1000' : '手机 390 × 844');
+        image.width = mode === 'desktop' ? 1440 : 390;
+        image.height = mode === 'desktop' ? 1000 : 844;
+        image.src = src;
+        document.getElementById(id + '-link').href = src;
+      });
+    }
+    viewport.addEventListener('change', render);
+    render();
+  </script>
+</body>
+</html>

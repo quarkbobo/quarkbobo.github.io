@@ -1,0 +1,217 @@
+{
+  "consoleErrors": [],
+  "pages": [
+    {
+      "page": "home-a",
+      "width": 1440,
+      "height": 1543,
+      "scrollWidth": 1425,
+      "latest": {
+        "x": 112.5,
+        "y": 704.84375,
+        "width": 1200,
+        "height": 306.484375
+      },
+      "catalogue": {
+        "x": 112.5,
+        "y": 1011.328125,
+        "width": 1200,
+        "height": 419.34375
+      },
+      "body": null,
+      "header": null,
+      "controls": 22
+    },
+    {
+      "page": "home-b",
+      "width": 1440,
+      "height": 1322,
+      "scrollWidth": 1425,
+      "latest": {
+        "x": 112.5,
+        "y": 463.640625,
+        "width": 572,
+        "height": 296.59375
+      },
+      "catalogue": {
+        "x": 112.5,
+        "y": 800.234375,
+        "width": 1200,
+        "height": 409.75
+      },
+      "body": null,
+      "header": null,
+      "controls": 22
+    },
+    {
+      "page": "article",
+      "width": 1440,
+      "height": 1330,
+      "scrollWidth": 1425,
+      "latest": null,
+      "catalogue": null,
+      "body": {
+        "x": 332.5,
+        "y": 416.09375,
+        "width": 760,
+        "height": 636.234375
+      },
+      "header": {
+        "x": 332.5,
+        "y": 226.59375,
+        "width": 760,
+        "height": 189.5
+      },
+      "controls": 14
+    },
+    {
+      "page": "article-toc",
+      "width": 1440,
+      "height": 1251,
+      "scrollWidth": 1425,
+      "latest": null,
+      "catalogue": null,
+      "body": {
+        "x": 112.5,
+        "y": 416.09375,
+        "width": 760,
+        "height": 557.90625
+      },
+      "header": {
+        "x": 112.5,
+        "y": 226.59375,
+        "width": 760,
+        "height": 189.5
+      },
+      "controls": 24
+    },
+    {
+      "page": "archive",
+      "width": 1440,
+      "height": 1130,
+      "scrollWidth": 1425,
+      "latest": null,
+      "catalogue": null,
+      "body": null,
+      "header": null,
+      "controls": 18
+    },
+    {
+      "page": "games",
+      "width": 1440,
+      "height": 1000,
+      "scrollWidth": 1440,
+      "latest": null,
+      "catalogue": null,
+      "body": null,
+      "header": null,
+      "controls": 16
+    },
+    {
+      "page": "home-a",
+      "width": 390,
+      "height": 1923,
+      "scrollWidth": 390,
+      "latest": {
+        "x": 16,
+        "y": 735.0625,
+        "width": 358,
+        "height": 375.171875
+      },
+      "catalogue": {
+        "x": 16,
+        "y": 1110.234375,
+        "width": 358,
+        "height": 661.234375
+      },
+      "body": null,
+      "header": null,
+      "controls": 22
+    },
+    {
+      "page": "home-b",
+      "width": 390,
+      "height": 1904,
+      "scrollWidth": 390,
+      "latest": {
+        "x": 16,
+        "y": 454.375,
+        "width": 358,
+        "height": 295.0625
+      },
+      "catalogue": {
+        "x": 16,
+        "y": 1086.125,
+        "width": 358,
+        "height": 666.84375
+      },
+      "body": null,
+      "header": null,
+      "controls": 22
+    },
+    {
+      "page": "article",
+      "width": 390,
+      "height": 1663,
+      "scrollWidth": 390,
+      "latest": null,
+      "catalogue": null,
+      "body": {
+        "x": 16,
+        "y": 401.796875,
+        "width": 358,
+        "height": 945.1875
+      },
+      "header": {
+        "x": 16,
+        "y": 222.78125,
+        "width": 358,
+        "height": 179.015625
+      },
+      "controls": 14
+    },
+    {
+      "page": "article-toc",
+      "width": 390,
+      "height": 1293,
+      "scrollWidth": 390,
+      "latest": null,
+      "catalogue": null,
+      "body": {
+        "x": 16,
+        "y": 433.234375,
+        "width": 358,
+        "height": 543.328125
+      },
+      "header": {
+        "x": 16,
+        "y": 296.78125,
+        "width": 358,
+        "height": 136.453125
+      },
+      "controls": 25
+    },
+    {
+      "page": "archive",
+      "width": 390,
+      "height": 1235,
+      "scrollWidth": 390,
+      "latest": null,
+      "catalogue": null,
+      "body": null,
+      "header": null,
+      "controls": 18
+    },
+    {
+      "page": "games",
+      "width": 390,
+      "height": 1273,
+      "scrollWidth": 390,
+      "latest": null,
+      "catalogue": null,
+      "body": null,
+      "header": null,
+      "controls": 16
+    }
+  ]
+}

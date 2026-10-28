@@ -1,0 +1,2088 @@
+{
+  "generatedAt": "2026-09-08T09:43:58.799Z",
+  "cases": [
+    {
+      "name": "transition-desktop",
+      "consoleErrors": [],
+      "checks": [
+        "entry starts its approach before any animation frame",
+        "entry preserves the homepage planet center (0.000 px jump)",
+        "entry preserves the actual shader projection scale on both axes",
+        "entry begins with a clear cloud and veil, and waits to reveal interior controls",
+        "cloud opacity has no independent CSS animation clock",
+        "140 ms: approach phase remains active through arrival",
+        "320 ms: approach phase remains active through arrival",
+        "560 ms: approach phase remains active through arrival",
+        "1050 ms: approach phase remains active through arrival",
+        "1400 ms: approach phase remains active through arrival",
+        "1540 ms: approach phase remains active through arrival",
+        "1540 ms: the scene seam stays completely cloud-covered even with sparse RAF delivery",
+        "1540 ms: controls stay hidden during the scene seam",
+        "1580 ms: approach phase remains active through arrival",
+        "1580 ms: the scene seam stays completely cloud-covered even with sparse RAF delivery",
+        "1580 ms: controls stay hidden during the scene seam",
+        "1700 ms: approach phase remains active through arrival",
+        "1700 ms: the scene seam stays completely cloud-covered even with sparse RAF delivery",
+        "1700 ms: controls stay hidden during the scene seam",
+        "1800 ms: approach phase remains active through arrival",
+        "1800 ms: the scene seam stays completely cloud-covered even with sparse RAF delivery",
+        "1800 ms: controls stay hidden during the scene seam",
+        "2200 ms: approach phase remains active through arrival",
+        "2460 ms: approach phase remains active through arrival",
+        "2600 ms: arrival finishes with a clear, usable interior",
+        "2680 ms: arrival finishes with a clear, usable interior",
+        "return starts a visible departure before closing the modal",
+        "140 ms: return holds the modal until the flight finishes",
+        "220 ms: return holds the modal until the flight finishes",
+        "return covers the switch back to the exterior scene",
+        "260 ms: return holds the modal until the flight finishes",
+        "300 ms: return holds the modal until the flight finishes",
+        "500 ms: return holds the modal until the flight finishes",
+        "return restores focus, canvas, and page interaction",
+        "restored homepage canvas has no leftover flight transform",
+        "pause during approach snaps to a visible, paused interior",
+        "pause stops WebGL draws and leaves no moving transition mask",
+        "Escape from the interior restores the homepage",
+        "restored homepage canvas has no leftover flight transform",
+        "Escape during entry immediately restores the homepage",
+        "restored homepage canvas has no leftover flight transform",
+        "cancelled approach does not reopen or move its canvas after the old entry deadline",
+        "restored homepage canvas has no leftover flight transform",
+        "cancelled approach remains closed",
+        "resized return remains in flight immediately before its deadline",
+        "return targets the resized homepage planet center before closing (0.000 px offset)",
+        "resized return closes without a final position jump (0.000 px)",
+        "resized return preserves actual shader projection scale across the final canvas move",
+        "resized return restores focus, canvas, and page interaction",
+        "restored homepage canvas has no leftover flight transform"
+      ],
+      "samples": [
+        {
+          "label": "initial",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0,
+          "veil": 0,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 392.6097106933594,
+            "y": 182.63824462890625,
+            "width": 1020.561767578125,
+            "height": 708.7235107421875,
+            "centerX": 902.8905944824219,
+            "centerY": 537
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            1846.2877417746931,
+            1846.2877858751744
+          ],
+          "transform": "matrix(0.708723, 0, 0, 0.708723, 182.891, 37)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 24
+        },
+        {
+          "label": "entry-140ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0,
+          "veil": 0.103515625,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 351.96844482421875,
+            "y": 163.73233032226562,
+            "width": 1063.980224609375,
+            "height": 738.875244140625,
+            "centerX": 883.9585571289062,
+            "centerY": 533.1699523925781
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            1924.8356234710664,
+            1924.8357333507738
+          ],
+          "transform": "matrix(0.738875, 0, 0, 0.738875, 163.959, 33.1699)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 36
+        },
+        {
+          "label": "entry-320ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0,
+          "veil": 0.6321175700600941,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 144.4342041015625,
+            "y": 67.18939208984375,
+            "width": 1285.696044921875,
+            "height": 892.844482421875,
+            "centerX": 787.2822265625,
+            "centerY": 513.6116333007812
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2325.939421599731,
+            2325.9392945145373
+          ],
+          "transform": "matrix(0.892844, 0, 0, 0.892844, 67.2822, 13.6116)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 40
+        },
+        {
+          "label": "entry-560ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 44
+        },
+        {
+          "label": "entry-1050ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 48
+        },
+        {
+          "label": "entry-1400ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0.9076145802049393,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 0.907615,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 52
+        },
+        {
+          "label": "entry-1540ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 56
+        },
+        {
+          "label": "entry-1580ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 123
+        },
+        {
+          "label": "entry-1700ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 190
+        },
+        {
+          "label": "entry-1800ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 257
+        },
+        {
+          "label": "entry-2200ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0.2912120616332653,
+          "veil": 1,
+          "hud": 0.018075947785877785,
+          "cloudOpacity": 0.291212,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 324
+        },
+        {
+          "label": "entry-2460ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0,
+          "veil": 1,
+          "hud": 0.8311204048634452,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 388
+        },
+        {
+          "label": "entry-2600ms",
+          "open": true,
+          "phase": "interior",
+          "cloud": 0,
+          "veil": 1,
+          "hud": 1,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "none",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 452
+        },
+        {
+          "label": "entry-2680ms",
+          "open": true,
+          "phase": "interior",
+          "cloud": 0,
+          "veil": 1,
+          "hud": 1,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "none",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 516
+        },
+        {
+          "label": "return-140ms",
+          "open": true,
+          "phase": "departing",
+          "cloud": 0.7432862881944228,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 0.743286,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 644
+        },
+        {
+          "label": "return-220ms",
+          "open": true,
+          "phase": "departing",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 711
+        },
+        {
+          "label": "return-260ms",
+          "open": true,
+          "phase": "departing",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 715
+        },
+        {
+          "label": "return-300ms",
+          "open": true,
+          "phase": "departing",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2605.089111328125,
+            2605.088949203491
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 719
+        },
+        {
+          "label": "return-500ms",
+          "open": true,
+          "phase": "departing",
+          "cloud": 0.27520751953125,
+          "veil": 0.5445754157402082,
+          "hud": 0,
+          "cloudOpacity": 0.275208,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 178.80413818359375,
+            "y": 83.17794799804688,
+            "width": 1248.9775390625,
+            "height": 867.345458984375,
+            "centerX": 803.2929077148438,
+            "centerY": 516.8506774902344
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1000,
+            "centerX": 720,
+            "centerY": 500
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            2259.51235229522,
+            2259.5120703420253
+          ],
+          "transform": "matrix(0.867346, 0, 0, 0.867346, 83.2929, 16.8507)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 723
+        },
+        {
+          "label": "return-720ms",
+          "open": false,
+          "phase": "departing",
+          "cloud": 0,
+          "veil": 0,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "centerX": 0,
+            "centerY": 0
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "centerX": 0,
+            "centerY": 0
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            0,
+            0
+          ],
+          "transform": "none",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 723
+        },
+        {
+          "label": "return-840ms",
+          "open": false,
+          "phase": "exterior",
+          "cloud": 0,
+          "veil": 0,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "host": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "parent": "planet-viewport",
+          "home": {
+            "x": 522.09375,
+            "y": 73,
+            "width": 761.59375,
+            "height": 928,
+            "centerX": 902.890625,
+            "centerY": 537
+          },
+          "projectedScale": [
+            1846.2879338115454,
+            1846.2879028320312
+          ],
+          "transform": "none",
+          "focus": "planet-enter",
+          "paused": "false",
+          "inert": false,
+          "exploring": false,
+          "draws": 735
+        },
+        {
+          "label": "return-resized-719ms",
+          "open": true,
+          "phase": "departing",
+          "cloud": 0,
+          "veil": 1.3449303137846869e-7,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 264.5702819824219,
+            "y": 73,
+            "width": 900,
+            "height": 648,
+            "centerX": 714.5702819824219,
+            "centerY": 397
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 1000,
+            "height": 720,
+            "centerX": 500,
+            "centerY": 360
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": 341.296875,
+            "y": 73,
+            "width": 746.546875,
+            "height": 648,
+            "centerX": 714.5703125,
+            "centerY": 397
+          },
+          "projectedScale": [
+            1688.0977034568787,
+            1688.0976390838623
+          ],
+          "transform": "matrix(0.9, 0, 0, 0.9, 214.57, 37)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 1187
+        }
+      ],
+      "screenshots": [
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-desktop-home.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-desktop-entry-0ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-desktop-entry-560ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-desktop-entry-1400ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-desktop-entry-1580ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-desktop-entry-2200ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-desktop-entry-2600ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-desktop-return-300ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-desktop-return-500ms.png"
+      ],
+      "passed": true
+    },
+    {
+      "name": "transition-mobile",
+      "consoleErrors": [],
+      "checks": [
+        "entry starts its approach before any animation frame",
+        "entry preserves the homepage planet center (0.000 px jump)",
+        "entry preserves the actual shader projection scale on both axes",
+        "entry begins with a clear cloud and veil, and waits to reveal interior controls",
+        "cloud opacity has no independent CSS animation clock",
+        "140 ms: approach phase remains active through arrival",
+        "320 ms: approach phase remains active through arrival",
+        "560 ms: approach phase remains active through arrival",
+        "1050 ms: approach phase remains active through arrival",
+        "1400 ms: approach phase remains active through arrival",
+        "1540 ms: approach phase remains active through arrival",
+        "1540 ms: the scene seam stays completely cloud-covered even with sparse RAF delivery",
+        "1540 ms: controls stay hidden during the scene seam",
+        "1580 ms: approach phase remains active through arrival",
+        "1580 ms: the scene seam stays completely cloud-covered even with sparse RAF delivery",
+        "1580 ms: controls stay hidden during the scene seam",
+        "1700 ms: approach phase remains active through arrival",
+        "1700 ms: the scene seam stays completely cloud-covered even with sparse RAF delivery",
+        "1700 ms: controls stay hidden during the scene seam",
+        "1800 ms: approach phase remains active through arrival",
+        "1800 ms: the scene seam stays completely cloud-covered even with sparse RAF delivery",
+        "1800 ms: controls stay hidden during the scene seam",
+        "2200 ms: approach phase remains active through arrival",
+        "2460 ms: approach phase remains active through arrival",
+        "2600 ms: arrival finishes with a clear, usable interior",
+        "2680 ms: arrival finishes with a clear, usable interior",
+        "return starts a visible departure before closing the modal",
+        "140 ms: return holds the modal until the flight finishes",
+        "220 ms: return holds the modal until the flight finishes",
+        "return covers the switch back to the exterior scene",
+        "260 ms: return holds the modal until the flight finishes",
+        "300 ms: return holds the modal until the flight finishes",
+        "500 ms: return holds the modal until the flight finishes",
+        "return restores focus, canvas, and page interaction",
+        "restored homepage canvas has no leftover flight transform",
+        "pause during approach snaps to a visible, paused interior",
+        "pause stops WebGL draws and leaves no moving transition mask",
+        "Escape from the interior restores the homepage",
+        "restored homepage canvas has no leftover flight transform",
+        "Escape during entry immediately restores the homepage",
+        "restored homepage canvas has no leftover flight transform",
+        "cancelled approach does not reopen or move its canvas after the old entry deadline",
+        "restored homepage canvas has no leftover flight transform",
+        "cancelled approach remains closed"
+      ],
+      "samples": [
+        {
+          "label": "initial",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0,
+          "veil": 0,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 10.613296508789062,
+            "y": 188.01385498046875,
+            "width": 368.7890625,
+            "height": 798.0972900390625,
+            "centerX": 195.00782775878906,
+            "centerY": 587.0625
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            894.0341175533831,
+            894.0340376093518
+          ],
+          "transform": "matrix(0.945613, 0, 0, 0.945613, 0.0078125, 165.062)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 16
+        },
+        {
+          "label": "entry-140ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0,
+          "veil": 0.103515625,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 9.514663696289062,
+            "y": 168.55148315429688,
+            "width": 370.98468017578125,
+            "height": 802.848876953125,
+            "centerX": 195.0070037841797,
+            "centerY": 569.9759216308594
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            899.3568272290577,
+            899.3567977375351
+          ],
+          "transform": "matrix(0.951243, 0, 0, 0.951243, 0.00700378, 147.976)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 28
+        },
+        {
+          "label": "entry-320ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0,
+          "veil": 0.6321175700600941,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 3.904449462890625,
+            "y": 69.16702270507812,
+            "width": 382.19683837890625,
+            "height": 827.1131591796875,
+            "centerX": 195.00286865234375,
+            "centerY": 482.7236022949219
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            926.5378176224476,
+            926.5378124827985
+          ],
+          "transform": "matrix(0.979992, 0, 0, 0.979992, 0.00287408, 60.7236)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 32
+        },
+        {
+          "label": "entry-560ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            945.4545736312866,
+            945.4545669555664
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 36
+        },
+        {
+          "label": "entry-1050ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            945.4545736312866,
+            945.4545669555664
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 40
+        },
+        {
+          "label": "entry-1400ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0.9076145802049393,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 0.907615,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            945.4545736312866,
+            945.4545669555664
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 44
+        },
+        {
+          "label": "entry-1540ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            945.4545736312866,
+            945.4545669555664
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 48
+        },
+        {
+          "label": "entry-1580ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            873.987557888031,
+            873.9875974655151
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 115
+        },
+        {
+          "label": "entry-1700ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            873.987557888031,
+            873.9875974655151
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 182
+        },
+        {
+          "label": "entry-1800ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            873.987557888031,
+            873.9875974655151
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 249
+        },
+        {
+          "label": "entry-2200ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0.2912120616332653,
+          "veil": 1,
+          "hud": 0.018075947785877785,
+          "cloudOpacity": 0.291212,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            873.987557888031,
+            873.9875974655151
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 316
+        },
+        {
+          "label": "entry-2460ms",
+          "open": true,
+          "phase": "approach",
+          "cloud": 0,
+          "veil": 1,
+          "hud": 0.8311204048634452,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            873.987557888031,
+            873.9875974655151
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 383
+        },
+        {
+          "label": "entry-2600ms",
+          "open": true,
+          "phase": "interior",
+          "cloud": 0,
+          "veil": 1,
+          "hud": 1,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            873.987557888031,
+            873.9875974655151
+          ],
+          "transform": "none",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 450
+        },
+        {
+          "label": "entry-2680ms",
+          "open": true,
+          "phase": "interior",
+          "cloud": 0,
+          "veil": 1,
+          "hud": 1,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            873.987557888031,
+            873.9875974655151
+          ],
+          "transform": "none",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 517
+        },
+        {
+          "label": "return-140ms",
+          "open": true,
+          "phase": "departing",
+          "cloud": 0.7432862881944228,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 0.743286,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            873.987557888031,
+            873.9875974655151
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 651
+        },
+        {
+          "label": "return-220ms",
+          "open": true,
+          "phase": "departing",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            873.987557888031,
+            873.9875974655151
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 718
+        },
+        {
+          "label": "return-260ms",
+          "open": true,
+          "phase": "departing",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            873.987557888031,
+            873.9875974655151
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 722
+        },
+        {
+          "label": "return-300ms",
+          "open": true,
+          "phase": "departing",
+          "cloud": 1,
+          "veil": 1,
+          "hud": 0,
+          "cloudOpacity": 1,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            873.987557888031,
+            873.9875974655151
+          ],
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 726
+        },
+        {
+          "label": "return-500ms",
+          "open": true,
+          "phase": "departing",
+          "cloud": 0.27520751953125,
+          "veil": 0.5445754157402082,
+          "hud": 0,
+          "cloudOpacity": 0.275208,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 4.83355712890625,
+            "y": 85.62615966796875,
+            "width": 380.3399963378906,
+            "height": 823.0947265625,
+            "centerX": 195.00355529785156,
+            "centerY": 497.17352294921875
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844,
+            "centerX": 195,
+            "centerY": 422
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            852.3395501705018,
+            852.3395527901594
+          ],
+          "transform": "matrix(0.975231, 0, 0, 0.975231, 0.003558, 75.1735)",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 730
+        },
+        {
+          "label": "return-720ms",
+          "open": false,
+          "phase": "departing",
+          "cloud": 0,
+          "veil": 0,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "centerX": 0,
+            "centerY": 0
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "centerX": 0,
+            "centerY": 0
+          },
+          "parent": "planet-stage",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            0,
+            0
+          ],
+          "transform": "none",
+          "focus": "planet-close",
+          "paused": "false",
+          "inert": true,
+          "exploring": true,
+          "draws": 730
+        },
+        {
+          "label": "return-840ms",
+          "open": false,
+          "phase": "exterior",
+          "cloud": 0,
+          "veil": 0,
+          "hud": 0,
+          "cloudOpacity": 0,
+          "cloudAnimation": "none",
+          "canvas": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "host": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "parent": "planet-viewport",
+          "home": {
+            "x": -41.265625,
+            "y": 415.46875,
+            "width": 472.546875,
+            "height": 343.1875,
+            "centerX": 195.0078125,
+            "centerY": 587.0625
+          },
+          "projectedScale": [
+            894.0339951664209,
+            894.0339637547731
+          ],
+          "transform": "none",
+          "focus": "planet-enter",
+          "paused": "false",
+          "inert": false,
+          "exploring": false,
+          "draws": 742
+        }
+      ],
+      "screenshots": [
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-mobile-home.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-mobile-entry-0ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-mobile-entry-560ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-mobile-entry-1400ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-mobile-entry-1580ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-mobile-entry-2200ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-mobile-entry-2600ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-mobile-return-300ms.png",
+        "C:\\Users\\Lenovo\\Desktop\\Quarkbobo\\.superpowers\\planet-transition-qa\\transition-mobile-return-500ms.png"
+      ],
+      "passed": true
+    },
+    {
+      "name": "transition-reduced-motion",
+      "consoleErrors": [],
+      "checks": [
+        "reduced motion enters the usable interior directly",
+        "reduced motion leaves no opaque cloud or hidden HUD",
+        "reduced motion return restores focus, canvas, and page interaction",
+        "restored homepage canvas has no leftover flight transform",
+        "reduced motion return stays closed after the former entry deadline",
+        "restored homepage canvas has no leftover flight transform"
+      ],
+      "samples": [],
+      "passed": true
+    }
+  ]
+}

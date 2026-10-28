@@ -1,0 +1,2336 @@
+[
+  {
+    "size": {
+      "width": 1440,
+      "height": 1000
+    },
+    "consoleErrors": [],
+    "pages": [
+      {
+        "name": "home",
+        "title": "博客目录 · Quark's Blog",
+        "url": "/",
+        "viewport": [
+          1440,
+          1000
+        ],
+        "pageWidth": 1425,
+        "pageHeight": 3277,
+        "scrollY": 0,
+        "parts": {
+          ".site-header": {
+            "x": 0,
+            "y": 0,
+            "documentY": 0,
+            "width": 1425,
+            "height": 73,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站\n首页\n归档\n关于"
+          },
+          ".site-brand": {
+            "x": 152.5,
+            "y": 14,
+            "documentY": 14,
+            "width": 207.1875,
+            "height": 44,
+            "fontSize": "13.12px",
+            "lineHeight": "22.304px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站"
+          },
+          ".home-hero": {
+            "x": 152.5,
+            "y": 73,
+            "documentY": 73,
+            "width": 1120,
+            "height": 928,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "0px",
+            "text": "PERSONAL ARCHIVE · DEEP SPACE SIGNAL\n\nQuark's Blog\n\n蓝色空间号\n\n技术笔记、游戏合集、日常Vlog\n\n进入星球\n↗\n进入最新记录\n↓\n穿过云层，探索星球内部"
+          },
+          ".hero-actions": {
+            "x": 152.5,
+            "y": 644.4375,
+            "documentY": 644.4375,
+            "width": 448,
+            "height": 53.984375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "12px 22.4px",
+            "text": "进入星球\n↗\n进入最新记录\n↓"
+          },
+          "#latest-posts": {
+            "x": 152.5,
+            "y": 1001,
+            "documentY": 1001,
+            "width": 1120,
+            "height": 1141.09375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "LATEST ENTRIES\n\n最新记录\n\n2026年9月3日\n\n政治月测后宫版V4有最新消息？\n\n时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n阅读全文\n↗\n\n2026年8月19日\n\n政治月测后宫版 · 8月题库\n阅读全文\n↗\n\n2026"
+          },
+          ".catalogue-section": {
+            "x": 152.5,
+            "y": 2142.09375,
+            "documentY": 2142.09375,
+            "width": 1120,
+            "height": 1005.703125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "CATALOGUE\n\n博客目录\n📚 文章分类#\n个人博客#\nHello World\nMy First Blog\n政治月测后宫版 · 8月题库\n关于我#\n政治月测后宫版V4有最新消息？\n游戏相关#\nImage Transformer\n游戏合"
+          },
+          ".article-layout": null,
+          ".article-header": null,
+          ".article-header h1": null,
+          ".article-body": null,
+          ".article-toc": null,
+          ".article-toc-disclosure": null,
+          ".archive-shell": null,
+          ".archive-list": null,
+          ".site-footer": {
+            "x": 0,
+            "y": 3147.796875,
+            "documentY": 3147.796875,
+            "width": 1425,
+            "height": 129,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "Quark's Blog\n\n不要回答！不要回答！不要回答！"
+          }
+        },
+        "cards": [
+          {
+            "x": 152.5,
+            "y": 1259.28125,
+            "documentY": 1259.28125,
+            "width": 552,
+            "height": 268.28125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年9月3日\n\n政治月测后宫版V4有最新消息？\n\n时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n阅读全文\n↗"
+          },
+          {
+            "x": 720.5,
+            "y": 1259.28125,
+            "documentY": 1259.28125,
+            "width": 552,
+            "height": 268.28125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年8月19日\n\n政治月测后宫版 · 8月题库\n阅读全文\n↗"
+          },
+          {
+            "x": 152.5,
+            "y": 1543.5625,
+            "documentY": 1543.5625,
+            "width": 552,
+            "height": 227.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年5月17日\n\n游戏合集\n阅读全文\n↗"
+          },
+          {
+            "x": 720.5,
+            "y": 1543.5625,
+            "documentY": 1543.5625,
+            "width": 552,
+            "height": 227.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年5月16日\n\nImage Transformer\n阅读全文\n↗"
+          },
+          {
+            "x": 152.5,
+            "y": 1786.828125,
+            "documentY": 1786.828125,
+            "width": 552,
+            "height": 227.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2025年11月19日\n\nHello World\n阅读全文\n↗"
+          },
+          {
+            "x": 720.5,
+            "y": 1786.828125,
+            "documentY": 1786.828125,
+            "width": 552,
+            "height": 227.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2025年11月19日\n\nMy First Blog\n阅读全文\n↗"
+          }
+        ],
+        "links": [
+          {
+            "text": "首页",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "归档",
+            "href": "/archives/",
+            "current": null
+          },
+          {
+            "text": "关于",
+            "href": "/#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer/",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#wen-zhang-fen-lei",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#ge-ren-bo-ke",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#you-xi-xiang-guan",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat",
+            "current": null
+          }
+        ]
+      },
+      {
+        "name": "latest",
+        "title": "博客目录 · Quark's Blog",
+        "url": "/",
+        "viewport": [
+          1440,
+          1000
+        ],
+        "pageWidth": 1425,
+        "pageHeight": 3277,
+        "scrollY": 1001,
+        "parts": {
+          ".site-header": {
+            "x": 0,
+            "y": -1001,
+            "documentY": 0,
+            "width": 1425,
+            "height": 73,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站\n首页\n归档\n关于"
+          },
+          ".site-brand": {
+            "x": 152.5,
+            "y": -987,
+            "documentY": 14,
+            "width": 207.1875,
+            "height": 44,
+            "fontSize": "13.12px",
+            "lineHeight": "22.304px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站"
+          },
+          ".home-hero": {
+            "x": 152.5,
+            "y": -928,
+            "documentY": 73,
+            "width": 1120,
+            "height": 928,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "0px",
+            "text": "PERSONAL ARCHIVE · DEEP SPACE SIGNAL\n\nQuark's Blog\n\n蓝色空间号\n\n技术笔记、游戏合集、日常Vlog\n\n进入星球\n↗\n进入最新记录\n↓\n穿过云层，探索星球内部"
+          },
+          ".hero-actions": {
+            "x": 152.5,
+            "y": -356.5625,
+            "documentY": 644.4375,
+            "width": 448,
+            "height": 53.984375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "12px 22.4px",
+            "text": "进入星球\n↗\n进入最新记录\n↓"
+          },
+          "#latest-posts": {
+            "x": 152.5,
+            "y": 0,
+            "documentY": 1001,
+            "width": 1120,
+            "height": 1141.09375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "LATEST ENTRIES\n\n最新记录\n\n2026年9月3日\n\n政治月测后宫版V4有最新消息？\n\n时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n阅读全文\n↗\n\n2026年8月19日\n\n政治月测后宫版 · 8月题库\n阅读全文\n↗\n\n2026"
+          },
+          ".catalogue-section": {
+            "x": 152.5,
+            "y": 1141.09375,
+            "documentY": 2142.09375,
+            "width": 1120,
+            "height": 1005.703125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "CATALOGUE\n\n博客目录\n📚 文章分类#\n个人博客#\nHello World\nMy First Blog\n政治月测后宫版 · 8月题库\n关于我#\n政治月测后宫版V4有最新消息？\n游戏相关#\nImage Transformer\n游戏合"
+          },
+          ".article-layout": null,
+          ".article-header": null,
+          ".article-header h1": null,
+          ".article-body": null,
+          ".article-toc": null,
+          ".article-toc-disclosure": null,
+          ".archive-shell": null,
+          ".archive-list": null,
+          ".site-footer": {
+            "x": 0,
+            "y": 2146.796875,
+            "documentY": 3147.796875,
+            "width": 1425,
+            "height": 129,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "Quark's Blog\n\n不要回答！不要回答！不要回答！"
+          }
+        },
+        "cards": [
+          {
+            "x": 152.5,
+            "y": 258.28125,
+            "documentY": 1259.28125,
+            "width": 552,
+            "height": 268.28125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年9月3日\n\n政治月测后宫版V4有最新消息？\n\n时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n阅读全文\n↗"
+          },
+          {
+            "x": 720.5,
+            "y": 258.28125,
+            "documentY": 1259.28125,
+            "width": 552,
+            "height": 268.28125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年8月19日\n\n政治月测后宫版 · 8月题库\n阅读全文\n↗"
+          },
+          {
+            "x": 152.5,
+            "y": 542.5625,
+            "documentY": 1543.5625,
+            "width": 552,
+            "height": 227.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年5月17日\n\n游戏合集\n阅读全文\n↗"
+          },
+          {
+            "x": 720.5,
+            "y": 542.5625,
+            "documentY": 1543.5625,
+            "width": 552,
+            "height": 227.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年5月16日\n\nImage Transformer\n阅读全文\n↗"
+          },
+          {
+            "x": 152.5,
+            "y": 785.828125,
+            "documentY": 1786.828125,
+            "width": 552,
+            "height": 227.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2025年11月19日\n\nHello World\n阅读全文\n↗"
+          },
+          {
+            "x": 720.5,
+            "y": 785.828125,
+            "documentY": 1786.828125,
+            "width": 552,
+            "height": 227.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2025年11月19日\n\nMy First Blog\n阅读全文\n↗"
+          }
+        ],
+        "links": [
+          {
+            "text": "首页",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "归档",
+            "href": "/archives/",
+            "current": null
+          },
+          {
+            "text": "关于",
+            "href": "/#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer/",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#wen-zhang-fen-lei",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#ge-ren-bo-ke",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#you-xi-xiang-guan",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat",
+            "current": null
+          }
+        ]
+      },
+      {
+        "name": "catalogue",
+        "title": "博客目录 · Quark's Blog",
+        "url": "/",
+        "viewport": [
+          1440,
+          1000
+        ],
+        "pageWidth": 1425,
+        "pageHeight": 3277,
+        "scrollY": 2142,
+        "parts": {
+          ".site-header": {
+            "x": 0,
+            "y": -2142,
+            "documentY": 0,
+            "width": 1425,
+            "height": 73,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站\n首页\n归档\n关于"
+          },
+          ".site-brand": {
+            "x": 152.5,
+            "y": -2128,
+            "documentY": 14,
+            "width": 207.1875,
+            "height": 44,
+            "fontSize": "13.12px",
+            "lineHeight": "22.304px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站"
+          },
+          ".home-hero": {
+            "x": 152.5,
+            "y": -2069,
+            "documentY": 73,
+            "width": 1120,
+            "height": 928,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "0px",
+            "text": "PERSONAL ARCHIVE · DEEP SPACE SIGNAL\n\nQuark's Blog\n\n蓝色空间号\n\n技术笔记、游戏合集、日常Vlog\n\n进入星球\n↗\n进入最新记录\n↓\n穿过云层，探索星球内部"
+          },
+          ".hero-actions": {
+            "x": 152.5,
+            "y": -1497.5625,
+            "documentY": 644.4375,
+            "width": 448,
+            "height": 53.984375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "12px 22.4px",
+            "text": "进入星球\n↗\n进入最新记录\n↓"
+          },
+          "#latest-posts": {
+            "x": 152.5,
+            "y": -1141,
+            "documentY": 1001,
+            "width": 1120,
+            "height": 1141.09375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "LATEST ENTRIES\n\n最新记录\n\n2026年9月3日\n\n政治月测后宫版V4有最新消息？\n\n时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n阅读全文\n↗\n\n2026年8月19日\n\n政治月测后宫版 · 8月题库\n阅读全文\n↗\n\n2026"
+          },
+          ".catalogue-section": {
+            "x": 152.5,
+            "y": 0.09375,
+            "documentY": 2142.09375,
+            "width": 1120,
+            "height": 1005.703125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "CATALOGUE\n\n博客目录\n📚 文章分类#\n个人博客#\nHello World\nMy First Blog\n政治月测后宫版 · 8月题库\n关于我#\n政治月测后宫版V4有最新消息？\n游戏相关#\nImage Transformer\n游戏合"
+          },
+          ".article-layout": null,
+          ".article-header": null,
+          ".article-header h1": null,
+          ".article-body": null,
+          ".article-toc": null,
+          ".article-toc-disclosure": null,
+          ".archive-shell": null,
+          ".archive-list": null,
+          ".site-footer": {
+            "x": 0,
+            "y": 1005.796875,
+            "documentY": 3147.796875,
+            "width": 1425,
+            "height": 129,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "Quark's Blog\n\n不要回答！不要回答！不要回答！"
+          }
+        },
+        "cards": [
+          {
+            "x": 152.5,
+            "y": -882.71875,
+            "documentY": 1259.28125,
+            "width": 552,
+            "height": 268.28125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年9月3日\n\n政治月测后宫版V4有最新消息？\n\n时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n阅读全文\n↗"
+          },
+          {
+            "x": 720.5,
+            "y": -882.71875,
+            "documentY": 1259.28125,
+            "width": 552,
+            "height": 268.28125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年8月19日\n\n政治月测后宫版 · 8月题库\n阅读全文\n↗"
+          },
+          {
+            "x": 152.5,
+            "y": -598.4375,
+            "documentY": 1543.5625,
+            "width": 552,
+            "height": 227.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年5月17日\n\n游戏合集\n阅读全文\n↗"
+          },
+          {
+            "x": 720.5,
+            "y": -598.4375,
+            "documentY": 1543.5625,
+            "width": 552,
+            "height": 227.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年5月16日\n\nImage Transformer\n阅读全文\n↗"
+          },
+          {
+            "x": 152.5,
+            "y": -355.171875,
+            "documentY": 1786.828125,
+            "width": 552,
+            "height": 227.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2025年11月19日\n\nHello World\n阅读全文\n↗"
+          },
+          {
+            "x": 720.5,
+            "y": -355.171875,
+            "documentY": 1786.828125,
+            "width": 552,
+            "height": 227.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2025年11月19日\n\nMy First Blog\n阅读全文\n↗"
+          }
+        ],
+        "links": [
+          {
+            "text": "首页",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "归档",
+            "href": "/archives/",
+            "current": null
+          },
+          {
+            "text": "关于",
+            "href": "/#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer/",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#wen-zhang-fen-lei",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#ge-ren-bo-ke",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#you-xi-xiang-guan",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat",
+            "current": null
+          }
+        ]
+      },
+      {
+        "name": "archive",
+        "title": "Quark's Blog",
+        "url": "/archives/",
+        "viewport": [
+          1440,
+          1000
+        ],
+        "pageWidth": 1425,
+        "pageHeight": 1222,
+        "scrollY": 0,
+        "parts": {
+          ".site-header": {
+            "x": 0,
+            "y": 0,
+            "documentY": 0,
+            "width": 1425,
+            "height": 73,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站\n首页\n归档\n关于"
+          },
+          ".site-brand": {
+            "x": 152.5,
+            "y": 14,
+            "documentY": 14,
+            "width": 207.1875,
+            "height": 44,
+            "fontSize": "13.12px",
+            "lineHeight": "22.304px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站"
+          },
+          ".home-hero": null,
+          ".hero-actions": null,
+          "#latest-posts": null,
+          ".catalogue-section": null,
+          ".article-layout": null,
+          ".article-header": null,
+          ".article-header h1": null,
+          ".article-body": null,
+          ".article-toc": null,
+          ".article-toc-disclosure": null,
+          ".archive-shell": {
+            "x": 152.5,
+            "y": 73,
+            "documentY": 73,
+            "width": 1120,
+            "height": 1020.375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "DEEP SPACE ARCHIVE\n\n归档\n2026年9月3日\n政治月测后宫版V4有最新消息？\n2026年8月19日\n政治月测后宫版 · 8月题库\n2026年5月17日\n游戏合集\n2026年5月16日\nImage Transformer\n"
+          },
+          ".archive-list": {
+            "x": 440.5,
+            "y": 403.0625,
+            "documentY": 403.0625,
+            "width": 832,
+            "height": 562.3125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年9月3日\n政治月测后宫版V4有最新消息？\n2026年8月19日\n政治月测后宫版 · 8月题库\n2026年5月17日\n游戏合集\n2026年5月16日\nImage Transformer\n2026年4月26日\n博客目录\n2025年11"
+          },
+          ".site-footer": {
+            "x": 0,
+            "y": 1093.375,
+            "documentY": 1093.375,
+            "width": 1425,
+            "height": 129,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "Quark's Blog\n\n不要回答！不要回答！不要回答！"
+          }
+        },
+        "cards": [],
+        "links": [
+          {
+            "text": "首页",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "归档",
+            "href": "/archives/",
+            "current": null
+          },
+          {
+            "text": "关于",
+            "href": "/#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer/",
+            "current": null
+          },
+          {
+            "text": "博客目录",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+            "current": null
+          }
+        ]
+      },
+      {
+        "name": "article",
+        "title": "政治月测后宫版V4有最新消息？ · Quark's Blog",
+        "url": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+        "viewport": [
+          1440,
+          1000
+        ],
+        "pageWidth": 1425,
+        "pageHeight": 1343,
+        "scrollY": 0,
+        "parts": {
+          ".site-header": {
+            "x": 0,
+            "y": 0,
+            "documentY": 0,
+            "width": 1425,
+            "height": 73,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站\n首页\n归档\n关于"
+          },
+          ".site-brand": {
+            "x": 152.5,
+            "y": 14,
+            "documentY": 14,
+            "width": 207.1875,
+            "height": 44,
+            "fontSize": "13.12px",
+            "lineHeight": "22.304px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站"
+          },
+          ".home-hero": null,
+          ".hero-actions": null,
+          "#latest-posts": null,
+          ".catalogue-section": null,
+          ".article-layout": {
+            "x": 152.5,
+            "y": 73,
+            "documentY": 73,
+            "width": 1120,
+            "height": 1140.625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "100.8px",
+            "text": "ARCHIVE ENTRY\n\n政治月测后宫版V4有最新消息？\n2026年9月3日\n\n​ 时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n​ 当时的V1、V2我清晰地记得是用Chatgpt5.2网页端干出来的，和他斗智斗勇连哄带骗聊了老半天才同"
+          },
+          ".article-header": {
+            "x": 152.5,
+            "y": 201,
+            "documentY": 201,
+            "width": 760,
+            "height": 254.5,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "ARCHIVE ENTRY\n\n政治月测后宫版V4有最新消息？\n2026年9月3日"
+          },
+          ".article-header h1": {
+            "x": 152.5,
+            "y": 229.453125,
+            "documentY": 229.453125,
+            "width": 760,
+            "height": 184.78125,
+            "fontSize": "84px",
+            "lineHeight": "92.4px",
+            "gap": "normal",
+            "text": "政治月测后宫版V4有最新消息？"
+          },
+          ".article-body": {
+            "x": 152.5,
+            "y": 543.5,
+            "documentY": 543.5,
+            "width": 760,
+            "height": 522.9375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "​ 时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n​ 当时的V1、V2我清晰地记得是用Chatgpt5.2网页端干出来的，和他斗智斗勇连哄带骗聊了老半天才同意我可以写出来一键爬取题库的脚本。（因为聊多了他上下文就忘了嘻嘻）再次打开一个窗口问"
+          },
+          ".article-toc": null,
+          ".article-toc-disclosure": null,
+          ".archive-shell": null,
+          ".archive-list": null,
+          ".site-footer": {
+            "x": 0,
+            "y": 1213.625,
+            "documentY": 1213.625,
+            "width": 1425,
+            "height": 129,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "Quark's Blog\n\n不要回答！不要回答！不要回答！"
+          }
+        },
+        "cards": [],
+        "links": [
+          {
+            "text": "首页",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "归档",
+            "href": "/archives/",
+            "current": null
+          },
+          {
+            "text": "关于",
+            "href": "/#guan-yu-wo",
+            "current": null
+          }
+        ]
+      },
+      {
+        "name": "games",
+        "title": "游戏合集 · Quark's Blog",
+        "url": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+        "viewport": [
+          1440,
+          1000
+        ],
+        "pageWidth": 1440,
+        "pageHeight": 1000,
+        "scrollY": 0,
+        "parts": {
+          ".site-header": {
+            "x": 0,
+            "y": 0,
+            "documentY": 0,
+            "width": 1440,
+            "height": 73,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站\n首页\n归档\n关于"
+          },
+          ".site-brand": {
+            "x": 160,
+            "y": 14,
+            "documentY": 14,
+            "width": 207.1875,
+            "height": 44,
+            "fontSize": "13.12px",
+            "lineHeight": "22.304px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站"
+          },
+          ".home-hero": null,
+          ".hero-actions": null,
+          "#latest-posts": null,
+          ".catalogue-section": null,
+          ".article-layout": {
+            "x": 160,
+            "y": 73,
+            "documentY": 73,
+            "width": 1120,
+            "height": 552.484375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "100.8px",
+            "text": "ARCHIVE ENTRY\n\n游戏合集\n2026年5月17日\n\n​ 贪吃蛇CTF 2048 中国象棋 国际象棋"
+          },
+          ".article-header": {
+            "x": 160,
+            "y": 201,
+            "documentY": 201,
+            "width": 760,
+            "height": 162.109375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "ARCHIVE ENTRY\n\n游戏合集\n2026年5月17日"
+          },
+          ".article-header h1": {
+            "x": 160,
+            "y": 229.453125,
+            "documentY": 229.453125,
+            "width": 760,
+            "height": 92.390625,
+            "fontSize": "84px",
+            "lineHeight": "92.4px",
+            "gap": "normal",
+            "text": "游戏合集"
+          },
+          ".article-body": {
+            "x": 160,
+            "y": 451.109375,
+            "documentY": 451.109375,
+            "width": 760,
+            "height": 27.1875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "​ 贪吃蛇CTF 2048 中国象棋 国际象棋"
+          },
+          ".article-toc": null,
+          ".article-toc-disclosure": null,
+          ".archive-shell": null,
+          ".archive-list": null,
+          ".site-footer": {
+            "x": 0,
+            "y": 625.484375,
+            "documentY": 625.484375,
+            "width": 1440,
+            "height": 129,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "Quark's Blog\n\n不要回答！不要回答！不要回答！"
+          }
+        },
+        "cards": [],
+        "links": [
+          {
+            "text": "首页",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "归档",
+            "href": "/archives/",
+            "current": null
+          },
+          {
+            "text": "关于",
+            "href": "/#guan-yu-wo",
+            "current": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "size": {
+      "width": 390,
+      "height": 844
+    },
+    "consoleErrors": [],
+    "pages": [
+      {
+        "name": "home",
+        "title": "博客目录 · Quark's Blog",
+        "url": "/",
+        "viewport": [
+          390,
+          844
+        ],
+        "pageWidth": 390,
+        "pageHeight": 3314,
+        "scrollY": 0,
+        "parts": {
+          ".site-header": {
+            "x": 0,
+            "y": 0,
+            "documentY": 0,
+            "width": 390,
+            "height": 73,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站\n菜单"
+          },
+          ".site-brand": {
+            "x": 16,
+            "y": 14,
+            "documentY": 14,
+            "width": 141.375,
+            "height": 44,
+            "fontSize": "10.88px",
+            "lineHeight": "18.496px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站"
+          },
+          ".home-hero": {
+            "x": 16,
+            "y": 73,
+            "documentY": 73,
+            "width": 358,
+            "height": 659.421875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "0px",
+            "text": "PERSONAL ARCHIVE · DEEP SPACE SIGNAL\n\nQuark's Blog\n\n蓝色空间号\n\n技术笔记、游戏合集、日常Vlog\n\n进入星球\n↗\n进入最新记录\n↓\n穿过云层，探索星球内部"
+          },
+          ".hero-actions": {
+            "x": 16,
+            "y": 336.859375,
+            "documentY": 336.859375,
+            "width": 358,
+            "height": 49.171875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "8.8px 19.2px",
+            "text": "进入星球\n↗\n进入最新记录\n↓"
+          },
+          "#latest-posts": {
+            "x": 16,
+            "y": 732.421875,
+            "documentY": 732.421875,
+            "width": 358,
+            "height": 1578.59375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "LATEST ENTRIES\n\n最新记录\n\n2026年9月3日\n\n政治月测后宫版V4有最新消息？\n\n时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n阅读全文\n↗\n\n2026年8月19日\n\n政治月测后宫版 · 8月题库\n阅读全文\n↗\n\n2026"
+          },
+          ".catalogue-section": {
+            "x": 16,
+            "y": 2311.015625,
+            "documentY": 2311.015625,
+            "width": 358,
+            "height": 864.078125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "CATALOGUE\n\n博客目录\n📚 文章分类#\n个人博客#\nHello World\nMy First Blog\n政治月测后宫版 · 8月题库\n关于我#\n政治月测后宫版V4有最新消息？\n游戏相关#\nImage Transformer\n游戏合"
+          },
+          ".article-layout": null,
+          ".article-header": null,
+          ".article-header h1": null,
+          ".article-body": null,
+          ".article-toc": null,
+          ".article-toc-disclosure": null,
+          ".archive-shell": null,
+          ".archive-list": null,
+          ".site-footer": {
+            "x": 0,
+            "y": 3175.09375,
+            "documentY": 3175.09375,
+            "width": 390,
+            "height": 138.671875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "Quark's Blog\n\n不要回答！不要回答！不要回答！"
+          }
+        },
+        "cards": [
+          {
+            "x": 16,
+            "y": 905.078125,
+            "documentY": 905.078125,
+            "width": 358,
+            "height": 277.609375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年9月3日\n\n政治月测后宫版V4有最新消息？\n\n时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": 1198.6875,
+            "documentY": 1198.6875,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年8月19日\n\n政治月测后宫版 · 8月题库\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": 1409.953125,
+            "documentY": 1409.953125,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年5月17日\n\n游戏合集\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": 1621.21875,
+            "documentY": 1621.21875,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年5月16日\n\nImage Transformer\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": 1832.484375,
+            "documentY": 1832.484375,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2025年11月19日\n\nHello World\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": 2043.75,
+            "documentY": 2043.75,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2025年11月19日\n\nMy First Blog\n阅读全文\n↗"
+          }
+        ],
+        "links": [
+          {
+            "text": "首页",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "归档",
+            "href": "/archives/",
+            "current": null
+          },
+          {
+            "text": "关于",
+            "href": "/#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer/",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#wen-zhang-fen-lei",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#ge-ren-bo-ke",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#you-xi-xiang-guan",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat",
+            "current": null
+          }
+        ]
+      },
+      {
+        "name": "latest",
+        "title": "博客目录 · Quark's Blog",
+        "url": "/",
+        "viewport": [
+          390,
+          844
+        ],
+        "pageWidth": 390,
+        "pageHeight": 3314,
+        "scrollY": 732,
+        "parts": {
+          ".site-header": {
+            "x": 0,
+            "y": -732,
+            "documentY": 0,
+            "width": 390,
+            "height": 73,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站\n菜单"
+          },
+          ".site-brand": {
+            "x": 16,
+            "y": -718,
+            "documentY": 14,
+            "width": 141.375,
+            "height": 44,
+            "fontSize": "10.88px",
+            "lineHeight": "18.496px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站"
+          },
+          ".home-hero": {
+            "x": 16,
+            "y": -659,
+            "documentY": 73,
+            "width": 358,
+            "height": 659.421875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "0px",
+            "text": "PERSONAL ARCHIVE · DEEP SPACE SIGNAL\n\nQuark's Blog\n\n蓝色空间号\n\n技术笔记、游戏合集、日常Vlog\n\n进入星球\n↗\n进入最新记录\n↓\n穿过云层，探索星球内部"
+          },
+          ".hero-actions": {
+            "x": 16,
+            "y": -395.140625,
+            "documentY": 336.859375,
+            "width": 358,
+            "height": 49.171875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "8.8px 19.2px",
+            "text": "进入星球\n↗\n进入最新记录\n↓"
+          },
+          "#latest-posts": {
+            "x": 16,
+            "y": 0.421875,
+            "documentY": 732.421875,
+            "width": 358,
+            "height": 1578.59375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "LATEST ENTRIES\n\n最新记录\n\n2026年9月3日\n\n政治月测后宫版V4有最新消息？\n\n时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n阅读全文\n↗\n\n2026年8月19日\n\n政治月测后宫版 · 8月题库\n阅读全文\n↗\n\n2026"
+          },
+          ".catalogue-section": {
+            "x": 16,
+            "y": 1579.015625,
+            "documentY": 2311.015625,
+            "width": 358,
+            "height": 864.078125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "CATALOGUE\n\n博客目录\n📚 文章分类#\n个人博客#\nHello World\nMy First Blog\n政治月测后宫版 · 8月题库\n关于我#\n政治月测后宫版V4有最新消息？\n游戏相关#\nImage Transformer\n游戏合"
+          },
+          ".article-layout": null,
+          ".article-header": null,
+          ".article-header h1": null,
+          ".article-body": null,
+          ".article-toc": null,
+          ".article-toc-disclosure": null,
+          ".archive-shell": null,
+          ".archive-list": null,
+          ".site-footer": {
+            "x": 0,
+            "y": 2443.09375,
+            "documentY": 3175.09375,
+            "width": 390,
+            "height": 138.671875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "Quark's Blog\n\n不要回答！不要回答！不要回答！"
+          }
+        },
+        "cards": [
+          {
+            "x": 16,
+            "y": 173.078125,
+            "documentY": 905.078125,
+            "width": 358,
+            "height": 277.609375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年9月3日\n\n政治月测后宫版V4有最新消息？\n\n时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": 466.6875,
+            "documentY": 1198.6875,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年8月19日\n\n政治月测后宫版 · 8月题库\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": 677.953125,
+            "documentY": 1409.953125,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年5月17日\n\n游戏合集\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": 889.21875,
+            "documentY": 1621.21875,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年5月16日\n\nImage Transformer\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": 1100.484375,
+            "documentY": 1832.484375,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2025年11月19日\n\nHello World\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": 1311.75,
+            "documentY": 2043.75,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2025年11月19日\n\nMy First Blog\n阅读全文\n↗"
+          }
+        ],
+        "links": [
+          {
+            "text": "首页",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "归档",
+            "href": "/archives/",
+            "current": null
+          },
+          {
+            "text": "关于",
+            "href": "/#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer/",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#wen-zhang-fen-lei",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#ge-ren-bo-ke",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#you-xi-xiang-guan",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat",
+            "current": null
+          }
+        ]
+      },
+      {
+        "name": "catalogue",
+        "title": "博客目录 · Quark's Blog",
+        "url": "/",
+        "viewport": [
+          390,
+          844
+        ],
+        "pageWidth": 390,
+        "pageHeight": 3314,
+        "scrollY": 2311,
+        "parts": {
+          ".site-header": {
+            "x": 0,
+            "y": -2311,
+            "documentY": 0,
+            "width": 390,
+            "height": 73,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站\n菜单"
+          },
+          ".site-brand": {
+            "x": 16,
+            "y": -2297,
+            "documentY": 14,
+            "width": 141.375,
+            "height": 44,
+            "fontSize": "10.88px",
+            "lineHeight": "18.496px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站"
+          },
+          ".home-hero": {
+            "x": 16,
+            "y": -2238,
+            "documentY": 73,
+            "width": 358,
+            "height": 659.421875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "0px",
+            "text": "PERSONAL ARCHIVE · DEEP SPACE SIGNAL\n\nQuark's Blog\n\n蓝色空间号\n\n技术笔记、游戏合集、日常Vlog\n\n进入星球\n↗\n进入最新记录\n↓\n穿过云层，探索星球内部"
+          },
+          ".hero-actions": {
+            "x": 16,
+            "y": -1974.140625,
+            "documentY": 336.859375,
+            "width": 358,
+            "height": 49.171875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "8.8px 19.2px",
+            "text": "进入星球\n↗\n进入最新记录\n↓"
+          },
+          "#latest-posts": {
+            "x": 16,
+            "y": -1578.578125,
+            "documentY": 732.421875,
+            "width": 358,
+            "height": 1578.59375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "LATEST ENTRIES\n\n最新记录\n\n2026年9月3日\n\n政治月测后宫版V4有最新消息？\n\n时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n阅读全文\n↗\n\n2026年8月19日\n\n政治月测后宫版 · 8月题库\n阅读全文\n↗\n\n2026"
+          },
+          ".catalogue-section": {
+            "x": 16,
+            "y": 0.015625,
+            "documentY": 2311.015625,
+            "width": 358,
+            "height": 864.078125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "CATALOGUE\n\n博客目录\n📚 文章分类#\n个人博客#\nHello World\nMy First Blog\n政治月测后宫版 · 8月题库\n关于我#\n政治月测后宫版V4有最新消息？\n游戏相关#\nImage Transformer\n游戏合"
+          },
+          ".article-layout": null,
+          ".article-header": null,
+          ".article-header h1": null,
+          ".article-body": null,
+          ".article-toc": null,
+          ".article-toc-disclosure": null,
+          ".archive-shell": null,
+          ".archive-list": null,
+          ".site-footer": {
+            "x": 0,
+            "y": 864.09375,
+            "documentY": 3175.09375,
+            "width": 390,
+            "height": 138.671875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "Quark's Blog\n\n不要回答！不要回答！不要回答！"
+          }
+        },
+        "cards": [
+          {
+            "x": 16,
+            "y": -1405.921875,
+            "documentY": 905.078125,
+            "width": 358,
+            "height": 277.609375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年9月3日\n\n政治月测后宫版V4有最新消息？\n\n时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": -1112.3125,
+            "documentY": 1198.6875,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年8月19日\n\n政治月测后宫版 · 8月题库\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": -901.046875,
+            "documentY": 1409.953125,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年5月17日\n\n游戏合集\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": -689.78125,
+            "documentY": 1621.21875,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年5月16日\n\nImage Transformer\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": -478.515625,
+            "documentY": 1832.484375,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2025年11月19日\n\nHello World\n阅读全文\n↗"
+          },
+          {
+            "x": 16,
+            "y": -267.25,
+            "documentY": 2043.75,
+            "width": 358,
+            "height": 195.265625,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2025年11月19日\n\nMy First Blog\n阅读全文\n↗"
+          }
+        ],
+        "links": [
+          {
+            "text": "首页",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "归档",
+            "href": "/archives/",
+            "current": null
+          },
+          {
+            "text": "关于",
+            "href": "/#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer/",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#wen-zhang-fen-lei",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#ge-ren-bo-ke",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U",
+            "current": null
+          },
+          {
+            "text": "#",
+            "href": "#you-xi-xiang-guan",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat",
+            "current": null
+          }
+        ]
+      },
+      {
+        "name": "archive",
+        "title": "Quark's Blog",
+        "url": "/archives/",
+        "viewport": [
+          390,
+          844
+        ],
+        "pageWidth": 390,
+        "pageHeight": 1193,
+        "scrollY": 0,
+        "parts": {
+          ".site-header": {
+            "x": 0,
+            "y": 0,
+            "documentY": 0,
+            "width": 390,
+            "height": 73,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站\n菜单"
+          },
+          ".site-brand": {
+            "x": 16,
+            "y": 14,
+            "documentY": 14,
+            "width": 141.375,
+            "height": 44,
+            "fontSize": "10.88px",
+            "lineHeight": "18.496px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站"
+          },
+          ".home-hero": null,
+          ".hero-actions": null,
+          "#latest-posts": null,
+          ".catalogue-section": null,
+          ".article-layout": null,
+          ".article-header": null,
+          ".article-header h1": null,
+          ".article-body": null,
+          ".article-toc": null,
+          ".article-toc-disclosure": null,
+          ".archive-shell": {
+            "x": 16,
+            "y": 73,
+            "documentY": 73,
+            "width": 358,
+            "height": 980.859375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "DEEP SPACE ARCHIVE\n\n归档\n2026年9月3日\n政治月测后宫版V4有最新消息？\n2026年8月19日\n政治月测后宫版 · 8月题库\n2026年5月17日\n游戏合集\n2026年5月16日\nImage Transformer\n"
+          },
+          ".archive-list": {
+            "x": 16,
+            "y": 259.53125,
+            "documentY": 259.53125,
+            "width": 358,
+            "height": 722.328125,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "2026年9月3日\n政治月测后宫版V4有最新消息？\n2026年8月19日\n政治月测后宫版 · 8月题库\n2026年5月17日\n游戏合集\n2026年5月16日\nImage Transformer\n2026年4月26日\n博客目录\n2025年11"
+          },
+          ".site-footer": {
+            "x": 0,
+            "y": 1053.859375,
+            "documentY": 1053.859375,
+            "width": 390,
+            "height": 138.671875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "Quark's Blog\n\n不要回答！不要回答！不要回答！"
+          }
+        },
+        "cards": [],
+        "links": [
+          {
+            "text": "首页",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "归档",
+            "href": "/archives/",
+            "current": null
+          },
+          {
+            "text": "关于",
+            "href": "/#guan-yu-wo",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版V4有最新消息？",
+            "href": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+            "current": null
+          },
+          {
+            "text": "政治月测后宫版 · 8月题库",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+            "current": null
+          },
+          {
+            "text": "游戏合集",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+            "current": null
+          },
+          {
+            "text": "Image Transformer",
+            "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer/",
+            "current": null
+          },
+          {
+            "text": "博客目录",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "Hello World",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/",
+            "current": null
+          },
+          {
+            "text": "My First Blog",
+            "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+            "current": null
+          }
+        ]
+      },
+      {
+        "name": "article",
+        "title": "政治月测后宫版V4有最新消息？ · Quark's Blog",
+        "url": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+        "viewport": [
+          390,
+          844
+        ],
+        "pageWidth": 390,
+        "pageHeight": 1433,
+        "scrollY": 0,
+        "parts": {
+          ".site-header": {
+            "x": 0,
+            "y": 0,
+            "documentY": 0,
+            "width": 390,
+            "height": 73,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站\n菜单"
+          },
+          ".site-brand": {
+            "x": 16,
+            "y": 14,
+            "documentY": 14,
+            "width": 141.375,
+            "height": 44,
+            "fontSize": "10.88px",
+            "lineHeight": "18.496px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站"
+          },
+          ".home-hero": null,
+          ".hero-actions": null,
+          "#latest-posts": null,
+          ".catalogue-section": null,
+          ".article-layout": {
+            "x": 16,
+            "y": 73,
+            "documentY": 73,
+            "width": 358,
+            "height": 1221.59375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "48px",
+            "text": "ARCHIVE ENTRY\n\n政治月测后宫版V4有最新消息？\n2026年9月3日\n\n​ 时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n​ 当时的V1、V2我清晰地记得是用Chatgpt5.2网页端干出来的，和他斗智斗勇连哄带骗聊了老半天才同"
+          },
+          ".article-header": {
+            "x": 16,
+            "y": 145,
+            "documentY": 145,
+            "width": 358,
+            "height": 161.21875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "ARCHIVE ENTRY\n\n政治月测后宫版V4有最新消息？\n2026年9月3日"
+          },
+          ".article-header h1": {
+            "x": 16,
+            "y": 173.453125,
+            "documentY": 173.453125,
+            "width": 358,
+            "height": 91.5,
+            "fontSize": "41.6px",
+            "lineHeight": "45.76px",
+            "gap": "normal",
+            "text": "政治月测后宫版V4有最新消息？"
+          },
+          ".article-body": {
+            "x": 16,
+            "y": 354.21875,
+            "documentY": 354.21875,
+            "width": 358,
+            "height": 849.1875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "​ 时间如白驹过隙啊朋友们，学弟很快就大三了。\n\n​ 当时的V1、V2我清晰地记得是用Chatgpt5.2网页端干出来的，和他斗智斗勇连哄带骗聊了老半天才同意我可以写出来一键爬取题库的脚本。（因为聊多了他上下文就忘了嘻嘻）再次打开一个窗口问"
+          },
+          ".article-toc": null,
+          ".article-toc-disclosure": null,
+          ".archive-shell": null,
+          ".archive-list": null,
+          ".site-footer": {
+            "x": 0,
+            "y": 1294.59375,
+            "documentY": 1294.59375,
+            "width": 390,
+            "height": 138.671875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "Quark's Blog\n\n不要回答！不要回答！不要回答！"
+          }
+        },
+        "cards": [],
+        "links": [
+          {
+            "text": "首页",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "归档",
+            "href": "/archives/",
+            "current": null
+          },
+          {
+            "text": "关于",
+            "href": "/#guan-yu-wo",
+            "current": null
+          }
+        ]
+      },
+      {
+        "name": "games",
+        "title": "游戏合集 · Quark's Blog",
+        "url": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+        "viewport": [
+          390,
+          844
+        ],
+        "pageWidth": 390,
+        "pageHeight": 844,
+        "scrollY": 0,
+        "parts": {
+          ".site-header": {
+            "x": 0,
+            "y": 0,
+            "documentY": 0,
+            "width": 390,
+            "height": 73,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站\n菜单"
+          },
+          ".site-brand": {
+            "x": 16,
+            "y": 14,
+            "documentY": 14,
+            "width": 141.375,
+            "height": 44,
+            "fontSize": "10.88px",
+            "lineHeight": "18.496px",
+            "gap": "normal",
+            "text": "政治月测后宫版V3/太空站"
+          },
+          ".home-hero": null,
+          ".hero-actions": null,
+          "#latest-posts": null,
+          ".catalogue-section": null,
+          ".article-layout": {
+            "x": 16,
+            "y": 73,
+            "documentY": 73,
+            "width": 358,
+            "height": 353.84375,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "48px",
+            "text": "ARCHIVE ENTRY\n\n游戏合集\n2026年5月17日\n\n​ 贪吃蛇CTF 2048 中国象棋 国际象棋"
+          },
+          ".article-header": {
+            "x": 16,
+            "y": 145,
+            "documentY": 145,
+            "width": 358,
+            "height": 115.46875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "ARCHIVE ENTRY\n\n游戏合集\n2026年5月17日"
+          },
+          ".article-header h1": {
+            "x": 16,
+            "y": 173.453125,
+            "documentY": 173.453125,
+            "width": 358,
+            "height": 45.75,
+            "fontSize": "41.6px",
+            "lineHeight": "45.76px",
+            "gap": "normal",
+            "text": "游戏合集"
+          },
+          ".article-body": {
+            "x": 16,
+            "y": 308.46875,
+            "documentY": 308.46875,
+            "width": 358,
+            "height": 27.1875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "​ 贪吃蛇CTF 2048 中国象棋 国际象棋"
+          },
+          ".article-toc": null,
+          ".article-toc-disclosure": null,
+          ".archive-shell": null,
+          ".archive-list": null,
+          ".site-footer": {
+            "x": 0,
+            "y": 426.84375,
+            "documentY": 426.84375,
+            "width": 390,
+            "height": 138.671875,
+            "fontSize": "16px",
+            "lineHeight": "27.2px",
+            "gap": "normal",
+            "text": "Quark's Blog\n\n不要回答！不要回答！不要回答！"
+          }
+        },
+        "cards": [],
+        "links": [
+          {
+            "text": "首页",
+            "href": "/",
+            "current": null
+          },
+          {
+            "text": "归档",
+            "href": "/archives/",
+            "current": null
+          },
+          {
+            "text": "关于",
+            "href": "/#guan-yu-wo",
+            "current": null
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,511 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-08T13:13:09.038Z",
+  "originalOrigin": "https://quarkbobo.github.io",
+  "site": {
+    "title": "Quark's Blog",
+    "brand": "政治月测后宫版V3/太空站",
+    "hero": {
+      "eyebrow": "PERSONAL ARCHIVE · DEEP SPACE SIGNAL",
+      "title": "蓝色空间号",
+      "description": "技术笔记、游戏合集、日常Vlog"
+    },
+    "navigation": [
+      {
+        "title": "首页",
+        "href": "/",
+        "originalUrl": "https://quarkbobo.github.io/"
+      },
+      {
+        "title": "归档",
+        "href": "/archives/",
+        "originalUrl": "https://quarkbobo.github.io/archives/"
+      },
+      {
+        "title": "关于",
+        "href": "/#guan-yu-wo",
+        "originalUrl": "https://quarkbobo.github.io/#guan-yu-wo"
+      }
+    ],
+    "footerText": "Quark's Blog\n    不要回答！不要回答！不要回答！"
+  },
+  "posts": [
+    {
+      "id": "zzyc_V4_for_U",
+      "title": "政治月测后宫版V4有最新消息？",
+      "href": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+      "originalUrl": "https://quarkbobo.github.io/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+      "date": "2026-09-02T16:00:00.000Z",
+      "dateLabel": "2026年9月3日",
+      "categories": [],
+      "summary": "时间如白驹过隙啊朋友们，学弟很快就大三了。",
+      "summaryHtml": "&#x65F6;&#x95F4;&#x5982;&#x767D;&#x9A79;&#x8FC7;&#x9699;&#x554A;&#x670B;&#x53CB;&#x4EEC;&#xFF0C;&#x5B66;&#x5F1F;&#x5F88;&#x5FEB;&#x5C31;&#x5927;&#x4E09;&#x4E86;&#x3002;",
+      "source": "source/_posts/关于我/zzyc_V4_for_U.md",
+      "generatedSource": "public/index.html"
+    },
+    {
+      "id": "zzyc-questions-Sep-free",
+      "title": "政治月测后宫版 · 8月题库",
+      "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+      "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+      "date": "2026-08-18T16:00:00.000Z",
+      "dateLabel": "2026年8月19日",
+      "categories": [],
+      "summary": "",
+      "summaryHtml": "",
+      "source": "source/_posts/个人博客/zzyc-questions-Sep-free.md",
+      "generatedSource": "public/index.html"
+    },
+    {
+      "id": "game-concat",
+      "title": "游戏合集",
+      "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+      "originalUrl": "https://quarkbobo.github.io/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+      "date": "2026-05-16T16:00:00.000Z",
+      "dateLabel": "2026年5月17日",
+      "categories": [],
+      "summary": "",
+      "summaryHtml": "",
+      "source": "source/_posts/游戏相关/game-concat.md",
+      "generatedSource": "public/index.html"
+    },
+    {
+      "id": "Image-Transformer",
+      "title": "Image Transformer",
+      "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer/",
+      "originalUrl": "https://quarkbobo.github.io/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer/",
+      "date": "2026-05-15T16:00:00.000Z",
+      "dateLabel": "2026年5月16日",
+      "categories": [],
+      "summary": "",
+      "summaryHtml": "",
+      "source": "source/_posts/游戏相关/Image-Transformer.md",
+      "generatedSource": "public/index.html"
+    },
+    {
+      "id": "Hello-World",
+      "title": "Hello World",
+      "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/",
+      "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/",
+      "date": "2025-11-18T16:00:00.000Z",
+      "dateLabel": "2025年11月19日",
+      "categories": [],
+      "summary": "",
+      "summaryHtml": "",
+      "source": "source/_posts/个人博客/Hello-World.md",
+      "generatedSource": "public/index.html"
+    },
+    {
+      "id": "My-First-Blog",
+      "title": "My First Blog",
+      "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+      "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+      "date": "2025-11-18T16:00:00.000Z",
+      "dateLabel": "2025年11月19日",
+      "categories": [],
+      "summary": "",
+      "summaryHtml": "",
+      "source": "source/_posts/个人博客/My-First-Blog.md",
+      "generatedSource": "public/index.html"
+    }
+  ],
+  "catalogue": [
+    {
+      "title": "个人博客",
+      "id": "ge-ren-bo-ke",
+      "links": [
+        {
+          "title": "Hello World",
+          "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World",
+          "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World"
+        },
+        {
+          "title": "My First Blog",
+          "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog",
+          "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog"
+        },
+        {
+          "title": "政治月测后宫版 · 8月题库",
+          "href": "%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free",
+          "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free"
+        }
+      ],
+      "source": "source/_posts/博客目录.md",
+      "generatedSource": "public/index.html"
+    },
+    {
+      "title": "关于我",
+      "id": "guan-yu-wo",
+      "links": [
+        {
+          "title": "政治月测后宫版V4有最新消息？",
+          "href": "%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U",
+          "originalUrl": "https://quarkbobo.github.io/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U"
+        }
+      ],
+      "source": "source/_posts/博客目录.md",
+      "generatedSource": "public/index.html"
+    },
+    {
+      "title": "游戏相关",
+      "id": "you-xi-xiang-guan",
+      "links": [
+        {
+          "title": "Image Transformer",
+          "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer",
+          "originalUrl": "https://quarkbobo.github.io/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer"
+        },
+        {
+          "title": "游戏合集",
+          "href": "%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat",
+          "originalUrl": "https://quarkbobo.github.io/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat"
+        }
+      ],
+      "source": "source/_posts/博客目录.md",
+      "generatedSource": "public/index.html"
+    }
+  ],
+  "archive": [
+    {
+      "title": "政治月测后宫版V4有最新消息？",
+      "href": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+      "originalUrl": "https://quarkbobo.github.io/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+      "date": "2026-09-02T16:00:00.000Z",
+      "dateLabel": "2026年9月3日",
+      "source": "source/_posts/关于我/zzyc_V4_for_U.md",
+      "generatedSource": "public/archives/index.html"
+    },
+    {
+      "title": "政治月测后宫版 · 8月题库",
+      "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+      "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+      "date": "2026-08-18T16:00:00.000Z",
+      "dateLabel": "2026年8月19日",
+      "source": "source/_posts/个人博客/zzyc-questions-Sep-free.md",
+      "generatedSource": "public/archives/index.html"
+    },
+    {
+      "title": "游戏合集",
+      "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+      "originalUrl": "https://quarkbobo.github.io/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+      "date": "2026-05-16T16:00:00.000Z",
+      "dateLabel": "2026年5月17日",
+      "source": "source/_posts/游戏相关/game-concat.md",
+      "generatedSource": "public/archives/index.html"
+    },
+    {
+      "title": "Image Transformer",
+      "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer/",
+      "originalUrl": "https://quarkbobo.github.io/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer/",
+      "date": "2026-05-15T16:00:00.000Z",
+      "dateLabel": "2026年5月16日",
+      "source": "source/_posts/游戏相关/Image-Transformer.md",
+      "generatedSource": "public/archives/index.html"
+    },
+    {
+      "title": "博客目录",
+      "href": "/",
+      "originalUrl": "https://quarkbobo.github.io/",
+      "date": "2026-04-26T07:42:49.317Z",
+      "dateLabel": "2026年4月26日",
+      "source": "source/_posts/博客目录.md",
+      "generatedSource": "public/archives/index.html"
+    },
+    {
+      "title": "Hello World",
+      "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/",
+      "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World/",
+      "date": "2025-11-18T16:00:00.000Z",
+      "dateLabel": "2025年11月19日",
+      "source": "source/_posts/个人博客/Hello-World.md",
+      "generatedSource": "public/archives/index.html"
+    },
+    {
+      "title": "My First Blog",
+      "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+      "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+      "date": "2025-11-18T16:00:00.000Z",
+      "dateLabel": "2025年11月19日",
+      "source": "source/_posts/个人博客/My-First-Blog.md",
+      "generatedSource": "public/archives/index.html"
+    }
+  ],
+  "games": {
+    "id": "game-concat",
+    "title": "游戏合集",
+    "href": "/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+    "originalUrl": "https://quarkbobo.github.io/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/game-concat/",
+    "date": "2026-05-16T16:00:00.000Z",
+    "dateLabel": "2026年5月17日",
+    "categories": [],
+    "summary": "",
+    "summaryHtml": "",
+    "source": "source/_posts/游戏相关/game-concat.md",
+    "generatedSource": "public/游戏相关/game-concat/index.html",
+    "bodyHtml": "<p>&#x200B;\t<a href=\"https://quarkbobo.github.io/snake\" target=\"_blank\">&#x8D2A;&#x5403;&#x86C7;CTF</a>  <a href=\"https://quarkbobo.github.io/2048\" target=\"_blank\">2048</a>  <a href=\"https://quarkbobo.github.io/&#x4E2D;&#x56FD;&#x8C61;&#x68CB;\" target=\"_blank\">&#x4E2D;&#x56FD;&#x8C61;&#x68CB;</a> <a href=\"https://quarkbobo.github.io/&#x56FD;&#x9645;&#x8C61;&#x68CB;\" target=\"_blank\">&#x56FD;&#x9645;&#x8C61;&#x68CB;</a></p>\n",
+    "bodyText": "​\t贪吃蛇CTF  2048  中国象棋 国际象棋\n",
+    "hasToc": false,
+    "tocHtml": "",
+    "tocEntries": [],
+    "headings": [],
+    "links": [
+      {
+        "title": "贪吃蛇CTF",
+        "href": "https://quarkbobo.github.io/snake",
+        "originalUrl": "https://quarkbobo.github.io/snake",
+        "target": "_blank",
+        "rel": null
+      },
+      {
+        "title": "2048",
+        "href": "https://quarkbobo.github.io/2048",
+        "originalUrl": "https://quarkbobo.github.io/2048",
+        "target": "_blank",
+        "rel": null
+      },
+      {
+        "title": "中国象棋",
+        "href": "https://quarkbobo.github.io/中国象棋",
+        "originalUrl": "https://quarkbobo.github.io/%E4%B8%AD%E5%9B%BD%E8%B1%A1%E6%A3%8B",
+        "target": "_blank",
+        "rel": null
+      },
+      {
+        "title": "国际象棋",
+        "href": "https://quarkbobo.github.io/国际象棋",
+        "originalUrl": "https://quarkbobo.github.io/%E5%9B%BD%E9%99%85%E8%B1%A1%E6%A3%8B",
+        "target": "_blank",
+        "rel": null
+      }
+    ],
+    "images": []
+  },
+  "articles": {
+    "v4": {
+      "id": "zzyc_V4_for_U",
+      "title": "政治月测后宫版V4有最新消息？",
+      "href": "/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+      "originalUrl": "https://quarkbobo.github.io/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+      "date": "2026-09-02T16:00:00.000Z",
+      "dateLabel": "2026年9月3日",
+      "categories": [],
+      "summary": "时间如白驹过隙啊朋友们，学弟很快就大三了。",
+      "summaryHtml": "&#x65F6;&#x95F4;&#x5982;&#x767D;&#x9A79;&#x8FC7;&#x9699;&#x554A;&#x670B;&#x53CB;&#x4EEC;&#xFF0C;&#x5B66;&#x5F1F;&#x5F88;&#x5FEB;&#x5C31;&#x5927;&#x4E09;&#x4E86;&#x3002;",
+      "source": "source/_posts/关于我/zzyc_V4_for_U.md",
+      "generatedSource": "public/关于我/zzyc_V4_for_U/index.html",
+      "bodyHtml": "<p>&#x200B;\t&#x65F6;&#x95F4;&#x5982;&#x767D;&#x9A79;&#x8FC7;&#x9699;&#x554A;&#x670B;&#x53CB;&#x4EEC;&#xFF0C;&#x5B66;&#x5F1F;&#x5F88;&#x5FEB;&#x5C31;&#x5927;&#x4E09;&#x4E86;&#x3002;</p>\n<p>&#x200B;\t&#x5F53;&#x65F6;&#x7684;V1&#x3001;V2&#x6211;&#x6E05;&#x6670;&#x5730;&#x8BB0;&#x5F97;&#x662F;&#x7528;Chatgpt5.2&#x7F51;&#x9875;&#x7AEF;&#x5E72;&#x51FA;&#x6765;&#x7684;&#xFF0C;&#x548C;&#x4ED6;&#x6597;&#x667A;&#x6597;&#x52C7;&#x8FDE;&#x54C4;&#x5E26;&#x9A97;&#x804A;&#x4E86;&#x8001;&#x534A;&#x5929;&#x624D;&#x540C;&#x610F;&#x6211;&#x53EF;&#x4EE5;&#x5199;&#x51FA;&#x6765;&#x4E00;&#x952E;&#x722C;&#x53D6;&#x9898;&#x5E93;&#x7684;&#x811A;&#x672C;&#x3002;&#xFF08;&#x56E0;&#x4E3A;&#x804A;&#x591A;&#x4E86;&#x4ED6;&#x4E0A;&#x4E0B;&#x6587;&#x5C31;&#x5FD8;&#x4E86;&#x563B;&#x563B;&#xFF09;&#x518D;&#x6B21;&#x6253;&#x5F00;&#x4E00;&#x4E2A;&#x7A97;&#x53E3;&#x95EE;&#x4ED6;&#x600E;&#x4E48;&#x4FEE;&#x6539;&#x4EE3;&#x7801;&#x7684;&#x65F6;&#x5019;&#x4ED6;&#x53C8;&#x544A;&#x8BC9;&#x6211;&#x4E0D;&#x4F1A;&#x5E2E;&#x4F60;&#x505A;&#x8FDD;&#x89C4;&#x64CD;&#x4F5C;&#xFF0C;&#x8FD9;&#x8C01;&#x7EF7;&#x5F97;&#x4F4F;&#x3002;</p>\n<p>&#x200B;\t&#x5DF2;&#x7ECF;&#x628A;&#x63A5;&#x7BA1;&#x672C;&#x516C;&#x4F17;&#x53F7;&#x7684;&#x91CD;&#x4EFB;&#x4EA4;&#x7ED9;&#x51E0;&#x4F4D;&#x8EAB;&#x6000;&#x7EDD;&#x6280;&#x7684;AI&#x5DE5;&#x7A0B;&#x5E08;&#x3002;&#x76F8;&#x4FE1;&#x4ED6;&#x4EEC;&#x5F88;&#x5FEB;&#x5C31;&#x80FD;&#x628A;&#x73B0;&#x5728;&#x9700;&#x8981;&#x7528;&#x7535;&#x8111;&#x7684;&#x64CD;&#x4F5C;&#x6539;&#x6210;&#x624B;&#x673A;&#x63D2;&#x4EF6;&#x683C;&#x5F0F;&#x7684;&#x653F;&#x6CBB;&#x6708;&#x6D4B;&#x540E;&#x5BAB;&#x7248;V4&#x4EE3;&#x7801;&#xFF08;&#x50CF;&#x9002;&#x914D;Edge&#x3001;Chrome&#x6D4F;&#x89C8;&#x5668;&#x8FD9;&#x79CD;&#xFF09;&#xFF0C;&#x8FD9;&#x6837;&#x5927;&#x5BB6;&#x5728;&#x62A5;&#x544A;&#x5385;&#x53EF;&#x4EE5;&#x4E0D;&#x7528;&#x63D0;&#x5FC3;&#x540A;&#x80C6;&#x5730;&#x7528;&#x5C0F;&#x5305;&#x4E00;&#x952E;&#x5BFC;&#x5165;&#x9898;&#x5E93;&#x5C31;&#x53EF;&#x4EE5;&#x8BA9;&#x811A;&#x672C;&#x81EA;&#x5DF1;&#x8DD1;&#x4E86;&#xFF0C;&#x662F;&#x4E0D;&#x662F;&#x975E;&#x5E38;&#x7F8E;&#x5999;&#xFF1F;</p>\n<p>&#x200B;\t</p>\n<p>&#x200B;\t&#x60F3;&#x4EC0;&#x4E48;&#x5462;&#xFF0C;&#x6211;&#x4EEC;&#x80FD;&#x505A;&#x7684;&#x51FA;&#x4E5F;&#x4E0D;&#x53EF;&#x80FD;&#x5F00;&#x6E90;&#xFF01;&#xFF01;&#xFF01;</p>\n<p>&#x200B;\t&#x9ED8;&#x8BA4;&#x4EE5;&#x4EFB;&#x610F;&#x5F62;&#x5F0F;&#x6216;&#x65B9;&#x6CD5;&#x5F97;&#x5230;&#x76F8;&#x5173;&#x4EE3;&#x7801;&#x7684;&#x540C;&#x5B66;&#x5DF2;&#x7ECF;&#x8BFB;&#x8FC7;&#x8FD9;5&#x6761;<strong>&#x514D;&#x8D23;&#x58F0;&#x660E;</strong>&#xFF1A;</p>\n<ol>\n<li>&#x672C;&#x6E90;&#x7801;&#x6765;&#x6E90;&#x4E8E;&#x7F51;&#x7EDC;&#x6536;&#x96C6;&#x6216;&#x4E2A;&#x4EBA;&#x6574;&#x7406;&#xFF0C;&#x7248;&#x6743;&#x5F52;&#x539F;&#x4F5C;&#x8005;&#x53CA;&#x539F;&#x5F00;&#x53D1;&#x56E2;&#x961F;&#x6240;&#x6709;&#xFF1B;</li>\n<li>&#x672C;&#x6E90;&#x7801;&#x4EC5;&#x4F9B;&#x4E2A;&#x4EBA;&#x5B66;&#x4E60;&#x3001;&#x7814;&#x7A76;&#x548C;&#x6280;&#x672F;&#x4EA4;&#x6D41;&#x4E4B;&#x7528;&#xFF0C;&#x4E25;&#x7981;&#x7528;&#x4E8E;&#x4EFB;&#x4F55;&#x5546;&#x4E1A;&#x7528;&#x9014;&#xFF1B;</li>\n<li>&#x8BF7;&#x5728;&#x4E0B;&#x8F7D;&#x540E; 24 &#x5C0F;&#x65F6;&#x5185;&#x81EA;&#x89C9;&#x5220;&#x9664;&#xFF0C;&#x5982;&#x9700;&#x6B63;&#x5F0F;&#x4F7F;&#x7528;&#xFF0C;&#x8BF7;&#x8D2D;&#x4E70;/&#x83B7;&#x53D6;&#x5B98;&#x65B9;&#x6388;&#x6743;&#xFF1B;</li>\n<li>&#x56E0;&#x4E0B;&#x8F7D;&#x3001;&#x4F7F;&#x7528;&#x6216;&#x4F20;&#x64AD;&#x672C;&#x6E90;&#x7801;&#x6240;&#x4EA7;&#x751F;&#x7684;&#x4E00;&#x5207;&#x6CD5;&#x5F8B;&#x8D23;&#x4EFB;&#xFF0C;&#x5747;&#x7531;&#x4F7F;&#x7528;&#x8005;&#x81EA;&#x884C;&#x627F;&#x62C5;&#xFF0C;&#x4E0E;&#x53D1;&#x5E03;&#x8005;&#x65E0;&#x5173;&#xFF1B;</li>\n<li>&#x672C;&#x58F0;&#x660E;&#x6700;&#x7EC8;&#x89E3;&#x91CA;&#x6743;&#x5F52;&#x53D1;&#x5E03;&#x8005;&#x6240;&#x6709;&#x3002;</li>\n</ol>\n",
+      "bodyText": "​\t时间如白驹过隙啊朋友们，学弟很快就大三了。\n​\t当时的V1、V2我清晰地记得是用Chatgpt5.2网页端干出来的，和他斗智斗勇连哄带骗聊了老半天才同意我可以写出来一键爬取题库的脚本。（因为聊多了他上下文就忘了嘻嘻）再次打开一个窗口问他怎么修改代码的时候他又告诉我不会帮你做违规操作，这谁绷得住。\n​\t已经把接管本公众号的重任交给几位身怀绝技的AI工程师。相信他们很快就能把现在需要用电脑的操作改成手机插件格式的政治月测后宫版V4代码（像适配Edge、Chrome浏览器这种），这样大家在报告厅可以不用提心吊胆地用小包一键导入题库就可以让脚本自己跑了，是不是非常美妙？\n​\t\n​\t想什么呢，我们能做的出也不可能开源！！！\n​\t默认以任意形式或方法得到相关代码的同学已经读过这5条免责声明：\n\n本源码来源于网络收集或个人整理，版权归原作者及原开发团队所有；\n本源码仅供个人学习、研究和技术交流之用，严禁用于任何商业用途；\n请在下载后 24 小时内自觉删除，如需正式使用，请购买/获取官方授权；\n因下载、使用或传播本源码所产生的一切法律责任，均由使用者自行承担，与发布者无关；\n本声明最终解释权归发布者所有。\n\n",
+      "hasToc": false,
+      "tocHtml": "",
+      "tocEntries": [],
+      "headings": [],
+      "links": [],
+      "images": []
+    },
+    "withToc": {
+      "id": "My-First-Blog",
+      "title": "My First Blog",
+      "href": "/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+      "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/",
+      "date": "2025-11-18T16:00:00.000Z",
+      "dateLabel": "2025年11月19日",
+      "categories": [],
+      "summary": "",
+      "summaryHtml": "",
+      "source": "source/_posts/个人博客/My-First-Blog.md",
+      "generatedSource": "public/个人博客/My-First-Blog/index.html",
+      "bodyHtml": "<p>Welcome to my first blog</p>\n<h2 id=\"void\"><span>Void</span><a class=\"header-anchor\" href=\"#void\" aria-label=\"&#x7AE0;&#x8282;&#x94FE;&#x63A5;&#xFF1A;Void\">#</a></h2><h3 id=\"the-first-part\"><span>The first part</span><a class=\"header-anchor\" href=\"#the-first-part\" aria-label=\"&#x7AE0;&#x8282;&#x94FE;&#x63A5;&#xFF1A;The first part\">#</a></h3><p>pass</p>\n<h3 id=\"the-second-part\"><span>The second part</span><a class=\"header-anchor\" href=\"#the-second-part\" aria-label=\"&#x7AE0;&#x8282;&#x94FE;&#x63A5;&#xFF1A;The second part\">#</a></h3><p>pass</p>\n<h3 id=\"the-third-part\"><span>The third part</span><a class=\"header-anchor\" href=\"#the-third-part\" aria-label=\"&#x7AE0;&#x8282;&#x94FE;&#x63A5;&#xFF1A;The third part\">#</a></h3><p>pass</p>\n<h3 id=\"the-fourth-part\"><span>The fourth part</span><a class=\"header-anchor\" href=\"#the-fourth-part\" aria-label=\"&#x7AE0;&#x8282;&#x94FE;&#x63A5;&#xFF1A;The fourth part\">#</a></h3><p>pass</p>\n",
+      "bodyText": "Welcome to my first blog\nVoid#The first part#pass\nThe second part#pass\nThe third part#pass\nThe fourth part#pass\n",
+      "hasToc": true,
+      "tocHtml": "<ol class=\"toc\"><li class=\"toc-item toc-level-2\"><a class=\"toc-link\" href=\"#void\"><span class=\"toc-text\">Void</span></a><ol class=\"toc-child\"><li class=\"toc-item toc-level-3\"><a class=\"toc-link\" href=\"#the-first-part\"><span class=\"toc-text\">The first part</span></a></li><li class=\"toc-item toc-level-3\"><a class=\"toc-link\" href=\"#the-second-part\"><span class=\"toc-text\">The second part</span></a></li><li class=\"toc-item toc-level-3\"><a class=\"toc-link\" href=\"#the-third-part\"><span class=\"toc-text\">The third part</span></a></li><li class=\"toc-item toc-level-3\"><a class=\"toc-link\" href=\"#the-fourth-part\"><span class=\"toc-text\">The fourth part</span></a></li></ol></li></ol>",
+      "tocEntries": [
+        {
+          "title": "Void",
+          "href": "#void",
+          "depth": 1
+        },
+        {
+          "title": "The first part",
+          "href": "#the-first-part",
+          "depth": 2
+        },
+        {
+          "title": "The second part",
+          "href": "#the-second-part",
+          "depth": 2
+        },
+        {
+          "title": "The third part",
+          "href": "#the-third-part",
+          "depth": 2
+        },
+        {
+          "title": "The fourth part",
+          "href": "#the-fourth-part",
+          "depth": 2
+        }
+      ],
+      "headings": [
+        {
+          "tag": "h2",
+          "id": "void",
+          "title": "Void"
+        },
+        {
+          "tag": "h3",
+          "id": "the-first-part",
+          "title": "The first part"
+        },
+        {
+          "tag": "h3",
+          "id": "the-second-part",
+          "title": "The second part"
+        },
+        {
+          "tag": "h3",
+          "id": "the-third-part",
+          "title": "The third part"
+        },
+        {
+          "tag": "h3",
+          "id": "the-fourth-part",
+          "title": "The fourth part"
+        }
+      ],
+      "links": [
+        {
+          "title": "#",
+          "href": "#void",
+          "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/#void",
+          "target": null,
+          "rel": null
+        },
+        {
+          "title": "#",
+          "href": "#the-first-part",
+          "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/#the-first-part",
+          "target": null,
+          "rel": null
+        },
+        {
+          "title": "#",
+          "href": "#the-second-part",
+          "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/#the-second-part",
+          "target": null,
+          "rel": null
+        },
+        {
+          "title": "#",
+          "href": "#the-third-part",
+          "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/#the-third-part",
+          "target": null,
+          "rel": null
+        },
+        {
+          "title": "#",
+          "href": "#the-fourth-part",
+          "originalUrl": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/My-First-Blog/#the-fourth-part",
+          "target": null,
+          "rel": null
+        }
+      ],
+      "images": []
+    }
+  },
+  "corrections": [
+    {
+      "subject": "Game entry count",
+      "proposedCount": 5,
+      "measuredCount": 4,
+      "evidence": [
+        "source/_posts/游戏相关/game-concat.md",
+        "public/游戏相关/game-concat/index.html"
+      ],
+      "explanation": "The source and generated article both contain four anchors. 贪吃蛇CTF is one link label, not two entries. Keep four real destinations."
+    }
+  ],
+  "urlNotes": [
+    "href is the exact generated HTML attribute. originalUrl resolves it against the verified deployed GitHub Pages origin, not the configured custom domain.",
+    "Homepage article links can map to local article prototypes only when that prototype exists. Retain originalUrl as a separate original-site destination.",
+    "Catalogue href attributes are relative to the original homepage. Resolve these using originalUrl or map by destination; do not resolve them relative to docs/layout-proposals/.",
+    "Category links use real category paths and must remain reachable through originalUrl if no category prototype is provided.",
+    "The current six homepage cards have no category chips: categories arrays are empty. The three genuine catalogue groups come from the authored homepage catalogue, not Hexo category metadata.",
+    "Only the V4 card currently has an excerpt. Empty summary strings are the actual generated site output; do not invent text for the other five cards.",
+    "The selected V4 and My First Blog body HTML contains no images. Their complete bodies can be copied without external image requests.",
+    "Article heading permalink hrefs and toc hrefs refer to existing fragment IDs. Preserve these IDs; native details can wrap tocHtml on mobile.",
+    "All four game href attributes are absolute original destinations. Preserve their names and href values exactly.",
+    "No source/files content is read or included. The existing August question post appears only as its already-public homepage card metadata and full original card summary."
+  ],
+  "sources": [
+    {
+      "path": "source/_posts/关于我/zzyc_V4_for_U.md",
+      "sha256": "6b587eb751bca73452db19e62548bf2c6ede5f19abb48c3e1be9a34b88374188",
+      "bytes": 1552
+    },
+    {
+      "path": "source/_posts/游戏相关/Image-Transformer.md",
+      "sha256": "3dfb48e39f8e9e6dd529cd29bb00964708d77e4ef304f24ce3396af855a41b50",
+      "bytes": 203
+    },
+    {
+      "path": "source/_posts/游戏相关/game-concat.md",
+      "sha256": "f6b4ed80d976b0b956236cb292ae6ef6c4bca8b208dcefda9ecd961b8f366c0a",
+      "bytes": 368
+    },
+    {
+      "path": "source/_posts/个人博客/zzyc-questions-Sep-free.md",
+      "sha256": "acf9aff108332990ce8b9256ae522c6c30a19520a0786e817424e1c0bc27485a",
+      "bytes": 1625
+    },
+    {
+      "path": "source/_posts/个人博客/My-First-Blog.md",
+      "sha256": "378e69ace831e9503019429d9a8f0c8efa248e4c7d9b460407782638e18b1ea4",
+      "bytes": 209
+    },
+    {
+      "path": "source/_posts/个人博客/Hello-World.md",
+      "sha256": "a7ac3567041213aceb0fa2d7cfbbb4d5aed5e68c7fc06345b4ec3e8378f8421c",
+      "bytes": 894
+    },
+    {
+      "path": "source/_posts/博客目录.md",
+      "sha256": "214ae18cafd36514fc97d86b8d300d2831505bdc9c2e26f6ebae2b9cd029c041",
+      "bytes": 513
+    },
+    {
+      "path": "public/index.html",
+      "sha256": "a884e85c02766acf2173a4dd7e5cbeea4e4118219720e857493d15c17107fe62",
+      "bytes": 14044
+    },
+    {
+      "path": "public/archives/index.html",
+      "sha256": "8ae5386bb5636c0c7115ab233a13bef5e826d32dfac4e3333ef30d6110c29b5d",
+      "bytes": 4140
+    },
+    {
+      "path": "public/关于我/zzyc_V4_for_U/index.html",
+      "sha256": "bd02ae2390b4f54343c96ee70afa42cab0701efe6cfa07964ca6b8e12410fb68",
+      "bytes": 4446
+    },
+    {
+      "path": "public/个人博客/My-First-Blog/index.html",
+      "sha256": "60ff5d6026e785c62755ac9e594b7caa96b7c42fc49c724ed5a43260978a894f",
+      "bytes": 5272
+    },
+    {
+      "path": "public/游戏相关/game-concat/index.html",
+      "sha256": "1d48e7cadd951f3f6dbfff2c5a56cf11d115fbdd73d1dc0dd1f141c090d52856",
+      "bytes": 3185
+    },
+    {
+      "path": "themes/fluid-particle/_config.yml",
+      "sha256": "fb6bbe5b0a5fce72324cc08fc43d6bc9e2ce749502d7b0cb34adac31207e905e",
+      "bytes": 2415
+    },
+    {
+      "path": "_config.yml",
+      "sha256": "62979d83221857e63087b753877b65f238d78f764fb59e61f0ab241c939d0c17",
+      "bytes": 2888
+    }
+  ]
+}

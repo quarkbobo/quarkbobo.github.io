@@ -1,0 +1,43 @@
+[
+  {
+    "withText": false,
+    "open": false,
+    "events": [
+      {
+        "type": "keydown",
+        "key": "Enter",
+        "trusted": true
+      },
+      {
+        "type": "keyup",
+        "key": "Enter",
+        "trusted": true
+      }
+    ]
+  },
+  {
+    "withText": true,
+    "open": true,
+    "events": [
+      {
+        "type": "keydown",
+        "key": "Enter",
+        "trusted": true
+      },
+      {
+        "type": "keypress",
+        "key": "Enter",
+        "trusted": true
+      },
+      {
+        "type": "click",
+        "trusted": true
+      },
+      {
+        "type": "keyup",
+        "key": "Enter",
+        "trusted": true
+      }
+    ]
+  }
+]

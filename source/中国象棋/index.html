@@ -104,7 +104,11 @@
         
         #board {
             display: block;
+            width: 100%;
+            max-width: 560px;
+            height: auto;
             cursor: pointer;
+            touch-action: manipulation;
             border-radius: 10px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.15);
         }
@@ -181,6 +185,11 @@
             font-weight: bold;
             font-family: 'Microsoft YaHei', sans-serif;
         }
+
+        select { padding: 12px; font: inherit; border: 1px solid #aaa; border-radius: 8px; background: white; width: 100%; }
+        button:focus-visible, select:focus-visible, #board:focus-visible { outline: 3px solid #2980b9; outline-offset: 3px; }
+        .game-help { color: #666; font-size: 14px; line-height: 1.6; margin-top: 12px; }
+        .dialog-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
         
         .btn-restart {
             background: linear-gradient(135deg, #3498db, #2980b9);
@@ -257,6 +266,13 @@
         }
         
         @media (max-width: 768px) {
+            body { padding: 10px; }
+            .board-container { padding: 8px; }
+            .game-header { padding: 14px; }
+            .game-status { flex-direction: column; gap: 8px; }
+            .current-turn { font-size: 18px; }
+            .game-over-content { padding: 24px; margin: 16px; }
+            .game-over-content h2 { font-size: 28px; }
             .game-controls {
                 grid-template-columns: 1fr;
             }
@@ -266,20 +282,22 @@
                 height: auto;
             }
         }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
     </style>
 </head>
 <body>
     <div class="game-wrapper">
         <div class="game-header">
             <h1>🏛️ 中国象棋</h1>
-            <div class="game-status">
+            <div class="game-status" aria-live="polite">
                 <div class="current-turn" id="currentTurn">🔴 红方走棋</div>
                 <div class="status-text" id="statusText">点击棋子选择，点击目标位置移动</div>
             </div>
+            <p class="game-help" id="gameHelp">你执红先行，电脑执黑。点选棋子，再点绿色落点；也可用方向键和回车操作棋盘。悔棋撤回一整回合。</p>
         </div>
         
         <div class="board-container">
-            <canvas id="board" width="560" height="620"></canvas>
+            <canvas id="board" width="560" height="620" tabindex="0" aria-label="中国象棋棋盘，红方在下，方向键移动光标，回车选择和落子">请使用支持 Canvas 的浏览器。</canvas>
         </div>
         
         <div class="game-controls">
@@ -291,6 +309,11 @@
             </div>
             
             <div class="buttons">
+                <label for="gameMode">对战模式（切换后重新开局）</label>
+                <select id="gameMode" onchange="game.setMode(this.value)">
+                    <option value="ai">单人对战 · 你执红，电脑执黑</option>
+                    <option value="local">本地双人 · 轮流走棋</option>
+                </select>
                 <button class="btn-restart" onclick="game.restart()">🔄 重新开始</button>
                 <button class="btn-undo" id="undoBtn" onclick="game.undo()" disabled>↩️ 悔棋</button>
             </div>
@@ -300,7 +323,10 @@
     <div class="game-over" id="gameOver">
         <div class="game-over-content">
             <h2 id="winnerText"></h2>
-            <button class="btn-restart" onclick="game.restart(); document.getElementById('gameOver').classList.remove('show');">🔄 再来一局</button>
+            <div class="dialog-actions">
+                <button class="btn-restart" onclick="game.restart()">🔄 再来一局</button>
+                <button class="btn-undo" onclick="game.undo()">↩️ 悔棋</button>
+            </div>
         </div>
     </div>
 
@@ -326,11 +352,16 @@
                 this.gameOver = false;
                 this.moveHistory = [];
                 this.moveCount = 0;
+                this.mode = 'ai';
+                this.aiTimer = null;
+                this.cursor = null;
                 
                 this.initGame();
                 this.bindEvents();
                 this.draw();
                 this.updateUI();
+                this.updateUndoButton();
+                this.updateStatus();
             }
             
             initGame() {
@@ -340,47 +371,15 @@
             }
             
             initPieces() {
-                // 红方 (上方)
-                const redPieces = [
-                    new Piece('车', 0, 0, 'red'),
-                    new Piece('马', 1, 0, 'red'),
-                    new Piece('相', 2, 0, 'red'),
-                    new Piece('仕', 3, 0, 'red'),
-                    new Piece('帅', 4, 0, 'red'),
-                    new Piece('仕', 5, 0, 'red'),
-                    new Piece('相', 6, 0, 'red'),
-                    new Piece('马', 7, 0, 'red'),
-                    new Piece('车', 8, 0, 'red'),
-                    new Piece('炮', 1, 2, 'red'),
-                    new Piece('炮', 7, 2, 'red'),
-                    new Piece('兵', 0, 3, 'red'),
-                    new Piece('兵', 2, 3, 'red'),
-                    new Piece('兵', 4, 3, 'red'),
-                    new Piece('兵', 6, 3, 'red'),
-                    new Piece('兵', 8, 3, 'red')
-                ];
-                
-                // 黑方 (下方)
-                const blackPieces = [
-                    new Piece('车', 0, 9, 'black'),
-                    new Piece('马', 1, 9, 'black'),
-                    new Piece('象', 2, 9, 'black'),
-                    new Piece('士', 3, 9, 'black'),
-                    new Piece('将', 4, 9, 'black'),
-                    new Piece('士', 5, 9, 'black'),
-                    new Piece('象', 6, 9, 'black'),
-                    new Piece('马', 7, 9, 'black'),
-                    new Piece('车', 8, 9, 'black'),
-                    new Piece('炮', 1, 7, 'black'),
-                    new Piece('炮', 7, 7, 'black'),
-                    new Piece('卒', 0, 6, 'black'),
-                    new Piece('卒', 2, 6, 'black'),
-                    new Piece('卒', 4, 6, 'black'),
-                    new Piece('卒', 6, 6, 'black'),
-                    new Piece('卒', 8, 6, 'black')
-                ];
-                
-                this.pieces = [...redPieces, ...blackPieces];
+                this.pieces = [];
+                for (const side of ['red', 'black']) {
+                    const red = side === 'red';
+                    const row = red ? 9 : 0;
+                    const types = red ? '车马相仕帅仕相马车' : '车马象士将士象马车';
+                    [...types].forEach((type, x) => this.pieces.push(new Piece(type, x, row, side)));
+                    for (const x of [1, 7]) this.pieces.push(new Piece('炮', x, red ? 7 : 2, side));
+                    for (const x of [0, 2, 4, 6, 8]) this.pieces.push(new Piece(red ? '兵' : '卒', x, red ? 6 : 3, side));
+                }
             }
             
             updateBoard() {
@@ -394,10 +393,27 @@
             
             bindEvents() {
                 this.canvas.addEventListener('click', (e) => this.handleClick(e));
+                this.canvas.addEventListener('keydown', (e) => {
+                    const steps = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+                    if (!steps[e.key] && !['Enter', ' ', 'Escape'].includes(e.key)) return;
+                    e.preventDefault();
+                    if (!this.cursor) this.cursor = { x: 4, y: 6 };
+                    if (steps[e.key]) {
+                        this.cursor.x = Math.max(0, Math.min(8, this.cursor.x + steps[e.key][0]));
+                        this.cursor.y = Math.max(0, Math.min(9, this.cursor.y + steps[e.key][1]));
+                    } else if (e.key === 'Escape') {
+                        this.selectedPiece = null;
+                    } else {
+                        this.handleSquare(this.cursor.x, this.cursor.y);
+                    }
+                    const piece = this.board[this.cursor.y][this.cursor.x];
+                    this.canvas.setAttribute('aria-label', `中国象棋棋盘，光标第${this.cursor.x + 1}列第${this.cursor.y + 1}行，${piece ? (piece.side === 'red' ? '红' : '黑') + piece.type : '空位'}。回车选择或落子。`);
+                    this.draw();
+                });
             }
             
             handleClick(e) {
-                if (this.gameOver) return;
+                if (this.gameOver || (this.mode === 'ai' && this.currentTurn === 'black')) return;
                 
                 const rect = this.canvas.getBoundingClientRect();
                 const scaleX = this.canvas.width / rect.width;
@@ -414,6 +430,12 @@
                     return;
                 }
                 
+                this.cursor = null;
+                this.handleSquare(boardX, boardY);
+            }
+
+            handleSquare(boardX, boardY) {
+                if (this.gameOver || (this.mode === 'ai' && this.currentTurn === 'black')) return;
                 const clickedPiece = this.board[boardY][boardX];
                 
                 if (this.selectedPiece) {
@@ -423,7 +445,7 @@
                         if (this.isValidMove(this.selectedPiece, boardX, boardY)) {
                             this.movePiece(this.selectedPiece, boardX, boardY);
                         } else {
-                            this.selectedPiece = null;
+                            this.showStatus('不能这样走，请选择绿色落点；被将军时必须应将。', true);
                         }
                     }
                 } else {
@@ -436,69 +458,39 @@
             }
             
             isValidMove(piece, targetX, targetY) {
-                if (targetX < 0 || targetX > 8 || targetY < 0 || targetY > 9) return false;
-                
-                const targetPiece = this.board[targetY][targetX];
-                if (targetPiece && targetPiece.side === piece.side) return false;
-                
-                const dx = targetX - piece.x;
-                const dy = targetY - piece.y;
-                
-                let isValid = false;
-                
-                switch(piece.type) {
-                    case '帅':
-                    case '将':
-                        isValid = this.isValidGeneral(piece, targetX, targetY, dx, dy);
-                        break;
-                    case '仕':
-                    case '士':
-                        isValid = this.isValidAdvisor(piece, targetX, targetY, dx, dy);
-                        break;
-                    case '相':
-                    case '象':
-                        isValid = this.isValidElephant(piece, targetX, targetY, dx, dy);
-                        break;
-                    case '马':
-                        isValid = this.isValidHorse(piece, targetX, targetY, dx, dy);
-                        break;
-                    case '车':
-                        isValid = this.isValidChariot(piece, targetX, targetY, dx, dy);
-                        break;
-                    case '炮':
-                        isValid = this.isValidCannon(piece, targetX, targetY, dx, dy);
-                        break;
-                    case '兵':
-                    case '卒':
-                        isValid = this.isValidSoldier(piece, targetX, targetY, dx, dy);
-                        break;
-                }
-                
-                if (!isValid) return false;
-                
-                // 模拟移动，检查是否会将自己的将/帅暴露给对方的将军
-                const originalX = piece.x;
-                const originalY = piece.y;
-                const capturedPiece = this.board[targetY][targetX];
-                
-                piece.x = targetX;
-                piece.y = targetY;
-                if (capturedPiece) capturedPiece.captured = true;
-                this.updateBoard();
-                
+                if (!this.isValidMoveIgnoreCheck(piece, targetX, targetY)) return false;
+                const move = this.applyMove(piece, targetX, targetY);
                 const inCheck = this.isInCheck(piece.side);
-                
-                piece.x = originalX;
-                piece.y = originalY;
-                if (capturedPiece) capturedPiece.captured = false;
-                this.updateBoard();
-                
+                this.revertMove(move);
                 return !inCheck;
+            }
+
+            applyMove(piece, x, y) {
+                const move = { piece, fromX: piece.x, fromY: piece.y, toX: x, toY: y, captured: this.board[y][x] };
+                if (move.captured) move.captured.captured = true;
+                this.board[piece.y][piece.x] = null;
+                piece.x = x;
+                piece.y = y;
+                this.board[y][x] = piece;
+                return move;
+            }
+
+            revertMove(move) {
+                const { piece, fromX, fromY, toX, toY, captured } = move;
+                piece.x = fromX;
+                piece.y = fromY;
+                if (captured) captured.captured = false;
+                this.board[toY][toX] = captured;
+                this.board[fromY][fromX] = piece;
             }
             
             isValidGeneral(piece, targetX, targetY, dx, dy) {
+                const target = this.board[targetY][targetX];
+                if (dx === 0 && target && (target.type === '帅' || target.type === '将')) {
+                    return this.isValidChariot(piece, targetX, targetY, dx, dy);
+                }
                 const palaceX = [3, 4, 5];
-                const palaceY = piece.side === 'red' ? [0, 1, 2] : [7, 8, 9];
+                const palaceY = piece.side === 'red' ? [7, 8, 9] : [0, 1, 2];
                 
                 if (!palaceX.includes(targetX) || !palaceY.includes(targetY)) return false;
                 if (Math.abs(dx) + Math.abs(dy) !== 1) return false;
@@ -508,7 +500,7 @@
             
             isValidAdvisor(piece, targetX, targetY, dx, dy) {
                 const palaceX = [3, 4, 5];
-                const palaceY = piece.side === 'red' ? [0, 1, 2] : [7, 8, 9];
+                const palaceY = piece.side === 'red' ? [7, 8, 9] : [0, 1, 2];
                 
                 if (!palaceX.includes(targetX) || !palaceY.includes(targetY)) return false;
                 if (Math.abs(dx) !== 1 || Math.abs(dy) !== 1) return false;
@@ -517,8 +509,8 @@
             }
             
             isValidElephant(piece, targetX, targetY, dx, dy) {
-                if (piece.side === 'red' && targetY > 4) return false;
-                if (piece.side === 'black' && targetY < 5) return false;
+                if (piece.side === 'red' && targetY < 5) return false;
+                if (piece.side === 'black' && targetY > 4) return false;
                 
                 if (Math.abs(dx) !== 2 || Math.abs(dy) !== 2) return false;
                 
@@ -590,22 +582,9 @@
             }
             
             isValidSoldier(piece, targetX, targetY, dx, dy) {
-                const absDx = Math.abs(dx);
-                const absDy = Math.abs(dy);
-                
-                if (piece.side === 'red') {
-                    if (piece.y <= 4) {
-                        return dx === 0 && dy === 1;
-                    } else {
-                        return (absDx === 1 && dy === 0) || (dx === 0 && dy === 1);
-                    }
-                } else {
-                    if (piece.y >= 5) {
-                        return dx === 0 && dy === -1;
-                    } else {
-                        return (absDx === 1 && dy === 0) || (dx === 0 && dy === -1);
-                    }
-                }
+                const forward = piece.side === 'red' ? -1 : 1;
+                const crossed = piece.side === 'red' ? piece.y <= 4 : piece.y >= 5;
+                return (dx === 0 && dy === forward) || (crossed && Math.abs(dx) === 1 && dy === 0);
             }
             
             isInCheck(side) {
@@ -613,7 +592,7 @@
                     ? this.pieces.find(p => !p.captured && p.side === 'red' && p.type === '帅')
                     : this.pieces.find(p => !p.captured && p.side === 'black' && p.type === '将');
                 
-                if (!general) return false;
+                if (!general) return true;
                 
                 const opponent = side === 'red' ? 'black' : 'red';
                 
@@ -629,7 +608,8 @@
             }
             
             isValidMoveIgnoreCheck(piece, targetX, targetY) {
-                if (targetX < 0 || targetX > 8 || targetY < 0 || targetY > 9) return false;
+                if (!piece || piece.captured || !Number.isInteger(targetX) || !Number.isInteger(targetY) || targetX < 0 || targetX > 8 || targetY < 0 || targetY > 9) return false;
+                if (this.board[piece.y]?.[piece.x] !== piece) return false;
                 
                 const targetPiece = this.board[targetY][targetX];
                 if (targetPiece && targetPiece.side === piece.side) return false;
@@ -677,77 +657,30 @@
             }
             
             movePiece(piece, targetX, targetY) {
-                const capturedPiece = this.board[targetY][targetX];
-                
-                this.moveHistory.push({
-                    piece: piece,
-                    fromX: piece.x,
-                    fromY: piece.y,
-                    toX: targetX,
-                    toY: targetY,
-                    captured: capturedPiece
-                });
-                
-                if (capturedPiece) {
-                    capturedPiece.captured = true;
-                }
-                
-                piece.x = targetX;
-                piece.y = targetY;
-                
-                this.updateBoard();
-                this.moveCount++;
-                
-                this.addMoveToHistory(piece, targetX, targetY, capturedPiece);
-                
+                if (this.gameOver || !piece || piece.side !== this.currentTurn || !this.isValidMove(piece, targetX, targetY)) return false;
+                this.moveHistory.push(this.applyMove(piece, targetX, targetY));
+                this.moveCount = this.moveHistory.length;
                 const opponent = this.currentTurn === 'red' ? 'black' : 'red';
-                
-                if (this.isInCheck(opponent)) {
-                    if (!this.hasValidMoves(opponent)) {
-                        this.gameOver = true;
-                        const winner = this.currentTurn === 'red' ? '红方' : '黑方';
-                        this.showGameOver(winner + '获胜！');
-                        return;
-                    } else {
-                        this.showStatus('⚠️ 将军！' + (opponent === 'red' ? '红方' : '黑方') + '被将军！', true);
-                    }
-                } else if (!this.hasValidMoves(opponent)) {
-                    this.gameOver = true;
-                    const winner = this.currentTurn === 'red' ? '红方' : '黑方';
-                    this.showGameOver(winner + '获胜！');
-                    return;
-                } else {
-                    this.showStatus((opponent === 'red' ? '红方' : '黑方') + '走棋', false);
-                }
-                
                 this.currentTurn = opponent;
                 this.selectedPiece = null;
-                
+                if (!this.hasValidMoves(opponent)) {
+                    this.gameOver = true;
+                    const winner = piece.side === 'red' ? '红方' : '黑方';
+                    this.showGameOver(`${winner}获胜！${this.isInCheck(opponent) ? '将死' : '困毙'}`);
+                }
+                this.renderHistory();
                 this.updateUI();
                 this.updateUndoButton();
+                this.updateStatus();
                 this.draw();
+                this.scheduleAi();
+                return true;
             }
-            
-            addMoveToHistory(piece, toX, toY, captured) {
-                const moveList = document.getElementById('moveList');
-                
-                if (moveList.firstChild && moveList.firstChild.style.textAlign === 'center') {
-                    moveList.innerHTML = '';
-                }
-                
-                const moveDiv = document.createElement('div');
-                moveDiv.className = 'move-item ' + (piece.side === 'red' ? 'move-red' : 'move-black');
-                
-                const fromPos = this.getPositionName(piece.x, piece.y);
-                const toPos = this.getPositionName(toX, toY);
-                const captureText = captured ? ' 吃 ' + captured.type : '';
-                
-                moveDiv.innerHTML = `
-                    <span>${this.moveCount}. ${piece.type}</span>
-                    <span>${fromPos} → ${toPos}${captureText}</span>
-                `;
-                
-                moveList.insertBefore(moveDiv, moveList.firstChild);
+
+            renderHistory() {
+                document.getElementById('moveList').innerHTML = this.moveHistory.map((move, index) =>
+                    `<div class="move-item move-${move.piece.side}"><span>${index + 1}. ${move.piece.side === 'red' ? '红' : '黑'}${move.piece.type}</span><span>${this.getPositionName(move.fromX, move.fromY)} → ${this.getPositionName(move.toX, move.toY)}${move.captured ? ' 吃 ' + move.captured.type : ''}</span></div>`
+                ).reverse().join('') || '<div style="text-align: center; color: #999; padding: 20px;">游戏开始后显示走棋记录</div>';
             }
             
             getPositionName(x, y) {
@@ -770,52 +703,124 @@
             
             updateUI() {
                 const turnEl = document.getElementById('currentTurn');
-                turnEl.textContent = this.currentTurn === 'red' ? '🔴 红方走棋' : '⚫ 黑方走棋';
+                turnEl.textContent = this.gameOver ? '本局结束' : this.currentTurn === 'red' ? '🔴 红方走棋' : this.mode === 'ai' ? '⚫ 电脑思考中…' : '⚫ 黑方走棋';
                 turnEl.className = 'current-turn ' + (this.currentTurn === 'red' ? 'red-turn' : 'black-turn');
+                document.getElementById('gameHelp').textContent = this.mode === 'ai'
+                    ? '你执红先行，电脑执黑。点选棋子，再点绿色落点；也可用方向键和回车操作棋盘。悔棋撤回一整回合。'
+                    : '本地双人轮流走棋，红方在下。点选棋子，再点绿色落点；也可用方向键和回车操作棋盘。悔棋撤回一步。';
+            }
+
+            updateStatus() {
+                if (this.gameOver) {
+                    this.showStatus(document.getElementById('winnerText').textContent, false);
+                    return;
+                }
+                const check = this.isInCheck(this.currentTurn);
+                const name = this.currentTurn === 'red' ? '红方' : '黑方';
+                const action = this.mode === 'ai' && this.currentTurn === 'black' ? '电脑正在思考…' : '请选择棋子和绿色落点';
+                this.showStatus((check ? `⚠️ ${name}被将军，必须应将。` : '') + action, check);
             }
             
             updateUndoButton() {
                 const undoBtn = document.getElementById('undoBtn');
-                undoBtn.disabled = this.moveHistory.length === 0 || this.gameOver;
+                undoBtn.disabled = this.moveHistory.length === 0;
             }
             
             undo() {
-                if (this.moveHistory.length === 0 || this.gameOver) return;
-                
-                const lastMove = this.moveHistory.pop();
-                
-                lastMove.piece.x = lastMove.fromX;
-                lastMove.piece.y = lastMove.fromY;
-                
-                if (lastMove.captured) {
-                    lastMove.captured.captured = false;
-                }
-                
-                this.updateBoard();
+                if (!this.moveHistory.length) return;
+                this.cancelAi();
+                do {
+                    const lastMove = this.moveHistory.pop();
+                    this.revertMove(lastMove);
+                    this.currentTurn = lastMove.piece.side;
+                } while (this.mode === 'ai' && this.currentTurn !== 'red' && this.moveHistory.length);
                 this.selectedPiece = null;
                 this.gameOver = false;
-                this.moveCount--;
-                
-                this.currentTurn = this.currentTurn === 'red' ? 'black' : 'red';
-                
-                const moveList = document.getElementById('moveList');
-                if (moveList.firstChild && !moveList.firstChild.style.textAlign) {
-                    moveList.removeChild(moveList.firstChild);
-                }
-                
-                if (this.moveCount === 0) {
-                    moveList.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">游戏开始后显示走棋记录</div>';
-                }
-                
+                this.moveCount = this.moveHistory.length;
+                document.getElementById('gameOver').classList.remove('show');
+                this.renderHistory();
                 this.updateUI();
                 this.updateUndoButton();
-                this.showStatus((this.currentTurn === 'red' ? '红方' : '黑方') + '走棋（已悔棋）', false);
-                
+                this.updateStatus();
                 this.draw();
+            }
+
+            cancelAi() {
+                clearTimeout(this.aiTimer);
+                this.aiTimer = null;
+            }
+
+            setMode(mode) {
+                if (!['ai', 'local'].includes(mode)) return;
+                this.mode = mode;
+                document.getElementById('gameMode').value = mode;
+                this.restart();
+            }
+
+            scheduleAi() {
+                this.cancelAi();
+                if (this.mode !== 'ai' || this.currentTurn !== 'black' || this.gameOver) return;
+                this.aiTimer = setTimeout(() => {
+                    this.aiTimer = null;
+                    if (this.mode !== 'ai' || this.currentTurn !== 'black' || this.gameOver) return;
+                    const move = this.chooseAiMove();
+                    if (move) this.movePiece(move.piece, move.x, move.y);
+                }, 250);
+            }
+
+            legalMoves(side) {
+                const moves = [];
+                for (const piece of this.pieces) {
+                    if (piece.captured || piece.side !== side) continue;
+                    for (let y = 0; y < 10; y++) for (let x = 0; x < 9; x++) {
+                        if (this.isValidMove(piece, x, y)) moves.push({ piece, x, y, capture: this.board[y][x] ? 1 : 0 });
+                    }
+                }
+                return moves.sort((a, b) => b.capture - a.capture);
+            }
+
+            evaluateBoard() {
+                const values = { '帅': 10000, '将': 10000, '车': 900, '炮': 450, '马': 400, '相': 200, '象': 200, '仕': 200, '士': 200, '兵': 100, '卒': 100 };
+                let score = 0;
+                for (const piece of this.pieces) {
+                    if (piece.captured) continue;
+                    const progress = piece.side === 'black' ? piece.y : 9 - piece.y;
+                    const active = ['车', '炮', '马', '兵', '卒'].includes(piece.type);
+                    const bonus = active ? progress * (['兵', '卒'].includes(piece.type) ? 12 : 3) + (4 - Math.abs(piece.x - 4)) * 2 : 0;
+                    score += (values[piece.type] + bonus) * (piece.side === 'black' ? 1 : -1);
+                }
+                return score;
+            }
+
+            chooseAiMove() {
+                const moves = this.legalMoves('black');
+                let best = moves[0];
+                let bestScore = -Infinity;
+                let nodes = 0;
+                const deadline = performance.now() + 180;
+                // ponytail: two-ply search for casual play; deeper search belongs in a worker if stronger play is needed.
+                for (const move of moves) {
+                    const state = this.applyMove(move.piece, move.x, move.y);
+                    const replies = this.legalMoves('red');
+                    let score = replies.length ? Infinity : 100000;
+                    for (const reply of replies) {
+                        const response = this.applyMove(reply.piece, reply.x, reply.y);
+                        score = Math.min(score, this.evaluateBoard());
+                        this.revertMove(response);
+                        nodes++;
+                        if (score <= bestScore) break;
+                    }
+                    this.revertMove(state);
+                    if (score > bestScore) { best = move; bestScore = score; }
+                    if (nodes >= 1800 || performance.now() >= deadline) break;
+                }
+                return best;
             }
             
             restart() {
+                this.cancelAi();
                 this.selectedPiece = null;
+                this.cursor = null;
                 this.currentTurn = 'red';
                 this.gameOver = false;
                 this.moveHistory = [];
@@ -828,17 +833,29 @@
                 this.updateBoard();
                 this.updateUI();
                 this.updateUndoButton();
-                this.showStatus('点击棋子选择，点击目标位置移动', false);
+                this.updateStatus();
                 
                 this.draw();
             }
             
             draw() {
                 this.drawBoard();
+                const last = this.moveHistory[this.moveHistory.length - 1];
+                if (last) {
+                    this.ctx.fillStyle = 'rgba(52, 152, 219, 0.25)';
+                    for (const [x, y] of [[last.fromX, last.fromY], [last.toX, last.toY]]) {
+                        this.ctx.fillRect(this.padding + x * this.gridSize - 25, this.padding + y * this.gridSize - 25, 50, 50);
+                    }
+                }
                 this.drawPieces();
                 if (this.selectedPiece) {
                     this.drawSelected();
                     this.drawValidMoves();
+                }
+                if (this.cursor) {
+                    this.ctx.strokeStyle = '#2980b9';
+                    this.ctx.lineWidth = 3;
+                    this.ctx.strokeRect(this.padding + this.cursor.x * this.gridSize - 27, this.padding + this.cursor.y * this.gridSize - 27, 54, 54);
                 }
             }
             

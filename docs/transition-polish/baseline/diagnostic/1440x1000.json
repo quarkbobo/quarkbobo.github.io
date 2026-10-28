@@ -1,0 +1,4602 @@
+{
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "consoleErrors": [],
+  "actions": [
+    {
+      "name": "firstEntry",
+      "start": 1405.0999999996275,
+      "handlerEnd": 1648.9000000003725,
+      "synchronousClickMs": 243.80000000074506,
+      "firstRAFMs": 245.40000000037253,
+      "firstRAFTimestamp": 1399.9,
+      "settledAt": 4202.800000000745,
+      "end": 6403.4000000003725,
+      "observedSettledMs": 2797.7000000011176,
+      "cdpMetricsDelta": {
+        "TaskDuration": 0.819,
+        "ScriptDuration": 0.487,
+        "LayoutDuration": 0.024,
+        "RecalcStyleDuration": 0.042,
+        "LayoutCount": 72,
+        "RecalcStyleCount": 94,
+        "JSHeapUsedSize": 1928928
+      },
+      "phases": {
+        "approach": {
+          "frames": 37,
+          "averageFPS": 15.064,
+          "medianFrameMs": 42.2,
+          "p95FrameMs": 193,
+          "largestFrameGapMs": 208.3,
+          "drawingBuffers": [
+            "1440x1000"
+          ],
+          "drawCalls": 646,
+          "perFrameDrawCalls": [
+            4,
+            64,
+            67
+          ],
+          "submittedVerticesOrIndices": [
+            40388,
+            96258,
+            96366
+          ]
+        },
+        "interior": {
+          "frames": 66,
+          "averageFPS": 29.515,
+          "medianFrameMs": 31.2,
+          "p95FrameMs": 42.5,
+          "largestFrameGapMs": 113.5,
+          "drawingBuffers": [
+            "1440x1000"
+          ],
+          "drawCalls": 4224,
+          "perFrameDrawCalls": [
+            64
+          ],
+          "submittedVerticesOrIndices": [
+            96258
+          ]
+        }
+      },
+      "firstDrawMs": 157.2,
+      "longTasks": [
+        {
+          "start": 1405,
+          "duration": 243,
+          "name": "self"
+        },
+        {
+          "start": 3032.5,
+          "duration": 111,
+          "name": "self"
+        }
+      ],
+      "compilationCalls": {
+        "compileShader": {
+          "count": 18,
+          "totalCallMs": 0,
+          "maximumCallMs": 0
+        },
+        "linkProgram": {
+          "count": 9,
+          "totalCallMs": 0,
+          "maximumCallMs": 0
+        },
+        "getProgramParameter": {
+          "count": 24,
+          "totalCallMs": 1.9,
+          "maximumCallMs": 0.5
+        }
+      }
+    },
+    {
+      "name": "firstReturn",
+      "start": 6405.800000000745,
+      "handlerEnd": 6406.300000000745,
+      "synchronousClickMs": 0.5,
+      "firstRAFMs": 13.899999998509884,
+      "firstRAFTimestamp": 6417.6,
+      "settledAt": 7359.699999999255,
+      "end": 7616.800000000745,
+      "observedSettledMs": 953.8999999985099,
+      "cdpMetricsDelta": {
+        "TaskDuration": 0.224,
+        "ScriptDuration": 0.187,
+        "LayoutDuration": 0.001,
+        "RecalcStyleDuration": 0.015,
+        "LayoutCount": 3,
+        "RecalcStyleCount": 13,
+        "JSHeapUsedSize": 1617208
+      },
+      "phases": {
+        "departing": {
+          "frames": 11,
+          "averageFPS": 10.709,
+          "medianFrameMs": 89.4,
+          "p95FrameMs": 270.3,
+          "largestFrameGapMs": 270.3,
+          "drawingBuffers": [
+            "1440x1000",
+            "761x928"
+          ],
+          "drawCalls": 347,
+          "perFrameDrawCalls": [
+            4,
+            64,
+            67
+          ],
+          "submittedVerticesOrIndices": [
+            40388,
+            96258,
+            96366
+          ]
+        },
+        "exterior": {
+          "frames": 5,
+          "averageFPS": 18.207,
+          "medianFrameMs": 75.8,
+          "p95FrameMs": 100.6,
+          "largestFrameGapMs": 100.6,
+          "drawingBuffers": [
+            "761x928"
+          ],
+          "drawCalls": 20,
+          "perFrameDrawCalls": [
+            4
+          ],
+          "submittedVerticesOrIndices": [
+            40388
+          ]
+        }
+      },
+      "firstDrawMs": 12.5,
+      "longTasks": [
+        {
+          "start": 7182.5999999996275,
+          "duration": 170,
+          "name": "self"
+        }
+      ],
+      "compilationCalls": {}
+    },
+    {
+      "name": "repeatEntry",
+      "start": 7619.5,
+      "handlerEnd": 7639.9000000003725,
+      "synchronousClickMs": 20.40000000037253,
+      "firstRAFMs": 21,
+      "firstRAFTimestamp": 7619.9,
+      "settledAt": 10244.5,
+      "end": 12452.800000000745,
+      "observedSettledMs": 2625,
+      "cdpMetricsDelta": {
+        "TaskDuration": 0.338,
+        "ScriptDuration": 0.153,
+        "LayoutDuration": 0.009,
+        "RecalcStyleDuration": 0.054,
+        "LayoutCount": 71,
+        "RecalcStyleCount": 103,
+        "JSHeapUsedSize": -2526524
+      },
+      "phases": {
+        "approach": {
+          "frames": 44,
+          "averageFPS": 16.899,
+          "medianFrameMs": 55.9,
+          "p95FrameMs": 110.6,
+          "largestFrameGapMs": 167,
+          "drawingBuffers": [
+            "1440x1000"
+          ],
+          "drawCalls": 860,
+          "perFrameDrawCalls": [
+            4,
+            64,
+            67
+          ],
+          "submittedVerticesOrIndices": [
+            40388,
+            96258,
+            96366
+          ]
+        },
+        "interior": {
+          "frames": 67,
+          "averageFPS": 29.863,
+          "medianFrameMs": 31.3,
+          "p95FrameMs": 42.9,
+          "largestFrameGapMs": 81.7,
+          "drawingBuffers": [
+            "1440x1000"
+          ],
+          "drawCalls": 4288,
+          "perFrameDrawCalls": [
+            64
+          ],
+          "submittedVerticesOrIndices": [
+            96258
+          ]
+        }
+      },
+      "firstDrawMs": 20.2,
+      "longTasks": [],
+      "compilationCalls": {}
+    },
+    {
+      "name": "repeatReturn",
+      "start": 12454.900000000373,
+      "handlerEnd": 12455.199999999255,
+      "synchronousClickMs": 0.2999999988824129,
+      "firstRAFMs": 13.199999999254942,
+      "firstRAFTimestamp": 12466.4,
+      "settledAt": 13419.900000000373,
+      "end": 13683.5,
+      "observedSettledMs": 965,
+      "cdpMetricsDelta": {
+        "TaskDuration": 0.236,
+        "ScriptDuration": 0.205,
+        "LayoutDuration": 0,
+        "RecalcStyleDuration": 0.013,
+        "LayoutCount": 3,
+        "RecalcStyleCount": 13,
+        "JSHeapUsedSize": 458504
+      },
+      "phases": {
+        "departing": {
+          "frames": 11,
+          "averageFPS": 10.551,
+          "medianFrameMs": 94.9,
+          "p95FrameMs": 288,
+          "largestFrameGapMs": 288,
+          "drawingBuffers": [
+            "1440x1000",
+            "761x928"
+          ],
+          "drawCalls": 346,
+          "perFrameDrawCalls": [
+            4,
+            64,
+            66
+          ],
+          "submittedVerticesOrIndices": [
+            40388,
+            96258,
+            96330
+          ]
+        },
+        "exterior": {
+          "frames": 6,
+          "averageFPS": 21.692,
+          "medianFrameMs": 41.9,
+          "p95FrameMs": 89.6,
+          "largestFrameGapMs": 89.6,
+          "drawingBuffers": [
+            "761x928"
+          ],
+          "drawCalls": 24,
+          "perFrameDrawCalls": [
+            4
+          ],
+          "submittedVerticesOrIndices": [
+            40388
+          ]
+        }
+      },
+      "firstDrawMs": 12.6,
+      "longTasks": [
+        {
+          "start": 13223.099999999627,
+          "duration": 192,
+          "name": "self"
+        }
+      ],
+      "compilationCalls": {}
+    }
+  ],
+  "raw": {
+    "operation": "repeatReturn",
+    "frames": [
+      {
+        "time": 1217,
+        "phase": "exterior",
+        "operation": "initialization",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 1246.5,
+        "phase": "exterior",
+        "operation": "initialization",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 1247.800000000745,
+        "phase": "exterior",
+        "operation": "initialization",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 1402.5,
+        "phase": "exterior",
+        "operation": "initialization",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 1562.300000000745,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 1649.4000000003725,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 1652.5,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 1654.4000000003725,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 1826.5,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 1935.5,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 1989,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 2035.199999999255,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 2098.699999999255,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 2139.5999999996275,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 2180.800000000745,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 2202,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 2227.5999999996275,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 2252.699999999255,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 2278.0999999996275,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 2304.5999999996275,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 2344.699999999255,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 2373.0999999996275,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 2399.300000000745,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 2426.0999999996275,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 2449,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 2478.199999999255,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 2502.4000000003725,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 2529.9000000003725,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 2553,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 2623.5,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 2715.5999999996275,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 2815.699999999255,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 2920.5999999996275,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 3036.0999999996275,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 3145.800000000745,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 3338.800000000745,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 3381,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 3481.0999999996275,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 3593,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 3743.800000000745,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 3952.0999999996275,
+        "phase": "approach",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4184.9000000003725,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4185.800000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4289.9000000003725,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4331.300000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4444.800000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 4477,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 4504.5,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 4531.800000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4561.4000000003725,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4588.0999999996275,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 4619.199999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4649,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4677.300000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4719.800000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 4766.5999999996275,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 4796.699999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 4827.9000000003725,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4863.199999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4899.699999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4932.0999999996275,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4963.699999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 4991.9000000003725,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5020.199999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5050.199999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5083.4000000003725,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5109.699999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5137.699999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5168.5,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5199.300000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 5233.699999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5270.0999999996275,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5308.5,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5341,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5375.5,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 5408.9000000003725,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 5441.300000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 5472.5,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5504,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 5535,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5566.9000000003725,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5596.5,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 5627,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 5658.699999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5692.800000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5721.5999999996275,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5751.0999999996275,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5784.699999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 5817.5,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5848.800000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5879.699999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 5909.699999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 5942.800000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 5971.300000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6002,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 6034.300000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6065.800000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 6096.800000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6126.5999999996275,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 6156,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 6188.800000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6219.0999999996275,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 6249.4000000003725,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 6280.800000000745,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6320,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6356.5,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6387.199999999255,
+        "phase": "interior",
+        "operation": "firstEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6418.300000000745,
+        "phase": "departing",
+        "operation": "firstReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6448.699999999255,
+        "phase": "departing",
+        "operation": "firstReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 6479.300000000745,
+        "phase": "departing",
+        "operation": "firstReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 6531.5,
+        "phase": "departing",
+        "operation": "firstReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6606.9000000003725,
+        "phase": "departing",
+        "operation": "firstReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6706.300000000745,
+        "phase": "departing",
+        "operation": "firstReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6803.5,
+        "phase": "departing",
+        "operation": "firstReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6910.5999999996275,
+        "phase": "departing",
+        "operation": "firstReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 6992.4000000003725,
+        "phase": "departing",
+        "operation": "firstReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 7081.800000000745,
+        "phase": "departing",
+        "operation": "firstReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 7352.0999999996275,
+        "phase": "departing",
+        "operation": "firstReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 7356.199999999255,
+        "phase": "exterior",
+        "operation": "firstReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 7357.4000000003725,
+        "phase": "exterior",
+        "operation": "firstReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 7458,
+        "phase": "exterior",
+        "operation": "firstReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 7533.800000000745,
+        "phase": "exterior",
+        "operation": "firstReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 7575.9000000003725,
+        "phase": "exterior",
+        "operation": "firstReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 7639.699999999255,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 7640.4000000003725,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 7641.199999999255,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 7646.4000000003725,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 7739.0999999996275,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.2000000011175871
+      },
+      {
+        "time": 7806.300000000745,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 7838.4000000003725,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 7919.4000000003725,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 7972.800000000745,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8040.4000000003725,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 8109.4000000003725,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8165.300000000745,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 8259.900000000373,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 8298.099999999627,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8340.400000000373,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8377.300000000745,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 8407,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8449.5,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8476.5,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8519.900000000373,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8547.599999999627,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 8573.800000000745,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 8602.099999999627,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8631.400000000373,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8658.199999999255,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8693.900000000373,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8735.300000000745,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8807.300000000745,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 8840.199999999255,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8903.400000000373,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 8999.300000000745,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 9090,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 9200.599999999627,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 9316.400000000373,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 9407.599999999627,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 9468.699999999255,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 9508,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 9575,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 9667.199999999255,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 9755.300000000745,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 9846.400000000373,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 67,
+        "submittedVerticesOrIndices": 96366,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 63
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 9929.699999999255,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 10096.699999999255,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10184.300000000745,
+        "phase": "approach",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10228.099999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10229.900000000373,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10280.900000000373,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10340.599999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 10422.300000000745,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 10459.300000000745,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 10490.400000000373,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10522.400000000373,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10557,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10589.199999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 10622.699999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10656.099999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10689.099999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10718.5,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10748.300000000745,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10777.099999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10806.199999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10839.099999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10869.800000000745,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10899.900000000373,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10929.199999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10957.699999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 10987.599999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11015.199999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11042,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11073.300000000745,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11107.099999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 11136.599999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11166.400000000373,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11198.5,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 11224.599999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11254.800000000745,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11282.699999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11312.5,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11345,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11375,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 11403.099999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11432.199999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11458.900000000373,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11486.599999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11515.5,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11545.099999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11578.599999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11609.199999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11645.199999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11678.400000000373,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 11717.099999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11760,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11797,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11838,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 11880.699999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11921,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 11958.5,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 11993.400000000373,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12034.699999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12075.5,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12117.800000000745,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12159.300000000745,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12192.5,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12225.699999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12254.300000000745,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12284.099999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12315.199999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12350.599999999627,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12380.400000000373,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 12410.5,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12438.199999999255,
+        "phase": "interior",
+        "operation": "repeatEntry",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12467.5,
+        "phase": "departing",
+        "operation": "repeatReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12497.099999999627,
+        "phase": "departing",
+        "operation": "repeatReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12526.199999999255,
+        "phase": "departing",
+        "operation": "repeatReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 12567.699999999255,
+        "phase": "departing",
+        "operation": "repeatReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 64,
+        "submittedVerticesOrIndices": 96258,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 60
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 12635.099999999627,
+        "phase": "departing",
+        "operation": "repeatReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 66,
+        "submittedVerticesOrIndices": 96330,
+        "modes": {
+          "0": 2,
+          "1": 2,
+          "4": 62
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 12743.300000000745,
+        "phase": "departing",
+        "operation": "repeatReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 12840.400000000373,
+        "phase": "departing",
+        "operation": "repeatReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 12935.300000000745,
+        "phase": "departing",
+        "operation": "repeatReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 13028.199999999255,
+        "phase": "departing",
+        "operation": "repeatReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 13127.300000000745,
+        "phase": "departing",
+        "operation": "repeatReturn",
+        "width": 1440,
+        "height": 1000,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.09999999962747097
+      },
+      {
+        "time": 13415.300000000745,
+        "phase": "departing",
+        "operation": "repeatReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 13418,
+        "phase": "exterior",
+        "operation": "repeatReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 13418.599999999627,
+        "phase": "exterior",
+        "operation": "repeatReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 13508.199999999255,
+        "phase": "exterior",
+        "operation": "repeatReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 13569.199999999255,
+        "phase": "exterior",
+        "operation": "repeatReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0.10000000149011612
+      },
+      {
+        "time": 13611.099999999627,
+        "phase": "exterior",
+        "operation": "repeatReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      },
+      {
+        "time": 13648.5,
+        "phase": "exterior",
+        "operation": "repeatReturn",
+        "width": 761,
+        "height": 928,
+        "drawCalls": 4,
+        "submittedVerticesOrIndices": 40388,
+        "modes": {
+          "0": 1,
+          "4": 3
+        },
+        "clearCallMs": 0
+      }
+    ],
+    "calls": [
+      {
+        "method": "compileShader",
+        "start": 1219.5999999996275,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1219.9000000003725,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1219.9000000003725,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior"
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1227.5,
+        "duration": 0.19999999925494194,
+        "operation": "initialization",
+        "phase": "exterior",
+        "parameter": 35714
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1227.699999999255,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior",
+        "parameter": 35718
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1228.0999999996275,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior",
+        "parameter": 35721
+      },
+      {
+        "method": "compileShader",
+        "start": 1231.699999999255,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1231.800000000745,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1231.800000000745,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior"
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1238.4000000003725,
+        "duration": 0.09999999962747097,
+        "operation": "initialization",
+        "phase": "exterior",
+        "parameter": 35714
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1238.5999999996275,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior",
+        "parameter": 35718
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1238.5999999996275,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior",
+        "parameter": 35721
+      },
+      {
+        "method": "compileShader",
+        "start": 1239,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1239,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1239,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior"
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1241.300000000745,
+        "duration": 0.19999999925494194,
+        "operation": "initialization",
+        "phase": "exterior",
+        "parameter": 35714
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1241.5,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior",
+        "parameter": 35718
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1241.5,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior",
+        "parameter": 35721
+      },
+      {
+        "method": "compileShader",
+        "start": 1241.9000000003725,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1241.9000000003725,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1241.9000000003725,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior"
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1245,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior",
+        "parameter": 35714
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1245,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior",
+        "parameter": 35718
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1245,
+        "duration": 0,
+        "operation": "initialization",
+        "phase": "exterior",
+        "parameter": 35721
+      },
+      {
+        "method": "compileShader",
+        "start": 1418.300000000745,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1418.5999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1418.5999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1418.699999999255,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1418.800000000745,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1418.800000000745,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1418.800000000745,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1418.800000000745,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1418.800000000745,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1418.9000000003725,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1419,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1419,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1419.0999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1419.0999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1419.0999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1420.5,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1420.800000000745,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1420.800000000745,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1420.9000000003725,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1420.9000000003725,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1420.9000000003725,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1421.300000000745,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1421.4000000003725,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1421.4000000003725,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1422.0999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "compileShader",
+        "start": 1422.199999999255,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "linkProgram",
+        "start": 1422.199999999255,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "exterior"
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1586.5999999996275,
+        "duration": 0.5,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35714
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1587.0999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35718
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1587.0999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35721
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1590.0999999996275,
+        "duration": 0.30000000074505806,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35714
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1590.4000000003725,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35718
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1590.4000000003725,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35721
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1648.4000000003725,
+        "duration": 0.2999999988824129,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35714
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1648.699999999255,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35718
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 1648.800000000745,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35721
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3130.9000000003725,
+        "duration": 0.19999999925494194,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35714
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3131.0999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35718
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3131.300000000745,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35721
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3134.4000000003725,
+        "duration": 0.19999999925494194,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35714
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3134.5999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35718
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3134.5999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35721
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3137.800000000745,
+        "duration": 0.19999999925494194,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35714
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3138,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35718
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3138.0999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35721
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3139.5,
+        "duration": 0.09999999962747097,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35714
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3139.5999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35718
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3139.5999999996275,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35721
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3140.9000000003725,
+        "duration": 0.09999999962747097,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35714
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3141,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35718
+      },
+      {
+        "method": "getProgramParameter",
+        "start": 3141,
+        "duration": 0,
+        "operation": "firstEntry",
+        "phase": "approach",
+        "parameter": 35721
+      }
+    ],
+    "longTasks": [
+      {
+        "start": 210.69999999925494,
+        "duration": 104,
+        "name": "self"
+      },
+      {
+        "start": 346.09999999962747,
+        "duration": 899,
+        "name": "self"
+      },
+      {
+        "start": 1405,
+        "duration": 243,
+        "name": "self"
+      },
+      {
+        "start": 3032.5,
+        "duration": 111,
+        "name": "self"
+      },
+      {
+        "start": 7182.5999999996275,
+        "duration": 170,
+        "name": "self"
+      },
+      {
+        "start": 13223.099999999627,
+        "duration": 192,
+        "name": "self"
+      }
+    ],
+    "contexts": [
+      {
+        "kind": "webgl2",
+        "attributes": {
+          "alpha": true,
+          "antialias": true,
+          "depth": true,
+          "desynchronized": false,
+          "failIfMajorPerformanceCaveat": false,
+          "powerPreference": "low-power",
+          "premultipliedAlpha": true,
+          "preserveDrawingBuffer": false,
+          "stencil": false,
+          "xrCompatible": false
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "gpuTimerExtensions": [
+          "EXT_disjoint_timer_query_webgl2"
+        ],
+        "gpuTiming": "Capability reported only. No timer queries or gl.finish are issued; JavaScript call durations are not GPU execution times."
+      }
+    ],
+    "draws": 10771,
+    "longTaskSupported": true
+  }
+}

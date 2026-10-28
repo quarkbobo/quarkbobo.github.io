@@ -1,0 +1,23 @@
+{
+  "source": "public/index.html at commit 25e6650",
+  "selector": "#planet-webgl",
+  "method": "Original browser screenshot region showing the complete planet and ring. Overlapping home-copy DOM temporarily hidden only in the disposable capture browser; original canvas, shaders and camera unchanged. No generated or edited imagery; source files untouched.",
+  "viewport": [
+    1440,
+    1000
+  ],
+  "canvasBounds": {
+    "x": 522.09375,
+    "y": 73,
+    "width": 761.59375,
+    "height": 928
+  },
+  "clip": {
+    "x": 522,
+    "y": 300,
+    "width": 762,
+    "height": 480,
+    "scale": 1
+  },
+  "consoleErrors": []
+}

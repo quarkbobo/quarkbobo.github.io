@@ -1,0 +1,63 @@
+{
+  "reviewedAt": "2026-09-08T13:34:59.428Z",
+  "run": "verification-2026-09-08T13-33-48-256Z",
+  "automatedResult": "56/56 cases and 1200 assertions passed; exit code 0; 112 screenshots",
+  "stylesHash": "f6471ed7e0f341e4bdddcb8384e62c1dd2cec58032a159c79c615a52531dc997",
+  "reviewedScreenshots": [
+    "games-390x844-font200-full.png",
+    "games-390x844-full.png"
+  ],
+  "observations": [
+    {
+      "page": "games.html",
+      "viewport": "390x844",
+      "textZoom": 200,
+      "result": "The icon and text stack vertically. All four game names fit on complete single lines; 2048 remains intact. Action labels wrap across two readable lines. The former single-character narrow text column is resolved. Full page height is 2992px, down from 4121px.",
+      "status": "passed visual inspection"
+    },
+    {
+      "page": "games.html",
+      "viewport": "390x844",
+      "textZoom": 100,
+      "result": "All four game titles align consistently in the text column to the right of their icons. Four cards and four exact original game destinations remain present.",
+      "status": "passed visual inspection"
+    }
+  ],
+  "remainingLimitations": [
+    "200% text increases the mobile page length and action labels occupy two lines; all text remains visible.",
+    "This is static layout verification. It does not establish original 3D rendering or motion performance."
+  ],
+  "previousReviews": [
+    {
+      "reviewedAt": "2026-09-08T13:30:39.896Z",
+      "run": "verification-2026-09-08T13-28-44-223Z",
+      "automatedResult": "56/56 cases and 1200 assertions passed",
+      "reviewedScreenshots": [
+        "home-a-390x844-font200-viewport.png",
+        "home-b-390x844-viewport.png",
+        "games-390x844-font200-full.png"
+      ],
+      "observations": [
+        {
+          "page": "home-a.html",
+          "viewport": "390x844",
+          "textZoom": 200,
+          "result": "Title wraps into two complete lines without clipping."
+        },
+        {
+          "page": "home-b.html",
+          "viewport": "390x844",
+          "textZoom": 100,
+          "result": "Latest entries appear before the planet image and are visible in the initial viewport."
+        },
+        {
+          "page": "games.html",
+          "viewport": "390x844",
+          "textZoom": 200,
+          "result": "Readability concern: the horizontal icon/card layout leaves a narrow text column. Chinese game names and action labels wrap approximately one character per line; 2048 wraps as 204 / 8. The page passes horizontal overflow, complete text and minimum target size assertions, but the 4121px full-page screenshot shows avoidable vertical expansion.",
+          "status": "Reported to parent for visual decision; no verifier criteria changed."
+        }
+      ]
+    }
+  ]
+}

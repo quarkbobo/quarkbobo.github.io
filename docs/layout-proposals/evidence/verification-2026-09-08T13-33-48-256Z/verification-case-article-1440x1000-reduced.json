@@ -1,0 +1,632 @@
+{
+  "name": "article-1440x1000-reduced",
+  "page": "article.html",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "textZoom": 100,
+  "reducedMotion": true,
+  "passed": true,
+  "checks": [
+    {
+      "label": "no horizontal overflow or clipped interactive/title containers",
+      "passed": true
+    },
+    {
+      "label": "all rendered major targets are at least 44 CSS px high",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "label": "keyboard Tab gives each sampled control a visible focus indicator",
+      "passed": true,
+      "detail": [
+        {
+          "tag": "A",
+          "id": "",
+          "text": "跳到正文",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "none"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "A 深空档案馆",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "rgb(203, 179, 137) 0px -2px 0px 0px inset"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "B 轨道工作台",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "none"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "方案说明",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "none"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "政治月测后宫版V3/太空站",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "none"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "首页",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "none"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "归档",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "rgb(139, 202, 216) 0px -2px 0px 0px inset"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "关于",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "none"
+        }
+      ]
+    },
+    {
+      "label": "local href resolves: /article.html#main",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/article.html#main",
+        "type": "local",
+        "status": 200,
+        "hashFound": true
+      }
+    },
+    {
+      "label": "local href resolves: /home-a.html",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/home-a.html",
+        "type": "local",
+        "status": 200,
+        "hashFound": null
+      }
+    },
+    {
+      "label": "local href resolves: /home-b.html",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/home-b.html",
+        "type": "local",
+        "status": 200,
+        "hashFound": null
+      }
+    },
+    {
+      "label": "local href resolves: /index.html",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/index.html",
+        "type": "local",
+        "status": 200,
+        "hashFound": null
+      }
+    },
+    {
+      "label": "local href resolves: /archive.html",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/archive.html",
+        "type": "local",
+        "status": 200,
+        "hashFound": null
+      }
+    },
+    {
+      "label": "local href resolves: /home-a.html#guan-yu-wo",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/home-a.html#guan-yu-wo",
+        "type": "local",
+        "status": 200,
+        "hashFound": true
+      }
+    },
+    {
+      "label": "external href uses a supported scheme: https://quarkbobo.github.io/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+      "passed": true
+    },
+    {
+      "label": "local href resolves: /article-toc.html",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/article-toc.html",
+        "type": "local",
+        "status": 200,
+        "hashFound": null
+      }
+    },
+    {
+      "label": "external href uses a supported scheme: https://quarkbobo.github.io/",
+      "passed": true
+    },
+    {
+      "label": "article title and complete real body are preserved",
+      "passed": true,
+      "detail": {
+        "title": "政治月测后宫版V4有最新消息？",
+        "actual": "​ 时间如白驹过隙啊朋友们，学弟很快就大三了。 ​ 当时的V1、V2我清晰地记得是用Chatgpt5.2网页端干出来的，和他斗智斗勇连哄带骗聊了老半天才同意我可以写出来一键爬取题库的脚本。（因为聊多了他上下文就忘了嘻嘻）再次打开一个窗口问他怎么修改代码的时候他又告诉我不会帮你做违规操作，这谁绷得住。 ​ 已经把接管本公众号的重任交给几位身怀绝技的AI工程师。相信他们很快就能把现在需要用电脑的操作改成手机插件格式的政治月测后宫版V4代码（像适配Edge、Chrome浏览器这种），这样大家在报告厅可以不用提心吊胆地用小包一键导入题库就可以让脚本自己跑了，是不是非常美妙？ ​ ​ 想什么呢，我们能做的出也不可能开源！！！ ​ 默认以任意形式或方法得到相关代码的同学已经读过这5条免责声明： 本源码来源于网络收集或个人整理，版权归原作者及原开发团队所有； 本源码仅供个人学习、研究和技术交流之用，严禁用于任何商业用途； 请在下载后 24 小时内自觉删除，如需正式使用，请购买/获取官方授权； 因下载、使用或传播本源码所产生的一切法律责任，均由使用者自行承担，与发布者无关； 本声明最终解释权归发布者所有。",
+        "expected": "​ 时间如白驹过隙啊朋友们，学弟很快就大三了。 ​ 当时的V1、V2我清晰地记得是用Chatgpt5.2网页端干出来的，和他斗智斗勇连哄带骗聊了老半天才同意我可以写出来一键爬取题库的脚本。（因为聊多了他上下文就忘了嘻嘻）再次打开一个窗口问他怎么修改代码的时候他又告诉我不会帮你做违规操作，这谁绷得住。 ​ 已经把接管本公众号的重任交给几位身怀绝技的AI工程师。相信他们很快就能把现在需要用电脑的操作改成手机插件格式的政治月测后宫版V4代码（像适配Edge、Chrome浏览器这种），这样大家在报告厅可以不用提心吊胆地用小包一键导入题库就可以让脚本自己跑了，是不是非常美妙？ ​ ​ 想什么呢，我们能做的出也不可能开源！！！ ​ 默认以任意形式或方法得到相关代码的同学已经读过这5条免责声明： 本源码来源于网络收集或个人整理，版权归原作者及原开发团队所有； 本源码仅供个人学习、研究和技术交流之用，严禁用于任何商业用途； 请在下载后 24 小时内自觉删除，如需正式使用，请购买/获取官方授权； 因下载、使用或传播本源码所产生的一切法律责任，均由使用者自行承担，与发布者无关； 本声明最终解释权归发布者所有。",
+        "headingIds": []
+      }
+    },
+    {
+      "label": "V4 article does not invent a TOC",
+      "passed": true
+    },
+    {
+      "label": "article body position is measurable",
+      "passed": true
+    },
+    {
+      "label": "reduced-motion request is active and leaves no running animations",
+      "passed": true,
+      "detail": {
+        "matches": true,
+        "animations": []
+      }
+    },
+    {
+      "label": "browser console has no errors",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "screenshots": [
+    {
+      "filename": "article-1440x1000-reduced-viewport.png",
+      "sha256": "d415a4d5996b08191c4c73fda72ccd72cc93a24e02ef044446027204baef32bd"
+    },
+    {
+      "filename": "article-1440x1000-reduced-full.png",
+      "sha256": "8c03b4c54a0e2422ff10834bdc0cc56169202d0087595ded861d1eee3ed37e3a"
+    },
+    {
+      "filename": "article-1440x1000-reduced-focus.png",
+      "sha256": "9eb6d62c213069bb1e3ce162b2aaa2f1f14e51ec3eabd9c6f558084a558c1c38"
+    }
+  ],
+  "consoleErrors": [],
+  "metrics": {
+    "innerWidth": 1440,
+    "clientWidth": 1425,
+    "pageWidth": 1425,
+    "bodyWidth": 1425,
+    "pageHeight": 1330,
+    "rootFontSize": 16,
+    "latestY": null,
+    "bodyY": 416,
+    "entryCount": 0,
+    "visibleLinkCount": 14,
+    "viewportLinkCount": 10,
+    "links": [
+      {
+        "text": "跳到正文",
+        "href": "#main",
+        "absoluteHref": "http://127.0.0.1:56216/article.html#main",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 53,
+        "width": 96,
+        "target": ""
+      },
+      {
+        "text": "A 深空档案馆",
+        "href": "home-a.html",
+        "absoluteHref": "http://127.0.0.1:56216/home-a.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 71.03125,
+        "target": ""
+      },
+      {
+        "text": "B 轨道工作台",
+        "href": "home-b.html",
+        "absoluteHref": "http://127.0.0.1:56216/home-b.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 70.171875,
+        "target": ""
+      },
+      {
+        "text": "方案说明",
+        "href": "index.html",
+        "absoluteHref": "http://127.0.0.1:56216/index.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 48,
+        "target": ""
+      },
+      {
+        "text": "政治月测后宫版V3/太空站",
+        "href": "home-a.html",
+        "absoluteHref": "http://127.0.0.1:56216/home-a.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 176.34375,
+        "target": ""
+      },
+      {
+        "text": "首页",
+        "href": "home-a.html",
+        "absoluteHref": "http://127.0.0.1:56216/home-a.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 28,
+        "target": ""
+      },
+      {
+        "text": "归档",
+        "href": "archive.html",
+        "absoluteHref": "http://127.0.0.1:56216/archive.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 28,
+        "target": ""
+      },
+      {
+        "text": "关于",
+        "href": "home-a.html#guan-yu-wo",
+        "absoluteHref": "http://127.0.0.1:56216/home-a.html#guan-yu-wo",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 28,
+        "target": ""
+      },
+      {
+        "text": "首页",
+        "href": "home-a.html",
+        "absoluteHref": "http://127.0.0.1:56216/home-a.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 24,
+        "target": ""
+      },
+      {
+        "text": "归档",
+        "href": "archive.html",
+        "absoluteHref": "http://127.0.0.1:56216/archive.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 24,
+        "target": ""
+      },
+      {
+        "text": "原文 ↗",
+        "href": "https://quarkbobo.github.io/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+        "absoluteHref": "https://quarkbobo.github.io/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 48.796875,
+        "target": ""
+      },
+      {
+        "text": "返回归档 ←",
+        "href": "archive.html",
+        "absoluteHref": "http://127.0.0.1:56216/archive.html",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 44,
+        "width": 78.25,
+        "target": ""
+      },
+      {
+        "text": "阅读 My First Blog ↗",
+        "href": "article-toc.html",
+        "absoluteHref": "http://127.0.0.1:56216/article-toc.html",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 44,
+        "width": 128.234375,
+        "target": ""
+      },
+      {
+        "text": "打开原站 ↗",
+        "href": "https://quarkbobo.github.io/",
+        "absoluteHref": "https://quarkbobo.github.io/",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 47.1875,
+        "width": 76,
+        "target": ""
+      }
+    ],
+    "targets": [
+      {
+        "element": "a.skip 跳到正文",
+        "height": 53,
+        "width": 96
+      },
+      {
+        "element": "a. A 深空档案馆",
+        "height": 44,
+        "width": 71.03125
+      },
+      {
+        "element": "a. B 轨道工作台",
+        "height": 44,
+        "width": 70.171875
+      },
+      {
+        "element": "a. 方案说明",
+        "height": 44,
+        "width": 48
+      },
+      {
+        "element": "a.site-brand 政治月测后宫版V3/太空站",
+        "height": 44,
+        "width": 176.34375
+      },
+      {
+        "element": "a. 首页",
+        "height": 44,
+        "width": 28
+      },
+      {
+        "element": "a. 归档",
+        "height": 44,
+        "width": 28
+      },
+      {
+        "element": "a. 关于",
+        "height": 44,
+        "width": 28
+      },
+      {
+        "element": "a. 首页",
+        "height": 44,
+        "width": 24
+      },
+      {
+        "element": "a. 归档",
+        "height": 44,
+        "width": 24
+      },
+      {
+        "element": "a. 原文 ↗",
+        "height": 44,
+        "width": 48.796875
+      },
+      {
+        "element": "a. 返回归档 ←",
+        "height": 44,
+        "width": 78.25
+      },
+      {
+        "element": "a. 阅读 My First Blog ↗",
+        "height": 44,
+        "width": 128.234375
+      },
+      {
+        "element": "a.original-site 打开原站 ↗",
+        "height": 47.1875,
+        "width": 76
+      }
+    ],
+    "clipped": []
+  },
+  "focus": [
+    {
+      "tag": "A",
+      "id": "",
+      "text": "跳到正文",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "none"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "A 深空档案馆",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "rgb(203, 179, 137) 0px -2px 0px 0px inset"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "B 轨道工作台",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "none"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "方案说明",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "none"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "政治月测后宫版V3/太空站",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "none"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "首页",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "none"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "归档",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "rgb(139, 202, 216) 0px -2px 0px 0px inset"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "关于",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "none"
+    }
+  ],
+  "navigation": [
+    {
+      "href": "http://127.0.0.1:56216/article.html#main",
+      "type": "local",
+      "status": 200,
+      "hashFound": true
+    },
+    {
+      "href": "http://127.0.0.1:56216/home-a.html",
+      "type": "local",
+      "status": 200,
+      "hashFound": null
+    },
+    {
+      "href": "http://127.0.0.1:56216/home-b.html",
+      "type": "local",
+      "status": 200,
+      "hashFound": null
+    },
+    {
+      "href": "http://127.0.0.1:56216/index.html",
+      "type": "local",
+      "status": 200,
+      "hashFound": null
+    },
+    {
+      "href": "http://127.0.0.1:56216/archive.html",
+      "type": "local",
+      "status": 200,
+      "hashFound": null
+    },
+    {
+      "href": "http://127.0.0.1:56216/home-a.html#guan-yu-wo",
+      "type": "local",
+      "status": 200,
+      "hashFound": true
+    },
+    {
+      "href": "https://quarkbobo.github.io/%E5%85%B3%E4%BA%8E%E6%88%91/zzyc_V4_for_U/",
+      "type": "external",
+      "scheme": "https:"
+    },
+    {
+      "href": "http://127.0.0.1:56216/article-toc.html",
+      "type": "local",
+      "status": 200,
+      "hashFound": null
+    },
+    {
+      "href": "https://quarkbobo.github.io/",
+      "type": "external",
+      "scheme": "https:"
+    }
+  ],
+  "contentIntegrity": {
+    "title": "政治月测后宫版V4有最新消息？",
+    "actual": "​ 时间如白驹过隙啊朋友们，学弟很快就大三了。 ​ 当时的V1、V2我清晰地记得是用Chatgpt5.2网页端干出来的，和他斗智斗勇连哄带骗聊了老半天才同意我可以写出来一键爬取题库的脚本。（因为聊多了他上下文就忘了嘻嘻）再次打开一个窗口问他怎么修改代码的时候他又告诉我不会帮你做违规操作，这谁绷得住。 ​ 已经把接管本公众号的重任交给几位身怀绝技的AI工程师。相信他们很快就能把现在需要用电脑的操作改成手机插件格式的政治月测后宫版V4代码（像适配Edge、Chrome浏览器这种），这样大家在报告厅可以不用提心吊胆地用小包一键导入题库就可以让脚本自己跑了，是不是非常美妙？ ​ ​ 想什么呢，我们能做的出也不可能开源！！！ ​ 默认以任意形式或方法得到相关代码的同学已经读过这5条免责声明： 本源码来源于网络收集或个人整理，版权归原作者及原开发团队所有； 本源码仅供个人学习、研究和技术交流之用，严禁用于任何商业用途； 请在下载后 24 小时内自觉删除，如需正式使用，请购买/获取官方授权； 因下载、使用或传播本源码所产生的一切法律责任，均由使用者自行承担，与发布者无关； 本声明最终解释权归发布者所有。",
+    "expected": "​ 时间如白驹过隙啊朋友们，学弟很快就大三了。 ​ 当时的V1、V2我清晰地记得是用Chatgpt5.2网页端干出来的，和他斗智斗勇连哄带骗聊了老半天才同意我可以写出来一键爬取题库的脚本。（因为聊多了他上下文就忘了嘻嘻）再次打开一个窗口问他怎么修改代码的时候他又告诉我不会帮你做违规操作，这谁绷得住。 ​ 已经把接管本公众号的重任交给几位身怀绝技的AI工程师。相信他们很快就能把现在需要用电脑的操作改成手机插件格式的政治月测后宫版V4代码（像适配Edge、Chrome浏览器这种），这样大家在报告厅可以不用提心吊胆地用小包一键导入题库就可以让脚本自己跑了，是不是非常美妙？ ​ ​ 想什么呢，我们能做的出也不可能开源！！！ ​ 默认以任意形式或方法得到相关代码的同学已经读过这5条免责声明： 本源码来源于网络收集或个人整理，版权归原作者及原开发团队所有； 本源码仅供个人学习、研究和技术交流之用，严禁用于任何商业用途； 请在下载后 24 小时内自觉删除，如需正式使用，请购买/获取官方授权； 因下载、使用或传播本源码所产生的一切法律责任，均由使用者自行承担，与发布者无关； 本声明最终解释权归发布者所有。",
+    "headingIds": []
+  }
+}

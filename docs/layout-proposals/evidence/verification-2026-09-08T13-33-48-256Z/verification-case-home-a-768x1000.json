@@ -1,0 +1,824 @@
+{
+  "name": "home-a-768x1000",
+  "page": "home-a.html",
+  "viewport": {
+    "width": 768,
+    "height": 1000
+  },
+  "textZoom": 100,
+  "reducedMotion": false,
+  "passed": true,
+  "checks": [
+    {
+      "label": "no horizontal overflow or clipped interactive/title containers",
+      "passed": true
+    },
+    {
+      "label": "all rendered major targets are at least 44 CSS px high",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "label": "keyboard Tab gives each sampled control a visible focus indicator",
+      "passed": true,
+      "detail": [
+        {
+          "tag": "A",
+          "id": "",
+          "text": "跳到正文",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "none"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "A 深空档案馆",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "rgb(203, 179, 137) 0px -2px 0px 0px inset"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "B 轨道工作台",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "none"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "方案说明",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "none"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "政治月测后宫版V3/太空站",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "none"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "首页",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "rgb(139, 202, 216) 0px -2px 0px 0px inset"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "归档",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "none"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "text": "关于",
+          "focusVisible": true,
+          "visible": true,
+          "inViewport": true,
+          "indicator": true,
+          "outline": "rgb(139, 202, 216) solid 3px",
+          "boxShadow": "none"
+        }
+      ]
+    },
+    {
+      "label": "local href resolves: /home-a.html#main",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/home-a.html#main",
+        "type": "local",
+        "status": 200,
+        "hashFound": true
+      }
+    },
+    {
+      "label": "local href resolves: /home-a.html",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/home-a.html",
+        "type": "local",
+        "status": 200,
+        "hashFound": null
+      }
+    },
+    {
+      "label": "local href resolves: /home-b.html",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/home-b.html",
+        "type": "local",
+        "status": 200,
+        "hashFound": null
+      }
+    },
+    {
+      "label": "local href resolves: /index.html",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/index.html",
+        "type": "local",
+        "status": 200,
+        "hashFound": null
+      }
+    },
+    {
+      "label": "local href resolves: /archive.html",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/archive.html",
+        "type": "local",
+        "status": 200,
+        "hashFound": null
+      }
+    },
+    {
+      "label": "local href resolves: /home-a.html#guan-yu-wo",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/home-a.html#guan-yu-wo",
+        "type": "local",
+        "status": 200,
+        "hashFound": true
+      }
+    },
+    {
+      "label": "external href uses a supported scheme: https://quarkbobo.github.io/",
+      "passed": true
+    },
+    {
+      "label": "local href resolves: /home-a.html#latest-posts",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/home-a.html#latest-posts",
+        "type": "local",
+        "status": 200,
+        "hashFound": true
+      }
+    },
+    {
+      "label": "local href resolves: /article.html",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/article.html",
+        "type": "local",
+        "status": 200,
+        "hashFound": null
+      }
+    },
+    {
+      "label": "external href uses a supported scheme: https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+      "passed": true
+    },
+    {
+      "label": "external href uses a supported scheme: https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World",
+      "passed": true
+    },
+    {
+      "label": "local href resolves: /article-toc.html",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/article-toc.html",
+        "type": "local",
+        "status": 200,
+        "hashFound": null
+      }
+    },
+    {
+      "label": "external href uses a supported scheme: https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free",
+      "passed": true
+    },
+    {
+      "label": "external href uses a supported scheme: https://quarkbobo.github.io/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer",
+      "passed": true
+    },
+    {
+      "label": "local href resolves: /games.html",
+      "passed": true,
+      "detail": {
+        "href": "http://127.0.0.1:56216/games.html",
+        "type": "local",
+        "status": 200,
+        "hashFound": null
+      }
+    },
+    {
+      "label": "homepage presents every real post title",
+      "passed": true
+    },
+    {
+      "label": "planet is explicitly captioned as a static original-site image",
+      "passed": true,
+      "detail": [
+        "原站星球 · 静态构图预览\n体验原站 3D\n↗"
+      ]
+    },
+    {
+      "label": "planet has a real original-site experience link",
+      "passed": true,
+      "detail": [
+        {
+          "text": "体验原站 3D ↗",
+          "href": "https://quarkbobo.github.io/"
+        },
+        {
+          "text": "打开原站 ↗",
+          "href": "https://quarkbobo.github.io/"
+        }
+      ]
+    },
+    {
+      "label": "static proposal does not claim a live canvas-rendered planet",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "label": "latest-posts measurement is available",
+      "passed": true
+    },
+    {
+      "label": "browser console has no errors",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "screenshots": [],
+  "consoleErrors": [],
+  "metrics": {
+    "innerWidth": 768,
+    "clientWidth": 753,
+    "pageWidth": 753,
+    "bodyWidth": 753,
+    "pageHeight": 2047,
+    "rootFontSize": 16,
+    "latestY": 911,
+    "bodyY": null,
+    "entryCount": 2,
+    "visibleLinkCount": 22,
+    "viewportLinkCount": 12,
+    "links": [
+      {
+        "text": "跳到正文",
+        "href": "#main",
+        "absoluteHref": "http://127.0.0.1:56216/home-a.html#main",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 53,
+        "width": 96,
+        "target": ""
+      },
+      {
+        "text": "A 深空档案馆",
+        "href": "home-a.html",
+        "absoluteHref": "http://127.0.0.1:56216/home-a.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 71.03125,
+        "target": ""
+      },
+      {
+        "text": "B 轨道工作台",
+        "href": "home-b.html",
+        "absoluteHref": "http://127.0.0.1:56216/home-b.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 70.171875,
+        "target": ""
+      },
+      {
+        "text": "方案说明",
+        "href": "index.html",
+        "absoluteHref": "http://127.0.0.1:56216/index.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 48,
+        "target": ""
+      },
+      {
+        "text": "政治月测后宫版V3/太空站",
+        "href": "home-a.html",
+        "absoluteHref": "http://127.0.0.1:56216/home-a.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 176.34375,
+        "target": ""
+      },
+      {
+        "text": "首页",
+        "href": "home-a.html",
+        "absoluteHref": "http://127.0.0.1:56216/home-a.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 28,
+        "target": ""
+      },
+      {
+        "text": "归档",
+        "href": "archive.html",
+        "absoluteHref": "http://127.0.0.1:56216/archive.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 28,
+        "target": ""
+      },
+      {
+        "text": "关于",
+        "href": "home-a.html#guan-yu-wo",
+        "absoluteHref": "http://127.0.0.1:56216/home-a.html#guan-yu-wo",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 28,
+        "target": ""
+      },
+      {
+        "text": "进入星球 ↗",
+        "href": "https://quarkbobo.github.io/",
+        "absoluteHref": "https://quarkbobo.github.io/",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 48,
+        "width": 118.140625,
+        "target": ""
+      },
+      {
+        "text": "进入最新记录 ↓",
+        "href": "#latest-posts",
+        "absoluteHref": "http://127.0.0.1:56216/home-a.html#latest-posts",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 48,
+        "width": 132.015625,
+        "target": ""
+      },
+      {
+        "text": "",
+        "href": "https://quarkbobo.github.io/",
+        "absoluteHref": "https://quarkbobo.github.io/",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 362.828125,
+        "width": 576,
+        "target": ""
+      },
+      {
+        "text": "体验原站 3D ↗",
+        "href": "https://quarkbobo.github.io/",
+        "absoluteHref": "https://quarkbobo.github.io/",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 67.96875,
+        "target": ""
+      },
+      {
+        "text": "全部归档 ↗",
+        "href": "archive.html",
+        "absoluteHref": "http://127.0.0.1:56216/archive.html",
+        "rendered": true,
+        "inViewport": true,
+        "major": true,
+        "height": 44,
+        "width": 80.375,
+        "target": ""
+      },
+      {
+        "text": "政治月测后宫版V4有最新消息？→",
+        "href": "article.html",
+        "absoluteHref": "http://127.0.0.1:56216/article.html",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 44,
+        "width": 348.5,
+        "target": ""
+      },
+      {
+        "text": "政治月测后宫版 · 8月题库↗",
+        "href": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+        "absoluteHref": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 44,
+        "width": 348.5,
+        "target": ""
+      },
+      {
+        "text": "Hello World↗",
+        "href": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World",
+        "absoluteHref": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 54,
+        "width": 721,
+        "target": ""
+      },
+      {
+        "text": "My First Blog→",
+        "href": "article-toc.html",
+        "absoluteHref": "http://127.0.0.1:56216/article-toc.html",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 54,
+        "width": 721,
+        "target": ""
+      },
+      {
+        "text": "政治月测后宫版 · 8月题库↗",
+        "href": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free",
+        "absoluteHref": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 54,
+        "width": 721,
+        "target": ""
+      },
+      {
+        "text": "政治月测后宫版V4有最新消息？→",
+        "href": "article.html",
+        "absoluteHref": "http://127.0.0.1:56216/article.html",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 54,
+        "width": 721,
+        "target": ""
+      },
+      {
+        "text": "Image Transformer↗",
+        "href": "https://quarkbobo.github.io/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer",
+        "absoluteHref": "https://quarkbobo.github.io/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 54,
+        "width": 721,
+        "target": ""
+      },
+      {
+        "text": "游戏合集→",
+        "href": "games.html",
+        "absoluteHref": "http://127.0.0.1:56216/games.html",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 54,
+        "width": 721,
+        "target": ""
+      },
+      {
+        "text": "打开原站 ↗",
+        "href": "https://quarkbobo.github.io/",
+        "absoluteHref": "https://quarkbobo.github.io/",
+        "rendered": true,
+        "inViewport": false,
+        "major": true,
+        "height": 47.1875,
+        "width": 76,
+        "target": ""
+      }
+    ],
+    "targets": [
+      {
+        "element": "a.skip 跳到正文",
+        "height": 53,
+        "width": 96
+      },
+      {
+        "element": "a. A 深空档案馆",
+        "height": 44,
+        "width": 71.03125
+      },
+      {
+        "element": "a. B 轨道工作台",
+        "height": 44,
+        "width": 70.171875
+      },
+      {
+        "element": "a. 方案说明",
+        "height": 44,
+        "width": 48
+      },
+      {
+        "element": "a.site-brand 政治月测后宫版V3/太空站",
+        "height": 44,
+        "width": 176.34375
+      },
+      {
+        "element": "a. 首页",
+        "height": 44,
+        "width": 28
+      },
+      {
+        "element": "a. 归档",
+        "height": 44,
+        "width": 28
+      },
+      {
+        "element": "a. 关于",
+        "height": 44,
+        "width": 28
+      },
+      {
+        "element": "a.button.primary 进入星球 ↗",
+        "height": 48,
+        "width": 118.140625
+      },
+      {
+        "element": "a.button.quiet 进入最新记录 ↓",
+        "height": 48,
+        "width": 132.015625
+      },
+      {
+        "element": "a.planet-image-link ",
+        "height": 362.828125,
+        "width": 576
+      },
+      {
+        "element": "a. 体验原站 3D ↗",
+        "height": 44,
+        "width": 67.96875
+      },
+      {
+        "element": "a.text-link 全部归档 ↗",
+        "height": 44,
+        "width": 80.375
+      },
+      {
+        "element": "a. 政治月测后宫版V4有最新消息？→",
+        "height": 44,
+        "width": 348.5
+      },
+      {
+        "element": "a. 政治月测后宫版 · 8月题库↗",
+        "height": 44,
+        "width": 348.5
+      },
+      {
+        "element": "a. Hello World↗",
+        "height": 54,
+        "width": 721
+      },
+      {
+        "element": "a. My First Blog→",
+        "height": 54,
+        "width": 721
+      },
+      {
+        "element": "a. 政治月测后宫版 · 8月题库↗",
+        "height": 54,
+        "width": 721
+      },
+      {
+        "element": "a. 政治月测后宫版V4有最新消息？→",
+        "height": 54,
+        "width": 721
+      },
+      {
+        "element": "a. Image Transformer↗",
+        "height": 54,
+        "width": 721
+      },
+      {
+        "element": "a. 游戏合集→",
+        "height": 54,
+        "width": 721
+      },
+      {
+        "element": "a.original-site 打开原站 ↗",
+        "height": 47.1875,
+        "width": 76
+      }
+    ],
+    "clipped": []
+  },
+  "focus": [
+    {
+      "tag": "A",
+      "id": "",
+      "text": "跳到正文",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "none"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "A 深空档案馆",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "rgb(203, 179, 137) 0px -2px 0px 0px inset"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "B 轨道工作台",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "none"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "方案说明",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "none"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "政治月测后宫版V3/太空站",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "none"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "首页",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "rgb(139, 202, 216) 0px -2px 0px 0px inset"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "归档",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "none"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "text": "关于",
+      "focusVisible": true,
+      "visible": true,
+      "inViewport": true,
+      "indicator": true,
+      "outline": "rgb(139, 202, 216) solid 3px",
+      "boxShadow": "none"
+    }
+  ],
+  "navigation": [
+    {
+      "href": "http://127.0.0.1:56216/home-a.html#main",
+      "type": "local",
+      "status": 200,
+      "hashFound": true
+    },
+    {
+      "href": "http://127.0.0.1:56216/home-a.html",
+      "type": "local",
+      "status": 200,
+      "hashFound": null
+    },
+    {
+      "href": "http://127.0.0.1:56216/home-b.html",
+      "type": "local",
+      "status": 200,
+      "hashFound": null
+    },
+    {
+      "href": "http://127.0.0.1:56216/index.html",
+      "type": "local",
+      "status": 200,
+      "hashFound": null
+    },
+    {
+      "href": "http://127.0.0.1:56216/archive.html",
+      "type": "local",
+      "status": 200,
+      "hashFound": null
+    },
+    {
+      "href": "http://127.0.0.1:56216/home-a.html#guan-yu-wo",
+      "type": "local",
+      "status": 200,
+      "hashFound": true
+    },
+    {
+      "href": "https://quarkbobo.github.io/",
+      "type": "external",
+      "scheme": "https:"
+    },
+    {
+      "href": "http://127.0.0.1:56216/home-a.html#latest-posts",
+      "type": "local",
+      "status": 200,
+      "hashFound": true
+    },
+    {
+      "href": "http://127.0.0.1:56216/article.html",
+      "type": "local",
+      "status": 200,
+      "hashFound": null
+    },
+    {
+      "href": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free/",
+      "type": "external",
+      "scheme": "https:"
+    },
+    {
+      "href": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hello-World",
+      "type": "external",
+      "scheme": "https:"
+    },
+    {
+      "href": "http://127.0.0.1:56216/article-toc.html",
+      "type": "local",
+      "status": 200,
+      "hashFound": null
+    },
+    {
+      "href": "https://quarkbobo.github.io/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/zzyc-questions-Sep-free",
+      "type": "external",
+      "scheme": "https:"
+    },
+    {
+      "href": "https://quarkbobo.github.io/%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3/Image-Transformer",
+      "type": "external",
+      "scheme": "https:"
+    },
+    {
+      "href": "http://127.0.0.1:56216/games.html",
+      "type": "local",
+      "status": 200,
+      "hashFound": null
+    }
+  ]
+}

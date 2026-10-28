@@ -1,0 +1,277 @@
+{
+  "consoleErrors": [],
+  "views": [
+    {
+      "name": "article-toc",
+      "width": 1440,
+      "dir": "baseline",
+      "scrollY": 0,
+      "viewport": [
+        1440,
+        1000
+      ],
+      "pageHeight": 1333,
+      "barHeight": 0,
+      "body": {
+        "x": 152.5,
+        "y": 451.109375,
+        "documentY": 451.109375,
+        "width": 760,
+        "height": 605.6875
+      },
+      "entries": []
+    },
+    {
+      "name": "home-a-latest",
+      "width": 1440,
+      "dir": "verification",
+      "scrollY": 543,
+      "viewport": [
+        1440,
+        1000
+      ],
+      "pageHeight": 1543,
+      "barHeight": 45,
+      "body": null,
+      "entries": [
+        {
+          "x": 112.5,
+          "y": 279.015625,
+          "documentY": 822.015625,
+          "width": 580,
+          "height": 157.3125
+        },
+        {
+          "x": 732.5,
+          "y": 279.015625,
+          "documentY": 822.015625,
+          "width": 580,
+          "height": 157.3125
+        }
+      ]
+    },
+    {
+      "name": "home-a-catalogue",
+      "width": 1440,
+      "dir": "verification",
+      "scrollY": 543,
+      "viewport": [
+        1440,
+        1000
+      ],
+      "pageHeight": 1543,
+      "barHeight": 45,
+      "body": null,
+      "entries": [
+        {
+          "x": 112.5,
+          "y": 279.015625,
+          "documentY": 822.015625,
+          "width": 580,
+          "height": 157.3125
+        },
+        {
+          "x": 732.5,
+          "y": 279.015625,
+          "documentY": 822.015625,
+          "width": 580,
+          "height": 157.3125
+        }
+      ]
+    },
+    {
+      "name": "home-b-latest",
+      "width": 1440,
+      "dir": "verification",
+      "scrollY": 322,
+      "viewport": [
+        1440,
+        1000
+      ],
+      "pageHeight": 1322,
+      "barHeight": 45,
+      "body": null,
+      "entries": [
+        {
+          "x": 112.5,
+          "y": 229.046875,
+          "documentY": 551.046875,
+          "width": 572,
+          "height": 118.421875
+        },
+        {
+          "x": 112.5,
+          "y": 347.46875,
+          "documentY": 669.46875,
+          "width": 572,
+          "height": 90.765625
+        }
+      ]
+    },
+    {
+      "name": "home-b-catalogue",
+      "width": 1440,
+      "dir": "verification",
+      "scrollY": 322,
+      "viewport": [
+        1440,
+        1000
+      ],
+      "pageHeight": 1322,
+      "barHeight": 45,
+      "body": null,
+      "entries": [
+        {
+          "x": 112.5,
+          "y": 229.046875,
+          "documentY": 551.046875,
+          "width": 572,
+          "height": 118.421875
+        },
+        {
+          "x": 112.5,
+          "y": 347.46875,
+          "documentY": 669.46875,
+          "width": 572,
+          "height": 90.765625
+        }
+      ]
+    },
+    {
+      "name": "article-toc",
+      "width": 390,
+      "dir": "baseline",
+      "scrollY": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "pageHeight": 1231,
+      "barHeight": 0,
+      "body": {
+        "x": 16,
+        "y": 434.46875,
+        "documentY": 434.46875,
+        "width": 358,
+        "height": 566.625
+      },
+      "entries": []
+    },
+    {
+      "name": "home-a-latest",
+      "width": 390,
+      "dir": "verification",
+      "scrollY": 703,
+      "viewport": [
+        390,
+        844
+      ],
+      "pageHeight": 1923,
+      "barHeight": 69,
+      "body": null,
+      "entries": [
+        {
+          "x": 16,
+          "y": 124.5,
+          "documentY": 827.5,
+          "width": 358,
+          "height": 147.15625
+        },
+        {
+          "x": 16,
+          "y": 271.65625,
+          "documentY": 974.65625,
+          "width": 358,
+          "height": 111.578125
+        }
+      ]
+    },
+    {
+      "name": "home-a-catalogue",
+      "width": 390,
+      "dir": "verification",
+      "scrollY": 1078,
+      "viewport": [
+        390,
+        844
+      ],
+      "pageHeight": 1923,
+      "barHeight": 69,
+      "body": null,
+      "entries": [
+        {
+          "x": 16,
+          "y": -250.5,
+          "documentY": 827.5,
+          "width": 358,
+          "height": 147.15625
+        },
+        {
+          "x": 16,
+          "y": -103.34375,
+          "documentY": 974.65625,
+          "width": 358,
+          "height": 111.578125
+        }
+      ]
+    },
+    {
+      "name": "home-b-latest",
+      "width": 390,
+      "dir": "verification",
+      "scrollY": 422,
+      "viewport": [
+        390,
+        844
+      ],
+      "pageHeight": 1904,
+      "barHeight": 69,
+      "body": null,
+      "entries": [
+        {
+          "x": 16,
+          "y": 118.25,
+          "documentY": 540.25,
+          "width": 358,
+          "height": 118.421875
+        },
+        {
+          "x": 16,
+          "y": 236.671875,
+          "documentY": 658.671875,
+          "width": 358,
+          "height": 90.765625
+        }
+      ]
+    },
+    {
+      "name": "home-b-catalogue",
+      "width": 390,
+      "dir": "verification",
+      "scrollY": 1054,
+      "viewport": [
+        390,
+        844
+      ],
+      "pageHeight": 1904,
+      "barHeight": 69,
+      "body": null,
+      "entries": [
+        {
+          "x": 16,
+          "y": -513.75,
+          "documentY": 540.25,
+          "width": 358,
+          "height": 118.421875
+        },
+        {
+          "x": 16,
+          "y": -395.328125,
+          "documentY": 658.671875,
+          "width": 358,
+          "height": 90.765625
+        }
+      ]
+    }
+  ]
+}

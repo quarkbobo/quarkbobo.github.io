@@ -1,0 +1,131 @@
+{
+  "environment": "isolated Chromium SwiftShader, 1440x1000, DPR1; not hardware GPU benchmark",
+  "baseline": {
+    "runs": [
+      {
+        "environment": "isolated Chromium SwiftShader, 1440x1000, DPR1; not hardware GPU benchmark",
+        "approach": {
+          "frames": 45,
+          "averageFPS": 18.6,
+          "medianFrameMs": 34.3,
+          "p95FrameMs": 116.3
+        },
+        "interior": {
+          "frames": 72,
+          "averageFPS": 31.7,
+          "medianFrameMs": 29.4,
+          "p95FrameMs": 46.3
+        }
+      },
+      {
+        "environment": "isolated Chromium SwiftShader, 1440x1000, DPR1; not hardware GPU benchmark",
+        "approach": {
+          "frames": 38,
+          "averageFPS": 15.5,
+          "medianFrameMs": 45.6,
+          "p95FrameMs": 185.2
+        },
+        "interior": {
+          "frames": 64,
+          "averageFPS": 28.4,
+          "medianFrameMs": 33.4,
+          "p95FrameMs": 42.2
+        }
+      },
+      {
+        "environment": "isolated Chromium SwiftShader, 1440x1000, DPR1; not hardware GPU benchmark",
+        "approach": {
+          "frames": 42,
+          "averageFPS": 17,
+          "medianFrameMs": 49,
+          "p95FrameMs": 132.2
+        },
+        "interior": {
+          "frames": 68,
+          "averageFPS": 30.4,
+          "medianFrameMs": 30.1,
+          "p95FrameMs": 41.5
+        }
+      }
+    ],
+    "median": {
+      "approach": {
+        "averageFPS": 17,
+        "p95FrameMs": 132.2,
+        "medianFrameMs": 45.6
+      },
+      "interior": {
+        "averageFPS": 30.4,
+        "p95FrameMs": 42.2,
+        "medianFrameMs": 30.1
+      }
+    }
+  },
+  "final": {
+    "runs": [
+      {
+        "environment": "isolated Chromium SwiftShader, 1440x1000, DPR1; not hardware GPU benchmark",
+        "approach": {
+          "frames": 83,
+          "averageFPS": 32.3,
+          "medianFrameMs": 25.8,
+          "p95FrameMs": 81.2
+        },
+        "interior": {
+          "frames": 86,
+          "averageFPS": 38,
+          "medianFrameMs": 26.1,
+          "p95FrameMs": 29.2
+        }
+      },
+      {
+        "environment": "isolated Chromium SwiftShader, 1440x1000, DPR1; not hardware GPU benchmark",
+        "approach": {
+          "frames": 81,
+          "averageFPS": 31.9,
+          "medianFrameMs": 27.3,
+          "p95FrameMs": 91
+        },
+        "interior": {
+          "frames": 85,
+          "averageFPS": 37.3,
+          "medianFrameMs": 26.6,
+          "p95FrameMs": 29.2
+        }
+      },
+      {
+        "environment": "isolated Chromium SwiftShader, 1440x1000, DPR1; not hardware GPU benchmark",
+        "approach": {
+          "frames": 79,
+          "averageFPS": 31,
+          "medianFrameMs": 28.3,
+          "p95FrameMs": 91.3
+        },
+        "interior": {
+          "frames": 84,
+          "averageFPS": 36.9,
+          "medianFrameMs": 26.8,
+          "p95FrameMs": 32.3
+        }
+      }
+    ],
+    "median": {
+      "approach": {
+        "averageFPS": 31.9,
+        "p95FrameMs": 91,
+        "medianFrameMs": 27.3
+      },
+      "interior": {
+        "averageFPS": 37.3,
+        "p95FrameMs": 29.2,
+        "medianFrameMs": 26.6
+      }
+    }
+  },
+  "improvementPercent": 31.2,
+  "checks": {
+    "entryP95Improves20Percent": true,
+    "entryFPSDoesNotDecrease": true,
+    "interiorP95Within10Percent": true
+  }
+}

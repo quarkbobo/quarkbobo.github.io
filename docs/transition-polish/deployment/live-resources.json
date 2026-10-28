@@ -1,0 +1,58 @@
+[
+  {
+    "path": "/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 14044,
+    "hasPlanet": true
+  },
+  {
+    "path": "/js/planet-explorer.mjs",
+    "status": 200,
+    "type": "text/javascript; charset=utf-8",
+    "bytes": 23428,
+    "matchesLocal": true
+  },
+  {
+    "path": "/js/planet-flight.mjs",
+    "status": 200,
+    "type": "text/javascript; charset=utf-8",
+    "bytes": 2433,
+    "matchesLocal": true
+  },
+  {
+    "path": "/js/planet-world.mjs",
+    "status": 200,
+    "type": "text/javascript; charset=utf-8",
+    "bytes": 17159,
+    "matchesLocal": true
+  },
+  {
+    "path": "/css/planet-explorer.css",
+    "status": 200,
+    "type": "text/css; charset=utf-8",
+    "bytes": 17682,
+    "matchesLocal": true
+  },
+  {
+    "path": "/vendor/three/three.module.min.js",
+    "status": 200,
+    "type": "application/javascript; charset=utf-8",
+    "bytes": 338908,
+    "matchesLocal": true
+  },
+  {
+    "path": "/vendor/three/three.core.min.js",
+    "status": 200,
+    "type": "application/javascript; charset=utf-8",
+    "bytes": 381124,
+    "matchesLocal": true
+  },
+  {
+    "path": "/vendor/three/LICENSE.txt",
+    "status": 200,
+    "type": "text/plain; charset=utf-8",
+    "bytes": 1081,
+    "matchesLocal": true
+  }
+]
