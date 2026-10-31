@@ -37,7 +37,7 @@
 - Every external anchor has `target="_blank"` and `rel="noopener noreferrer"`.
 - The first four anchors remain the existing local games; the 35 new external anchors follow them in the same order as the approved spec.
 
-- [ ] **Step 1: Extend the page contract to the approved 39-link directory**
+- [x] **Step 1: Extend the page contract to the approved 39-link directory**
 
 In `test/archive-a.test.cjs`, replace the four-link assertion with an exact ordered comparison of all 39 `[visible text, href]` pairs: the four existing local pairs followed by the 35 rows in `2026-10-31-milkyfrog-games-directory-design.md`. Add assertions that all 35 external links use `target="_blank"` and include both `noopener` and `noreferrer` in `rel`.
 
@@ -94,7 +94,7 @@ for (const a of links.slice(4)) {
 }
 ```
 
-- [ ] **Step 2: Build the current page and confirm the new contract fails**
+- [x] **Step 2: Build the current page and confirm the new contract fails**
 
 Run:
 
@@ -105,11 +105,11 @@ node --test test/archive-a.test.cjs
 
 Expected: the game-page assertion fails because the generated page still has only four links.
 
-- [ ] **Step 3: Add the external cards to the Hexo post**
+- [x] **Step 3: Add the external cards to the Hexo post**
 
 In `source/_posts/游戏相关/game-concat.md`, retain the front matter and four local anchors in their current order. Append all 35 approved records as anchors in the same paragraph so the current `body[data-page-kind="games"] .article-body > p` grid lays them out as cards. Use each exact title and URL from the spec; append ` · 作者：<name>` to visible text only when that row provides an author. Set `target="_blank"` and `rel="noopener noreferrer"` on every new anchor.
 
-- [ ] **Step 4: Rebuild and verify the game-page contract**
+- [x] **Step 4: Rebuild and verify the game-page contract**
 
 Run:
 
@@ -120,7 +120,7 @@ node --test test/archive-a.test.cjs
 
 Expected: the focused archive-A tests pass, including the exact 39-link list and external-link security attributes.
 
-- [ ] **Step 5: Run the full project test suite**
+- [x] **Step 5: Run the full project test suite**
 
 Run:
 
@@ -130,7 +130,7 @@ npm test
 
 Expected: the clean Hexo build and all Node tests pass.
 
-- [ ] **Step 6: Review the generated directory**
+- [x] **Step 6: Review the generated directory**
 
 Inspect `public/游戏相关/game-concat/index.html`. Confirm there are 39 cards; the first four retain their original local URLs; each of the 35 external titles points to its matching URL from the spec; author labels appear only where provided; every external link opens in a new tab with both safe `rel` values.
 
