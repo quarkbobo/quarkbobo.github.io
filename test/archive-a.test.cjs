@@ -4,11 +4,30 @@ const fs=require('node:fs');
 const path=require('node:path');
 const cheerio=require('cheerio');
 const read=p=>cheerio.load(fs.readFileSync(path.join(__dirname,'../public',p),'utf8'));
+const postsRoot=path.join(__dirname,'../source/_posts');
+const supportedPost=/\.(?:md|markdown|html|htm)$/i;
+const normalizeRoute=route=>decodeURIComponent(route).split(/[?#]/,1)[0].replace(/\\/g,'/').replace(/^\/+|\/+$/g,'');
+function authoredPosts(directory=postsRoot){
+ return fs.readdirSync(directory,{withFileTypes:true}).flatMap(entry=>{
+  const file=path.join(directory,entry.name);
+  if(entry.isDirectory())return authoredPosts(file);
+  if(!entry.isFile()||!supportedPost.test(entry.name)||path.resolve(file)===path.join(postsRoot,'博客目录.md'))return [];
+  const relative=path.relative(postsRoot,file).split(path.sep).join('/');
+  const fallback=relative.replace(supportedPost,'').replace(/\s+/g,'-');
+  if(!/\.(?:md|markdown)$/i.test(entry.name))return [{route:fallback,category:path.dirname(relative)==='.'?'未分类':relative.split('/')[0]}];
+  const content=fs.readFileSync(file,'utf8').replace(/^\uFEFF/,'');
+  const frontMatter=content.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)?.[1];
+  const permalink=frontMatter?.match(/^\s*permalink\s*:\s*(.*?)\s*$/m)?.[1];
+  const route=permalink?permalink.replace(/^(['"])(.*)\1$/,'$2'):fallback;
+  return [{route,category:path.dirname(relative)==='.'?'未分类':relative.split('/')[0]}];
+ });
+}
 test('selected A shows two recent entries and keeps every authored catalogue destination',()=>{
  const $=read('index.html');assert.equal($('[data-latest-card]').length,2);
- assert.equal($('.catalogue-topic').length,3);
  const links=$('.catalogue-topic ul a').toArray().map(a=>$(a).attr('href'));
- assert.equal(links.length,6);for(const slug of['Hello-World','My-First-Blog','zzyc-questions-Nov-free','zzyc_V4_for_U','Image-Transformer','game-concat'])assert.ok(links.some(h=>h.includes(slug)),slug);
+ const posts=authoredPosts();
+ assert.equal($('.catalogue-topic').length,new Set(posts.map(post=>post.category)).size);
+ assert.deepEqual(links.map(normalizeRoute).sort(),posts.map(post=>normalizeRoute(post.route)).sort());
  assert.equal($('.site-nav [aria-current="page"]').text().trim(),'首页');
  assert.equal($('#planet-webgl').length,1);assert.equal($('#planet-enter')[0].name,'button');
 });
